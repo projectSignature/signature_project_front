@@ -66,7 +66,7 @@ function saveData() {
     "signature": signaturePad.toDataURL("image/png")
   };
 
-  fetch('http://localhost:3333/member',
+  fetch('https://squid-app-ug7x6.ondigitalocean.app/member',
     {method: 'POST',
     body: JSON.stringify(obj),
     headers: {"Content-type": "application/json; charset=UTF-8"}})
@@ -79,7 +79,7 @@ function saveData() {
 }
 
 function ejspdf() {
-  fetch('http://localhost:3333/pdf')
+  fetch('https://squid-app-ug7x6.ondigitalocean.app/pdf')
   .then((x) => x.json())
   .then((response) => {
     console.log(response)
@@ -165,7 +165,7 @@ function confirm_check(){
 }
 
 saveData();
-generatePDF();
+//generatePDF();
 }
 
 function yearfunc(){
