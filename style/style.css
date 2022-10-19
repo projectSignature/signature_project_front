@@ -13,7 +13,7 @@ body {
     box-sizing: border-box;
     font-family: 'Open Sans', sans-serif;
     font-weight: 400;
-    
+
 }
 
 #header{
@@ -88,7 +88,7 @@ font-size: 3vw;/*asadasdasasdsa*/
     margin-left: 10px;
     margin-top: 0px;
     text-align: center;
-  
+
 }
 #birthday_year{
   margin-left: 350px;
@@ -481,34 +481,160 @@ canvas {
 
 /*Smartphone*/
 
-@media screen and (max-width: 499px) {
+@media screen and (max-width: 640px) {
 
- #principal {
-    height: 100%;
-    width: 100%;
-    justify-content: flex-start;
-    gap: 20px;
-     background: pink;
-   
- }
+body{
 
- .terms {
-    height: 300px;
-    font-size: 0.6rem;
- }
-
- #btn-clear {
-    height: 20px;
-    width: 50px;
-  }
-
- .signature {
-    display: block;
- }
-
- canvas {
-    height: 150px;
-    width: 100%;
- }
+  width: 100%;
+}
+#principal{
+  background: yellow;
+  width: 100%;
+}
+#header{
 
 }
+#selectlanguage{
+  height:50px;
+  margin-left: 380px !important;
+}
+#image{
+   margin-left: 5px !important;
+   height: 8vh;
+    width:100px;
+}
+#welcomemessage{
+  font-size: 2.5vh;
+}
+
+#name-input{
+  width:97% !important;
+}
+.birthday{
+  height:70px;
+   margin-left: 5px !important;
+   padding-left: 0 !important;
+   font-size: 2vh;
+   width: 27% !important;
+}
+
+#adress-input{
+  width:70% !important;
+}
+#birthday_age{
+  margin-right: 15px !important;
+}
+#man-style{
+  margin-left:  0 !important;
+  margin-right:   25px !important;
+}
+#adress-input{
+  margin-right:  25px !important;
+}
+#email1{
+  height:70px;
+   margin-left: 5px !important;
+   padding-left: 0 !important;
+   font-size: 2vh;
+}
+#email2{
+  height:70px;
+  width: 50%;
+   margin-left: 5px !important;
+   padding-left: 0 !important;
+   font-size: 2vh;
+   margin-right: 25px !important;
+}
+#email3{
+  margin-left: 15px !important;
+  padding-left: 0 !important;
+  font-size:4vh;
+}
+#selectlanguage{
+  margin-right: 500px;
+}
+  .terms {
+     height: 300px;
+     font-size: 0.6rem;
+  }
+
+  #btn-clear {
+     height: 20px;
+     width: 50px;
+   }
+
+  .signature {
+     display: block;
+  }
+#politic-title{
+  margin-bottom: 0;
+  font-size: 1.8vh;
+}
+.plan{
+  font-size: 2vh;
+}
+#plan-a-price{
+    font-size: 2vh;
+}
+.container{
+  width: 14%;
+  margin-left: 13px;
+  height: 320px;
+}
+  canvas {
+    margin-top: 30px;
+     height: 150px;
+     width: 97%;
+  }
+  label{
+    margin-top: 0;
+  }
+  .underbar{
+    margin-left: 0;
+    width: 97%;
+  }
+.plan-valor{
+  font-size: 2vh !important;
+}
+.select-plan{
+  width: 75px ;
+  padding: 0px 0px;
+  height: 40px;
+  font-size: 1.2vh !important;
+}
+.detals h4{
+  font-size: 1.5vh !important;
+  padding-top: 10px;
+}
+#languagediv{
+margin-bottom: 5px;
+  width: 97%;
+
+}
+.phone{
+ height:70px;
+ width:30% !important;
+ margin-top: 5px;
+  margin-left: 5px !important;
+  padding-left: 0 !important;
+  font-size: 2vh;
+}
+#phone3{
+    margin-right: 35px !important;
+}
+.phonebar{
+  margin-left: 0px !important;
+
+}
+.block{
+  margin-left: 10px !important;
+}
+#confirm{
+  padding-bottom: 30px;
+  align-items: center;
+}
+#confirm-button{
+  margin-right: 70px !important;
+}
+}
+
