@@ -484,6 +484,8 @@ canvas {
 @media screen and (max-width: 499px) {
 
  #principal {
+    height: 100%;
+    width: 100%;
     justify-content: flex-start;
     gap: 20px;
  }
