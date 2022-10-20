@@ -5,6 +5,12 @@
     color:	#333333;
 
 }
+html{
+width: 100%;
+}
+#header{
+  width: 100%;
+}
 select{
   border-bottom: 1px solid lightgray;
   border-radius: 10px;
@@ -96,23 +102,50 @@ body{
   font-weight: bold;
   color:gray;
 }
-
-
+#adress-input{
+  width: 70%;
+}
+.phone{
+  width: 28%;
+}
+#email2{
+  width: 30%;
+}
+#email1{
+  width: 58%;
+}
+.birthday{
+  width:24%;
+  text-align: center;
+}
+#birthday_age{
+ width:18%;
+}
+#language1{
+  margin-right: 5%;
+}
+#language2{
+  margin-right: 5%;
+}
+#planscontainer{
+  display:flex;
+  margin-bottom: 15px;
+  width: 100%;
+  overflow-x: hidden;
+}
+#politic-div{
+  margin-top: 15px;
+}
 
 @media screen and (max-width: 500px) {
 
-html{
-width: 100%;
 
-}
 #body{
   width: 100%;
-  background-color: yellow;
+  background-color: #EEEEEE;
   overflow-x: hidden;
 }
-#header{
-  width: 100%;
-}
+
   #selectlanguage{
     margin-top: 10px;
     height:50px;
@@ -135,17 +168,83 @@ width: 100%;
 #titlemain{
   margin-bottom: 15px;
 }
-.birthday{
-  width:24%;
-  text-align: center;
-}
-#birthday_age{
- width:18%;
-}
+
 input{
   height: 50px;
 }
+#kenselect{
+  height: 50px;
+}
+.container{
+  height:200px;
+  width: 15.5%;
+  margin-right: 3px;
+background-color: #AAAAAA;
+border: 2px solid #333333;
+border-radius: 1px;
+}
+.plan-valor{
+  margin-top: 15px;
+  font-size: 1.8vh;
+}
+.detals{
+  font-size: 1.4vh;
+  height:90px;
+}
+.contentes a, .select-plan {
+  text-decoration: none;
+  border-radius: 5px;
+  border: 1px solid white;
+  color: white;
+  display: inline-block;
+  text-transform: uppercase;
+  font-weight: bold;
+  background-color: #00bfff;
+  cursor: pointer;
+  width:95%;
+  margin-left: 2px;
+  height:30px;
+  font-size: 1.1vh;
 
+}
+.contentes a:hover{
+  text-decoration: none;
+  border-radius: 5px;
+  border: 2px solid white;
+  color: white;
+  display: inline-block;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+#btn-clear {
+    height: 19px;
+    width: 50px;
+}
+
+.signature {
+    display: block;
+    margin-top: -10px;;
+}
+
+canvas {
+    height: 200px;
+    width: 100%;
+}
+#confirm{
+  padding-bottom: 30px;
+  align-items: center;
+  background-color: blue;
+  display: flex;
+  justify-content: flex-end;
+}
+#confirm-button{
+  margin-right: 30px !important;
+  margin-left: 10px !important;
+}
+.confirmbutton{
+  width: 25%;
+}
 
 
 }
