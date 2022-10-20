@@ -185,7 +185,7 @@ border-radius: 1px;
 }
 .plan-valor{
   margin-top: 15px;
-  font-size: 1.8vh;
+  font-size: 1vh;
 }
 .detals{
   font-size: 1.4vh;
@@ -224,17 +224,17 @@ border-radius: 1px;
 
 .signature {
     display: block;
-    margin-top: -10px;;
+    margin-top: 0px;;
 }
 
 canvas {
     height: 200px;
     width: 100%;
+    background-color: white;
 }
 #confirm{
   padding-bottom: 30px;
   align-items: center;
-  background-color: blue;
   display: flex;
   justify-content: flex-end;
 }
@@ -248,4 +248,3 @@ canvas {
 
 
 }
-
