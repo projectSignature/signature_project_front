@@ -10,12 +10,94 @@ select{
   border-radius: 10px;
 }
 input{
-  border-bottom: 1px solid 	#EEEEEE;
+
   border-radius: 5px;
 }
 #titlemain{
   display: flex;
 }
+header{
+  margin-bottom: 10px;
+}
+#name-input{
+  width:95%;
+}
+body{
+  padding-left: 5px;
+}
+#gendercheck{
+  display: flex;
+}
+.ECM_CheckboxInput {
+  padding: 12px 8px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+.ECM_CheckboxInput-Input {
+  margin: 0;
+  width: 0;
+  opacity: 0;
+}
+.ECM_CheckboxInput:hover{
+  background: rgba(0,0,0,.05) !important;
+}
+.ECM_CheckboxInput:hover > .ECM_CheckboxInput-DummyInput{
+  transform: scale(1.1);
+}
+.ECM_CheckboxInput-Input:focus + .ECM_CheckboxInput-DummyInput{
+  transform: scale(1.1);
+}
+.ECM_CheckboxInput-Input:checked + .ECM_CheckboxInput-DummyInput {
+  background: rgba(107, 26, 250, 1);
+}
+.ECM_CheckboxInput-Input:checked + .ECM_CheckboxInput-DummyInput::before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 35%;
+  height: 4px;
+  border-radius: 2px;
+  transform: translate(-6px, 5px) rotateZ(-135deg);
+  transform-origin: 2px 2px;
+  background: #FFFFFF;
+}
+.ECM_CheckboxInput-Input:checked + .ECM_CheckboxInput-DummyInput::after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 70%;
+  height: 4px;
+  border-radius: 2px;
+  transform: translate(-6px, 5px) rotateZ(-45deg);
+  transform-origin: 2px 2px;
+  background: #FFFFFF;
+}
+.ECM_CheckboxInput-DummyInput {
+  position: relative;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 32px;
+  height: 32px;
+  border: solid 2px transparent;
+  background: rgba(0, 0, 0, .15);
+  border-radius: 50%;
+  transition: all .15s linear;
+}
+.ECM_CheckboxInput-LabelText {
+  margin-left: 12px;
+  display: block;
+  font-size: 3vw;
+  font-weight: bold;
+  color:gray;
+}
+
+
 
 @media screen and (max-width: 500px) {
 
@@ -47,18 +129,21 @@ width: 100%;
   }
 .kubun-tilte{
   margin-top: 25px;
-  font-size: 2vh !important;
+  font-size: 3vh !important;
   color:#666666;
 }
 #titlemain{
   margin-bottom: 15px;
 }
 .birthday{
-  width:25%;
+  width:24%;
   text-align: center;
 }
 #birthday_age{
  width:18%;
+}
+input{
+  height: 50px;
 }
 
 
