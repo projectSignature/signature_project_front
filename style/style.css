@@ -136,6 +136,37 @@ body{
 #politic-div{
   margin-top: 15px;
 }
+.confirmbutton{
+  width: 25%;
+  border: 3px solid gray;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.language-input-select{
+  width: 25%;
+}
+.language-input-select:hover{
+  text-decoration: none;
+  border: 2px solid gray;
+  background-color: #5507FF;
+  color:white;
+  display: inline-block;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+
+.confirmbutton:hover{
+    text-decoration: none;
+    border: 2px solid gray;
+    background-color: #5507FF;
+    color:white;
+    display: inline-block;
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+
+
 
 @media screen and (max-width: 500px) {
 
@@ -170,7 +201,7 @@ body{
 
 input{
   height: 50px;
-   margin-bottom: 50px;
+  margin-bottom: 50px;
 }
 #kenselect{
   height: 50px;
@@ -208,6 +239,7 @@ border-radius: 1px;
   font-size: 1.1vh;
 
 }
+
 .contentes a:hover{
   text-decoration: none;
   border-radius: 5px;
@@ -235,25 +267,26 @@ canvas {
     border: 1px solid gray;
 }
 #confirm{
-  padding-bottom: 30px;
+  padding-top: 10px;
+  padding-bottom: 10px;
   align-items: center;
   display: flex;
   justify-content: flex-end;
+  background-color: #555555;
 }
 #confirm-button{
   margin-right: 30px !important;
   margin-left: 10px !important;
+
 }
-.confirmbutton{
-  width: 25%;
-}
+
 .error-message{
   color:#EE0000;
   margin-left: 10px;
   font-size: 2vh;
   display: none;
 }
-    
 
 }
+
 
