@@ -146,6 +146,7 @@ body{
 .language-input-select{
   width: 25%;
   font-size: 2vh;
+  text-align: center;
 }
 .language-input-select:hover{
   text-decoration: none;
@@ -219,6 +220,7 @@ border-radius: 1px;
 .plan-valor{
   margin-top: 15px;
   font-size: 15px;
+  overflow-x: hidden;
 }
 .detals{
   font-size: 1.4vh;
