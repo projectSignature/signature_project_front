@@ -157,8 +157,6 @@ body{
   text-transform: uppercase;
   font-weight: bold;
 }
-
-
 .confirmbutton:hover{
     text-decoration: none;
     border: 2px solid gray;
@@ -168,8 +166,6 @@ body{
     text-transform: uppercase;
     font-weight: bold;
   }
-
-
 
 @media screen and (max-width: 500px) {
 
@@ -294,6 +290,10 @@ canvas {
 }
 .price{
   background-color: pink;
+  padding: 0;
+}
+.plan{
+  font-size: 1.5vh;
 }
 }
 
