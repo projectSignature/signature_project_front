@@ -161,7 +161,6 @@ body{
      margin-right: 15px !important;
   }
 .kubun-tilte{
-  margin-top: 25px;
   font-size: 3vh !important;
   color:#666666;
 }
@@ -171,6 +170,7 @@ body{
 
 input{
   height: 50px;
+   margin-bottom: 50px;
 }
 #kenselect{
   height: 50px;
