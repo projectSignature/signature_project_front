@@ -8,15 +8,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;1,300;1,400&display=swap"
-      rel="stylesheet"
-    />
+      rel="stylesheet"/>
     <title></title>
     <link rel="stylesheet" href="./style/style.css" />
   </head>
 
-  <body id="body">
+  <body id = "body">
     <main id="principal">
-       <header id = "header">
+      <header id = "header">
         <select id="selectlanguage">
           <option value="Português">Português</option>
           <option value="Inglês">Inglês</option>
@@ -31,24 +30,24 @@
 
       <span id ="fullnametitle"class="block">Nome completo</span>
       <div class="relative">
-      <input id="name-input" type="text" maxlength="180" class="birthday" >
+      <input id="name-input" type="email" maxlength="180" class="birthday"><!---->
       </div>
        <h1 id="nameerror" class="error-message">Por favor, digite um nome</h1>
 
       <span id ="birthdaytitle"class="block">Data de nascimento</span>
       <div class="relative">
-      <input  maxlength="4" id="birthday_year" class="birthday" onclick="yearfunc()" value="YYYY">
-      <input  maxlength="2" id="birthday_month" class="birthday" onclick="monthfunc()" value="MM">
-      <input  maxlength="2" id="birthday_day" class="birthday" onclick="dayfunc()" value="DD">
-      <input type="number" maxlength="180" id="birthday_age" class="birthday">
+      <input  maxlength="4" id="birthday_year" class="birthday" onclick="yearfunc()" value="YYYY"><!---->
+      <input  maxlength="2" id="birthday_month" class="birthday" onclick="monthfunc()" value="MM"><!---->
+      <input  maxlength="2" id="birthday_day" class="birthday" onclick="dayfunc()" value="DD"><!---->
+      <input type="number" maxlength="180" id="birthday_age" class="birthday"><!---->
       </div>
       <h1 id="birthday-error" class="error-message">Por favor, digite a data de nascimento</h1>
 
 
      <span id ="gendertitle"class="block">Sexo</span>
      <div id ="gendercheck" class="relative">
-       <label class="ECM_CheckboxInput" id="man-style">
-       <input id="man"class="ECM_CheckboxInput-Input" type="checkbox" >
+       <label class="ECM_CheckboxInput">
+       <input id="man"class="ECM_CheckboxInput-Input" type="checkbox">
        <span class="ECM_CheckboxInput-DummyInput"></span>
        <span id="gender-man" class="ECM_CheckboxInput-LabelText">Homem</span>
        </label>
@@ -113,45 +112,45 @@
        <option value="鹿児島県">Kagoshima</option>
        <option value="沖縄県">Okinawa</option>
    </select>
-   <input  id="adress-input" class="birthday">
+   <input  id="adress-input" class="birthday"><!---->
    </div>
     <h1 id="adress-error" class="error-message">Por favor, digite o seu endereço </h1>
 
    <span id ="phonenumber"class="block">Número de telefone</span>
    <div class="relative">
-     <input type="number" maxlength="4" id="phone1" class="phone" >
-     <span  class="phonebar">   -</span>
-     <input type="number" maxlength="4" id="phone2" class="phone" >
+     <input type="number" maxlength="4" id="phone1" class="phone" ><!---->
        <span  class="phonebar">   -</span>
-     <input type="number" maxlength="4" id="phone3" class="phone" >
+     <input type="number" maxlength="4" id="phone2" class="phone" ><!---->
+       <span  class="phonebar">   -</span>
+     <input type="number" maxlength="4" id="phone3" class="phone" ><!---->
    </div>
     <h1 id="phone-error" class="error-message">Por favor, digite o seu número de telefone </h1>
 
    <span id ="email"class="block">E-mail</span>
    <div class="relative">
-     <input  maxlength="180" id="email1" class="email" >
+     <input  maxlength="180" id="email1" class="email" ><!---->
        <span id="email3">@</span>
-     <input  maxlength="180" id="email2" class="email" >
+     <input  maxlength="180" id="email2" class="phone" ><!---->
    </div>
    <h1 id="email-error" class="error-message">Por favor, digite o seu email </h1>
 
    <span id ="language"class="block">Idioma</span>
    <div id = "languagediv" class="relative">
-     <input  type="button" maxlength="180" id="language1" class="phone" value="Português" >
-     <input  type="button" maxlength="180" id="language2" class="phone" value="日本語">
-     <input  type="button" maxlength="180" id="language3" class="phone" value="Inglês" >
+     <input  maxlength="180" id="language1" class="phone" value="Português"><!---->
+     <input  maxlength="180" id="language2" class="phone" value="日本語"><!---->
+     <input  maxlength="180" id="language3" class="phone" value="Inglês"><!---->
    </div>
    <h1 id="languagen-error" class="error-message">Por favor, selecione o idioma </h1>
 
  <hr class="underbar">
 
-<span id ="planselect" class="block">Escolha um plano</span>
+<span id ="planselect">Escolha um plano</span>
 <div id="planscontainer">
    <div class="container">
      <div class="contentes">
        <div id="plan-a" class="plan">Plano A</div>
        <div class="price">
-         <h2 id="plan-a-price" class="plan-valor">¥11,000</h2>
+         <h2 id="plan-a-price">¥11,000</h2>
        </div>
        <hr id="plan-under-bar" >
        <div class="detals">
@@ -161,7 +160,7 @@
          <h4 id="plan-a-detail4"></h4>
          <h4 id="plan-a-detail5"></h4>
        </div>
-       <input type="button" id="select-plan-a" class="select-plan" value="Escolher" />
+       <a id="select-plan-a" href="#">Escolher</a>
     </div>
   </div>
 
@@ -169,7 +168,7 @@
     <div class="contentes">
       <div id="plan-b" class="plan">Plano B</div>
       <div class="price">
-        <h2 id="plan-b-price" class="plan-valor">¥11,000</h2>
+        <h2 id="plan-b-price">¥11,000</h2>
       </div>
       <hr id="plan-under-bar" >
       <div class="detals">
@@ -179,7 +178,7 @@
         <h4 id="plan-b-detail4"></h4>
         <h4 id="plan-b-detail5"></h4>
       </div>
-      <input type="button" id="select-plan-b" class="select-plan" value="Escolher" />
+      <a id="select-plan-b" href="#">Escolher</a>
    </div>
  </div>
 
@@ -187,7 +186,7 @@
    <div class="contentes">
      <div id="plan-c" class="plan">Plano C</div>
      <div class="price">
-       <h2 id="plan-c-price" class="plan-valor">¥11,000</h2>
+       <h2 id="plan-c-price">¥11,000</h2>
      </div>
      <hr id="plan-under-bar" >
      <div class="detals">
@@ -197,7 +196,7 @@
        <h4 id="plan-c-detail4"></h4>
        <h4 id="plan-c-detail5"></h4>
      </div>
-     <input type="button" id="select-plan-c" class="select-plan" value="Escolher" />
+     <a id="select-plan-c" href="#">Escolher</a>
   </div>
 </div>
 
@@ -205,7 +204,7 @@
   <div class="contentes">
     <div id="plan-d" class="plan">Plano D</div>
     <div class="price">
-      <h2 id="plan-d-price" class="plan-valor">¥13,200</h2>
+      <h2 id="plan-d-price">¥13,200</h2>
     </div>
     <hr id="plan-under-bar" >
     <div class="detals">
@@ -215,7 +214,7 @@
       <h4 id="plan-d-detail4"></h4>
       <h4 id="plan-d-detail5"></h4>
     </div>
-    <input type="button" id="select-plan-d" class="select-plan" value="Escolher" />
+    <a id="select-plan-d" href="#">Escolher</a>
  </div>
 </div>
 
@@ -223,7 +222,7 @@
   <div class="contentes">
     <div id="plan-e" class="plan">Plano E</div>
     <div class="price">
-      <h2 id="plan-e-price" class="plan-valor">¥13,200</h2>
+      <h2 id="plan-e-price">¥13,200</h2>
     </div>
     <hr id="plan-under-bar" >
     <div class="detals">
@@ -233,7 +232,7 @@
       <h4 id="plan-e-detail4"></h4>
       <h4 id="plan-e-detail5"></h4>
     </div>
-    <input type="button" id="select-plan-e" class="select-plan" value="Escolher" />
+    <a id="select-plan-e" href="#">Escolher</a>
  </div>
 </div>
 
@@ -241,7 +240,7 @@
   <div class="contentes">
     <div id="plan-f" class="plan">Plano F</div>
     <div class="price">
-      <h2 id="plan-f-price" class="plan-valor">¥15,400</h2>
+      <h2 id="plan-f-price">¥15,400</h2>
     </div>
     <hr id="plan-under-bar" >
     <div class="detals">
@@ -251,7 +250,7 @@
       <h4 id="plan-f-detail4"></h4>
       <h4 id="plan-f-detail5"></h4>
     </div>
-    <input type="button" id="select-plan-f" class="select-plan" value="Escolher" />
+    <a id="select-plan-f" href="#">Escolher</a>
  </div>
 </div>
 
@@ -282,23 +281,12 @@
         </div>
       </div>
       <div id="confirm">
-        <input
-          id="cancel-button"
-          class="confirmbutton"
-          type="button"
-          value="Apagar"
-        />
-        <input
-          id="confirm-button"
-          class="confirmbutton"
-          type="button"
-          value="confirmar"
-        />
+        <input id="cancel-button" class="confirmbutton" type="button" value="Apagar" />
+        <input id="confirm-button" class="confirmbutton" type="button" value="confirmar" />
       </div>
     </main>
 
     <script src="./plugin/package/dist/signature_pad.umd.min.js"></script>
-    <script src="./plugin/html2pdf.bundle.min.js"></script>
 
     <script src="./script/index1.js"></script>
   </body>
