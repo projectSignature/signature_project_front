@@ -3,7 +3,7 @@
     padding: 0;
     font-family: sans-serif;
     color:	#333333;
-    
+
 }
 html{
 width: 100%;
@@ -16,20 +16,24 @@ select{
   border-radius: 10px;
 }
 input{
-  border-radius: 5px;
+  border-radius: 15px;
   font-size: 3vh;
+  height:50px;
 }
 #titlemain{
   display: flex;
+  font-size: 4vh;
+  margin-top: 30px;
+  margin-bottom: 15px;
 }
 header{
   margin-bottom: 10px;
 }
 #name-input{
-  width:95%;
+  width:92%;
 }
 body{
-  padding-left: 5px;
+  padding-left: 150px;
 }
 #gendercheck{
   display: flex;
@@ -103,10 +107,10 @@ body{
   color:gray;
 }
 #adress-input{
-  width: 70%;
+  width: 67%;
 }
 .phone{
-  width: 28%;
+  width: 29%;
 }
 #email2{
   width: 30%;
@@ -117,6 +121,7 @@ body{
 .birthday{
   width:24%;
   text-align: center;
+  color:gray;
 }
 #birthday_age{
  width:18%;
@@ -167,6 +172,128 @@ body{
     font-weight: bold;
   }
 
+  #selectlanguage{
+    margin-top: 10px;
+    height:50px;
+    margin-left: 60% !important;
+    width: 15%;
+    font-size: 2vw;
+    text-align: center;
+  }
+  #image{
+     margin-left: 5px !important;
+     height: 10vh;
+     width:10%;
+     margin-right: 15px !important;
+  }
+
+  .error-message{
+    color:#EE0000;
+    margin-left: 10px;
+    font-size: 2vh;
+    display: none;
+  }
+  .div-kirikae{
+    margin-top: 20px;
+    margin-bottom: 50px;
+  }
+
+.underbar{
+  margin-top: 50px;
+  width: 95%;
+}
+
+  .kubun-tilte{
+    font-size: 5vh !important;
+    color:#666666;
+  }
+  #kenselect{
+    height: 50px;
+    font-size: 4vh;
+    color:gray;
+  }
+  .container{
+    height:350px;
+    width: 14%;
+    margin-right: 5px;
+  background-color: #AAAAAA;
+  border: 2px solid #333333;
+  border-radius: 1px;
+  }
+  .plan{
+    font-size: 4vh;
+    text-align: center;
+  }
+  .plan-valor{
+    margin-top: 15px;
+    font-size: 5vh;
+    overflow-x: hidden;
+    text-align: center;
+  }
+  .detals{
+    font-size: 3vh;
+    height:150px;
+  }
+
+  .contentes a, .select-plan {
+    text-decoration: none;
+    border-radius: 5px;
+    border: 1px solid white;
+    color: white;
+    display: inline-block;
+    text-transform: uppercase;
+    font-weight: bold;
+    background-color: #00bfff;
+    cursor: pointer;
+    width:95%;
+    margin-left: 2px;
+    height:50px;
+    font-size: 4vh;
+    cursor: pointer;
+  }
+  .contentes a, .select-plan:hover{
+    text-decoration: none;
+    border: 2px solid gray;
+    background-color: #5507FF;
+    color:white;
+    display: inline-block;
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+
+  #btn-clear {
+      height: 19px;
+      width: 50px;
+  }
+
+  .signature {
+      display: block;
+      margin-top: 0px;;
+  }
+
+  canvas {
+      height: 150px;
+      width: 95%;
+      background-color: white;
+      border: 1px solid gray;
+  }
+  #confirm{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    align-items: center;
+    display: flex;
+    justify-content: flex-end;
+    width: 95%;
+    background-color: #555555;
+  }
+  .confirmbutton{
+    margin-right: 30px !important;
+    margin-left: 10px !important;
+    width: 15%;
+
+  }
+
+
 @media screen and (max-width: 500px) {
 
 
@@ -174,12 +301,13 @@ body{
   width: 100%;
   background-color: #EEEEEE;
   overflow-x: hidden;
+    padding-left: 5px;
 }
+
 
   #selectlanguage{
     margin-top: 10px;
     height:50px;
-    margin-left: 60% !important;
     width: 30%;
     font-size: 4vw;
     text-align: center;
@@ -187,23 +315,22 @@ body{
   #image{
      margin-left: 5px !important;
      height: 7vh;
-     width:15%;
      margin-right: 15px !important;
+  }
+  #titlemain{
+    margin-top: 0;
   }
 .kubun-tilte{
   font-size: 3vh !important;
   color:#666666;
 }
-#titlemain{
-  margin-bottom: 15px;
-}
-
 input{
-  height: 50px;
-
+  border-radius: 5px;
 }
+
 #kenselect{
   height: 50px;
+    font-size: 2vh;
 }
 .container{
   height:200px;
@@ -216,29 +343,25 @@ border-radius: 1px;
 .plan-valor{
   margin-top: 15px;
   font-size: 15px;
-  overflow-x: hidden;
 }
 .detals{
   font-size: 1.4vh;
   height:90px;
 }
+#adress-input{
+  width: 70%;
+}
 .contentes a, .select-plan {
-  text-decoration: none;
-  border-radius: 5px;
-  border: 1px solid white;
-  color: white;
-  display: inline-block;
-  text-transform: uppercase;
-  font-weight: bold;
-  background-color: #00bfff;
-  cursor: pointer;
-  width:95%;
-  margin-left: 2px;
   height:30px;
   font-size: 1.1vh;
-
 }
 
+#name-input{
+  width:95%;
+}
+.phone{
+  width: 28%;
+}
 .contentes a:hover{
   text-decoration: none;
   border-radius: 5px;
@@ -261,7 +384,6 @@ border-radius: 1px;
 
 canvas {
     height: 150px;
-    width: 100%;
     background-color: white;
     border: 1px solid gray;
 }
@@ -279,15 +401,7 @@ canvas {
 
 }
 
-.error-message{
-  color:#EE0000;
-  margin-left: 10px;
-  font-size: 2vh;
-  display: none;
-}
-.div-kirikae{
-  margin-top: 50px;
-}
+
 .price{
   padding: 0;
 }
@@ -295,5 +409,4 @@ canvas {
   font-size: 2vh;
 }
 }
-
 
