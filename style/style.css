@@ -319,6 +319,7 @@ body{
   }
   #titlemain{
     margin-top: 0;
+    font-size: 3vh;
   }
 .kubun-tilte{
   font-size: 3vh !important;
@@ -398,7 +399,7 @@ canvas {
 #confirm-button{
   margin-right: 30px !important;
   margin-left: 10px !important;
-
+   width: 25%;
 }
 
 
