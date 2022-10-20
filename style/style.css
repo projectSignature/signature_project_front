@@ -16,8 +16,8 @@ select{
   border-radius: 10px;
 }
 input{
-
   border-radius: 5px;
+  font-size: 3vh;
 }
 #titlemain{
   display: flex;
@@ -141,9 +141,11 @@ body{
   border: 3px solid gray;
   border-radius: 10px;
   cursor: pointer;
+  font-size: 2vh;
 }
 .language-input-select{
   width: 25%;
+  font-size: 2vh;
 }
 .language-input-select:hover{
   text-decoration: none;
@@ -201,7 +203,7 @@ body{
 
 input{
   height: 50px;
-  margin-bottom: 50px;
+
 }
 #kenselect{
   height: 50px;
@@ -217,6 +219,7 @@ border-radius: 1px;
 .plan-valor{
   margin-top: 15px;
   font-size: 15px;
+  overflow-x: hidden;
 }
 .detals{
   font-size: 1.4vh;
@@ -285,7 +288,9 @@ canvas {
   font-size: 2vh;
   display: none;
 }
-
+.div-kirikae{
+  margin-top: 50px;
 }
 
+}
 
