@@ -312,10 +312,11 @@ body{
     font-size: 4vw;
     text-align: center;
   }
-  #image{
+#image{
      margin-left: 5px !important;
-     height: 7vh;
+     height: 6.2vh;
      margin-right: 15px !important;
+     width: 60px;
   }
   #titlemain{
     margin-top: 0;
@@ -396,7 +397,7 @@ canvas {
   justify-content: flex-end;
   background-color: #555555;
 }
-#confirm-button{
+.confirmbutton{
   margin-right: 30px !important;
   margin-left: 10px !important;
    width: 25%;
