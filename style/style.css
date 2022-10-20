@@ -216,7 +216,10 @@ background-color: #AAAAAA;
 border: 2px solid #333333;
 border-radius: 1px;
 }
-
+.plan-valor{
+  margin-top: 15px;
+  font-size: 15px;
+}
 .detals{
   font-size: 1.4vh;
   height:90px;
@@ -287,11 +290,9 @@ canvas {
 .div-kirikae{
   margin-top: 50px;
 }
-.plan-valor{
-  margin-top: 15px;
-  font-size: 15px;
+.price{
+  background-color: pink;
+}
+}
 
-}
-    
-}
 
