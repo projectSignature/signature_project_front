@@ -162,10 +162,11 @@ function confirm_check(){
 }else if(email1=="" || email2==""){
   email_error.style.display ="block";
   location.href = "#email";
-}
+}else{
 
 saveData();
 //generatePDF();
+}
 }
 
 function yearfunc(){
