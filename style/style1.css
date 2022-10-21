@@ -103,3 +103,14 @@ after { clear: both; }
 #login form input[type="submit"]:hover {
   background: #16aa56;
 }
+
+@media screen and (max-width: 500px) {
+#login{
+  margin-left:70px;
+  margin-top:20px;
+}
+#sotowaku{
+margin-top:200px !important;
+}
+
+}
