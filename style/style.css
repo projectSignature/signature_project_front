@@ -223,6 +223,8 @@ body{
   .plan{
     font-size: 4vh;
     text-align: center;
+    color: #0000ff;
+    font-weight: bold;
   }
   .plan-valor{
     margin-top: 15px;
@@ -411,4 +413,3 @@ canvas {
   font-size: 2vh;
 }
 }
-
