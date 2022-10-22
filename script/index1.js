@@ -1,41 +1,183 @@
 const inputs = document.querySelectorAll('input');
+var errormessage = ""
+var errormessage1 = ""
+var errormessage2 = ""
+var errormessage3 = ""
+var errormessage4 = ""
+var errormessage5 = ""
+var errormessage6 = ""
+var errormessage7 = ""
+var errormessage8 = ""
+var errormessage9 = ""
+error_massege_portugues()
+
+
+//var myage = new ageRestriction(18, 65, 'year', 'month', 'day');
 
 //tratamento da seleção de idioma
 var idioma = '';
   inputs[13].addEventListener('click', () => {
     idioma = "Portugues";
+  document.getElementById("language1").style.backgroundColor = '#5507FF';
+  document.getElementById("language1").style.color = 'white';
+  document.getElementById("language1").style.fontWeight = "bold";
+  document.getElementById("language2").style.backgroundColor = '#d3d3d3';
+  document.getElementById("language3").style.backgroundColor = '#d3d3d3';
   });
   inputs[14].addEventListener('click', () => {
     idioma = "日本語";
+    document.getElementById("language2").style.backgroundColor = '#5507FF';
+    document.getElementById("language2").style.color = 'white';
+    document.getElementById("language2").style.fontWeight = "bold";
+    document.getElementById("language1").style.backgroundColor = '#d3d3d3';
+    document.getElementById("language3").style.backgroundColor = '#d3d3d3';
   });
   inputs[15].addEventListener('click', () => {
     idioma = "Inglês";
+    document.getElementById("language3").style.backgroundColor = '#5507FF';
+    document.getElementById("language3").style.color = 'white';
+    document.getElementById("language3").style.fontWeight = "bold";
+    document.getElementById("language1").style.backgroundColor = '#d3d3d3';
+    document.getElementById("language2").style.backgroundColor = '#d3d3d3';
   });
+
+
+function error_massege_portugues(){
+   errormessage1 = "Verifique o campo do mês"
+   errormessage2 = "Verifique o campo do dia"
+   errormessage3 = "Selecione o idioma"
+   errormessage4 = "Selecione um plano"
+   errormessage5 = "Selecione o sexo"
+   errormessage6 = "Verifique a políticas da academia"
+   errormessage7 = "O ano da data de nascimento deve ser 4 dígitos"
+   errormessage8 = "O mês da data de nascimento deve deve ser 2 dígitos"
+   errormessage9 = "O dia deve ser 2 dígitos"
+   errormessage10 = "Assine por favor"
+}
+
+function error_massege_ingles(){
+   errormessage1 = "Check your birth month"
+   errormessage2 = "Check your birth day"
+   errormessage3 = "Please select a language"
+   errormessage4 = "Select plan"
+   errormessage5 = "Selct gender"
+   errormessage6 = "Check academy policies"
+   errormessage7 = "Please enter your date(year) of birth in 4 digits"
+   errormessage8 = "Please enter your date(month) of birth in 2 digits"
+   errormessage9 = "Please enter your date(day) of birth in 2 digits"
+   errormessage10 = "Please sign"
+}
+
+function error_massege_japanese(){
+   errormessage1 = "年月日の月を選択してください"
+   errormessage2 = "生年月日の非を選択してください"
+   errormessage3 = "言語を選択してください"
+   errormessage4 = "プランを選択してください"
+   errormessage5 = "性別を選択してください"
+   errormessage6 = "利用規約に同意する必要があります"
+   errormessage7 = "生年月日の年は４桁で入力してください"
+   errormessage8 = "生年月日の月は2桁で入力してください"
+   errormessage9 = "生年月日の日は2桁で入力してください"
+   errormessage10 = "署名をしてください"
+}
+
 
   //tratamento da seleção de planos e preços
   var plan = '';
   inputs[16].addEventListener('click', (e) => {
     plan = "Plan A"
+    document.getElementById("select-a").style.borderColor = '#5507FF';
+    document.getElementById("select-a").style.borderWidth = 'thick';
+    document.getElementById("select-b").style.borderColor = '#333333';
+    document.getElementById("select-b").style.borderWidth = 'thin';
+    document.getElementById("select-c").style.borderColor = '#333333';
+    document.getElementById("select-c").style.borderWidth = 'thin';
+    document.getElementById("select-d").style.borderColor = '#333333';
+    document.getElementById("select-d").style.borderWidth = 'thin';
+    document.getElementById("select-e").style.borderColor = '#333333';
+    document.getElementById("select-e").style.borderWidth = 'thin';
+    document.getElementById("select-f").style.borderColor = '#333333';
+    document.getElementById("select-f").style.borderWidth = 'thin';
   });
   var plan = '';
   inputs[17].addEventListener('click', (e) => {
     plan = "Plan B"
+    document.getElementById("select-b").style.borderColor = '#5507FF';
+    document.getElementById("select-b").style.borderWidth = 'thick';
+    document.getElementById("select-a").style.borderColor = '#333333';
+    document.getElementById("select-a").style.borderWidth = 'thin';
+    document.getElementById("select-c").style.borderColor = '#333333';
+    document.getElementById("select-c").style.borderWidth = 'thin';
+    document.getElementById("select-d").style.borderColor = '#333333';
+    document.getElementById("select-d").style.borderWidth = 'thin';
+    document.getElementById("select-e").style.borderColor = '#333333';
+    document.getElementById("select-e").style.borderWidth = 'thin';
+    document.getElementById("select-f").style.borderColor = '#333333';
+    document.getElementById("select-f").style.borderWidth = 'thin';
   });
   var plan = '';
   inputs[18].addEventListener('click', (e) => {
     plan = "Plan C"
+    document.getElementById("select-c").style.borderColor = '#5507FF';
+    document.getElementById("select-c").style.borderWidth = 'thick';
+    document.getElementById("select-b").style.borderColor = '#333333';
+    document.getElementById("select-b").style.borderWidth = 'thin';
+    document.getElementById("select-a").style.borderColor = '#333333';
+    document.getElementById("select-a").style.borderWidth = 'thin';
+    document.getElementById("select-d").style.borderColor = '#333333';
+    document.getElementById("select-d").style.borderWidth = 'thin';
+    document.getElementById("select-e").style.borderColor = '#333333';
+    document.getElementById("select-e").style.borderWidth = 'thin';
+    document.getElementById("select-f").style.borderColor = '#333333';
+    document.getElementById("select-f").style.borderWidth = 'thin';
   });
   var plan = '';
   inputs[19].addEventListener('click', (e) => {
     plan = "Plan D"
+    document.getElementById("select-d").style.borderColor = '#5507FF';
+    document.getElementById("select-d").style.borderWidth = 'thick';
+    document.getElementById("select-b").style.borderColor = '#333333';
+    document.getElementById("select-b").style.borderWidth = 'thin';
+    document.getElementById("select-c").style.borderColor = '#333333';
+    document.getElementById("select-c").style.borderWidth = 'thin';
+    document.getElementById("select-a").style.borderColor = '#333333';
+    document.getElementById("select-a").style.borderWidth = 'thin';
+    document.getElementById("select-e").style.borderColor = '#333333';
+    document.getElementById("select-e").style.borderWidth = 'thin';
+    document.getElementById("select-f").style.borderColor = '#333333';
+    document.getElementById("select-f").style.borderWidth = 'thin';
   });
   var plan = '';
   inputs[20].addEventListener('click', (e) => {
     plan = "Plan E"
+    document.getElementById("select-e").style.borderColor = '#5507FF';
+    document.getElementById("select-e").style.borderWidth = 'thick';
+    document.getElementById("select-b").style.borderColor = '#333333';
+    document.getElementById("select-b").style.borderWidth = 'thin';
+    document.getElementById("select-c").style.borderColor = '#333333';
+    document.getElementById("select-c").style.borderWidth = 'thin';
+    document.getElementById("select-d").style.borderColor = '#333333';
+    document.getElementById("select-d").style.borderWidth = 'thin';
+    document.getElementById("select-a").style.borderColor = '#333333';
+    document.getElementById("select-a").style.borderWidth = 'thin';
+    document.getElementById("select-f").style.borderColor = '#333333';
+    document.getElementById("select-f").style.borderWidth = 'thin';
   });
   var plan = '';
   inputs[21].addEventListener('click', (e) => {
     plan = "Plan F"
+    document.getElementById("select-f").style.borderColor = '#5507FF';
+    document.getElementById("select-f").style.borderWidth = 'thick';
+    document.getElementById("select-b").style.borderColor = '#333333';
+    document.getElementById("select-b").style.borderWidth = 'thin';
+    document.getElementById("select-c").style.borderColor = '#333333';
+    document.getElementById("select-c").style.borderWidth = 'thin';
+    document.getElementById("select-d").style.borderColor = '#333333';
+    document.getElementById("select-d").style.borderWidth = 'thin';
+    document.getElementById("select-e").style.borderColor = '#333333';
+    document.getElementById("select-e").style.borderWidth = 'thin';
+    document.getElementById("select-a").style.borderColor = '#333333';
+    document.getElementById("select-a").style.borderWidth = 'thin';
   });
 
 function saveData() {
@@ -45,7 +187,7 @@ function saveData() {
     }
     else if(inputs[6].checked) {
       return 'women'
-    } 
+    }
   }
 
   var obj =
@@ -99,7 +241,7 @@ function generatePDF() {
     htmlcanvas: { scale: 2 },
     jsPDF: { orientation: 'portrait' }
   };
-  
+
   html2pdf().from(element).set(opt).save(); */
 }
 
@@ -128,6 +270,7 @@ btnClear.addEventListener('click', function (event) {
   signaturePad.clear();
 });
 
+
 document.getElementById("confirm-button").addEventListener("click", confirm_check)
 function confirm_check(){
   let name_error = document.getElementById("nameerror");
@@ -145,29 +288,160 @@ function confirm_check(){
   let phone3 = document.getElementById("phone3").value;
   let email1 = document.getElementById("email1").value;
   let email2 = document.getElementById("email2").value;
+  let kubun_check = 0;
 
   if(name_input==""){
     console.log(name_input);
     name_error.style.display ="block";
     location.href = "#fullnametitle";
-  }else if(birthday_year=="" || birthday_month=="" || birthday_day==""){
+    kubun_check = 1
+  }else{
+    name_error.style.display ="none";
+    kubun_check = 0
+  }
+   if(birthday_year=="" || birthday_month=="" || birthday_day==""){
     birthday_year_error.style.display ="block";
     location.href = "#birthdaytitle";
-}else if(adress_input==""){
+    kubun_check = 1
+  }else{
+      birthday_year_error.style.display ="none";
+      kubun_check = 0
+  }
+  if(birthday_year=="YYYY" || birthday_month=="MM" || birthday_day=="DD"){
+    birthday_year_error.style.display ="block";
+    location.href = "#birthdaytitle";
+    kubun_check = 1
+  }else{
+    birthday_year_error.style.display ="none";
+    kubun_check = 0
+  }
+if(adress_input==""){
   adress_error.style.display ="block";
-  location.href = "#adress";;
-}else if(phone1=="" || phone2=="" || phone3==""){
+  location.href = "#adress";
+  kubun_check = 1
+}else{
+    adress_error.style.display ="none";
+    kubun_check = 0
+}
+if(phone1=="" || phone2=="" || phone3==""){
   phone_error.style.display ="block";
   location.href = "#phonenumber";
-}else if(email1=="" || email2==""){
+  kubun_check = 1
+}else{
+    phone_error.style.display ="none";
+    kubun_check = 0
+}
+if(idioma==""){
+  errormessage = errormessage3
+  swallerror(errormessage)
+}
+if(plan==""){
+  errormessage = errormessage4
+  swallerror(errormessage)
+}
+if(inputs[5].checked) {
+}
+else if(inputs[6].checked) {
+}else{
+  errormessage = errormessage5
+  swallerror(errormessage)
+  kubun_check = 1
+}
+if(inputs[22].checked) {
+}else{
+  errormessage = errormessage6
+  swallerror(errormessage)
+  kubun_check = 1
+}
+if(signaturePad==""){
+  errormessage = errormessage10
+  swallerror(errormessage)
+  kubun_check = 1
+}
+ if(email1=="" || email2==""){
   email_error.style.display ="block";
   location.href = "#email";
-}else{
+  kubun_check = 1
+  }else{
+  email_error.style.display ="none";
+  kubun_check = 0
 
-saveData();
+if(kubun_check==0){
+  saveData();
+}
+
 //generatePDF();
 }
 }
+
+document.getElementById("birthday_year").addEventListener("change", birthday_date_get)
+document.getElementById("birthday_month").addEventListener("change", birthday_date_get)
+document.getElementById("birthday_day").addEventListener("change", birthday_date_get)
+
+
+function birthday_date_get(){
+  let birthday_year = document.getElementById("birthday_year").value;
+  let birthday_month = document.getElementById("birthday_month").value;
+  let birthday_day = document.getElementById("birthday_day").value;
+if(birthday_month>13){
+  errormessage = errormessage1
+  swallerror(errormessage)
+}else if(birthday_day>31){
+  errormessage = errormessage2
+  swallerror(errormessage)
+}
+  if(birthday_year != "YYYY" && birthday_month != "MM" && birthday_day != "DD"){
+    if(birthday_year.length!=4){
+   document.getElementById("birthday_age").value = ""
+       errormessage =  errormessage7
+       swallerror(errormessage)
+   }else if(birthday_month.length!=2){
+      document.getElementById("birthday_age").value = ""
+      errormessage = errormessage8
+      swallerror(errormessage)
+   }else if(birthday_day.length!=2){
+      console.log('2桁じゃない')
+      document.getElementById("birthday_age").value = ""
+      errormessage = "O dia deve ser 2 dígitos"
+      swallerror(errormessage)
+    }else{
+      const birthday = {
+    year: birthday_year,
+    month: birthday_month,
+    date: birthday_day
+  };
+     var strDate = birthday_year + "/" + birthday_month + "/" + birthday_day
+
+     if(!strDate.match(/^\d{4}\/\d{2}\/\d{2}$/)){
+         }
+         var y = strDate.split("/")[0];
+         var m = strDate.split("/")[1] - 1;
+         var d = strDate.split("/")[2];
+         var date = new Date(y,m,d);
+         if(date.getFullYear() != y || date.getMonth() != m || date.getDate() != d){
+           errormessage = "A data insirida é invalida"
+             document.getElementById("birthday_age").value = ""
+           swallerror(errormessage)
+         }
+          getAge(birthday)
+     }
+}else{
+  console.log('ng')
+}
+}
+function getAge(birthday){
+    var today = new Date();  //今日
+    var thisYearsBirthday = new Date(today.getFullYear(), birthday.month-1, birthday.date);//今年の誕生
+    var age = today.getFullYear() - birthday.year;  //年齢
+   if(today < thisYearsBirthday){        //今年まだ誕生日が来ていない
+      age--;
+    }
+    document.getElementById("birthday_age").value = age
+    return age;
+}
+
+
+
 
 function yearfunc(){
   document.getElementById("birthday_year").value=""
@@ -284,10 +558,13 @@ function language_change(){
   console.log(selectlanguage)
 if (selectlanguage=="Português"){
    portugues()
+   error_massege_portugues()
 } else if(selectlanguage=="Inglês"){
  ingles()
+ error_massege_ingles()
 }else{
 japones()
+error_massege_japanese()
 }
 
 function portugues() {
@@ -384,6 +661,21 @@ function ingles() {
     document.getElementById("confirm-button").value=past.en.Text.Text24;
 }
 }
+
+function swallerror(errormessage){
+  Swal.fire({
+  title: 'エラー',
+  icon: 'warning',
+  showCancelButton: false,
+  showConfirmButton: true,
+  ConfirmButtonText: '戻る',
+  width: 300,
+  html:`<span>${errormessage}</span>`,
+  customClass: "sweet-alert",
+  })
+}
+
+
 /* // Returns signature image as data URL (see https://mdn.io/todataurl for the list of possible parameters)
 signaturePad.toDataURL(); // save image as PNG
 signaturePad.toDataURL("image/jpeg"); // save image as JPEG
