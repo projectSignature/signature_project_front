@@ -68,6 +68,7 @@ padding-top: 30px;
   margin-top: 20px;
  cursor: pointer;
  font-size: 3vh;
+ width: 100%;
 }
 #add_member_div{
 margin-left: 13px;
@@ -104,11 +105,115 @@ margin-left: 13px;
 }
 .boarde{
   margin-left: 15px;
-margin-top: 20px;
+  margin-top: 20px;
   height:37%;
   width:98%;
   align-items: center;
   background-color: white;
 border-radius: 5px;
 border: 1px solid lightgray;
+}
+
+.confirmbutton:hover{
+    text-decoration: none;
+    border: 2px solid gray;
+    background-color: #5507FF;
+    color:white;
+    display: inline-block;
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+  .menu-div:hover{
+      text-decoration: none;
+      border: 2px solid gray;
+      background-color: #5507FF;
+      color:white;
+      display: inline-block;
+      font-weight: bold;
+    }
+    .right-first-div:hover{
+      text-decoration: none;
+      border: 10px solid #5507FF;
+    }
+    .result-right{
+      display:flex;
+    }
+
+@media screen and (max-width: 500px) {
+  #maindiv{
+    display:block;
+  }
+  #menubar{
+    width:100%;
+    height:50px;
+    display: block;
+    flex-wrap: nowrap;
+      padding-top: 0px;
+  }
+
+  #menubar-title{
+    padding-top: 0;
+    font-size: 2vh;
+    margin-bottom: 0;
+    display:none;
+    height:0;
+  }
+  .title-bottons{
+    display:none;
+  }
+  .menu-div{
+    margin-right: 7%;
+    margin-left: 0px;
+    margin-top: 0px;
+  }
+
+  #menuber-bottons-title{
+    display: flex;
+    margin-top: 0px;
+  }
+  #right-board{
+    display: block;
+    width: 100%;
+  }
+  #right-first{
+    height:200px;
+    width:100%;
+    display: block;
+    align-items: center;
+  }
+
+  .result-input{
+    font-size: 5vh;
+    margin-left: 10px;
+    margin-top: 0px;
+    width:70px;
+  }
+  .result-right{
+    display: flex;
+  }
+  .atention-discrtion{
+    padding-top: 0px;
+      font-size: 2vh;
+  }
+  .right-first-div{
+    width: 90%;
+    height:50px;
+    margin-top: 10px;
+    padding-bottom: 3px;
+    margin-left: 30px;
+  }
+  .master-image-menu{
+    width: 70px;
+  }
+  .boarde{
+    margin-left: 10px;
+    margin-top: 3px;
+    height:200px;
+    width:95%;
+    align-items: center;
+    background-color: white;
+  border-radius: 5px;
+  border: 1px solid lightgray;
+  }
+
 }
