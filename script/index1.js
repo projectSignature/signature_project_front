@@ -1,3 +1,4 @@
+
 const inputs = document.querySelectorAll('input');
 var errormessage = ""
 var errormessage1 = ""
@@ -9,7 +10,18 @@ var errormessage6 = ""
 var errormessage7 = ""
 var errormessage8 = ""
 var errormessage9 = ""
+var gymname = "kussano"
+
+window.onload = function open_page() {
 error_massege_portugues()
+estado_select_en()
+image_get(gymname)
+}
+
+function image_get(){
+  document.getElementById("image").src =  `./image/${gymname}_add.png`
+
+}
 
 
 //var myage = new ageRestriction(18, 65, 'year', 'month', 'day');
@@ -290,6 +302,17 @@ function confirm_check(){
   let email2 = document.getElementById("email2").value;
   let kubun_check = 0;
 
+  if(inputs[22].checked) {
+  }else{
+    errormessage = errormessage6
+    swallerror(errormessage)
+    kubun_check = 1
+  }
+  if(signaturePad==""){
+    errormessage = errormessage10
+    swallerror(errormessage)
+    kubun_check = 1
+  }
   if(name_input==""){
     console.log(name_input);
     name_error.style.display ="block";
@@ -331,14 +354,7 @@ if(phone1=="" || phone2=="" || phone3==""){
     phone_error.style.display ="none";
     kubun_check = 0
 }
-if(idioma==""){
-  errormessage = errormessage3
-  swallerror(errormessage)
-}
-if(plan==""){
-  errormessage = errormessage4
-  swallerror(errormessage)
-}
+
 if(inputs[5].checked) {
 }
 else if(inputs[6].checked) {
@@ -347,17 +363,7 @@ else if(inputs[6].checked) {
   swallerror(errormessage)
   kubun_check = 1
 }
-if(inputs[22].checked) {
-}else{
-  errormessage = errormessage6
-  swallerror(errormessage)
-  kubun_check = 1
-}
-if(signaturePad==""){
-  errormessage = errormessage10
-  swallerror(errormessage)
-  kubun_check = 1
-}
+
  if(email1=="" || email2==""){
   email_error.style.display ="block";
   location.href = "#email";
@@ -559,12 +565,15 @@ function language_change(){
 if (selectlanguage=="Português"){
    portugues()
    error_massege_portugues()
+   estado_select_en()
 } else if(selectlanguage=="Inglês"){
  ingles()
  error_massege_ingles()
+ estado_select_en()
 }else{
 japones()
 error_massege_japanese()
+estado_select_jp()
 }
 
 function portugues() {
@@ -661,6 +670,129 @@ function ingles() {
     document.getElementById("confirm-button").value=past.en.Text.Text24;
 }
 }
+function ken_select_remove(){
+  sl = document.getElementById('kenselect');
+	while(sl.lastChild)
+	{
+		sl.removeChild(sl.lastChild);
+	}
+}
+function ken_select_option_add(arr){
+  for(var i=0;i<arr.length;i++){
+     let op = document.createElement("option");
+     op.value = arr[i].val;  //value値
+     op.text = arr[i].txt;   //テキスト値
+     document.getElementById("kenselect").appendChild(op);
+   }
+}
+
+function estado_select_jp(){
+  ken_select_remove()
+  var arr = [
+  {val:"愛知県",  txt:"愛知県"},
+  {val:"岐阜県",  txt:"岐阜県"},
+  {val:"静岡県",  txt:"静岡県"},
+  {val:"三重県",  txt:"三重県"},
+  {val:"北海道",  txt:"北海道"},
+  {val:"青森県",  txt:"青森県"},
+  {val:"岩手県",  txt:"岩手県"},
+  {val:"宮城県",  txt:"宮城県"},
+  {val:"秋田県",  txt:"秋田県"},
+  {val:"山形県",  txt:"山形県"},
+  {val:"福島県",  txt:"福島県"},
+  {val:"茨城県",  txt:"茨城県"},
+  {val:"栃木県",  txt:"栃木県"},
+  {val:"群馬県",  txt:"群馬県"},
+  {val:"埼玉県",  txt:"埼玉県"},
+  {val:"千葉県",  txt:"千葉県"},
+  {val:"東京都",  txt:"東京都"},
+  {val:"神奈川県",  txt:"神奈川県"},
+  {val:"新潟県",  txt:"新潟県"},
+  {val:"富山県",  txt:"富山県"},
+  {val:"石川県",  txt:"石川県"},
+  {val:"福井県",  txt:"福井県"},
+  {val:"山梨県",  txt:"山梨県"},
+  {val:"長野県",  txt:"長野県"},
+  {val:"滋賀県",  txt:"滋賀県"},
+  {val:"京都府",  txt:"京都府"},
+  {val:"大阪府",  txt:"大阪府"},
+  {val:"兵庫県",  txt:"兵庫県"},
+  {val:"奈良県",  txt:"奈良県"},
+  {val:"和歌山県",  txt:"和歌山県"},
+  {val:"鳥取県",  txt:"鳥取県"},
+  {val:"島根県",  txt:"島根県"},
+  {val:"岡山県",  txt:"岡山県"},
+  {val:"広島県",  txt:"広島県"},
+  {val:"山口県",  txt:"山口県"},
+  {val:"徳島県",  txt:"徳島県"},
+  {val:"香川県",  txt:"香川県"},
+  {val:"愛媛県",  txt:"愛媛県"},
+  {val:"高知県",  txt:"高知県"},
+  {val:"福岡県",  txt:"福岡県"},
+  {val:"佐賀県",  txt:"佐賀県"},
+  {val:"長崎県",  txt:"長崎県"},
+  {val:"熊本県",  txt:"熊本県"},
+  {val:"大分県",  txt:"大分県"},
+  {val:"宮崎県",  txt:"宮崎県"},
+  {val:"鹿児島県",  txt:"鹿児島県"},
+  {val:"沖縄県",  txt:"沖縄県"},
+];
+ken_select_option_add(arr)
+}
+
+function estado_select_en(){
+  ken_select_remove()
+  var arr = [
+  {val:"Aichi",  txt:"Aichi ken"},
+ {val:"Gifu",  txt:"GIfu ken"},
+ {val:"Shizuoka",  txt:"Shizuoka ken"},
+ {val:"Mie",  txt:"Mie ken"},
+ {val:"Hokaido",  txt:"Hokaido ken"},
+ {val:"Aomori",  txt:"Aomori ken"},
+ {val:"Iwate",  txt:"Iwate ken"},
+ {val:"Miyagi",  txt:"Miyagi ken"},
+ {val:"Akita",  txt:"Akita ken"},
+ {val:"Yamagata",  txt:"Yamagata ken"},
+ {val:"Fukushima",  txt:"Fukushima ken"},
+ {val:"Ibaraki",  txt:"Ibaraki ken"},
+ {val:"Tojigi",  txt:"Tojigi ken"},
+ {val:"Gunma",  txt:"Gunma ken"},
+ {val:"Saitama",  txt:"Saitama ken"},
+ {val:"Chiba",  txt:"Chiba ken"},
+ {val:"Toukyo",  txt:"Toukyo to"},
+ {val:"Kanagawa",  txt:"Kanagawa ken"},
+ {val:"Niigata",  txt:"Niigata ken"},
+ {val:"Toyama",  txt:"Toyama ken"},
+ {val:"Ishikawa",  txt:"Ishikawa ken"},
+ {val:"Fukui",  txt:"Fukui ken"},
+ {val:"Yamanashi",  txt:"Yamanashi ken"},
+ {val:"Nagano",  txt:"Nagano ken"},
+ {val:"Shiga",  txt:"Shiga ken"},
+ {val:"Kyouto",  txt:"Kyouto fu"},
+ {val:"Osaka",  txt:"Osaka fu"},
+ {val:"Hyougo",  txt:"Hyougo ken"},
+ {val:"Nara",  txt:"Nara ken"},
+ {val:"Wakayama",  txt:"Wakayama ken"},
+ {val:"Totori",  txt:"Totori ken"},
+ {val:"Shimane",  txt:"Shimane ken"},
+ {val:"Okayama",  txt:"Okayama ken"},
+ {val:"Hiroshima",  txt:"Hiroshima ken"},
+ {val:"Yamaguchi",  txt:"Yamaguchi ken"},
+ {val:"Tokushima",  txt:"Tokushima ken"},
+ {val:"Kagawa",  txt:"Kagawa ken"},
+ {val:"Ehime",  txt:"Ehime ken"},
+ {val:"Kouchi",  txt:"Kouchi ken"},
+ {val:"Fukuoka",  txt:"Fukuoka ken"},
+ {val:"Saga",  txt:"Saga ken"},
+ {val:"Nagasaki",  txt:"Nagasaki ken"},
+ {val:"Kumamoto",  txt:"Kumamoto ken"},
+ {val:"Oita",  txt:"Oita ken"},
+ {val:"Miyazaki",  txt:"Miyazaki ken"},
+ {val:"Kagoshima",  txt:"Kagoshima ken"},
+ {val:"Okinawa",  txt:"Okinawa ken"}
+];
+ken_select_option_add(arr)
+}
 
 function swallerror(errormessage){
   Swal.fire({
@@ -673,6 +805,28 @@ function swallerror(errormessage){
   html:`<span>${errormessage}</span>`,
   customClass: "sweet-alert",
   })
+}
+
+document.getElementById("politiclink").addEventListener("click", swallpolitic)
+function swallpolitic(){
+  Swal.fire({
+  title: 'Póliticas da academia',
+  icon: 'warning',
+  showCancelButton: false,
+  showConfirmButton: true,
+  ConfirmButtonText: '戻る',
+  width: 710,
+  html:`<span>Colocar aos termos aqui</span>`,
+  customClass: "sweet-alert",
+  })
+}
+
+function swall_success(){
+  Swal.fire({
+      icon: "success",
+   title: '完了',
+    }
+   )
 }
 
 
