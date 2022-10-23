@@ -43,7 +43,8 @@ async function login_request(user,password){
     } else if(response.data.message) {
       errormessage="氏名コードまたはパスワード<br>の確認をしてください。";
       document.getElementById("pass").value = "";
-    swallopen(errormessage);
+      sessionStorage.clear();
+      swallopen(errormessage);
     };
     console.log(response.data)
   })
