@@ -1,5 +1,5 @@
 
-let accessmainserver = 'http://localhost:3333'　　//メインサーバーのチェックアクセス先
+let accessmainserver = 'https://squid-app-ug7x6.ondigitalocean.app'　　//メインサーバーのチェックアクセス先
 let machines = []
 let user
 let password
@@ -38,7 +38,7 @@ async function login_request(user,password){
       var authority =  response.data.number.AUTHORITY;
       let name = `${loginName}_${authority}`;
 
-      window.location = `../signature/pages/dashboard.html?login=${name}`; 
+      window.location = `/signature-project-front/pages/dashboard.html?login=${name}`; 
 
     } else if(response.data.message) {
       errormessage="氏名コードまたはパスワード<br>の確認をしてください。";
