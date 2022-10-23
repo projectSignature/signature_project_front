@@ -1,0 +1,178 @@
+*{
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+}
+
+header{
+    background-color: #2f5596;
+    width: 100%;
+    height: 10vh;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+header h3{
+    padding-right: 2vw;
+    font-size: 2vw;
+    color: white
+}
+
+body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* BODY LESSON CSS */
+
+#titlePage{
+    font-size: 3vw;
+    font-weight: 800;
+    margin: auto;
+    margin-top: 6vh
+}
+
+#titlediv{
+   height:10%;
+   width: 100%;
+   background-color: #222222;
+   display: flex;
+   align-items: center;
+   color:gray;
+
+}
+#titlemain{
+  text-align: left;
+  margin-left: 0;
+  font-size: 3Vh;
+  color:lightgray;
+}
+#gym-name{
+  color:white;
+  position: absolute;
+  right: 0;
+  font-size: 3vh;
+}
+
+#cards{
+    width: 100%;
+    height: 60vh;
+    margin-top: 5vh;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    overflow-x: scroll;
+    flex-wrap: nowrap;
+    padding-left: 10vw;
+    scroll-behavior: smooth;
+}
+
+.card{
+    min-width: 20%;
+    width: 30%;
+    height: 75%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.content{
+    width: 100%;
+    height: 90%;
+    background-color: rgb(152, 152, 255);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 2vh;
+}
+
+.card .title{
+    font-size: 2vw;
+    font-weight: 600;
+}
+
+.card .content .contentText{
+    font-size: 3vw;
+}
+
+.card .content .contentTimeText{
+    font-size: 2vw;
+}
+
+.card .content img{
+    width: 12vw;
+    padding-bottom: 2VH;
+}
+
+.now{
+    min-width: 25%;
+    width: 35%;
+    height: 90%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.now .content{
+    width: 100%;
+    height: 90%;
+    background-color: rgb(152, 152, 255);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 2vh;
+}
+
+.now .content .contentText{
+    font-size: 4vw;
+}
+
+.now .content .contentTimeText{
+    font-size: 3vw;
+}
+
+.now .content img{
+    width: 20vw;
+    padding-bottom: 2VH;
+}
+
+#buttons{
+    width:  90%;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    margin-top: 1%
+}
+
+#previous, #next{
+    background-color: #2f5596;
+    border: none;
+    color: white;
+    width: 7vw;
+    font-size: 3vw;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 10px;
+}
+
+.nextClass{
+    font-size: 8vw;
+    padding: 2%
+}
+
+.last{
+    color: white
+}
+.swal2-container.swal2-center>.swal2-popup {
+  width: 40vw !important
+}
+.swal2-popup {
+    width: 50% !important
+}
