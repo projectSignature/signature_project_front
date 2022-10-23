@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./style/header.css">
+    <link rel="stylesheet" href="./style/dash.css">
+</head>
+
+<body>
+  <div id="titlediv">
+          <div id="titlemain" >Gym Control System</div>
+          <div id="gym-name" >Kussano gym</div>
+  </div>
+
+    <div id="dash">
+        <div id="header">
+            <h3>Tabela de alunos</h3>
+            <select name="" id="">
+                <option value="">todos</option>
+            </select>
+        </div>
+        <div id="table">
+            <table cellspacing="0" cellpadding="0">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Faixa atual</th>
+                        <th>Data de graduação</th>
+                        <th>1º grau</th>
+                        <th>2º grau</th>
+                        <th>3º grau</th>
+                        <th>4º grau</th>
+                        <th>Aula pós-graduação</th>
+                        <th>Observação</th>
+                        <th>status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+<script src="./script/swal.min.js"></script>
+<script>
+    const tbody = document.getElementsByTagName('tbody')[0]
+
+    let clients = [
+        {
+            id: 1,
+            client: "Helder",
+            currentRange: 'blue',
+            graduateDate: '2022-01-05',
+            firstDegree: '2022-01-05',
+            secondDegree: "",
+            thirdDegree: "",
+            fourthDegree: "",
+            postGraduationClass: "10",
+            observations: "faltou 3",
+            status: "active"
+        },
+        {
+            id: 2,
+            client: "karla",
+            currentRange: 'red',
+            graduateDate: '2021-12-27',
+            firstDegree: '2022-05-18',
+            secondDegree: "2022-07-15",
+            thirdDegree: "2022-08-10",
+            fourthDegree: "",
+            postGraduationClass: "39",
+            observations: "mês que vem graduação",
+            status: "active"
+        }
+    ]
+
+    function clientsHandler() {
+        for (let index = 0; index < clients.length; index++) {
+            const row = createNewTableRow(clients[index])
+            tbody.innerHTML += row
+        }
+    }
+
+    function createNewTableRow(data) {
+        let row = `
+        <td>${data.client}</td>
+        <td style="background-color: ${data.currentRange}"></td>
+        <td>${data.graduateDate}</td>
+        <td>${data.firstDegree}</td>
+        <td>${data.secondDegree}</td>
+        <td>${data.thirdDegree}</td>
+        <td>${data.fourthDegree}</td>
+        <td>${data.postGraduationClass}</td>
+        <td>${data.observations}</td>
+        <td>${data.status}</td>
+        <td>
+            <img src="./image/edit.svg" onClick="editClient(${data.id})" alt="" width="15">
+            <img src="./image/delete.svg" onClick="deleteClient(${data.id})" alt="" width="15">
+        </td>
+        `
+        return row
+    }
+
+    function editClient(clientId) {
+        let client = clients.find(client => client.id == clientId)
+        Swal.fire({
+            html: `
+                <div id="client">
+                    <div>
+                        <span>Nome: </span>
+                        <input type="text" id="clientName" value="${client.client}"/>
+                    </div>
+                    <div>
+                        <span>Faixa atual: </span>
+                        <select id="currentRange">
+                            <option value="red">red</option>
+                        </select>
+                    </div>
+                    <div>
+                        <span>Data de graduação: </span>
+                        <input type="date" id="graduateDate" value="${client.graduateDate}"/>
+                    </div>
+                    <div>
+                        <span>1º Grau: </span>
+                        <input type="date" id="firstDegree" value="${client.firstDegree}"/>
+                    </div>
+                    <div>
+                        <span>2º Grau: </span>
+                        <input type="date" id="secondDegree" value="${client.secondDegree}"/>
+                    </div>
+                    <div>
+                        <span>3º Grau: </span>
+                        <input type="date" id="thirdDegree" value="${client.thirdDegree}"/>
+                    </div>
+                    <div>
+                        <span>4º Grau: </span>
+                        <input type="date" id="fourthDegree" value="${client.fourthDegree}"/>
+                    </div>
+                    <div>
+                        <span>Aula pós-graduação: </span>
+                        <input type="text" id="postGraduationClass" value="${client.postGraduationClass}"/>
+                    </div>
+                    <div>
+                        <span>Observações: </span>
+                        <textarea type="text" id="observations" value="${client.observations}"/></textarea>
+                    </div>
+                    <div>
+                        <span>Status: </span>
+                        <input type="text" id="status" value="${client.status}"/>
+                    </div>
+                </div>
+
+                <style>
+                    #client{
+                        width: 100%;
+                        display: flex;
+                        flex-wrap: wrap;
+                        justify-content: flex-start;
+                    }
+
+                    #client div{
+                        width: 30%;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        padding-left: 15%;
+                        padding-bottom: 2%;
+                    }
+
+                    #client div input, #client div select, #client div textarea{
+                        width: 80%;
+                        border-radius: 10px;
+                        height: 5vh;
+                        border: 1px solid gray;
+                        text-indent: 10px
+                    }
+                    #client div select{
+                    }
+                </style>
+            `,
+            showCancelButton: true,
+            confirmButtonText: "Salvar",
+            cancelButtonText: "Cancelar"
+        }).then(result => {
+            if (result.isConfirmed) {
+                const name = document.getElementById("clientName").value
+                const currentRange = document.getElementById("currentRange").value
+                const graduateDate = document.getElementById("graduateDate").value
+                const firstDegree = document.getElementById("firstDegree").value
+                const secondDegree = document.getElementById("secondDegree").value
+                const thirdDegree = document.getElementById("thirdDegree").value
+                const fourthDegree = document.getElementById("fourthDegree").value
+                const postGraduationClass = document.getElementById("postGraduationClass").value
+                const observations = document.getElementById("observations").value
+                const status = document.getElementById("status").value
+
+                clients = clients.map(clientAux => {
+                    if (clientAux.id == client.id) {
+                        client.client = name
+                        client.currentRange = currentRange
+                        client.graduateDate = graduateDate
+                        client.firstDegree = firstDegree
+                        client.secondDegree = secondDegree
+                        client.thirdDegree = thirdDegree
+                        client.fourthDegree = fourthDegree
+                        client.postGraduationClass = postGraduationClass
+                        client.observations = observations
+                        client.status = status
+                        return client
+                    } else {
+                        return clientAux
+                    }
+                })
+                restartTable()
+            }
+        })
+    }
+
+    function deleteClient(clientId) {
+        clients = clients.filter(client => client.id != clientId)
+        restartTable()
+    }
+
+    function restartTable() {
+        tbody.innerHTML = ''
+        clientsHandler()
+    }
+
+    clientsHandler()
+</script>

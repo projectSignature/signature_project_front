@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Payment</title>
+    <link rel="stylesheet" href="../style/header.css" />
+    <link rel="stylesheet" href="../style/dash.css" />
+  </head>
+
+  <body>
+    <div id="titlediv">
+      <div id="titlemain">Gym Control System</div>
+      <div id="gym-name">Kussano gym</div>
+    </div>
+
+    <div id="dash">
+      <div id="header">
+        <h3>Controle de pagamento</h3>
+        <select name="" id="">
+          <option value="">2022</option>
+        </select>
+        <select name="" id="">
+          <option value="">todos</option>
+        </select>
+      </div>
+      <div id="table">
+        <table cellspacing="0" cellpadding="0">
+          <thead>
+            <tr>
+              <th>Aluno</th>
+              <th>Mensalidade</th>
+              <th>Jan</th>
+              <th>Feb</th>
+              <th>Mar</th>
+              <th>Apr</th>
+              <th>May</th>
+              <th>Jun</th>
+              <th>Jul</th>
+              <th>Aug</th>
+              <th>Sep</th>
+              <th>Oct</th>
+              <th>Nov</th>
+              <th>Dez</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+  <script src="../script/swal.min.js"></script>
+  <script defer>
+    let clients = [
+      {
+        id: 1,
+        client: "Hélder de Lima da Silva",
+        payment: "1000",
+        monthsPayds: {
+          jan: false,
+          Feb: true,
+          Mar: true,
+          Apr: true,
+          May: true,
+          Jun: true,
+          Jul: true,
+          Aug: true,
+          Sep: true,
+          Oct: true,
+          Nov: true,
+          Dez: true,
+        },
+        isFree: true,
+      },
+      {
+        id: 2,
+        client: "karla de Lima da Silva",
+        payment: "1000",
+        monthsPayds: {
+          jan: true,
+          Feb: true,
+          Mar: true,
+          Apr: true,
+          May: false,
+          Jun: true,
+          Jul: true,
+          Aug: true,
+          Sep: true,
+          Oct: true,
+          Nov: true,
+          Dez: true,
+        },
+        isFree: false,
+      },
+      {
+        id: 2,
+        client: "karla de Lima da Silva",
+        payment: "1000",
+        monthsPayds: {
+          jan: true,
+          Feb: true,
+          Mar: true,
+          Apr: true,
+          May: false,
+          Jun: true,
+          Jul: true,
+          Aug: true,
+          Sep: true,
+          Oct: true,
+          Nov: true,
+          Dez: true,
+        },
+        isFree: false,
+      },
+      {
+        id: 2,
+        client: "karla de Lima da Silva",
+        payment: "1000",
+        monthsPayds: {
+          jan: true,
+          Feb: true,
+          Mar: true,
+          Apr: true,
+          May: false,
+          Jun: true,
+          Jul: true,
+          Aug: true,
+          Sep: true,
+          Oct: true,
+          Nov: true,
+          Dez: true,
+        },
+        isFree: false,
+      },
+      {
+        id: 2,
+        client: "karla de Lima da Silva",
+        payment: "1000",
+        monthsPayds: {
+          jan: true,
+          Feb: true,
+          Mar: true,
+          Apr: true,
+          May: false,
+          Jun: true,
+          Jul: true,
+          Aug: true,
+          Sep: true,
+          Oct: true,
+          Nov: true,
+          Dez: true,
+        },
+        isFree: false,
+      },
+      {
+        id: 2,
+        client: "karla de Lima da Silva",
+        payment: "1000",
+        monthsPayds: {
+          jan: true,
+          Feb: true,
+          Mar: true,
+          Apr: true,
+          May: false,
+          Jun: true,
+          Jul: true,
+          Aug: true,
+          Sep: true,
+          Oct: true,
+          Nov: true,
+          Dez: true,
+        },
+        isFree: false,
+      },
+      {
+        id: 2,
+        client: "karla de Lima da Silva",
+        payment: "1000",
+        monthsPayds: {
+          jan: true,
+          Feb: true,
+          Mar: true,
+          Apr: true,
+          May: false,
+          Jun: true,
+          Jul: true,
+          Aug: true,
+          Sep: true,
+          Oct: true,
+          Nov: true,
+          Dez: true,
+        },
+        isFree: false,
+      },
+      {
+        id: 2,
+        client: "karla de Lima da Silva",
+        payment: "1000",
+        monthsPayds: {
+          jan: true,
+          Feb: true,
+          Mar: true,
+          Apr: true,
+          May: false,
+          Jun: true,
+          Jul: true,
+          Aug: true,
+          Sep: true,
+          Oct: true,
+          Nov: true,
+          Dez: true,
+        },
+        isFree: false,
+      },
+      {
+        id: 2,
+        client: "karla de Lima da Silva",
+        payment: "1000",
+        monthsPayds: {
+          jan: true,
+          Feb: true,
+          Mar: true,
+          Apr: true,
+          May: false,
+          Jun: true,
+          Jul: true,
+          Aug: true,
+          Sep: true,
+          Oct: true,
+          Nov: true,
+          Dez: true,
+        },
+        isFree: false,
+      },
+      {
+        id: 2,
+        client: "karla de Lima da Silva",
+        payment: "1000",
+        monthsPayds: {
+          jan: true,
+          Feb: true,
+          Mar: true,
+          Apr: true,
+          May: false,
+          Jun: true,
+          Jul: true,
+          Aug: true,
+          Sep: true,
+          Oct: true,
+          Nov: true,
+          Dez: true,
+        },
+        isFree: false,
+      },
+      {
+        id: 2,
+        client: "karla de Lima da Silva",
+        payment: "1000",
+        monthsPayds: {
+          jan: true,
+          Feb: true,
+          Mar: true,
+          Apr: true,
+          May: false,
+          Jun: true,
+          Jul: true,
+          Aug: true,
+          Sep: true,
+          Oct: true,
+          Nov: true,
+          Dez: true,
+        },
+        isFree: false,
+      },
+      {
+        id: 2,
+        client: "karla de Lima da Silva",
+        payment: "1000",
+        monthsPayds: {
+          jan: true,
+          Feb: true,
+          Mar: true,
+          Apr: true,
+          May: false,
+          Jun: true,
+          Jul: true,
+          Aug: true,
+          Sep: true,
+          Oct: true,
+          Nov: true,
+          Dez: true,
+        },
+        isFree: false,
+      },
+      {
+        id: 2,
+        client: "karla de Lima da Silva",
+        payment: "1000",
+        monthsPayds: {
+          jan: true,
+          Feb: true,
+          Mar: true,
+          Apr: true,
+          May: false,
+          Jun: true,
+          Jul: true,
+          Aug: true,
+          Sep: true,
+          Oct: true,
+          Nov: true,
+          Dez: true,
+        },
+        isFree: false,
+      },
+      {
+        id: 2,
+        client: "karla de Lima da Silva",
+        payment: "1000",
+        monthsPayds: {
+          jan: true,
+          Feb: true,
+          Mar: true,
+          Apr: true,
+          May: false,
+          Jun: true,
+          Jul: true,
+          Aug: true,
+          Sep: true,
+          Oct: true,
+          Nov: true,
+          Dez: true,
+        },
+        isFree: false,
+      },
+    ];
+    const tbody = document.getElementsByTagName("tbody")[0];
+
+    function clientsHandler() {
+      for (let index = 0; index < clients.length; index++) {
+        const row = createNewTableRow(clients[index]);
+        tbody.innerHTML += row;
+      }
+    }
+
+    function createNewTableRow(data) {
+      let row = `
+        <td>${data.client}</td>
+        <td>${data.payment}</td>
+        <td>${
+          !data.isFree ? getEmojiOfPayment(data.monthsPayds.jan) : "🆓"
+        }</td>
+        <td>${
+          !data.isFree ? getEmojiOfPayment(data.monthsPayds.Feb) : "🆓"
+        }</td>
+        <td>${
+          !data.isFree ? getEmojiOfPayment(data.monthsPayds.Mar) : "🆓"
+        }</td>
+        <td>${
+          !data.isFree ? getEmojiOfPayment(data.monthsPayds.Apr) : "🆓"
+        }</td>
+        <td>${
+          !data.isFree ? getEmojiOfPayment(data.monthsPayds.May) : "🆓"
+        }</td>
+        <td>${
+          !data.isFree ? getEmojiOfPayment(data.monthsPayds.Jun) : "🆓"
+        }</td>
+        <td>${
+          !data.isFree ? getEmojiOfPayment(data.monthsPayds.Jul) : "🆓"
+        }</td>
+        <td>${
+          !data.isFree ? getEmojiOfPayment(data.monthsPayds.Aug) : "🆓"
+        }</td>
+        <td>${
+          !data.isFree ? getEmojiOfPayment(data.monthsPayds.Sep) : "🆓"
+        }</td>
+        <td>${
+          !data.isFree ? getEmojiOfPayment(data.monthsPayds.Oct) : "🆓"
+        }</td>
+        <td>${
+          !data.isFree ? getEmojiOfPayment(data.monthsPayds.Nov) : "🆓"
+        }</td>
+        <td>${
+          !data.isFree ? getEmojiOfPayment(data.monthsPayds.Dez) : "🆓"
+        }</td>
+        <td>
+            <img src="../image/edit.svg" onClick="editClient(${
+              data.id
+            })" alt="" width="15">
+            <img src="../image/delete.svg" onClick="deleteClient(${
+              data.id
+            })" alt="" width="15">
+        </td>
+        `;
+      return row;
+    }
+
+    function getEmojiOfPayment(month) {
+      switch (month) {
+        case true:
+          return "✔️";
+          break;
+        case false:
+          return "✖️";
+          break;
+        case check:
+          return "✖️";
+          break;
+        default:
+          return "🆓";
+          break;
+      }
+    }
+
+    function editClient(clientId) {
+      let client = clients.find((client) => client.id == clientId);
+      Swal.fire({
+        html: `
+                <div id="mensality">
+                    <div id="inputs">
+                        <span>Cliente:</span>
+                        <input type="text" value="${
+                          client.client
+                        }" id="clientNameToEdit">
+                        <span id="paymentText">Mensalidade</span>
+                        <input type="text" value="${
+                          client.payment
+                        }" id="clientPaymentToEdit">
+                    </div>
+                    <div id="checks">
+                        ${Object.keys(client.monthsPayds)
+                          .map((month) => {
+                            return `<div>${month}:&nbsp&nbsp&nbsp<input id="${month}" value="${month}" type="checkbox" ${
+                              client.monthsPayds[month] ? "checked" : ""
+                            }/></div>`;
+                          })
+                          .join(" ")}
+                    </div>
+                </div>
+
+                <style>
+                    #inputs{
+                        width: 100%;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center
+                    }
+
+                    #inputs span{
+                        padding-right: 0.5vw
+                    }
+
+                    #paymentText{
+                        margin-left: 2vw
+                    }
+
+                    input{
+                        padding: 1vw;
+                        border-radius: 10px;
+                        border: 1px solid gray
+                    }
+
+                    #checks{
+                        width: 100%;
+                        margin: auto;
+                        margin-top: 2%;
+                        display: flex;
+                    }
+
+                    #checks div{
+                        display: flex;
+                        width: 10%
+                    }
+                </style>
+            `,
+        showCancelButton: true,
+        confirmButtonText: "Salvar",
+        cancelButtonText: "Cancelar",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const userName = document.getElementById("clientNameToEdit").value;
+          const userPayment = document.getElementById(
+            "clientPaymentToEdit"
+          ).value;
+          client.client = userName;
+          client.payment = userPayment;
+
+          clients = clients.map((clientAux) => {
+            if (clientAux.id == client.id) {
+              const months = Object.keys(client.monthsPayds);
+              for (let index = 0; index < months.length; index++) {
+                const monthCheck = document.getElementById(months[index]);
+                client.monthsPayds[months[index]] = monthCheck.checked;
+              }
+              return client;
+            } else {
+              return clientAux;
+            }
+          });
+
+          restartTable();
+        }
+      });
+    }
+
+    function deleteClient(clientId) {
+      clients = clients.filter((client) => client.id != clientId);
+      restartTable();
+    }
+
+    function restartTable() {
+      tbody.innerHTML = "";
+      clientsHandler();
+    }
+    clientsHandler();
+  </script>
+</html>

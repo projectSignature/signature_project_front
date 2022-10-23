@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="../style/list_alunos1.css" />
+    <link rel="stylesheet" href="../style/list_alunos2.css" />
+  </head>
+
+  <body>
+    <div id="titlediv">
+      <div id="titlemain">Gym Control System</div>
+      <div id="gym-name">Kussano gym</div>
+    </div>
+
+    <div id="dash">
+      <div id="header">
+        <h3>Tabela de alunos</h3>
+        <select name="" id="">
+          <option value="">todos</option>
+        </select>
+        <select name="" id="">
+          <option value="">categoria1</option>
+        </select>
+        <select name="" id="">
+          <option value="">categoria2</option>
+        </select>
+      </div>
+      <div id="table">
+        <table cellspacing="0" cellpadding="0">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Birth</th>
+              <th>Age</th>
+              <th>Gender</th>
+              <th>Address</th>
+              <th>Tel</th>
+              <th>Email</th>
+              <th>Language</th>
+              <th>Plan</th>
+              <th>Graduation</th>
+              <th>Status</th>
+              <th>Pass</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+  <script src="../script/swal.min.js"></script>
+  <script>
+    const tbody = document.getElementsByTagName("tbody")[0];
+
+    let clients;
+
+    fetch("http://localhost:3333/img")
+      .then((x) => x.json())
+      .then((res) => {
+        clients = res;
+        clientsHandler();
+      });
+
+    function clientsHandler() {
+      for (let index = 0; index < clients.length; index++) {
+        const row = createNewTableRow(clients[index]);
+        tbody.innerHTML += row;
+      }
+    }
+
+    function createNewTableRow(data) {
+      let row = `
+        <td>${data.nm_member}</td>
+        <td>${data.birthday_day}/${data.birthday_month}/${data.birthday_year}</td>
+        <td>${data.birthday_age}</td>
+        <td>${data.genero}</td>
+        <td>${data.adress_input}</td>
+        <td>(${data.phone01}) ${data.phone02}-${data.phone03}</td>
+        <td>${data.email}</td>
+        <td>${data.lang01}</td>
+        <td>${data.plans}</td>
+        <td>${data.graduation}</td>
+        <td>${data.status}</td>
+        <td>${data.pass}</td>
+        <td>
+            <img src="../image/edit.svg" onClick="editClient(${data.id})" alt="" width="25">
+            <img src="../image/delete.svg" onClick="deleteClient(${data.id})" alt="" width="25">
+        </td>
+        `;
+      return row;
+    }
+
+    function editClient(clientId) {
+      let client = clients.find((client) => client.id == clientId);
+      Swal.fire({
+        html: `
+                <div id="title">Faça a alteração no campo desejado</div>
+                <div id="client">
+                    <div>
+                        <span>Nome: </span>
+                        <input type="text" id="clientName" value="${client.client}"/>
+                    </div>
+                    <div>
+                        <span>Aniversário: </span>
+                        <input type="date" id="clientBirth" value="${client.birth}"/>
+                    </div>
+                    <div>
+                        <span>Idade: </span>
+                        <input type="text" id="clientAge" value="${client.age}"/>
+                    </div>
+                    <div>
+                        <span>Gênero: </span>
+                        <select type="text" id="clientGender">
+                        <option value="">Male</option>/>
+                        <option value="">Female</option>/>
+                        <option value="" selected>${client.gender}</option>
+                        </select>
+                    </div>
+                    <div>
+                        <span>Endereço: </span>
+                        <input type="text" id="clientAddress" value="${client.address}"/>
+                    </div>
+                    <div>
+                        <span>Telefone: </span>
+                        <input type="text" id="clientTel" value="${client.tel}"/>
+                    </div>
+                    <div>
+                        <span>E-mail: </span>
+                        <input type="text" id="clientEmail" value="${client.email}"/>
+                    </div>
+                    <div>
+                        <span>Lingua: </span>
+                        <select type="text" id="clientlanguage">
+                        <option value="">japanese</option>/>
+                        <option value="">portugues</option>/>
+                        <option value="">english</option>/>
+                        <option value="" selected>${client.language}</option>
+                        </select>
+                    </div>
+                    <div>
+                        <span>Plano: </span>
+                        <select type="text" id="clientplan">
+                        <option value="">A</option>/>
+                        <option value="">B</option>/>
+                        <option value="">C</option>/>
+                        <option value="">D</option>/>
+                        <option value="">E</option>/>
+                        <option value="">F</option>/>
+                        <option value="" selected>${client.plan}</option>
+                        </select>
+                    </div>
+                    <div>
+                        <span>Graduação: </span>
+                        <input type="text" id="clientGraduation" value="${client.graduation}"/>
+                    </div>
+                    <div>
+                        <span>Status: </span>
+                        <select type="text" id="clientStatus">
+                        <option value="">active</option>/>
+                        <option value="">inactive</option>/>
+                        <option value="" selected>${client.status}</option>
+                        </select>
+                    </div>
+                    <div>
+                        <span>Pass: </span>
+                        <input maxlength="4"  id="clientPass" value="${client.pass}"/>
+
+                    </div>
+                </div>
+
+                <style>
+                #title{
+                  font-size:4vh;
+                }
+                    #client{
+                        width: 100%;
+                        display: flex;
+                        flex-wrap: wrap;
+                        justify-content: flex-start;
+                        background-color: #EEEEEE;
+                        padding-top: 3%;
+                    }
+
+                    #client div{
+                        width: 30%;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        padding-left: 15%;
+                        padding-bottom: 2%;
+
+                    }
+
+                    #client div input{
+                        border-radius: 10px;
+                        height: 5vh;
+                        border: 1px solid gray;
+                        text-indent: 10px;
+
+                    }
+                    #client div select{
+                      border-radius: 10px;
+                      width: 24vh;
+                      height: 5vh;
+                      border: 1px solid gray;
+                      text-indent: 10px
+
+                    }
+                    #clientBirth{
+                      border-radius: 10px;
+                      width: 24vh;
+                      height: 5vh;
+                      border: 1px solid gray;
+                      text-indent: 10px
+                    }
+
+                </style>
+            `,
+        showCancelButton: true,
+        confirmButtonText: "Salvar",
+        cancelButtonText: "Cancelar",
+        width: 700,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const name = document.getElementById("clientName").value;
+          const birth = document.getElementById("clientBirth").value;
+          const age = document.getElementById("clientAge").value;
+          const gender = document.getElementById("clientGender").value;
+          const address = document.getElementById("clientAddress").value;
+          const tel = document.getElementById("clientTel").value;
+          const email = document.getElementById("clientEmail").value;
+          const language = document.getElementById("clientLanguage").value;
+          const plan = document.getElementById("clientPlan").value;
+          const graduation = document.getElementById("clientGraduation").value;
+          const status = document.getElementById("clientStatus").value;
+          const pass = document.getElementById("clientPass").value;
+          clients = clients.map((clientAux) => {
+            if (clientAux.id == client.id) {
+              client.client = name;
+              client.birth = birth;
+              client.age = age;
+              client.gender = gender;
+              client.address = address;
+              client.tel = tel;
+              client.email = email;
+              client.language = language;
+              client.plan = plan;
+              client.graduation = graduation;
+              client.status = status;
+              client.Pass = status;
+              return client;
+            } else {
+              return clientAux;
+            }
+          });
+          restartTable();
+        }
+      });
+    }
+
+    function deleteClient(clientId) {
+      clients = clients.filter((client) => client.id != clientId);
+      restartTable();
+    }
+
+    function restartTable() {
+      tbody.innerHTML = "";
+      clientsHandler();
+    }
+  </script>
+</html>
