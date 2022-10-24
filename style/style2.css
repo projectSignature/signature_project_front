@@ -152,6 +152,9 @@ border: 1px solid lightgray;
       .result-input{
     margin-left: 1px;
   }
+      .right-first-div{
+            width: 31%;
+      }
 }
 
 @media screen and (max-width: 500px) {
@@ -199,7 +202,7 @@ border: 1px solid lightgray;
 
   .result-input{
     font-size: 5vh;
-    margin-left: 5px;
+    margin-left: 10px;
     margin-top: 0px;
     width:70px;
   }
@@ -231,5 +234,8 @@ border: 1px solid lightgray;
   border-radius: 5px;
   border: 1px solid lightgray;
   }
-
+    .right-first-div:hover{
+      text-decoration: none;
+      border: 4px solid #5507FF;
+    }
 }
