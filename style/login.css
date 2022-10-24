@@ -111,13 +111,19 @@ after { clear: both; }
   height: 400px;
 }
 
+@media screen and (min-width: 501px) and (max-width: 1280px) {
+   #title{
+    padding-left:60px;
+}
+}
+
 @media screen and (max-width: 500px) {
 #login{
   margin-left:5px;
   margin-top:5px;
 }
 #sotowaku{
-margin-top:80px !important;
+margin-top:120px !important;
 }
   #title{
     padding-left:20px;
