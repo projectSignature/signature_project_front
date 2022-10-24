@@ -108,7 +108,7 @@ after { clear: both; }
   height: 400px;
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 600px) {
 #login{
   margin-left:70px;
   margin-top:20px;
