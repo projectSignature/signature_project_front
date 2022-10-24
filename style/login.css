@@ -1,5 +1,5 @@
 @charset "utf-8";
-@import url(http://weloveiconfonts.com/api/?family=fontawesome);
+@import url(https://weloveiconfonts.com/api/?family=fontawesome);
 
 [class*="fontawesome-"]:before {
   font-family: 'FontAwesome', sans-serif;
@@ -90,7 +90,7 @@ after { clear: both; }
   height: 50px;
 }
 
-#login form input[type="submit"] {
+#login-bottom {
   background: #b5cd60;
   border: 0;
   width: 100%;
@@ -99,9 +99,13 @@ after { clear: both; }
   color: white;
   cursor: pointer;
   transition: background 0.3s ease-in-out;
+    text-align: center;
 }
-#login form input[type="submit"]:hover {
+#login-bottom:hover {
   background: #16aa56;
+}
+.sweet-alert{
+  height: 400px;
 }
 
 @media screen and (max-width: 500px) {
@@ -111,6 +115,4 @@ after { clear: both; }
 }
 #sotowaku{
 margin-top:200px !important;
-}
-
 }
