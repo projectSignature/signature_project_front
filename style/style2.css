@@ -150,7 +150,7 @@ border: 1px solid lightgray;
    padding-left: 1px;
   }
       .result-input{
-    margin-left: 5px;
+    margin-left: 1px;
   }
 }
 
@@ -199,7 +199,7 @@ border: 1px solid lightgray;
 
   .result-input{
     font-size: 5vh;
-    margin-left: 2px;
+    margin-left: 5px;
     margin-top: 0px;
     width:70px;
   }
@@ -209,7 +209,7 @@ border: 1px solid lightgray;
   .atention-discrtion{
     padding-top: 0px;
     font-size: 3vh;
-    padding-left: 2px;
+    padding-left: 0px;
   }
   .right-first-div{
     width: 90%;
