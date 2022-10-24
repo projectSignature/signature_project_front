@@ -4,9 +4,21 @@ var next_graduation = ""
 var my_division = ""
 var my_language = ""
 
+var token = sessionStorage.getItem("token");
+const addMemberDiv = document.querySelector('#add_member_div');
+const memberDiv = document.querySelector('#member_div');
+const paymentDiv = document.querySelector('#payment_div');
+const graduacaoDiv = document.querySelector('#graduacao_div');
+
+if(token == 567) {
+  addMemberDiv.style.display = 'none';
+  memberDiv.style.display = 'none';
+  paymentDiv.style.display = 'none';
+  graduacaoDiv.style.display = 'none';
+}
 
 
-const caminho = "http://localhost:8098/linestatus/"; //route 1
+/* const caminho = "http://localhost:8098/linestatus/"; //route 1
 axios.get(caminho)
   .then(function (response) {
    console.log(response.data);
@@ -16,7 +28,7 @@ axios.get(caminho)
  axios.get(caminho)
    .then(function (response) {
     console.log(response.data);
-  })
+  }) */
 
 var past={
  jp:{
@@ -63,3 +75,10 @@ function myLanguageCheck(){
     document.getElementById("payment_div").style.display = "none";
   }
 }
+
+function navigator(ref) {
+  let path = `https://squid-app-ug7x6.ondigitalocean.app/signature-project-front/pages/${ref}.html`;
+   location.href = path;
+  }
+  ///https://squid-app-ug7x6.ondigitalocean.app/signature-project-front/pages/ficha.html
+
