@@ -146,6 +146,9 @@ border: 1px solid lightgray;
   #right-board{
   width: 85%;
 }
+ .atention-discrtion{
+   padding-left: 1px;
+  }
 }
 
 @media screen and (max-width: 500px) {
@@ -203,11 +206,11 @@ border: 1px solid lightgray;
   .atention-discrtion{
     padding-top: 0px;
     font-size: 3vh;
-    padding-left: 4px;
+    padding-left: 2px;
   }
   .right-first-div{
     width: 90%;
-    height:50px;
+    height:55px;
     margin-top: 10px;
     padding-bottom: 3px;
     margin-left: 10px;
