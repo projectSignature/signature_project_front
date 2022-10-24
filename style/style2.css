@@ -40,7 +40,7 @@ body {
   display: flex;
 }
 #menubar{
-  background-color: pink; /*#555555;*/
+  background-color: #555555;
   width:12%;
   padding-top: 20px;
   color:white;
@@ -203,7 +203,7 @@ border: 1px solid lightgray;
     margin-left: 30px;
   }
   .master-image-menu{
-    width: 70px;
+    width: 15%;
   }
   .boarde{
     margin-left: 10px;
