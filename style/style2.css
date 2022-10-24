@@ -40,7 +40,7 @@ body {
   display: flex;
 }
 #menubar{
-  background-color: #555555;
+  background-color: pink; /*#555555;*/
   width:12%;
   padding-top: 20px;
   color:white;
