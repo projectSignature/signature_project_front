@@ -107,3 +107,12 @@ after { clear: both; }
 .sweet-alert{
   height: 400px;
 }
+
+@media screen and (max-width: 500px) {
+#login{
+  margin-left:70px;
+  margin-top:20px;
+}
+#sotowaku{
+margin-top:200px !important;
+}
