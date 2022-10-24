@@ -117,6 +117,8 @@ after { clear: both; }
   margin-top:5px;
 }
 #sotowaku{
-margin-top:50px !important;
+margin-top:80px !important;
 }
+  #title{
+    padding-left:20px;
 }
