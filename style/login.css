@@ -112,6 +112,7 @@ after { clear: both; }
 #login{
   margin-left:70px;
   margin-top:20px;
+  background-color:pink;
 }
 #sotowaku{
 margin-top:200px !important;
