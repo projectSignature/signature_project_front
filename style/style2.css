@@ -69,9 +69,10 @@ padding-top: 30px;
  cursor: pointer;
  font-size: 3vh;
  width: 100%;
+ transition: background 1s;
 }
 #add_member_div{
-margin-left: 13px;
+padding-left: 13px;
 }
 #right-first{
   height:15%;
@@ -124,12 +125,7 @@ border: 1px solid lightgray;
     font-weight: bold;
   }
   .menu-div:hover{
-      text-decoration: none;
-      border: 2px solid gray;
-      background-color: #5507FF;
-      color:white;
-      display: inline-block;
-      font-weight: bold;
+      background: #5507FF;
     }
     .right-first-div:hover{
       text-decoration: none;
