@@ -110,12 +110,10 @@ after { clear: both; }
 
 @media screen and (max-width: 600px) {
 #login{
-  margin-left:70px;
-  margin-top:20px;
-  background-color:pink;
+  margin-left:20px;
+  margin-top:5px;
 }
 #sotowaku{
-margin-top:200px !important;
-background-color:pink;
+margin-top:250px !important;
 }
 }
