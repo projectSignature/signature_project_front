@@ -149,6 +149,9 @@ border: 1px solid lightgray;
  .atention-discrtion{
    padding-left: 1px;
   }
+      .result-input{
+    margin-left: 5px;
+  }
 }
 
 @media screen and (max-width: 500px) {
@@ -196,7 +199,7 @@ border: 1px solid lightgray;
 
   .result-input{
     font-size: 5vh;
-    margin-left: 10px;
+    margin-left: 2px;
     margin-top: 0px;
     width:70px;
   }
