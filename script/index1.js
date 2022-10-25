@@ -11,8 +11,6 @@ var errormessage7 = ""
 var errormessage8 = ""
 var errormessage9 = ""
 var gymname = sessionStorage.getItem("gym");
-console.log(sessionStorage.getItem("gym"))
-//document.querySelector('#gym-name').innerHTML = sessionStorage.getItem("gym");
 
 window.onload = function open_page() {
 error_massege_portugues()
