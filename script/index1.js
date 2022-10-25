@@ -21,7 +21,7 @@ image_get(gymname)
 }
 
 function image_get(){
-  document.getElementById("image").src =  `./image/${gymname}_add.png`
+  document.getElementById("image").src =  `/signature-project-front/image/${gymname}_add.png`
 
 }
 
