@@ -76,6 +76,7 @@ function myLanguageCheck() {
   }
 }
 
+//função para navegar entre as páginas do sistema, o arquivo principal é passado por param pelo front
 function navigator(ref) {
   let path = `https://squid-app-ug7x6.ondigitalocean.app/signature-project-front/pages/${ref}.html`;
   location.href = path;
