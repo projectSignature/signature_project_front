@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>List</title>
     <link rel="stylesheet" href="../style/list_alunos1.css" />
     <link rel="stylesheet" href="../style/list_alunos2.css" />
   </head>
@@ -18,15 +18,23 @@
     <div id="dash">
       <div id="header">
         <h3>Tabela de alunos</h3>
-        <select name="" id="">
-          <option value="">todos</option>
+        <select name="" id="filter1">
+          <option value="">Filter</option>
+          <option value="All">All</option>
+          <option value="Man">Man</option>
+          <option value="Women">Women</option>
+          <option value="teenagers">teenagers</option>
         </select>
-        <select name="" id="">
+        <select name="" id="filter2">
           <option value="">categoria1</option>
+          <option value="Plan A">Plan A</option>
+          <option value="Plan B">Plan B</option>
+          <option value="Plan C">Plan C</option>
+          <option value="Plan D">Plan D</option>
+          <option value="Plan E">Plan E</option>
+          <option value="Plan F">Plan F</option>
         </select>
-        <select name="" id="">
-          <option value="">categoria2</option>
-        </select>
+        <input type="button" id="btn-filter" value="Buscar" />
       </div>
       <div id="table">
         <table cellspacing="0" cellpadding="0">
@@ -54,11 +62,47 @@
   </body>
   <script src="../script/swal.min.js"></script>
   <script>
-    const tbody = document.getElementsByTagName("tbody")[0];
+ const tbody = document.getElementsByTagName("tbody")[0];
+    const btnFilter = document.getElementById("btn-filter");
+    const gymName = document.getElementById("gym-name");
+    const sessionGymName = sessionStorage.getItem("gym");
 
+    if (sessionGymName) {
+      gymName.innerHTML = sessionGymName;
+    } else {
+      gymName.innerHTML = "GYM error";
+    }
+
+    //função para executar filtros--------------------------->
+    btnFilter.addEventListener("click", function () {
+      const filter1 = document.getElementById("filter1").value;
+      const filter2 = document.getElementById("filter2").value;
+      const obj = { opt1: filter1, opt2: filter2 };
+
+      fetch("http://localhost:3000/list", {
+        method: "POST",
+        body: JSON.stringify(obj),
+        headers: { "Content-type": "application/json; charset=UTF-8" },
+      })
+        .then((x) => x.json())
+        .then((res) => {
+          var removeTbody = document.querySelector("tbody");
+          while (removeTbody.hasChildNodes()) {
+            removeTbody.removeChild(removeTbody.firstChild);
+          }
+          clients = res;
+          clientsHandler();
+        });
+    });
+    
+    //função para pegar todos os registros quando o user entrar na página---->
     let clients;
 
-    fetch("http://localhost:3333/img")
+    fetch("http://localhost:3000/list", {
+      method: "POST",
+      body: JSON.stringify({ opt1: "", opt2: "" }),
+      headers: { "Content-type": "application/json; charset=UTF-8" },
+    })
       .then((x) => x.json())
       .then((res) => {
         clients = res;
