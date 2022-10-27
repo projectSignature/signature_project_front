@@ -146,31 +146,31 @@
                 <div id="client">
                     <div>
                         <span>Nome: </span>
-                        <input type="text" id="clientName" value="${client.client}"/>
+                        <input type="text" id="clientName" value="${client.nm_member}"/>
                     </div>
                     <div>
                         <span>Aniversário: </span>
-                        <input type="date" id="clientBirth" value="${client.birth}"/>
+                        <input type="date" id="clientBirth" value="${client.birthday_year}-${client.birthday_month}-${client.birthday_day}"/>
                     </div>
                     <div>
                         <span>Idade: </span>
-                        <input type="text" id="clientAge" value="${client.age}"/>
+                        <input type="text" id="clientAge" value="${client.birthday_age}"/>
                     </div>
                     <div>
                         <span>Gênero: </span>
                         <select type="text" id="clientGender">
-                        <option value="">Male</option>/>
-                        <option value="">Female</option>/>
-                        <option value="" selected>${client.gender}</option>
+                        <option value="Male">Male</option>/>
+                        <option value="Female">Female</option>/>
+                        <option value="${client.genero}" selected>${client.genero}</option>
                         </select>
                     </div>
                     <div>
                         <span>Endereço: </span>
-                        <input type="text" id="clientAddress" value="${client.address}"/>
+                        <input type="text" id="clientAddress" value="${client.adress_input}"/>
                     </div>
                     <div>
                         <span>Telefone: </span>
-                        <input type="text" id="clientTel" value="${client.tel}"/>
+                        <input type="text" id="clientTel" maxlength="11" value="(${client.phone01}) ${client.phone02}-${client.phone03}"/>
                     </div>
                     <div>
                         <span>E-mail: </span>
@@ -179,22 +179,22 @@
                     <div>
                         <span>Lingua: </span>
                         <select type="text" id="clientlanguage">
-                        <option value="">japanese</option>/>
-                        <option value="">portugues</option>/>
-                        <option value="">english</option>/>
-                        <option value="" selected>${client.language}</option>
+                        <option value="japanese">japanese</option>/>
+                        <option value="portugues">portugues</option>/>
+                        <option value="english">english</option>/>
+                        <option value="${client.lang01}" selected>${client.lang01}</option>
                         </select>
                     </div>
                     <div>
                         <span>Plano: </span>
                         <select type="text" id="clientplan">
-                        <option value="">A</option>/>
-                        <option value="">B</option>/>
-                        <option value="">C</option>/>
-                        <option value="">D</option>/>
-                        <option value="">E</option>/>
-                        <option value="">F</option>/>
-                        <option value="" selected>${client.plan}</option>
+                        <option value="A">A</option>/>
+                        <option value="B">B</option>/>
+                        <option value="C">C</option>/>
+                        <option value="D">D</option>/>
+                        <option value="E">E</option>/>
+                        <option value="F">F</option>/>
+                        <option value="${client.plans}" selected>${client.plans}</option>
                         </select>
                     </div>
                     <div>
@@ -204,9 +204,9 @@
                     <div>
                         <span>Status: </span>
                         <select type="text" id="clientStatus">
-                        <option value="">active</option>/>
-                        <option value="">inactive</option>/>
-                        <option value="" selected>${client.status}</option>
+                        <option value="active">active</option>/>
+                        <option value="inactive">inactive</option>/>
+                        <option value="${client.status}" selected>${client.status}</option>
                         </select>
                     </div>
                     <div>
@@ -269,19 +269,39 @@
         cancelButtonText: "Cancelar",
         width: 700,
       }).then((result) => {
-        if (result.isConfirmed) {
-          const name = document.getElementById("clientName").value;
-          const birth = document.getElementById("clientBirth").value;
-          const age = document.getElementById("clientAge").value;
-          const gender = document.getElementById("clientGender").value;
-          const address = document.getElementById("clientAddress").value;
-          const tel = document.getElementById("clientTel").value;
-          const email = document.getElementById("clientEmail").value;
-          const language = document.getElementById("clientLanguage").value;
-          const plan = document.getElementById("clientPlan").value;
-          const graduation = document.getElementById("clientGraduation").value;
-          const status = document.getElementById("clientStatus").value;
-          const pass = document.getElementById("clientPass").value;
+       if (result.isConfirmed) {
+          let obj = {
+            id: clientId,
+            nm_member: document.getElementById("clientName").value,
+            birth: document.getElementById("clientBirth").value,
+            age: document.getElementById("clientAge").value,
+            gender: document.getElementById("clientGender").value,
+            address: document.getElementById("clientAddress").value,
+            tel: document.getElementById("clientTel").value,
+            email: document.getElementById("clientEmail").value,
+            language: document.getElementById("clientlanguage").value,
+            plan: document.getElementById("clientplan").value,
+            graduation: document.getElementById("clientGraduation").value,
+            status: document.getElementById("clientStatus").value,
+            pass: document.getElementById("clientPass").value,
+          };
+
+          console.log(obj);
+
+          const attr = {
+            method: "POST",
+            body: JSON.stringify(obj),
+            headers: { "Content-type": "application/json; charset=UTF-8" },
+          };
+
+          fetch("https://squid-app-ug7x6.ondigitalocean.app/listUpdate", attr)
+            .then((x) => x.json())
+            .then((response) => {
+              console.log(response);
+            });
+
+          //console.log(obj.tel);
+          /* 
           clients = clients.map((clientAux) => {
             if (clientAux.id == client.id) {
               client.client = name;
@@ -300,14 +320,38 @@
             } else {
               return clientAux;
             }
-          });
+          }); */
           restartTable();
         }
+      });
+
+      //mascara para o campo de telefone
+      let campoTel = document.getElementById("clientTel");
+      campoTel.addEventListener("blur", () => {
+        var value = campoTel.value;
+        var a = value.replace(/\D/g, ""); //Remove tudo o que não é dígito
+        var b = a.replace(/^(\d{2})(\d)/g, "($1$2)"); //Coloca parênteses em volta dos dois primeiros dígitos
+        var c = b.replace(/(\d)(\d{4})$/, "$1-$2"); //Coloca hífen entre o quarto e o quinto dígitos
+
+        campoTel.value = c;
       });
     }
 
     function deleteClient(clientId) {
       clients = clients.filter((client) => client.id != clientId);
+
+      const attr = {
+        method: "POST",
+        body: JSON.stringify({ id: clientId }),
+        headers: { "Content-type": "application/json; charset=UTF-8" },
+      };
+
+      fetch("https://squid-app-ug7x6.ondigitalocean.app/listDelete", attr)
+        .then((x) => x.json())
+        .then((response) => {
+          console.log(response);
+        });
+
       restartTable();
     }
 
