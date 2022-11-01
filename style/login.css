@@ -24,7 +24,7 @@ body {
 #title{
 height:30%;
 width: 100%;
-font-size: 8vh;
+font-size: 7vh;
 color:#666666;
 font-family:"Haettenschweiler";
 display: flex;
@@ -72,6 +72,7 @@ after { clear: both; }
   border-radius: 5px;
   background: 		#EEEEEE;
   border: 1px solid #434a52;
+  
 
 }
 
