@@ -4,18 +4,15 @@
 [class*="fontawesome-"]:before {
   font-family: 'FontAwesome', sans-serif;
 }
-#sotowaku{
-  margin-bottom: 200px;
-  height:100%;
-}
+
 #title{
   margin-top: 15%;
   text-align: center;
   font-size: 8vh;
   padding-bottom: 30px;
-  padding-left:60px;
   color:white;
-  font-family:"Haettenschweiler"
+  font-family:"Haettenschweiler";
+  margin-left:50px;
 }
 html{
   height:100%;
@@ -44,20 +41,27 @@ p {
 }
 
 after { clear: both; }
+#login-div{
+  width: 100%;
 
+  display: flex;
+  justify-content: center;
+}
 #login {
+align-items: center;
   width: 320px;
-  margin-left: 40%;
+
 }
 
 #login form {
-  margin: auto;
+
   padding: 22px 22px 22px 22px;
   width: 100%;
   border-radius: 5px;
   background: #282e33;
   border-top: 3px solid #434a52;
   border-bottom: 3px solid #434a52;
+
 }
 
 #login form span {
@@ -112,21 +116,13 @@ after { clear: both; }
 }
 
 @media screen and (min-width: 600px) and (max-width: 1024px) {
-   #title{
-    padding-left:100px;
-}
+  #title{
+    margin-top: 40% !important;
+  }
 }
 
 @media screen and (max-width: 599px) {
-#login{
-  margin-left:5px;
-  margin-top:5px;
-}
-#sotowaku{
-margin-top:120px !important;
-}
   #title{
-    padding-left:20px;
-    margin-top:100px;
-}
+    margin-top: 40% !important;
+  }
 }
