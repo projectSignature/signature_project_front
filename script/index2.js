@@ -324,3 +324,5 @@ async function update(obj) {
 
 };
 
+document.querySelector('#gym-name').innerHTML = sessionStorage.getItem("gym");
+
