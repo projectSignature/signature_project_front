@@ -125,6 +125,7 @@ align-items: center;
     margin-top: 40% !important;  
   }
   #login-div{
-  margin-right:10px;
+  margin-right:0px;
+    padding:0px;
 }
 }
