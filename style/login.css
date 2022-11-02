@@ -64,7 +64,7 @@ align-items: center;
 }
 
 #login form span {
-  background-color: #363b41;
+  background-color: pink;
   border-radius: 3px 0px 0px 3px;
   border-right: 3px solid #434a52;
   color: #606468;
