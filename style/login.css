@@ -43,6 +43,7 @@ p {
 after { clear: both; }
 #login-div{
   width: 100%;
+
   display: flex;
   justify-content: center;
 }
@@ -122,11 +123,6 @@ align-items: center;
 
 @media screen and (max-width: 599px) {
   #title{
-    margin-top: 40% !important;  
+    margin-top: 40% !important;
   }
-  #login-div{
-  margin-right:0px;
-    padding:0px;
-    background-color:pink;
-}
 }
