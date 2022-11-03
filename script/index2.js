@@ -269,6 +269,39 @@ async function cols(data) {
         line4[hours[5]].style.backgroundColor = data[index[5]].COLOR;
 
         for (let i = 0; i < 6; i++) {
+
+            switch (data[index[i]].COLOR) {
+                case 'blue':
+                    line4[hours[i]].style.color = '#fff';
+                    break;
+                case 'green':
+                    line4[hours[i]].style.color = '#fff';
+                    break;
+                case 'red':
+                    line4[hours[i]].style.color = '#000';
+                    break;
+                case 'yellow':
+                    line4[hours[i]].style.color = '#000';
+                    break;
+                case 'gray':
+                    line4[hours[i]].style.color = '#fff';
+                    break;
+                case 'pink':
+                    line4[hours[i]].style.color = 'blue';
+                    break;
+                case 'black':
+                    line4[hours[i]].style.color = '#fff';
+                    break;
+                case 'white':
+                    line4[hours[i]].style.color = '#000';
+                    break;
+                case 'purple':
+                    line4[hours[i]].style.color = 'green';
+                    break;
+            }
+        };
+      
+        for (let i = 0; i < 6; i++) {
             line3[hours[i]].src = `../image/${data[index[i]].IMAGE}.png`;
         }
 
@@ -294,7 +327,7 @@ async function cols(data) {
     cards(arr0[3], arr1[3], arr2[3]); //chamada 04
     cards(arr0[4], arr1[4], arr2[4]); //chamada 05
     cards(arr0[5], arr1[5], arr2[5]); //chamada 06  
-    cards(arr0[6], arr1[6], arr2[6]); //chamada 06  
+    cards(arr0[6], arr1[6], arr2[6]); //chamada 07  
 
 };
 
