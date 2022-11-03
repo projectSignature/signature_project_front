@@ -41,14 +41,9 @@ p {
 }
 
 after { clear: both; }
-#login-div{
-  width: 100%;
 
-  display: flex;
-  justify-content: center;
-}
 #login {
-align-items: center;
+margin: auto;
   width: 320px;
 
 }
@@ -117,12 +112,32 @@ align-items: center;
 
 @media screen and (min-width: 600px) and (max-width: 1024px) {
   #title{
-    margin-top: 40% !important;
+    margin-top: 15% !important;
   }
 }
 
-@media screen and (max-width: 599px) {
+@media screen and (min-width: 451px) and (max-width: 599px) {
+  #title{
+    margin-top: 30% !important;
+  }
+  #login-div{
+    background-color: pink;
+   display: flex;
+   justify-content: center;
+  }
+}
+
+@media screen and (max-width: 450px) {
   #title{
     margin-top: 40% !important;
   }
+  #login-div{
+    background-color: pink;
+   display: flex;
+   justify-content: center;
+  }
+  #login{
+margin-left: 20px;
+  }
+
 }
