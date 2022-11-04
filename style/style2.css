@@ -206,6 +206,7 @@ border: 1px solid lightgray;
 @media screen and (min-width: 726px) and (max-width: 1200px) {
 #menubar{
   width: 12%;
+  height:600px;
 }
 #add_member_div{
   padding-left: 0;
