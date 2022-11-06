@@ -1,46 +1,60 @@
-
-
 document.getElementById("img2").addEventListener("click", swallopen1)
 document.getElementById("img").addEventListener("click", swallopen2)
 
-function swallopen2(){
-  Swal.fire({
-  title: 'Enviar calendário ',
-  icon: 'question',
-  showCancelButton: true,
-  confirmButtonText: 'Enviar',
-  cancelButtonText: 'Cancelar',
-  width: 500,
-  customClass: "sweet-alert-acess",
-}).then((result) => {
-  if (result.value) {
+function swallopen2() {
     Swal.fire({
-      icon: "success",
-      title: 'concluido',
-    }
-    )
-  }
-});
-}
+        title: 'Enviar calendário ',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Enviar',
+        cancelButtonText: 'Cancelar',
+        width: 500,
+        customClass: "sweet-alert-acess",
+    }).then((result) => {
+        if (result.value) {
+            Swal.fire({
+                title: "testando",
+                didOpen: () => { Swal.showLoading() }
+            });
 
+            fetch('https://squid-app-ug7x6.ondigitalocean.app/pdf/calender')
+                .then((x) => x.json())
+                .then((res) => {
+                    if (res) {
+                        Swal.fire({
+                            icon: "success",
+                            title: 'concluido!',
+                            didOpen: () => { Swal.hideLoading() }
+                        });
+                    };
+                }).catch((err) => {
+                    Swal.fire({
+                        icon: "error",
+                        title: 'Não concluído!',
+                    });
+                    console.log(err)
+                })
+        };
+    });
+};
 
-function swallopen1(){
-  Swal.fire({
-  html: `
-  <div id='swall-title-div'>
-      <h1 id='swal-title'>Alterar calendário</h1>
-  </div>
-  <div id='swal-maindiv'>
+function swallopen1() {
+    Swal.fire({
+        html: `
+        <div id='swall-title-div'>
+            <h1 id='swal-title'>Alterar calendário</h1>
+        </div>
+        <div id='swal-maindiv'>
       <div id='swall-select' class='swall-div-class'>
           <h2 class='swall-sub-title'>Dia</h2>
           <select id='days' class='input'>
-              <option valoue="Monday">Monday</option>
-              <option valoue="Tuesday">Tuesday</option>
-              <option valoue="Wednesday">Wednesday</option>
-              <option valoue="Thursday">Thursday</option>
-              <option valoue="Friday">Friday</option>
-              <option valoue="Saturday">Saturday</option>
-              <option valoue="Sunday">Sunday</option>
+              <option value="monday">Monday</option>
+              <option value="tuesday">Tuesday</option>
+              <option value="wednesday">Wednesday</option>
+              <option value="thursday">Thursday</option>
+              <option value="friday">Friday</option>
+              <option value="saturday">Saturday</option>
+              <option value="sunday">Sunday</option>
           </select>
       </div>
       <div id='swall-select' class='swall-div-class'>
@@ -70,7 +84,7 @@ function swallopen1(){
           <h2 class='swall-sub-title'>Descrição 2</h2>
           <textarea id='input2' class='input'></textarea>
       </div>
-     <div id='swall-select' class='swall-div-class'>
+      <div id='swall-select' class='swall-div-class'>
           <h2 class='swall-sub-title'>Cor</h2>
           <select id="color" class='input'>
               <option value="blue">azul</option>
@@ -164,44 +178,40 @@ function swallopen1(){
               }
           }
       </style>
-  </div>`,
-  showCancelButton: true,
-  showConfirmButton: true,
-  confirmButtonText: "Confirmar",
-  cancelButtonText: "Cancelar",
-  width: 900,
-  })
- .then(() => {
-        const objSwal = {
-            day: document.querySelector('#days').value,
-            line: document.querySelector('#line').value,
-            start: document.querySelector('#swall-input-time1').value,
-            end: document.querySelector('#swall-input-time2').value,
-            desc1: document.querySelector('#input1').value,
-            desc2: document.querySelector('#input2').value,
-            cor: document.querySelector('#color').value,
-            img: document.querySelector('#kimono-selected').value
-        }
-        update(objSwal) //chama função de update 
-        console.log(objSwal.start)
-    });
+     </div>`,
+        showCancelButton: true,
+        showConfirmButton: true,
+        confirmButtonText: "Confirmar",
+        cancelButtonText: "Cancelar",
+        width: 900,
+    })
+        .then(() => {
+            const objSwal = {
+                day: document.querySelector('#days').value,
+                line: document.querySelector('#line').value,
+                start: document.querySelector('#swall-input-time1').value,
+                end: document.querySelector('#swall-input-time2').value,
+                desc1: document.querySelector('#input1').value,
+                desc2: document.querySelector('#input2').value,
+                cor: document.querySelector('#color').value,
+                img: document.querySelector('#kimono-selected').value
+            }
+            update(objSwal) //chama função de update 
+        })
 };
 
 //INICIO DOS TESTES NO CALENDARIO
-const line1 = document.querySelectorAll('#second-row')[0];
-const line2 = document.querySelectorAll('#second-row')[1];
-const line3 = document.querySelectorAll('.master-image');
+const line1 = document.querySelectorAll('.master-image');
+const line2 = document.querySelectorAll('[name="desc1"]');
+const line3 = document.querySelectorAll('[name="desc2"]');
 const line4 = document.querySelectorAll('h4');
 const line5 = document.querySelectorAll('h1');
-const line6 = document.querySelectorAll('.sechedule')[0];
-
 
 //função de load e reload de dados.
 function getDados() {
     fetch('https://squid-app-ug7x6.ondigitalocean.app/calenderteste')
         .then((x) => x.json())
         .then((res) => {
-            console.log(res);
             cols(res);
         });
 };
@@ -209,125 +219,63 @@ function getDados() {
 getDados();
 
 async function cols(data) {
-    var arr0 = [
-        [0, 7, 14, 21, 28, 35], //define os indices para buscar as horas 
-        [1, 8, 15, 22, 29, 36],
-        [2, 9, 16, 23, 30, 37],
-        [3, 10, 17, 24, 31, 38],
-        [4, 11, 18, 25, 32, 39],
-        [5, 12, 19, 26, 33, 40],
-        [6, 13, 20, 27, 34, 41]
-    ];
 
-    var arr1 = [
-        [0, 1, 14, 15, 28, 29, 42, 43, 56, 57, 70, 71], //define os indices para buscar as decrições
-        [2, 3, 16, 17, 30, 31, 44, 45, 58, 59, 72, 73],
-        [4, 5, 18, 19, 32, 33, 46, 47, 60, 61, 74, 75],
-        [6, 7, 20, 21, 34, 35, 48, 49, 62, 63, 76, 77],
-        [8, 9, 22, 23, 36, 37, 50, 51, 64, 65, 78, 79],
-        [10, 11, 24, 25, 38, 39, 52, 53, 66, 67, 80, 81],
-        [12, 13, 26, 27, 40, 41, 54, 55, 68, 69, 82, 83],
-    ];
+    function cards(initialValue, finishValue) {
 
-    var arr2 = [
-        [0, 1, 2, 3, 4, 5], //define os indices para buscar os dados no banco 
-        [6, 7, 8, 9, 10, 11],
-        [12, 13, 14, 15, 16, 17],
-        [18, 19, 20, 21, 22, 23],
-        [24, 25, 26, 27, 28, 29],
-        [30, 31, 32, 33, 34, 35],
-        [36, 37, 38, 39, 40, 41]
-    ];
+        for (let i = initialValue; i < finishValue; i++) {
+            //horario e cor da barra superior----->
+            line4[i].innerHTML = `aa${data[i].START_TIME}~${data[i].FINISH_TIME}`;
+            line4[i].style.backgroundColor = data[i].COLOR;
 
-    var arr3 = [
-        [0, 7, 14, 21, 28, 35], //define os indices para buscar as imagens do kimono 
-        [1, 8, 15, 22, 29, 36],
-        [2, 9, 16, 23, 30, 37],
-        [3, 10, 17, 24, 31, 38],
-        [4, 11, 18, 25, 32, 39],
-        [5, 12, 19, 26, 33, 40],
-        [6, 13, 20, 27, 34, 41]
-    ];
-
-
-
-    function cards(hours, descs, index, indexIMG) {
-        //horarios
-        line4[hours[0]].innerHTML = `aa${data[index[0]].START_TIME}~${data[index[0]].FINISH_TIME}`;
-        line4[hours[1]].innerHTML = `${data[index[1]].START_TIME}~${data[index[1]].FINISH_TIME}`;
-        line4[hours[2]].innerHTML = `${data[index[2]].START_TIME}~${data[index[2]].FINISH_TIME}`;
-        line4[hours[3]].innerHTML = `${data[index[3]].START_TIME}~${data[index[3]].FINISH_TIME}`;
-        line4[hours[4]].innerHTML = `${data[index[4]].START_TIME}~${data[index[4]].FINISH_TIME}`;
-        line4[hours[5]].innerHTML = `${data[index[5]].START_TIME}~${data[index[5]].FINISH_TIME}`;
-
-        //cor do h4
-        line4[hours[0]].style.backgroundColor = data[index[0]].COLOR;
-        line4[hours[1]].style.backgroundColor = data[index[1]].COLOR;
-        line4[hours[2]].style.backgroundColor = data[index[2]].COLOR;
-        line4[hours[3]].style.backgroundColor = data[index[3]].COLOR;
-        line4[hours[4]].style.backgroundColor = data[index[4]].COLOR;
-        line4[hours[5]].style.backgroundColor = data[index[5]].COLOR;
-
-        for (let i = 0; i < 6; i++) {
-
-            switch (data[index[i]].COLOR) {
+            //cor da fonte------->
+            switch (data[i].COLOR) {
                 case 'blue':
-                    line4[hours[i]].style.color = '#fff';
+                    line4[i].style.color = '#fff';
                     break;
                 case 'green':
-                    line4[hours[i]].style.color = '#fff';
+                    line4[i].style.color = '#fff';
                     break;
                 case 'red':
-                    line4[hours[i]].style.color = '#000';
+                    line4[i].style.color = '#000';
                     break;
                 case 'yellow':
-                    line4[hours[i]].style.color = '#000';
+                    line4[i].style.color = '#000';
                     break;
                 case 'gray':
-                    line4[hours[i]].style.color = '#fff';
+                    line4[i].style.color = '#000';
                     break;
                 case 'pink':
-                    line4[hours[i]].style.color = 'blue';
+                    line4[i].style.color = '#fff';
                     break;
                 case 'black':
-                    line4[hours[i]].style.color = '#fff';
+                    line4[i].style.color = '#fff';
                     break;
                 case 'white':
-                    line4[hours[i]].style.color = '#000';
+                    line4[i].style.color = '#000';
                     break;
                 case 'purple':
-                    line4[hours[i]].style.color = 'green';
+                    line4[i].style.color = '#fff';
                     break;
             }
-        };
-      
-        for (let i = 0; i < 6; i++) {
-            line3[hours[i]].src = `../image/${data[index[i]].IMAGE}.png`;
+
+            //descrição 01 e 02
+            line2[i].innerHTML = data[i].DESCRITION_1;
+            line3[i].innerHTML = data[i].DESCRITION_2;
+
+            //kimonos
+            for (let i = initialValue; i < finishValue; i++) {
+                line1[i].src = `../image/${data[i].IMAGE}.png`;
+            };
+
         }
-
-
-        //descrições
-        line5[descs[0]].innerHTML = data[index[0]].DESCRITION_1;
-        line5[descs[1]].innerHTML = data[index[0]].DESCRITION_2;
-        line5[descs[2]].innerHTML = data[index[1]].DESCRITION_1;
-        line5[descs[3]].innerHTML = data[index[1]].DESCRITION_2;
-        line5[descs[4]].innerHTML = data[index[2]].DESCRITION_1;
-        line5[descs[5]].innerHTML = data[index[2]].DESCRITION_2;
-        line5[descs[6]].innerHTML = data[index[3]].DESCRITION_1;
-        line5[descs[7]].innerHTML = data[index[3]].DESCRITION_2;
-        line5[descs[8]].innerHTML = data[index[4]].DESCRITION_1;
-        line5[descs[9]].innerHTML = data[index[4]].DESCRITION_2;
-        line5[descs[10]].innerHTML = data[index[5]].DESCRITION_1;
-        line5[descs[11]].innerHTML = data[index[5]].DESCRITION_2;
     };
 
-    cards(arr0[0], arr1[0], arr2[0]); //chamada 01
-    cards(arr0[1], arr1[1], arr2[1]); //chamada 02
-    cards(arr0[2], arr1[2], arr2[2]); //chamada 03
-    cards(arr0[3], arr1[3], arr2[3]); //chamada 04
-    cards(arr0[4], arr1[4], arr2[4]); //chamada 05
-    cards(arr0[5], arr1[5], arr2[5]); //chamada 06  
-    cards(arr0[6], arr1[6], arr2[6]); //chamada 07  
+    cards(0, 7); //chamada 01
+    cards(7, 14); //chamada 02
+    cards(14, 21); //chamada 03
+    cards(21, 28); //chamada 04
+    cards(28, 35); //chamada 05
+    cards(35, 42); //chamada 06  
 
 };
 
@@ -358,4 +306,3 @@ async function update(obj) {
 };
 
 document.querySelector('#gym-name').innerHTML = sessionStorage.getItem("gym");
-
