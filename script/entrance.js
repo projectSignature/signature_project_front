@@ -366,5 +366,8 @@ function addClient_again() {
     .then((res) => {
       console.log(res)
     })
-}
+};
+
+document.querySelector('#gym-name').innerHTML = sessionStorage.getItem("gym");
+
 
