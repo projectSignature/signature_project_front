@@ -37,16 +37,16 @@
         <input type="button" id="btn-filter" value="Buscar" />
       </div>
       <div id="table">
-        <table cellspacing="0" cellpadding="0">
+        <table class="mobile-scroll" cellspacing="0" cellpadding="0">
           <thead>
             <tr>
               <th>Name</th>
               <th>Birth</th>
               <th>Age</th>
               <th>Gender</th>
-              <th>Address</th>
-              <th>Tel</th>
-              <th>Email</th>
+              <th class="email-tag">Address</th>
+              <th class="email-tag">Tel</th>
+              <th class="email-tag">Email</th>
               <th>Language</th>
               <th>Plan</th>
               <th>Graduation</th>
@@ -94,7 +94,7 @@
           clientsHandler();
         });
     });
-    
+
     //função para pegar todos os registros quando o user entrar na página---->
     let clients;
 
@@ -122,9 +122,9 @@
         <td>${data.birthday_day}/${data.birthday_month}/${data.birthday_year}</td>
         <td>${data.birthday_age}</td>
         <td>${data.genero}</td>
-        <td>${data.adress_input}</td>
-        <td>(${data.phone01}) ${data.phone02}-${data.phone03}</td>
-        <td>${data.email}</td>
+        <td class="email-tag">${data.adress_input}</td>
+        <td class="email-tag">(${data.phone01}) ${data.phone02}-${data.phone03}</td>
+        <td class="email-tag">${data.email}</td>
         <td>${data.lang01}</td>
         <td>${data.plans}</td>
         <td>${data.graduation}</td>
@@ -301,7 +301,7 @@
             });
 
           //console.log(obj.tel);
-          /* 
+          /*
           clients = clients.map((clientAux) => {
             if (clientAux.id == client.id) {
               client.client = name;
