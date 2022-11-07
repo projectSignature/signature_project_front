@@ -15,15 +15,19 @@ body {
    background-color: #222222;
    display: flex;
    align-items: center;
-   padding-right: 300px;
+   justify-content: flex-start;
+   width: 100%;
 }
 #gym-name{
-  color:white;
-  position: absolute;
+color:white;
+width: 30%;
+height: 90%;
   font-size: 3vh;
-  right:0;
+  text-align: right;
+
 }
 #titlemain{
+  width: 70%;
   text-align: left;
   margin-left: 0;
   font-size: 2Vh;
@@ -55,49 +59,54 @@ body {
   font-size: 3vh;
   vertical-align: middle;
 }
-.sechedule{
-  width: 14%;
-  height:80%;
-  background-color: 	#666666;
-  margin-left: 10px;
-  margin-right: 10px;
-  text-align: center;
-  color: white;
-  font-size: 3vh;
-  vertical-align: middle;
-}
+
 #second-row{
   height: 14%;
+  width: 100%;
+  display: flex;
+
+}
+#second-row-5{
+  height: 14%;
+    width: 100%;
   display: flex;
 }
 #third-row{
   height: 14%;
+    width: 100%;
   display: flex;
 }
 #fourth-row{
   height: 14%;
+    width: 100%;
   display: flex;
 }
 #fifth-row{
   height: 14%;
+    width: 100%;
   display: flex;
 }
 #sixth-row{
   height: 14%;
+    width: 100%;
     display: flex;
 }
 #settings-row{
   display: flex;
-
-  justify-content: flex-end;
   margin-right: 10px;
 }
 #calendar-title{
-  padding-right: 68%;
+
+  width:60%;
   font-size: 5vh;
+  display: flex;
+  justify-content: flex-start;
 }
 #settings-button{
 height: 100%;
+  width:40%;
+  display: flex;
+  justify-content: flex-end;
 padding-right: 30px;
 }
 .setting-right-button:hover{
@@ -130,6 +139,9 @@ padding-right: 30px;
   background-color: orange;
   height: 30%;
   color:#444444;
+
+  width: 100%;
+  font-size: 1em;
 }
 .sechedule-div{
   width: 100%;
@@ -138,57 +150,136 @@ padding-right: 30px;
   display: flex;
   background-color: white;
   color:black;
+
 }
 .sechedulename{
-  font-size: 3vh;
+  font-size: 0.8em;
   margin-top: 0px;
   margin-bottom: 0px;
   height: 50%;
 }
 
 .title-image-div{
-  width: 80%;
-}
-@media screen and (max-width: 500px) {
+  width: 70%;
 
-  #settings-row{
-    background-color: blue;
-    width: 100%;
-    display: flex;
-    justify-content: flex-start;
-  }
-  #calendar-title{
-    font-size: 4vh;
-    padding-right: 15%;
-  }
+}
+.master-image{
+
+}
+
+.sechedule{
+  background-color: red;
+  width: 14%;
+}
+
+.sechedule{
+  width: 14%;
+  height:90%;
+  margin-left: 10px;
+  margin-right: 10px;
+  text-align: center;
+  color: white;
+  font-size: 3vh;
+  vertical-align: middle;
+}
+@media screen and (min-width: 1100px) and (max-width: 1300px) {
   .sechedule-day{
-      width: 14%;
-      height:50%;
-      margin-left: 2px;
-      margin-right: 2px;
-      margin-top:0px;
-      font-size: 1.5vh;
+    margin-left: 1px;
+    margin-right: 1px;
+    padding-top: 5px;
+    font-size: 1em;
   }
-  .sechedule-time{
-    height: 20%;
-    font-size: 1vh;
-  }
-  .sechedule{
-    width: 13.5%;
-    height:70%;
-    margin-left: 2px;
-    margin-right: 2px;
-    font-size: 2vh;
-    background-color: pink;
+  .master-image{
+
   }
   .sechedulename{
-    font-size: 1.5vh;
-    margin-top: 0px;
-    margin-bottom: 0px;
-    height: 50%;
+    font-size: 0.6em;
   }
-.master-image{
-  display:none;
+  .sechedule-time{
+    padding-top: 10px;
+      font-size: 0.8em;
+      word-wrap: break-word;;
+  }
+  .sechedule{
+    margin-left: 1px;
+    margin-right: 1px;
+    text-align: center;
+  }
+  .sechedule-div{
+    width: 100%;
+  }
+  .setting-right-button{
+    width: 30px;
+    height: 30px;
+  }
 }
+@media screen and (min-width: 801px) and (max-width: 1100px) {
+  .sechedule-day{
+    margin-left: 1px;
+    margin-right: 1px;
+    padding-top: 5px;
+    font-size: 1em;
+  }
+  .master-image{
 
+  }
+  .sechedulename{
+    font-size: 0.2em;
+  }
+  .sechedule-time{
+    padding-top: 10px;
+      font-size: 0.5em;
+      word-wrap: break-word;;
+  }
+  .sechedule{
+    margin-left: 1px;
+    margin-right: 1px;
+    text-align: center;
+  }
+  .sechedule-div{
+    width: 100%;
+  }
+  .setting-right-button{
+    width: 30px;
+    height: 30px;
+  }
+}
+@media only screen and (max-width: 800px) {
+#calendar-title{
+  font-size: 3vh;
+  padding-top: 7px;
+}
+#settings-button img{
+  padding-top: 12px;
+}
+.sechedule-day{
+  margin-left: 1px;
+  margin-right: 1px;
+  padding-top: 5px;
+  font-size: 1em;
+}
+.master-image{
+  display: none;
+
+}
+.sechedulename{
+  font-size: 0.2em;
+}
+.sechedule-time{
+
+    font-size: 0.3em;
+    word-wrap: break-word;;
+}
+.sechedule{
+  margin-left: 1px;
+  margin-right: 1px;
+  text-align: center;
+}
+.sechedule-div{
+  width: 100%;
+}
+.setting-right-button{
+  width: 30px;
+  height: 30px;
+}
 }
