@@ -65,7 +65,7 @@ const classes = [
 
 var dadoCalender;
 
-fetch('http://127.0.0.1:3000/calender/entrance')
+fetch('https://squid-app-ug7x6.ondigitalocean.app/calender/entrance')
   .then((x) => x.json())
   .then((res) => {
     // console.log(res)
@@ -283,7 +283,7 @@ function entrance_regist() {
     if (result.isConfirmed) {
       var password = document.querySelector('#keys_entrance').value;
 
-      fetch('http://127.0.0.1:3000/pass', {
+      fetch('https://squid-app-ug7x6.ondigitalocean.app/pass', {
         method: 'POST',
         body: JSON.stringify({ pass: password }),
         headers: { "Content-type": "application/json; charset=UTF-8" }
@@ -357,7 +357,7 @@ function addClient_again() {
     MEMBER_ID: localStorage.getItem('id')
   }
 
-  fetch('http://127.0.0.1:3000/registerentrance', {
+  fetch('https://squid-app-ug7x6.ondigitalocean.app/registerentrance', {
     method: 'POST',
     body: JSON.stringify(obj),
     headers: { "Content-type": "application/json; charset=UTF-8" }
