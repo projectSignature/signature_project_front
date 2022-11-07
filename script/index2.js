@@ -1,6 +1,34 @@
 document.getElementById("img2").addEventListener("click", swallopen1)
 document.getElementById("img").addEventListener("click", swallopen2)
 
+const mediaQuery = window.matchMedia('(max-width: 1200px)')
+function handleTabletChange(e) {
+
+  if (e.matches) {
+    document.getElementById("monday").innerHTML = "Mon"
+    document.getElementById("tuesday").innerHTML = "Tue"
+    document.getElementById("wednesday").innerHTML = "Wed"
+    document.getElementById("thursdauy").innerHTML = "Thu"
+    document.getElementById("friday").innerHTML = "Fri"
+    document.getElementById("suturday").innerHTML = "Sut"
+    document.getElementById("sunday").innerHTML = "Sun"
+
+  }else{
+    document.getElementById("monday").innerHTML = "Monday"
+    document.getElementById("tuesday").innerHTML = "Tuesday"
+    document.getElementById("wednesday").innerHTML = "Wednesday"
+    document.getElementById("thursdauy").innerHTML = "Thurday"
+    document.getElementById("friday").innerHTML = "Friday"
+    document.getElementById("suturday").innerHTML = "Suturday"
+    document.getElementById("sunday").innerHTML = "Sunday"
+  }
+}
+
+mediaQuery.addListener(handleTabletChange)
+
+handleTabletChange(mediaQuery)
+
+
 function swallopen2() {
     Swal.fire({
         title: 'Enviar calendário ',
@@ -224,7 +252,7 @@ async function cols(data) {
 
         for (let i = initialValue; i < finishValue; i++) {
             //horario e cor da barra superior----->
-            line4[i].innerHTML = `aa${data[i].START_TIME}~${data[i].FINISH_TIME}`;
+            line4[i].innerHTML = `${data[i].START_TIME}~${data[i].FINISH_TIME}`;
             line4[i].style.backgroundColor = data[i].COLOR;
 
             //cor da fonte------->
