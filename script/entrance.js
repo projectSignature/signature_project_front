@@ -290,6 +290,12 @@ function entrance_regist() {
       })
         .then((x) => x.json())
         .then((res) => {
+        
+          Swal.fire({
+            title: 'Registrando!',
+            didOpen: () => { Swal.showLoading() }
+          })
+        
           if (res[0]) {
             localStorage.setItem('id', res[0].id)
             Swal.fire({
