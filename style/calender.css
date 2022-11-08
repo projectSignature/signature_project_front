@@ -263,12 +263,12 @@ padding-right: 30px;
 
 }
 .sechedulename{
-  font-size: 0.2em;
+  font-size: 0.5em;
 }
 .sechedule-time{
-
-    font-size: 0.3em;
-    word-wrap: break-word;;
+    font-size: 0.5em;
+    word-wrap: break-word;
+      padding-top 5px;
 }
 .sechedule{
   margin-left: 1px;
