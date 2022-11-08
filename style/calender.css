@@ -20,14 +20,14 @@ body {
 }
 #gym-name{
 color:white;
-width: 30%;
+width: 40%;
 height: 90%;
   font-size: 3vh;
   text-align: right;
 
 }
 #titlemain{
-  width: 70%;
+  width: 60%;
   text-align: left;
   margin-left: 0;
   font-size: 2Vh;
@@ -282,4 +282,7 @@ padding-right: 30px;
   width: 30px;
   height: 30px;
 }
+ #gym-name{
+   font-size:2vh;
+      }
 }
