@@ -249,8 +249,12 @@ padding-right: 30px;
   font-size: 3vh;
   padding-top: 7px;
 }
+      #img2{
+            height: 20px
+      }
 #settings-button img{
-  padding-top: 12px;
+  padding-top: 8px;
+      padding-right:3px;
 }
 .sechedule-day{
   margin-left: 1px;
