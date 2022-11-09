@@ -373,7 +373,52 @@ else if(inputs[6].checked) {
   kubun_check = 0
 
 if(kubun_check==0){
-  saveData();
+  Swal.fire({
+ title: 'Confirmation'
+, html: 'We will register in the system'
+, type: 'warning'
+, showCancelButton: true
+, confirmButtonText: 'OK'
+, cancelButtonText: 'Cancel'
+, reverseButtons: true
+}).then(function(result) {
+   //キャンセル時
+   if (!result.value) {
+       //何もしない
+       console.log('キャンセルのため何もしない');
+       return;
+   }
+
+   //処理中ダイアログ
+   Swal.fire({
+     title: 'Processing'
+   , html: '処理終了まで画面はそのままにしてください。'
+   , allowOutsideClick : false     //枠外をクリックしても画面を閉じない
+   , showConfirmButton: false
+   , onBeforeOpen: () => {
+       Swal.showLoading();
+     }
+   });
+
+   //何らかの処理（ここでは動作確認用にスリープさせます）
+
+saveData();
+
+     //完了ダイアログ
+     Swal.fire({
+       title: 'Completed'
+     , html : 'Welcome to our gym'
+     , type : 'info'
+     , onAfterClose : () => {
+         console.log('処理終了後に画面更新');
+         location.reload();
+       }
+     });
+
+
+
+});
+
 }
 
 //generatePDF();
