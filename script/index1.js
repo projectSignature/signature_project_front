@@ -807,7 +807,7 @@ document.getElementById("phone1").value =="";
 document.getElementById("phone2").value =="";
 document.getElementById("phone3").value =="";
 document.getElementById("email1").value =="";
-document.getElementById("email2").value; ==""
+document.getElementById("email2").value =="";
 }
 
 function estado_select_en(){
