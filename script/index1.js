@@ -11,6 +11,7 @@ var errormessage7 = ""
 var errormessage8 = ""
 var errormessage9 = ""
 var gymname = sessionStorage.getItem("gym");
+var answer
 
 window.onload = function open_page() {
 error_massege_portugues()
@@ -237,8 +238,13 @@ function ejspdf() {
   .then((x) => x.json())
   .then((response) => {
     console.log(response)
-	  return response
+    answer = "ok";
+    return answer
   })
+  .catch((err) => {
+    answer = "ng";
+    return answer
+  });
 }
 
 function generatePDF() {
@@ -403,9 +409,9 @@ if(kubun_check==0){
 
    //何らかの処理（ここでは動作確認用にスリープさせます）
 
-saveData();
-console.log(response);
-	  
+let valorderetorno =  saveData()
+if (valorderetorno === "ok"){
+console.log(response)
      //完了ダイアログ
      Swal.fire({
        title: 'Completed'
@@ -416,6 +422,17 @@ console.log(response);
          location.reload();
        }
      });
+   }else{
+     Swal.fire({
+       title: 'Error'
+     , html : 'try again please'
+     , type : 'info'
+     , onAfterClose : () => {
+         console.log('処理終了後に画面更新');
+         location.reload();
+       }
+     });
+   }
 
 
 
