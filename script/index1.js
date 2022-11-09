@@ -412,7 +412,7 @@ if(kubun_check==0){
          setTimeout(resolve, sec * 1000);
        });
    };
-   sleep(3).then(function() {
+   sleep(5).then(function() {
 
      //完了ダイアログ
      Swal.fire({
@@ -429,7 +429,7 @@ if(kubun_check==0){
 
 
 });
-
+input_clear()
 }
 
 
@@ -795,6 +795,19 @@ function estado_select_jp(){
   {val:"沖縄県",  txt:"沖縄県"},
 ];
 ken_select_option_add(arr)
+}
+
+function input_clear(){
+document.getElementById("name-input").value =="";
+document.getElementById("birthday_year").value =="";
+document.getElementById("birthday_month").value =="";
+document.getElementById("birthday_day").value =="";
+document.getElementById("adress-input").value =="";
+document.getElementById("phone1").value =="";
+document.getElementById("phone2").value =="";
+document.getElementById("phone3").value =="";
+document.getElementById("email1").value =="";
+document.getElementById("email2").value; ==""
 }
 
 function estado_select_en(){
