@@ -395,7 +395,7 @@ if(kubun_check==0){
    //処理中ダイアログ
    Swal.fire({
      title: 'Processing'
-   , html: '処理終了まで画面はそのままにしてください。'
+   , html: 'wait'
    , allowOutsideClick : false     //枠外をクリックしても画面を閉じない
    , showConfirmButton: false
    , onBeforeOpen: () => {
@@ -414,7 +414,6 @@ if(kubun_check==0){
    };
    sleep(3).then(function() {
 
-console.log(response)
      //完了ダイアログ
      Swal.fire({
        title: 'Completed'
