@@ -76,7 +76,7 @@ function router2() {
 
 function swallopen() {
   Swal.fire({
-    title: 'エラー',
+    title: 'Error',
     icon: 'warning',
     showCancelButton: true,
     showConfirmButton: false,
