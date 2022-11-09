@@ -218,7 +218,8 @@ function saveData() {
     "email": inputs[11].value + inputs[12].value,
     "lang01": idioma,
     "plans": plan,
-    "signature": signaturePad.toDataURL("image/png")
+    "signature": signaturePad.toDataURL("image/png"),
+    "gymname": sessionStorage.getItem("gym")
   };
 
   fetch('https://squid-app-ug7x6.ondigitalocean.app/member',
