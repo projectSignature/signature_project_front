@@ -13,11 +13,11 @@ function login_check(user, password) {
   user = document.getElementById("user").value;
   password = document.getElementById("pass").value;
   if (user == "") {
-    errormessage = "ユーザー名を入力してください"
+    errormessage = "Enter your username"
     swallopen(errormessage)
   } else {
     if (password == "") {
-      errormessage = "パスワードを入力してください"
+      errormessage = "Enter your password"
       swallopen(errormessage)
     } else {
       login_request(user, password) //chamar função de login passando login e senha
@@ -45,7 +45,7 @@ async function login_request(user, password) {
         window.location = `/signature-project-front/pages/dashboard.html?login=${name}`;
 
       } else if (response.data.message) {
-        errormessage = "氏名コードまたはパスワード<br>の確認をしてください。";
+        errormessage = "Check username and password";
         document.getElementById("pass").value = "";
         sessionStorage.clear();
         swallopen(errormessage);
@@ -54,7 +54,7 @@ async function login_request(user, password) {
     })
 
     .catch((err) => {
-      errormessage = "氏名コードまたはパスワード<br>の確認をしてください。";
+      errormessage = "Check username and password";
       document.getElementById("pass").value = "";
       swallopen(errormessage);
     });
@@ -80,7 +80,7 @@ function swallopen() {
     icon: 'warning',
     showCancelButton: true,
     showConfirmButton: false,
-    cancelButtonText: '戻る',
+    cancelButtonText: 'back',
     width: 500,
     html: `<span>${errormessage}</span>`,
     customClass: "sweet-alert",
