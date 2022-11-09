@@ -43,7 +43,7 @@ p {
 after { clear: both; }
 
 #login {
-margin: auto;
+
   width: 320px;
 
 }
@@ -112,7 +112,11 @@ margin: auto;
 
 #login-div{
   width:100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+
 @media screen and (min-width: 600px) and (max-width: 1024px) {
   #title{
     margin-top: 15% !important;
@@ -123,24 +127,15 @@ margin: auto;
   #title{
     margin-top: 30% !important;
   }
-  #login-div{
-    background-color: yellow;
-   display: flex;
-   justify-content: center;
-  }
+
 }
 
 @media screen and (max-width: 414px) {
   #title{
     margin-top: 40% !important;
   }
-  #login-div{
 
 
-  }
 
-  #login{
-    margin-left:2%;
-  }
 
 }
