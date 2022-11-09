@@ -237,6 +237,7 @@ function ejspdf() {
   .then((x) => x.json())
   .then((response) => {
     console.log(response)
+	  return response
   })
 }
 
@@ -403,7 +404,8 @@ if(kubun_check==0){
    //何らかの処理（ここでは動作確認用にスリープさせます）
 
 saveData();
-
+console.log(response);
+	  
      //完了ダイアログ
      Swal.fire({
        title: 'Completed'
@@ -861,7 +863,7 @@ function swallpolitic(){
   showConfirmButton: true,
   ConfirmButtonText: '戻る',
   width: 710,
-  html:`<span>Colocar aos termos aqui</span>`,
+  html:`<span>Colocar os termos aqui</span>`,
   customClass: "sweet-alert",
   })
 }
