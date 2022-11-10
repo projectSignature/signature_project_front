@@ -321,7 +321,7 @@ function confirm_check(){
     swallerror(errormessage)
     kubun_check = 1
   }
-	console.log(signaturePad.isEmpty())
+
   if(signaturePad.isEmpty()=="true"){
     errormessage = errormessage10
     swallerror(errormessage)
