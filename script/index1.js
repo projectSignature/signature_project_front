@@ -323,6 +323,7 @@ function confirm_check(){
   }
 
   if(signaturePad.isEmpty()){
+	  console.log("input")
 	  console.log(signaturePad.isEmpty())
     errormessage = errormessage10
     swallerror(errormessage)
