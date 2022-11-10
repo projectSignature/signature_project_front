@@ -215,7 +215,7 @@ function saveData() {
     "phone01": inputs[8].value,
     "phone02": inputs[9].value,
     "phone03": inputs[10].value,
-    "email": inputs[11].value + inputs[12].value,
+    "email": inputs[11].value + '@' + inputs[12].value,
     "lang01": idioma,
     "plans": plan,
     "signature": signaturePad.toDataURL("image/png"),
