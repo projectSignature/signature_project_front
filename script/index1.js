@@ -322,7 +322,8 @@ function confirm_check(){
     kubun_check = 1
   }
 
-  if(signaturePad.isEmpty()=="true"){
+  if(signaturePad.isEmpty()){
+	  console.log(signaturePad.isEmpty())
     errormessage = errormessage10
     swallerror(errormessage)
     kubun_check = 1
@@ -338,7 +339,6 @@ function confirm_check(){
     kubun_check = 1
   }
   if(name_input==""){
-    console.log(name_input);
     name_error.style.display ="block";
     location.href = "#fullnametitle";
     kubun_check = 1
