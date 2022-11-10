@@ -318,6 +318,16 @@ function confirm_check(){
     swallerror(errormessage)
     kubun_check = 1
   }
+	 if(idioma==""){
+    errormessage = errormessage3
+    swallerror(errormessage)
+    kubun_check = 1
+  }
+　if(plan==""){
+    errormessage = errormessage4
+    swallerror(errormessage)
+    kubun_check = 1
+  }
   if(name_input==""){
     console.log(name_input);
     name_error.style.display ="block";
