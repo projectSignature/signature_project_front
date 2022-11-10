@@ -248,7 +248,7 @@ function ejspdf() {
   .then((x) => x.json())
   .then((response) => {
     console.log(response)
-
+    input_clear()
   })
 
 }
@@ -444,8 +444,7 @@ if(kubun_check==0){
        title: 'Completed'
      , html : 'Welcome to our gym'
      , type : 'info'
-     , onAfterClose : () => {
-	     input_clear()
+     , onAfterClose : () => {	     
          location.reload();
        }
      });
@@ -823,16 +822,17 @@ ken_select_option_add(arr)
 }
 
 function input_clear(){
-document.getElementById("name-input").value ="";
-document.getElementById("birthday_year").value ="";
-document.getElementById("birthday_month").value ="";
-document.getElementById("birthday_day").value ="";
-document.getElementById("adress-input").value ="";
-document.getElementById("phone1").value ="";
-document.getElementById("phone2").value ="";
-document.getElementById("phone3").value ="";
-document.getElementById("email1").value ="";
-document.getElementById("email2").value ="";
+	console.log("in");
+document.getElementById("name-input").value="";
+document.getElementById("birthday_year").value="";
+document.getElementById("birthday_month").value="";
+document.getElementById("birthday_day").value="";
+document.getElementById("adress-input").value="";
+document.getElementById("phone1").value="";
+document.getElementById("phone2").value="";
+document.getElementById("phone3").value="";
+document.getElementById("email1").value="";
+document.getElementById("email2").value="";
 signaturePad.clear();
 }
 
