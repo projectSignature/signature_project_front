@@ -354,6 +354,10 @@ if(phone1=="" || phone2=="" || phone3==""){
   phone_error.style.display ="block";
   location.href = "#phonenumber";
   kubun_check = 1
+}else if(phone3.length!=4){
+  phone_error.style.display ="block";
+  location.href = "#phonenumber";
+  kubun_check = 1
 }else{
     phone_error.style.display ="none";
     kubun_check = 0
@@ -421,7 +425,6 @@ if(kubun_check==0){
      , html : 'Welcome to our gym'
      , type : 'info'
      , onAfterClose : () => {
-         console.log('処理終了後に画面更新');
          location.reload();
        }
      });
@@ -799,16 +802,17 @@ ken_select_option_add(arr)
 }
 
 function input_clear(){
-document.getElementById("name-input").value =="";
-document.getElementById("birthday_year").value =="";
-document.getElementById("birthday_month").value =="";
-document.getElementById("birthday_day").value =="";
-document.getElementById("adress-input").value =="";
-document.getElementById("phone1").value =="";
-document.getElementById("phone2").value =="";
-document.getElementById("phone3").value =="";
-document.getElementById("email1").value =="";
-document.getElementById("email2").value =="";
+document.getElementById("name-input").innerHTML =="";
+document.getElementById("birthday_year").innerHTML =="";
+document.getElementById("birthday_month").innerHTML =="";
+document.getElementById("birthday_day").innerHTML =="";
+document.getElementById("adress-input").innerHTML =="";
+document.getElementById("phone1").innerHTML =="";
+document.getElementById("phone2").innerHTML =="";
+document.getElementById("phone3").innerHTML =="";
+document.getElementById("email1").innerHTML =="";
+document.getElementById("email2").innerHTML =="";
+signaturePad.clear();
 }
 
 function estado_select_en(){
