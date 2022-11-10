@@ -309,19 +309,16 @@ function confirm_check(){
 
   if(inputs[22].checked) {
   }else{
-    location.href = "#birthdaytitle";
     errormessage = errormessage6
     swallerror(errormessage)
     kubun_check = 1
   }
   if(signaturePad==""){
-    location.href = "#birthdaytitle";
     errormessage = errormessage10
     swallerror(errormessage)
     kubun_check = 1
   }
    if(idioma==""){
-    location.href = "#birthdaytitle";
     errormessage = errormessage3
     swallerror(errormessage)
     kubun_check = 1
