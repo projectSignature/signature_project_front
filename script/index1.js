@@ -17,6 +17,7 @@ var gymname = sessionStorage.getItem("gym");
 var answer
 
 window.onload = function open_page() {
+	console.log('P1')
 error_massege_portugues()
 estado_select_en()
 image_get(gymname)
@@ -345,7 +346,7 @@ function confirm_check(){
     kubun_check = 1
   }else{
     name_error.style.display ="none";
-    kubun_check = 0
+  
   }
    if(birthday_year=="" || birthday_month=="" || birthday_day==""){
     birthday_year_error.style.display ="block";
@@ -354,7 +355,7 @@ function confirm_check(){
   }else if(kubun_check ==1){
   }else{
       birthday_year_error.style.display ="none";
-      kubun_check = 0
+ 
   }
   if(birthday_year=="YYYY" || birthday_month=="MM" || birthday_day=="DD"){
     birthday_year_error.style.display ="block";
@@ -363,7 +364,7 @@ function confirm_check(){
   }else if(kubun_check ==1){
   }else{
     birthday_year_error.style.display ="none";
-    kubun_check = 0
+  
   }
 if(adress_input==""){
   adress_error.style.display ="block";
@@ -372,7 +373,7 @@ if(adress_input==""){
 }else if(kubun_check ==1){
   }else{
     adress_error.style.display ="none";
-    kubun_check = 0
+
 }
 if(phone1=="" || phone2=="" || phone3==""){
   phone_error.style.display ="block";
@@ -400,8 +401,8 @@ else if(inputs[6].checked) {
   }else if(kubun_check ==1){
   }else{
   email_error.style.display ="none";
-  kubun_check = 0
 
+  }
 if(kubun_check==0){
   Swal.fire({
  title: 'Confirmation'
@@ -461,7 +462,7 @@ if(kubun_check==0){
 
 //generatePDF();
 }
-}
+
 
 document.getElementById("birthday_year").addEventListener("change", birthday_date_get)
 document.getElementById("birthday_month").addEventListener("change", birthday_date_get)
