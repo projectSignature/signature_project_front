@@ -357,10 +357,6 @@ if(phone1=="" || phone2=="" || phone3==""){
   phone_error.style.display ="block";
   location.href = "#phonenumber";
   kubun_check = 1
-}else if(phone3.length!=4){
-  phone_error.style.display ="block";
-  location.href = "#phonenumber";
-  kubun_check = 1
 }else if(kubun_check ==1){
   }else{
     phone_error.style.display ="none";
@@ -876,7 +872,7 @@ ken_select_option_add(arr)
 
 function swallerror(errormessage){
   Swal.fire({
-  title: 'エラー',
+  title: 'error',
   icon: 'warning',
   showCancelButton: false,
   showConfirmButton: true,
