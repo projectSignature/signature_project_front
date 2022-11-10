@@ -322,7 +322,7 @@ function confirm_check(){
     kubun_check = 1
   }
 	console.log(signaturePad.isEmpty())
-  if(signaturePad==""){
+  if(signaturePad.isEmpty()=="true"){
     errormessage = errormessage10
     swallerror(errormessage)
     kubun_check = 1
