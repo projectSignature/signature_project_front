@@ -10,6 +10,7 @@ var errormessage6 = ""
 var errormessage7 = ""
 var errormessage8 = ""
 var errormessage9 = ""
+var errormessage10 = ""
 var gymname = sessionStorage.getItem("gym");
 var answer
 
