@@ -41,7 +41,7 @@ function swallopen2() {
     }).then((result) => {
         if (result.value) {
             Swal.fire({
-                title: "testando",
+                title: "Enviando...",
                 didOpen: () => { Swal.showLoading() }
             });
 
