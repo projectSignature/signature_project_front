@@ -122,9 +122,8 @@ function swallopen1() {
               <option value="gray">cinza</option>
               <option value="pink">rosa</option>
               <option value="black">preto</option>
-              <option value="white">branco</option>
+              <option value="white" selected>branco</option>
               <option value="purple">roxo</option>
-              <option value="branco">branco</option>
           </select>
       </div>
       <div id='swall-select' class='swall-div-class'>
@@ -132,6 +131,7 @@ function swallopen1() {
           <select id="kimono-selected" class='input'>
               <option value="monday1">monday1</option>
               <option value="monday2">monday2</option>
+              <option value="empty" selected>empty</option>
           </select>
 
       </div>
@@ -252,7 +252,7 @@ async function cols(data) {
 
         for (let i = initialValue; i < finishValue; i++) {
             //horario e cor da barra superior----->
-            line4[i].innerHTML = `${data[i].START_TIME}~${data[i].FINISH_TIME}`;
+             line4[i].innerHTML = `${data[i].START_TIME}${(data[i].COLOR != 'white') ? "~" : ""}${data[i].FINISH_TIME}`;
             line4[i].style.backgroundColor = data[i].COLOR;
 
             //cor da fonte------->
@@ -292,7 +292,12 @@ async function cols(data) {
 
             //kimonos
             for (let i = initialValue; i < finishValue; i++) {
-                line1[i].src = `../image/${data[i].IMAGE}.png`;
+                if (data[i].IMAGE == "empty") {
+                    line1[i].style.visibility = 'hidden';
+                } else {
+                    line1[i].style.visibility = 'visible';
+                    line1[i].src = `../image/${data[i].IMAGE}.png`;
+                };
             };
 
         }
