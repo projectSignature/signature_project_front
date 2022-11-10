@@ -330,6 +330,7 @@ function confirm_check(){
     birthday_year_error.style.display ="block";
     location.href = "#birthdaytitle";
     kubun_check = 1
+  }else if(kubun_check ==1){
   }else{
       birthday_year_error.style.display ="none";
       kubun_check = 0
@@ -338,6 +339,7 @@ function confirm_check(){
     birthday_year_error.style.display ="block";
     location.href = "#birthdaytitle";
     kubun_check = 1
+  }else if(kubun_check ==1){
   }else{
     birthday_year_error.style.display ="none";
     kubun_check = 0
@@ -346,7 +348,8 @@ if(adress_input==""){
   adress_error.style.display ="block";
   location.href = "#adress";
   kubun_check = 1
-}else{
+}else if(kubun_check ==1){
+  }else{
     adress_error.style.display ="none";
     kubun_check = 0
 }
@@ -358,7 +361,8 @@ if(phone1=="" || phone2=="" || phone3==""){
   phone_error.style.display ="block";
   location.href = "#phonenumber";
   kubun_check = 1
-}else{
+}else if(kubun_check ==1){
+  }else{
     phone_error.style.display ="none";
     kubun_check = 0
 }
@@ -376,6 +380,7 @@ else if(inputs[6].checked) {
   email_error.style.display ="block";
   location.href = "#email";
   kubun_check = 1
+  }else if(kubun_check ==1){
   }else{
   email_error.style.display ="none";
   kubun_check = 0
