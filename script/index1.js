@@ -11,6 +11,8 @@ var errormessage7 = ""
 var errormessage8 = ""
 var errormessage9 = ""
 var errormessage10 = ""
+var errormessage11 = ""
+var errormessage12 = ""
 var gymname = sessionStorage.getItem("gym");
 var answer
 
@@ -67,6 +69,8 @@ function error_massege_portugues(){
    errormessage8 = "O mês da data de nascimento deve deve ser 2 dígitos"
    errormessage9 = "O dia deve ser 2 dígitos"
    errormessage10 = "Assine por favor"
+   errormessage11 = "A data insirida é invalida"
+   errormessage12 = "O dia deve ser 2 dígitos"
 }
 
 function error_massege_ingles(){
@@ -80,6 +84,8 @@ function error_massege_ingles(){
    errormessage8 = "Please enter your date(month) of birth in 2 digits"
    errormessage9 = "Please enter your date(day) of birth in 2 digits"
    errormessage10 = "Please sign"
+   errormessage11 = "Check　date"
+   errormessage12 = "Please enter date in 2 digits"
 }
 
 function error_massege_japanese(){
@@ -93,6 +99,8 @@ function error_massege_japanese(){
    errormessage8 = "生年月日の月は2桁で入力してください"
    errormessage9 = "生年月日の日は2桁で入力してください"
    errormessage10 = "署名をしてください"
+   errormessage11 = "入力の日付を確認ください"
+   errormessage12 = "2桁で入力してください"
 }
 
 
@@ -482,7 +490,7 @@ if(birthday_month>13){
    }else if(birthday_day.length!=2){
       console.log('2桁じゃない')
       document.getElementById("birthday_age").value = ""
-      errormessage = "O dia deve ser 2 dígitos"
+      errormessage = errormessage12
       swallerror(errormessage)
     }else{
       const birthday = {
@@ -499,7 +507,7 @@ if(birthday_month>13){
          var d = strDate.split("/")[2];
          var date = new Date(y,m,d);
          if(date.getFullYear() != y || date.getMonth() != m || date.getDate() != d){
-           errormessage = "A data insirida é invalida"
+           errormessage = errormessage11
              document.getElementById("birthday_age").value = ""
            swallerror(errormessage)
          }
