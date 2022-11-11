@@ -6,7 +6,7 @@
 }
 
 #title{
-  margin-top: 15%;
+
   text-align: center;
   font-size: 8vh;
   padding-bottom: 30px;
@@ -43,11 +43,7 @@ p {
 after { clear: both; }
 
 
-#sotowaku{
 
-  width: 100%;
-  height:100%;
-}
 
 #login {
   width: 320px;
@@ -119,27 +115,37 @@ after { clear: both; }
   justify-content: center;
   align-items: center;
 }
-
-#title{
-  margin-top: 15%;
+#oosotowaku{
+  height:50%;
+position: relative;
 }
-
+#soto1{
+  position: absolute;
+top: 0;
+right: 0;
+bottom: 0;
+left: 0;
+margin: auto;
+width: 80%;
+height: 0.5rem;
+}
 @media screen and (min-width: 600px) and (max-width: 1024px) {
   #title{
-margin-top: 20%;
+
   }
 }
 
 @media screen and (min-width: 415px) and (max-width: 599px) {
   #title{
-margin-top: 10%;
+
+
   }
 
 }
 
 @media screen and (max-width: 414px) {
   #title{
-margin-top: 10%;
+
   }
 
 
