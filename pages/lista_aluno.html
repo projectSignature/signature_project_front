@@ -144,49 +144,84 @@
         html: `
                 <div id="title">Faça a alteração no campo desejado</div>
                 <div id="client">
-                    <div>
+                    <div class="div-block">
+                        <div class="div-span">
                         <span>Nome: </span>
+                        </div>
+                        <div class="input-select">
                         <input type="text" id="clientName" value="${client.nm_member}"/>
+                        </div>
                     </div>
-                    <div>
+                    <div class="div-block">
+                        <div class="div-span-r">
                         <span>Aniversário: </span>
-                        <input type="date" id="clientBirth" value="${client.birthday_year}-${client.birthday_month}-${client.birthday_day}"/>
+                        </div>
+                        <div  id="birth-input" class="input-select">
+                        <input type="text" id="clientBirth" value="${client.birthday_year}-${client.birthday_month}-${client.birthday_day}"/>
+                     </div>
                     </div>
-                    <div>
+                    <div class="div-block">
+                        <div class="div-span">
                         <span>Idade: </span>
-                        <input type="text" id="clientAge" value="${client.birthday_age}"/>
+                        </div>
+                        <div class="input-select">
+                        <input type="number" maxlength="2" id="clientAge" value="${client.birthday_age}"/>
                     </div>
-                    <div>
+                    </div>
+                    <div class="div-block">
+                        <div class="div-span-r">
                         <span>Gênero: </span>
+                        </div>
+                        <div  id="genero-input" class="input-select">
                         <select type="text" id="clientGender">
                         <option value="Male">Male</option>/>
                         <option value="Female">Female</option>/>
                         <option value="${client.genero}" selected>${client.genero}</option>
                         </select>
+                        </div>
                     </div>
-                    <div>
+                    <div class="div-block">
+                        <div class="div-span">
                         <span>Endereço: </span>
+                        </div>
+                        <div class="input-select">
                         <input type="text" id="clientAddress" value="${client.adress_input}"/>
                     </div>
-                    <div>
-                        <span>Telefone: </span>
-                        <input type="text" id="clientTel" value="(${client.phone01})${client.phone02}-${client.phone03}"/>
                     </div>
-                    <div>
+                    <div class="div-block">
+                        <div class="div-span-r">
+                        <span>Telefone: </span>
+                        </div>
+                        <div  id="phone-input" class="input-select">
+                        <input type="text" id="clientTel" value="0${client.phone01}-${client.phone02}-${client.phone03}"/>
+                    </div>
+                    </div>
+                    <div class="div-block">
+                        <div class="div-span">
                         <span>E-mail: </span>
+                        </div>
+                        <div class="input-select">
                         <input type="text" id="clientEmail" value="${client.email}"/>
                     </div>
-                    <div>
-                        <span>Lingua: </span>
+                    </div>
+                    <div class="div-block">
+                        <div class="div-span-r">
+                        <span>Idioma: </span>
+                        </div>
+                        <div  id="language-input" class="input-select">
                         <select type="text" id="clientlanguage">
                         <option value="japanese">japanese</option>/>
                         <option value="portugues">portugues</option>/>
                         <option value="english">english</option>/>
                         <option value="${client.lang01}" selected>${client.lang01}</option>
                         </select>
+                        </div>
                     </div>
-                    <div>
+                    <div class="div-block">
+                        <div class="div-span">
                         <span>Plano: </span>
+                        </div>
+                        <div class="input-select">
                         <select type="text" id="clientplan">
                         <option value="Plan A">Plan A</option>/>
                         <option value="Plan B">Plan B</option>/>
@@ -196,29 +231,42 @@
                         <option value="Plan F">Plan F</option>/>
                         <option value="${client.plans}" selected>${client.plans}</option>
                         </select>
+                        </div>
                     </div>
-                    <div>
+                    <div class="div-block">
+                        <div class="div-span-r">
                         <span>Graduação: </span>
+                        </div>
+                        <div  id="graduacao-input" class="input-select">
                         <input type="text" id="clientGraduation" value="${client.graduation}"/>
                     </div>
-                    <div>
+                    </div>
+                    <div class="div-block">
+                        <div class="div-span">
                         <span>Status: </span>
+                        </div>
+                        <div class="input-select">
                         <select type="text" id="clientStatus">
                         <option value="active">active</option>/>
                         <option value="inactive">inactive</option>/>
                         <option value="${client.status}" selected>${client.status}</option>
                         </select>
                     </div>
-                    <div>
+                    </div>
+                    <div class="div-block">
+                        <div class="div-span-r">
                         <span>Pass: </span>
+                        </div>
+                        <div id="pass-input" class="input-select">
                         <input maxlength="4"  id="clientPass" value="${client.pass}"/>
-
+                     </div>
                     </div>
                 </div>
 
                 <style>
                 #title{
                   font-size:4vh;
+
                 }
                     #client{
                         width: 100%;
@@ -230,13 +278,10 @@
                     }
 
                     #client div{
-                        width: 30%;
+                        width: 50%;
                         display: flex;
-                        justify-content: space-between;
                         align-items: center;
-                        padding-left: 15%;
                         padding-bottom: 2%;
-
                     }
 
                     #client div input{
@@ -244,25 +289,81 @@
                         height: 5vh;
                         border: 1px solid gray;
                         text-indent: 10px;
-
+                        width: 50vh;
                     }
                     #client div select{
                       border-radius: 10px;
-                      width: 24vh;
+                      width: 50vh;
                       height: 5vh;
                       border: 1px solid gray;
                       text-indent: 10px
-
+                      width: 50vh;
                     }
                     #clientBirth{
                       border-radius: 10px;
-                      width: 24vh;
+                      width: 50vh;
                       height: 5vh;
                       border: 1px solid gray;
                       text-indent: 10px
                     }
+                   .div-span{
+                     display:flex;
+                     justify-content: flex-end;
+                   }
+                   .div-span-r{
+                     display:flex;
+                     justify-content: flex-end;
+                     width:10%;
 
+                   }
+
+                   #pass-input{
+                     margin-right:100px;
+                   }
+                   #phone-input{
+                     margin-right:100px;
+                   }
+                   #graduacao-input{
+                     margin-right:100px;
+                   }
+                   #language-input{
+                     margin-right:100px;
+                   }
+                   #genero-input{
+                     margin-right:100px;
+                   }
+                   #birth-input{
+                     margin-right:100px;
+                   }
+
+                  @media only screen and (max-width: 700px) {
+                     #title{
+                       font-size:1em;
+                     }
+                     #client{
+                       display:block;
+                     }
+                     .div-block{
+                        display:block;
+                        width:100%;
+                        height:100px;
+                     }
+                     #client div{
+                         width: 100%;
+                         display: block;
+                         padding-bottom: 1%;
+                         justify-content: start;
+                         padding-left: 1%;
+                       }
+                       #client div input{
+                           width: 25vh;
+                       }
+                       #client div select{
+                           width: 25vh;
+                       }
+                  }
                 </style>
+
             `,
         showCancelButton: true,
         confirmButtonText: "Salvar",
