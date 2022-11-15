@@ -40,13 +40,12 @@ inputs[6].addEventListener('click', () => {
 })
 
 function member_kubun_chech(){
-	var terget1 = document.getElementById("birthday_age").value
-		if(target1!=""||member_kubun!=0){
+		if(document.getElementById("birthday_age").value!=""||member_kubun!=0){
 			console.log("nanimoshinai")
-		}else if(target1>=16||member_kubun==1){
+		}else if(document.getElementById("birthday_age").value>=16||member_kubun==1){
 			member_kubun==1
 			console.log("18ijyou,otoko")
-		}else if(target1>=16||member_kubun==2){
+		}else if(document.getElementById("birthday_age").value>=16||member_kubun==2){
 			member_kubun==2
 			console.log("18miman,otoko")
 		}else{
