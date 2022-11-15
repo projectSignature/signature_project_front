@@ -21,6 +21,7 @@ window.onload = function open_page() {
 error_massege_portugues()
 estado_select_en()
 image_get(gymname)
+	planget()
 }
 
 function image_get(){
@@ -926,6 +927,14 @@ function swall_success(){
    title: '完了',
     }
    )
+}
+
+function planget(){
+	fetch('https://squid-app-ug7x6.ondigitalocean.app/planget')
+	  .then((x) => x.json())
+	  .then((res) => {
+	     console.log(res)
+	  })
 }
 
 
