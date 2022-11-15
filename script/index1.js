@@ -32,17 +32,19 @@ function image_get(){
 var member_kubun = 0
 inputs[5].addEventListener('click', () => {
 		member_kubun = 1
+	inputs[6].checked.false;
 	console.log(member_kubun)
 		member_kubun_chech()
 })
 inputs[6].addEventListener('click', () => {
 	member_kubun = 2
+	inputs[5].checked.false;
 	console.log(member_kubun)
 	member_kubun_chech()
 })
 
 function member_kubun_chech(){
-		if(document.getElementById("birthday_age").value!="" && member_kubun!=0){
+		if(document.getElementById("birthday_age").value!="" && member_kubun == 0){
 			console.log("nanimoshinai")
 		}else if(document.getElementById("birthday_age").value>=16 && member_kubun==1){
 			member_kubun==1
