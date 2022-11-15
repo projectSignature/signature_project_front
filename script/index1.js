@@ -40,7 +40,7 @@ inputs[6].addEventListener('click', () => {
 })
 
 function member_kubun_chech(){
-	terget1 = document.getElementById("birthday_age").value
+	var terget1 = document.getElementById("birthday_age").value
 		if(target1!=""||member_kubun!=0){
 			console.log("nanimoshinai")
 		}else if(target1>=16||member_kubun==1){
