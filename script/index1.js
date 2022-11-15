@@ -29,6 +29,31 @@ function image_get(){
 
 }
 
+var member_kubun = 0
+inputs[5].addEventListener('click', () => {
+		member_kubun = 1
+		member_kubun_chech()
+})
+inputs[6].addEventListener('click', () => {
+	member_kubun = 2
+	member_kubun_chech()
+})
+
+function member_kubun_chech(){
+	terget1 = document.getElementById("birthday_age").value
+		if(target1!=""||member_kubun!=0){
+			console.log("nanimoshinai")
+		}else if(target1>=16||member_kubun==1){
+			member_kubun==1
+			console.log("18ijyou,otoko")
+		}else if(target1>=16||member_kubun==2){
+			member_kubun==2
+			console.log("18miman,otoko")
+		}else{
+			member_kubun==3
+			console.log("18miman,miman")
+		}
+}
 
 //var myage = new ageRestriction(18, 65, 'year', 'month', 'day');
 
@@ -528,6 +553,7 @@ function getAge(birthday){
       age--;
     }
     document.getElementById("birthday_age").value = age
+	member_kubun_chech()
     return age;
 }
 
