@@ -32,14 +32,14 @@ function image_get(){
 var member_kubun = 0
 inputs[5].addEventListener('click', () => {
 		member_kubun = 1
-	document.getElementById("women1").style.backgroundColor = '#ff0000';
+	document.getElementById("women1").style.backgroundColor = '#FFFFFF';
 	inputs[6].checked.false;
 	console.log(member_kubun)
 		member_kubun_chech()
 })
 inputs[6].addEventListener('click', () => {
 	member_kubun = 2
-	document.getElementById("man1").style.backgroundColor = '#ff0000';
+	document.getElementById("man1").style.backgroundColor = '#FFFFFF';
 	inputs[5].checked.false;
 	console.log(member_kubun)
 	member_kubun_chech()
