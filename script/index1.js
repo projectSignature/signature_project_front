@@ -21,7 +21,7 @@ window.onload = function open_page() {
 error_massege_portugues()
 estado_select_en()
 image_get(gymname)
-	planget()
+	//planget()
 }
 
 function image_get(){
@@ -57,12 +57,15 @@ function member_kubun_chech(){
 		}else if(document.getElementById("birthday_age").value>=16 && member_kubun==1){
 			member_kubun==1
 			console.log("18ijyou,otoko")
+			planget()
 		}else if(document.getElementById("birthday_age").value>=16 && member_kubun==2){
 			member_kubun==2
 			console.log("18miman,onna")
+			planget()
 		}else{
 			member_kubun==3
 			console.log("18miman,miman")
+			planget()
 		}
 }
 
@@ -973,10 +976,10 @@ function planget(){
 	     console.log(res)
 		const plan_existentes = []
 			 for(var i=0;i<res.length;i++){
-				 //if(member_kubun==res.plans[i].PLAN_KUBUN){
+				 if(member_kubun==res[i].PLAN_KUBUN){
 					 console.log(res[i])
 					// plan_existentes
-				// }
+				 }
 	      // kakari_existentes.push(response.data.number[index].KAKARI_NAME)
 				//	let op = document.createElement("option");
 				//	op.value = arr[i].val;  //value値
