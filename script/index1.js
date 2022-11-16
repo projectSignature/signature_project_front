@@ -57,7 +57,7 @@ function member_kubun_chech(){
 			console.log("18ijyou,otoko")
 		}else if(document.getElementById("birthday_age").value>=16 && member_kubun==2){
 			member_kubun==2
-			console.log("18miman,otoko")
+			console.log("18miman,onna")
 		}else{
 			member_kubun==3
 			console.log("18miman,miman")
