@@ -973,8 +973,8 @@ function planget(){
 	     console.log(res)
 		const plan_existentes = []
 			 for(var i=0;i<res.length;i++){
-				 if(member_kubun==res[i].PLAN_KUBUN){
-					 console.log(res[i])
+				 if(member_kubun==res.plans[i].PLAN_KUBUN){
+					 console.log(res.plans[i])
 					// plan_existentes
 				 }
 	      // kakari_existentes.push(response.data.number[index].KAKARI_NAME)
