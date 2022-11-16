@@ -971,6 +971,18 @@ function planget(){
 	  .then((x) => x.json())
 	  .then((res) => {
 	     console.log(res)
+		const plan_existentes = []
+			 for(var i=0;i<res.length;i++){
+				 if(member_kubun==res.data.number[index].PLAN_KUBUN){
+					 console.log(res.data.number[index])
+					// plan_existentes
+				 }
+	      // kakari_existentes.push(response.data.number[index].KAKARI_NAME)
+				//	let op = document.createElement("option");
+				//	op.value = arr[i].val;  //value値
+				//	op.text = arr[i].txt;   //テキスト値
+				//	document.getElementById("kenselect").appendChild(op);
+				}
 	  })
 }
 
