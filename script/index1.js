@@ -970,7 +970,7 @@ function planget(){
 	fetch('https://squid-app-ug7x6.ondigitalocean.app/planget')
 	  .then((x) => x.json())
 	  .then((res) => {
-	     console.log(res)
+	     console.log(res.data)
 		const plan_existentes = []
 			 for(var i=0;i<res.length;i++){
 				 if(member_kubun==res.plans[i].PLAN_KUBUN){
