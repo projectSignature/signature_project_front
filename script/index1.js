@@ -55,15 +55,13 @@ function member_kubun_chech(){
 		if(document.getElementById("birthday_age").value!="" && member_kubun == 0){
 			console.log("nanimoshinai")
 		}else if(document.getElementById("birthday_age").value>=16 && member_kubun==1){
-			member_kubun==1
 			console.log("18ijyou,otoko")
 			planget()
 		}else if(document.getElementById("birthday_age").value>=16 && member_kubun==2){
-			member_kubun==2
 			console.log("18miman,onna")
 			planget()
 		}else{
-			member_kubun==3
+			member_kubun = 3
 			console.log("18miman,miman")
 			planget()
 		}
