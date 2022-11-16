@@ -72,7 +72,7 @@ body{
   border-radius: 2px;
   transform: translate(-6px, 5px) rotateZ(-135deg);
   transform-origin: 2px 2px;
-  background: #FFFFFF;
+  /*background: #FFFFFF;*/
 }
 .ECM_CheckboxInput-Input:checked + .ECM_CheckboxInput-DummyInput::after {
   content: "";
