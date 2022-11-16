@@ -33,7 +33,8 @@ var member_kubun = 0
 inputs[5].addEventListener('click', () => {
 		member_kubun = 1
 	document.getElementById("man1").style.backgroundColor = '#6b1afa';
-	document.getElementById("women1").style.backgroundColor = '#FFFFFF';
+	document.getElementById("women1").style.Color = '#FFFFFF';
+	document.getElementById("women1").style.backgroundColor = '#B6B6B4';
 	inputs[6].checked.false;
 	console.log(member_kubun)
 		member_kubun_chech()
@@ -41,7 +42,8 @@ inputs[5].addEventListener('click', () => {
 inputs[6].addEventListener('click', () => {
 	member_kubun = 2
 	document.getElementById("women1").style.backgroundColor = '#6b1afa';
-	document.getElementById("man1").style.backgroundColor = '#FFFFFF';
+	document.getElementById("women1").style.Color = '#FFFFFF';
+	document.getElementById("man1").style.backgroundColor = '#B6B6B4';
 	inputs[5].checked.false;
 	console.log(member_kubun)
 	member_kubun_chech()
