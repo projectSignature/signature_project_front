@@ -974,10 +974,12 @@ function planget(){
 	     console.log(res)
 		const plan_existentes = []
 		var plan_loop = 0
+		var price_p = ""
 			 for(var i=0;i<res.length;i++){
 				 if(member_kubun==res[i].PLAN_KUBUN){
+					 price_p = `plan-${plan_loop}-price`
 					 console.log(res[i].PLAN_VALOR)
-			      document.getElementById(`plan-${plan_loop}-price`).innerHTML　= "\" + res[i].PLAN_VALOR
+			      document.getElementById(price_p).innerHTML　= "\" + res[i].PLAN_VALOR
 						plan_loop = plan_loop +1 
 				 }
 	      // kakari_existentes.push(response.data.number[index].KAKARI_NAME)
