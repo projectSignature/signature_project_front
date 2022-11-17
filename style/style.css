@@ -113,8 +113,9 @@ body{
   width: 29%;
 }
 #politc-span{
-    border-bottom: 1px solid lightgray;
+    border: 2px solid lightgray;
     overflow-y: scroll;
+    height:250px;
 }
 #email2{
   width: 30%;
