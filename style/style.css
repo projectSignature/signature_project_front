@@ -116,6 +116,7 @@ body{
     border: 2px solid lightgray;
     overflow-y: scroll;
     height:300px;
+    text-align:left;
 }
 #email2{
   width: 30%;
