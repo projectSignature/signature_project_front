@@ -954,13 +954,13 @@ function swallerror(errormessage){
 document.getElementById("politiclink").addEventListener("click", swallpolitic)
 function swallpolitic(){
   Swal.fire({
-  title: 'Póliticas da academia',
+  title: 'Termo de resonsabilidade e condições para matrícula.',
   icon: 'warning',
   showCancelButton: false,
   showConfirmButton: true,
   ConfirmButtonText: '戻る',
   width: 710,
-  html:`<span>Colocar os termos aqui 
+  html:`<div id="politc-span"> <span>Colocar os termos aqui 
 	Por meio deste, eu concordo com as regras estabelecidas no Kussano Dojo.
 Eu concordo em participar das aulas sabendo que há riscos de ocorrer lesões, 
 sindrome pós-traumática ou morte, durante ou após o treino.
@@ -981,6 +981,7 @@ PARA PAIS/RESPONSÁVEIS POR ALUNOS MENORES DE IDADE
 Como pai/responsável, com responsabilidade legal por este aluno, eu certifico 
 que tendo lido as declarações contidas acima, eu concordo com a matrícula 
 dele/dela nesta academia.
+</div>
 </span>`,
   customClass: "sweet-alert",
   })
