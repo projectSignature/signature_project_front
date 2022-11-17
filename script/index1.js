@@ -988,6 +988,8 @@ dele/dela nesta academia.
   ConfirmButtonText: '戻る',
 	  }).then(function(result) {
   console.log(result);
+	document.getElementById("politic1").style.backgroundColor = '#6b1afa';
+	document.getElementById("politic2").style.Color = '#FFFFFF';
   })
 }
 
