@@ -960,7 +960,28 @@ function swallpolitic(){
   showConfirmButton: true,
   ConfirmButtonText: '戻る',
   width: 710,
-  html:`<span>Colocar os termos aqui</span>`,
+  html:`<span>Colocar os termos aqui 
+	Por meio deste, eu concordo com as regras estabelecidas no Kussano Dojo.
+Eu concordo em participar das aulas sabendo que há riscos de ocorrer lesões, 
+sindrome pós-traumática ou morte, durante ou após o treino.
+Eu também concordo em não processar os professores, os parceiros de treino e 
+o proprietário da academia, em caso de acidentes, lesões, sindrome pós 
+traumática ou morte que possam ocorrer durante ou após o treino.
+Eu também concordo que seja permitido mostrar publicamente qualquer  
+vídeo ou foto de treino através de panfletos, páginas na web, Youtube e 
+redes sociais.
+Eu li e estou ciente das declarações acima, e eu, com isso, concordo em 
+participar das aulas por minha própria conta.
+E com isso declaro que todas as informações na ficha de incrição são  
+verdadeirase corretas.
+
+PARA PAIS/RESPONSÁVEIS POR ALUNOS MENORES DE IDADE 
+(ABAIXO DA IDADE DE 20 ANOS NO  ATO DA MATRÍCULA)
+
+Como pai/responsável, com responsabilidade legal por este aluno, eu certifico 
+que tendo lido as declarações contidas acima, eu concordo com a matrícula 
+dele/dela nesta academia.
+</span>`,
   customClass: "sweet-alert",
   })
 }
