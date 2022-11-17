@@ -979,12 +979,13 @@ function planget(){
 				 if(member_kubun==res[i].PLAN_KUBUN){
 					 console.log(res[i].PLAN_VALOR)
 			      document.getElementById(`plan-${plan_loop}-price`).innerHTML　=  `¥${res[i].PLAN_VALOR}`
-			      document.getElementById(`plan-${plan_loop}`).innerHTML　=  res[i].PLANS_NAME
+			      document.getElementById(`plan-${plan_loop}`).innerHTML　=  `PLAN ${res[i].PLANS_NAME}`
 			      document.getElementById(`plan-${plan_loop}-detail1`).innerHTML　=  res[i].PLAN_DISCRITION1
 			      document.getElementById(`plan-${plan_loop}-detail2`).innerHTML　=  res[i].PLAN_DISCRITION2
 		              document.getElementById(`plan-${plan_loop}-detail3`).innerHTML　=  res[i].PLAN_DISCRITION3
 			      document.getElementById(`plan-select-${plan_loop}`).style.display =  '';
 						plan_loop = plan_loop +1 
+					 concole.log(plan_loop)
 				 }
 				}
 				for(var ii=plan_loop+1;ii<6;ii++) {
