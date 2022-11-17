@@ -112,6 +112,10 @@ body{
 .phone{
   width: 29%;
 }
+#politc-span{
+    border-bottom: 1px solid lightgray;
+    overflow-y: scroll;
+}
 #email2{
   width: 30%;
 }
