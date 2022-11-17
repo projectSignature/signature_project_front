@@ -990,6 +990,7 @@ function planget(){
 				for(var ii=plan_loop;ii<7;ii++) {
 					document.getElementById(`plan-select-${ii}`).style.display = 'none';
 				}
+		               member_kubun = 0
 	  })
 }
 
