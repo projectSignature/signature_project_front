@@ -1016,6 +1016,8 @@ function planget(){
 			      document.getElementById(`plan-${plan_loop}-detail1`).innerHTML　=  res[i].PLAN_DISCRITION1
 			      document.getElementById(`plan-${plan_loop}-detail2`).innerHTML　=  res[i].PLAN_DISCRITION2
 		              document.getElementById(`plan-${plan_loop}-detail3`).innerHTML　=  res[i].PLAN_DISCRITION3
+			      document.getElementById(`plan-${plan_loop}-detail4`).innerHTML　=  res[i].PLAN_DISCRITION4
+			      document.getElementById(`plan-${plan_loop}-detail5`).innerHTML　=  res[i].PLAN_DISCRITION5
 			      document.getElementById(`plan-select-${plan_loop}`).style.display =  '';
 						plan_loop = plan_loop +1 
 					 console.log(plan_loop)
