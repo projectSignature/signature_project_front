@@ -972,7 +972,6 @@ function planget(){
 	  .then((x) => x.json())
 	  .then((res) => {
 	     console.log(res)
-		const plan_existentes = []
 		var plan_loop = 1
 		var price_p = ""
 			 for(var i=0;i<res.length;i++){
