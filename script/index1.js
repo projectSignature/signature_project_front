@@ -987,6 +987,7 @@ dele/dela nesta academia.
   customClass: "sweet-alert",
   ConfirmButtonText: '戻る',
 	  }).then(function(result) {
+	  swall.close
 	  politic_check()
 	  console.log("checkdekita")
   console.log(result);
@@ -995,6 +996,7 @@ dele/dela nesta academia.
 }
 
 function politic_check(){
+	
 	document.getElementById("politic1").style.backgroundColor = '#6b1afa';
 	document.getElementById("politic2").style.Color = '#FFFFFF';
 }
