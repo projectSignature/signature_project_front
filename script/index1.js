@@ -985,7 +985,7 @@ function planget(){
 		              document.getElementById(`plan-${plan_loop}-detail3`).innerHTML　=  res[i].PLAN_DISCRITION3
 			      document.getElementById(`plan-select-${plan_loop}`).style.display =  '';
 						plan_loop = plan_loop +1 
-					 concole.log(plan_loop)
+					 console.log(plan_loop)
 				 }
 				}
 				for(var ii=plan_loop+1;ii<6;ii++) {
