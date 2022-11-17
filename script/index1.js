@@ -958,7 +958,6 @@ function swallpolitic(){
   icon: 'warning',
   showCancelButton: true,
   showConfirmButton: true,
-  ConfirmButtonText: '戻る',
   width: 710,
   html:`<div id="politc-span"> <span>Por meio deste, eu concordo com as regras estabelecidas no Kussano Dojo.
  
@@ -986,6 +985,9 @@ dele/dela nesta academia.
 </div>
 </span>`,
   customClass: "sweet-alert",
+  ConfirmButtonText: '戻る',
+	  }).then(function(result) {
+  console.log(result);
   })
 }
 
