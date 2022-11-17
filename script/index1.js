@@ -988,6 +988,7 @@ dele/dela nesta academia.
   ConfirmButtonText: '戻る',
 	  }).then(function(result) {
 	  politic_check()
+	  console.log("checkdekita")
   console.log(result);
 	
   })
