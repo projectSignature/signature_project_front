@@ -956,11 +956,12 @@ function swallpolitic(){
   Swal.fire({
   title: 'Termo de resonsabilidade e condições para matrícula.',
   icon: 'warning',
-  showCancelButton: false,
+  showCancelButton: true,
   showConfirmButton: true,
   ConfirmButtonText: '戻る',
   width: 710,
   html:`<div id="politc-span"> <span>Por meio deste, eu concordo com as regras estabelecidas no Kussano Dojo.
+ 
 <br>Eu concordo em participar das aulas sabendo que há riscos de ocorrer lesões, 
 sindrome pós-traumática ou morte, durante ou após o treino.
 <br>Eu também concordo em não processar os professores, os parceiros de treino e 
