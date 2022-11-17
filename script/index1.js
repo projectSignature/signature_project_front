@@ -52,6 +52,12 @@ inputs[6].addEventListener('click', () => {
 })
 
 function member_kubun_chech(){
+		if(inputs[5].checked) {
+		member_kubun = 1
+		}
+		if(inputs[6].checked) {
+			member_kubun = 2
+		}
 		if(document.getElementById("birthday_age").value!="" && member_kubun == 0){
 			console.log("nanimoshinai")
 		}else if(document.getElementById("birthday_age").value>=16 && member_kubun==1){
@@ -990,7 +996,7 @@ function planget(){
 				for(var ii=plan_loop;ii<7;ii++) {
 					document.getElementById(`plan-select-${ii}`).style.display = 'none';
 				}
-		               member_kubun = 0
+		         
 	  })
 }
 
