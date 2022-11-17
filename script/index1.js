@@ -988,7 +988,7 @@ function planget(){
 					 console.log(plan_loop)
 				 }
 				}
-				for(var ii=plan_loop;ii<5;ii++) {
+				for(var ii=plan_loop;ii<7;ii++) {
 					document.getElementById(`plan-select-${ii}`).style.display = 'none';
 				}
 	  })
