@@ -960,8 +960,7 @@ function swallpolitic(){
   showConfirmButton: true,
   ConfirmButtonText: '戻る',
   width: 710,
-  html:`<div id="politc-span"> <span>Colocar os termos aqui 
-	Por meio deste, eu concordo com as regras estabelecidas no Kussano Dojo.
+  html:`<div id="politc-span"> <span>Por meio deste, eu concordo com as regras estabelecidas no Kussano Dojo.
 Eu concordo em participar das aulas sabendo que há riscos de ocorrer lesões, 
 sindrome pós-traumática ou morte, durante ou após o treino.
 Eu também concordo em não processar os professores, os parceiros de treino e 
