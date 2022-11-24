@@ -1,67 +1,5 @@
 const cards = document.getElementById('cards');
 var imgTeste = "https://images.unsplash.com/photo-1481349518771-20055b2a7b24?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8cmFuZG9tfGVufDB8fDB8fA%3D%3D&w=1000&q=80"
-const classes = [
-  {
-    time: new Date('10/10/2022'),
-    className: "Steps",
-    timeToFinish: new Date(),
-    imageSrc: "https://images.unsplash.com/photo-1481349518771-20055b2a7b24?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8cmFuZG9tfGVufDB8fDB8fA%3D%3D&w=1000&q=80"
-  },
-  {
-    time: new Date("09/10/2022"),
-    className: "Steps",
-    timeToFinish: new Date(),
-    imageSrc: "https://images.unsplash.com/photo-1481349518771-20055b2a7b24?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8cmFuZG9tfGVufDB8fDB8fA%3D%3D&w=1000&q=80"
-  },
-  {
-    time: new Date("10/09/2022"),
-    className: "Steps",
-    timeToFinish: new Date(),
-    imageSrc: "https://images.unsplash.com/photo-1481349518771-20055b2a7b24?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8cmFuZG9tfGVufDB8fDB8fA%3D%3D&w=1000&q=80"
-  },
-  {
-    time: new Date("09/10/2022"),
-    className: "Steps",
-    timeToFinish: new Date(),
-    imageSrc: "https://images.unsplash.com/photo-1481349518771-20055b2a7b24?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8cmFuZG9tfGVufDB8fDB8fA%3D%3D&w=1000&q=80"
-  },
-  {
-    time: new Date(),
-    className: "Steps",
-    timeToFinish: new Date(),
-    imageSrc: "https://images.unsplash.com/photo-1481349518771-20055b2a7b24?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8cmFuZG9tfGVufDB8fDB8fA%3D%3D&w=1000&q=80"
-  },
-  {
-    time: new Date("14/10/2022"),
-    className: "Steps",
-    timeToFinish: new Date(),
-    imageSrc: "https://images.unsplash.com/photo-1481349518771-20055b2a7b24?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8cmFuZG9tfGVufDB8fDB8fA%3D%3D&w=1000&q=80"
-  },
-  {
-    time: new Date("15/10/2022"),
-    className: "Steps",
-    timeToFinish: new Date(),
-    imageSrc: "https://images.unsplash.com/photo-1481349518771-20055b2a7b24?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8cmFuZG9tfGVufDB8fDB8fA%3D%3D&w=1000&q=80"
-  },
-  {
-    time: new Date("16/10/2022"),
-    className: "Steps",
-    timeToFinish: new Date(),
-    imageSrc: "https://images.unsplash.com/photo-1481349518771-20055b2a7b24?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8cmFuZG9tfGVufDB8fDB8fA%3D%3D&w=1000&q=80"
-  },
-  {
-    time: new Date("17/10/2022"),
-    className: "Steps",
-    timeToFinish: new Date(),
-    imageSrc: "https://images.unsplash.com/photo-1481349518771-20055b2a7b24?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8cmFuZG9tfGVufDB8fDB8fA%3D%3D&w=1000&q=80"
-  },
-  {
-    time: new Date("18/10/2022"),
-    className: "Steps",
-    timeToFinish: new Date(),
-    imageSrc: null
-  }
-]
 
 var dadoCalender;
 
@@ -88,18 +26,23 @@ function previousSlide() {
 
 function classesHandler(classes) {
   for (let index = 0; index < classes.length; index++) {
-    const currentClass = classes[index]
-    let cardOfClass = mountCard(currentClass, index)
-    cardOfClass = cardOfClass + `<span class="nextClass ${(index >= classes.length - 1) ? "last" : ""}">&#8594;</span>`
-    cards.innerHTML += cardOfClass
-  }
-}
+    const currentClass = classes[index];
+
+    if (currentClass.DESCRITION_1 != '') {
+      let cardOfClass = mountCard(currentClass, index)
+      cardOfClass = cardOfClass + `<span class="nextClass ${(index >= classes.length - 1) ? "last" : ""}">&#8594;</span>`
+      cards.innerHTML += cardOfClass;
+    };
+  };
+};
 
 function mountCard(data, index) {
   const timeOfClass = new Date(data.time)
   const currentTime = new Date()
   const timeToFinish = new Date()
-  let cardStruct = `
+    
+   if (data.DESCRITION_1 != '') {
+    let cardStruct = `
     <div class="card ${(currentTime.getHours() == timeOfClass.getHours()) ? 'now' : ""}">
         <span class="title">
             ${(currentTime.getHours() == timeOfClass.getHours() && currentTime.getDate() == timeOfClass.getDate()) ? 'Now' : (timeOfClass.getDate() < currentTime.getDate() || timeOfClass.getHours() < currentTime.getHours()) ? "Before" : "After"}
@@ -110,14 +53,11 @@ function mountCard(data, index) {
             {{image}}
             </div>
     </div>`
-  cardStruct = cardStruct.replace(/{{image}}/g, ` <img src="${imgTeste}" />`)
-  /*   if (data.imageSrc) {
-      cardStruct = cardStruct.replace(/{{image}}/g, ` <img src="${imgTeste}" />`)
-    } else {
-      cardStruct = cardStruct.replace(/{{image}}/g, ``)
-    } */
-  return cardStruct
-}
+    cardStruct = cardStruct.replace(/{{image}}/g, ` <img src="${imgTeste}" />`);
+
+    return cardStruct;
+  }; 
+};
 
 function getFormattedTime(time) {
   return `${(time.getHours() > 10) ? time.getHours() : '0' + time.getHours()}:${(time.getMinutes() > 10) ? time.getMinutes() : '0' + time.getMinutes()}`
