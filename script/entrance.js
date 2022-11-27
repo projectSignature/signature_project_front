@@ -1,22 +1,23 @@
 const cards = document.getElementById('cards');
 var imgTeste = "https://images.unsplash.com/photo-1481349518771-20055b2a7b24?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8cmFuZG9tfGVufDB8fDB8fA%3D%3D&w=1000&q=80"
-
 var dadoCalender;
+var cards_count = 0;
+document.querySelector('#gym-name').innerHTML = sessionStorage.getItem("gym");
 
+//カレンダーのデータ取得
 fetch('https://squid-app-ug7x6.ondigitalocean.app/calender/entrance')
   .then((x) => x.json())
   .then((res) => {
     // console.log(res)
     classesHandler(res);
     dadoCalender = res;
-
   })
 
+//スライド移動
 function assignEventsInButtons() {
   document.getElementById('next').addEventListener('click', nextSlide)
   document.getElementById('previous').addEventListener('click', previousSlide)
 }
-
 function nextSlide() {
   cards.scrollLeft += 1300
 }
@@ -25,38 +26,93 @@ function previousSlide() {
 }
 
 function classesHandler(classes) {
+  console.log(classes)
   for (let index = 0; index < classes.length; index++) {
     const currentClass = classes[index];
-
     if (currentClass.DESCRITION_1 != '') {
+        console.log(currentClass)
       let cardOfClass = mountCard(currentClass, index)
       cardOfClass = cardOfClass + `<span class="nextClass ${(index >= classes.length - 1) ? "last" : ""}">&#8594;</span>`
+
       cards.innerHTML += cardOfClass;
     };
   };
 };
 
 function mountCard(data, index) {
-  const timeOfClass = new Date(data.time)
+  //const timeOfClass = new Date(data.START_TIME)
   const currentTime = new Date()
-  const timeToFinish = new Date()
-    
-   if (data.DESCRITION_1 != '') {
+  const year = currentTime.getFullYear()
+  const month = currentTime.getMonth()+1
+  const day = currentTime.getDate()
+  var status = ""
+   const timeToFinish = new Date(`${year}/${month}/${day} ${data.FINISH_TIME}`)
+   const timeOfClass = new Date(`${year}/${month}/${day} ${data.START_TIME}`)
+   const test = new Date('2022/11/27 15:40')
+   if(currentTime>timeOfClass && currentTime<timeToFinish){
+     status = "On going" //最中
+     console.log("in")
+   }
+if(currentTime>timeToFinish && status != "On going"){
+  let cardStruct = `
+  <div class="card ${(currentTime.getHours() == timeOfClass.getHours()) ? 'now' : ""}">
+      <span class="title">Finished</span>
+      <div class="content-finish" id="card${index}" onclick="entrance_regist()">
+          <span class="contentText-finished">${data.DESCRITION_1}</span>
+          <span class="contentText-finished">${data.DESCRITION_2}</span>
+          <span class="contentText-finished-time">finished at ${data.FINISH_TIME}</span>
+          </div>
+  </div>`
+  //cardStruct = cardStruct.replace(/{{image}}/g, ` <img src="${imgTeste}" />`);
+
+  return cardStruct;
+}else if(cards_count==0  && status != "On going"){
     let cardStruct = `
     <div class="card ${(currentTime.getHours() == timeOfClass.getHours()) ? 'now' : ""}">
         <span class="title">
-            ${(currentTime.getHours() == timeOfClass.getHours() && currentTime.getDate() == timeOfClass.getDate()) ? 'Now' : (timeOfClass.getDate() < currentTime.getDate() || timeOfClass.getHours() < currentTime.getHours()) ? "Before" : "After"}
+            ${(timeOfClass.getDate() < currentTime.getDate() || timeOfClass.getHours() < currentTime.getHours()) ? "Finished" : "Coming next"}
         </span>
-        <div class="content" id="card${index}" onclick="entrance_regist()">
-            <span class="contentText">${data.DESCRITION_1}</span>
-            <span class="contentTimeText">Finish at ${getFormattedTime(timeToFinish)}</span>
-            {{image}}
+        <div class="content-coming-next" id="card${index}" onclick="entrance_regist()">
+            <span class="contentText-coming-next">${data.DESCRITION_1}</span>
+            <span class="contentText-coming-next">${data.DESCRITION_2}</span>
+            <span class="contentTimeText-coming-next">Start at ${data.START_TIME}</span>
+            <span class="contentTimeText-coming-next">Finish at ${data.FINISH_TIME}</span>
             </div>
     </div>`
-    cardStruct = cardStruct.replace(/{{image}}/g, ` <img src="${imgTeste}" />`);
-
+    cards_count = cards_count +1
     return cardStruct;
-  }; 
+}else if(status=="On going"){
+  let cardStruct = `
+  <div class="card ${(currentTime.getHours() == timeOfClass.getHours()) ? 'now' : ""}">
+      <span class="title">
+          ${(timeOfClass.getDate() < currentTime.getDate() || timeOfClass.getHours() < currentTime.getHours()) ? "Finished" : "On going"}
+      </span>
+      <div class="content-ongoing" id="card${index}" onclick="entrance_regist()">
+          <span class="contentText-ongoing">${data.DESCRITION_1}</span>
+          <span class="contentText-ongoing">${data.DESCRITION_2}</span>
+          <span class="contentTimeText-ongoing">Start at ${data.START_TIME}</span>
+          <span class="contentTimeText-ongoing">Finish at ${data.FINISH_TIME}</span>
+          </div>
+  </div>`
+  cards_count = 0
+  return cardStruct;
+}else{
+  let cardStruct = `
+  <div class="card ${(currentTime.getHours() == timeOfClass.getHours()) ? 'now' : ""}">
+      <span class="title">
+          ${ (timeOfClass.getDate() < currentTime.getDate() || timeOfClass.getHours() < currentTime.getHours()) ? "Finished" : "Coming"}
+      </span>
+      <div class="content-finish" id="card${index}" onclick="entrance_regist()">
+      <span class="contentText-finished">${data.DESCRITION_1}</span>
+      <span class="contentText-finished">${data.DESCRITION_2}</span>
+      <span class="contentText-finished-time">Start at ${data.START_TIME}</span>
+      <span class="contentText-finished-time">Finish at ${data.FINISH_TIME}</span>
+          </div>
+  </div>`
+//  cardStruct = cardStruct.replace(/{{image}}/g, ` <img src="${imgTeste}" />`);
+//{{image}}←div の中に入れる
+  return cardStruct;
+}
 };
 
 function getFormattedTime(time) {
@@ -230,12 +286,12 @@ function entrance_regist() {
       })
         .then((x) => x.json())
         .then((res) => {
-        
+
           Swal.fire({
             title: 'Registrando!',
             didOpen: () => { Swal.showLoading() }
           })
-        
+
           if (res[0]) {
             localStorage.setItem('id', res[0].id)
             Swal.fire({
@@ -313,7 +369,3 @@ function addClient_again() {
       console.log(res)
     })
 };
-
-document.querySelector('#gym-name').innerHTML = sessionStorage.getItem("gym");
-
-
