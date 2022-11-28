@@ -293,7 +293,8 @@ function entrance_regist() {
           })
 
           if (res[0]) {
-            localStorage.setItem('id', res[0].id)
+            localStorage.setItem('id', res[0].id);
+            localStorage.setItem('GYM_ID', res[0].id);
             Swal.fire({
               icon: "success",
               title: 'concluido!',
@@ -356,7 +357,8 @@ function addClient_again() {
   var obj = {
     LESSON_NAME: localStorage.getItem('decricoes').split(',')[0],
     LESSON_HOUR: localStorage.getItem('decricoes').split(',')[1],
-    MEMBER_ID: localStorage.getItem('id')
+    MEMBER_ID: localStorage.getItem('id'),
+    GYM_ID: localStorage.getItem('GYM_ID'),
   }
 
   fetch('https://squid-app-ug7x6.ondigitalocean.app/registerentrance', {
