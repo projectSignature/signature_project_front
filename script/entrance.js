@@ -365,8 +365,8 @@ function getTarget() {
   });
 };
 
-function seletorTarget(numberOfTarget) {
-  return e.target.childNodes[numberOfTarget].innerText
+function seletorTarget(event, numberOfTarget) {
+  return event.target.childNodes[numberOfTarget].innerText
 };
 
 function addClient_again() {
