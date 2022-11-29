@@ -370,7 +370,7 @@ function seletorTarget(v) {
 function addClient_again() {
   var obj = {
     LESSON_NAME: localStorage.getItem('decricoes').split(',')[0],
-    LESSON_HOUR: localStorage.getItem('decricoes').split(',')[1],
+    LESSON_HOUR: localStorage.getItem('startTime').split(',')[1],
     MEMBER_ID: localStorage.getItem('id'),
     GYM_ID: localStorage.getItem('GYM_ID')
   }
