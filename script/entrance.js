@@ -66,8 +66,8 @@ if(currentTime>timeToFinish && status != "On going"){
   <div class="card ${(currentTime.getHours() == timeOfClass.getHours()) ? 'now' : ""}">
       <span class="title">Finished</span>
       <div class="content-finish" id="card${index}" onclick="entrance_regist()">
-          <span class="contentText-finished">${data.DESCRITION_1}</span>
-          <span class="contentText-finished">${data.DESCRITION_2}</span>
+          <span class="contentText-finished" name="desc1" >${data.DESCRITION_1}</span>
+          <span class="contentText-finished" name="desc2" >${data.DESCRITION_2}</span>
           <span class="contentText-finished-time">finished at ${data.FINISH_TIME}</span>
           </div>
   </div>`
@@ -82,8 +82,8 @@ if(currentTime>timeToFinish && status != "On going"){
             ${(timeOfClass.getDate() < currentTime.getDate() || timeOfClass.getHours() < currentTime.getHours()) ? "Finished" : "Coming next"}
         </span>
         <div class="content-coming-next" id="card${index}" onclick="entrance_regist()">
-            <span class="contentText-coming-next">${data.DESCRITION_1}</span>
-            <span class="contentText-coming-next">${data.DESCRITION_2}</span>
+            <span class="contentText-coming-next" name="desc1">${data.DESCRITION_1}</span>
+            <span class="contentText-coming-next" name="desc2">${data.DESCRITION_2}</span>
             <span class="contentTimeText-coming-next">Start at ${data.START_TIME}</span>
             <span class="contentTimeText-coming-next">Finish at ${data.FINISH_TIME}</span>
             </div>
@@ -98,8 +98,8 @@ if(currentTime>timeToFinish && status != "On going"){
           ${(timeOfClass.getDate() < currentTime.getDate() || timeOfClass.getHours() < currentTime.getHours()) ? "Finished" : "On going"}
       </span>
       <div class="content-ongoing" id="card${index}" onclick="entrance_regist()">
-          <span class="contentText-ongoing">${data.DESCRITION_1}</span>
-          <span class="contentText-ongoing">${data.DESCRITION_2}</span>
+          <span class="contentText-ongoing" name="desc1" >${data.DESCRITION_1}</span>
+          <span class="contentText-ongoing" name="desc2" >${data.DESCRITION_2}</span>
           <span class="contentTimeText-ongoing">Start at ${data.START_TIME}</span>
           <span class="contentTimeText-ongoing">Finish at ${data.FINISH_TIME}</span>
           </div>
@@ -114,8 +114,8 @@ if(currentTime>timeToFinish && status != "On going"){
           ${ (timeOfClass.getDate() < currentTime.getDate() || timeOfClass.getHours() < currentTime.getHours()) ? "Finished" : "Coming"}
       </span>
       <div class="content-finish" id="card${index}" onclick="entrance_regist()">
-      <span class="contentText-finished">${data.DESCRITION_1}</span>
-      <span class="contentText-finished">${data.DESCRITION_2}</span>
+      <span class="contentText-finished" name="desc1" >${data.DESCRITION_1}</span>
+      <span class="contentText-finished" name="desc2" >${data.DESCRITION_2}</span>
       <span class="contentText-finished-time">Start at ${data.START_TIME}</span>
       <span class="contentText-finished-time">Finish at ${data.FINISH_TIME}</span>
           </div>
