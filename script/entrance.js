@@ -308,7 +308,7 @@ function entrance_regist() {
 
           if (res[0]) {
             localStorage.setItem('id', res[0].id);
-            localStorage.setItem('GYM_ID', res[0].id);
+            localStorage.setItem('GYM_ID', res[0].GYM_ID);
             Swal.fire({
               icon: "success",
               title: 'concluido!',
