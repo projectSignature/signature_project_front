@@ -72,6 +72,7 @@ if(currentTime>timeToFinish && status != "On going"){
           </div>
   </div>`
   //cardStruct = cardStruct.replace(/{{image}}/g, ` <img src="${imgTeste}" />`);
+  localStorage.setItem('startTime', [data.START_TIME, data.FINISH_TIME]);
 
   return cardStruct;
 }else if(cards_count==0  && status != "On going"){
@@ -88,6 +89,7 @@ if(currentTime>timeToFinish && status != "On going"){
             </div>
     </div>`
     cards_count = cards_count +1
+     localStorage.setItem('startTime', [data.START_TIME, data.FINISH_TIME]);
     return cardStruct;
 }else if(status=="On going"){
   let cardStruct = `
@@ -102,6 +104,7 @@ if(currentTime>timeToFinish && status != "On going"){
           <span class="contentTimeText-ongoing">Finish at ${data.FINISH_TIME}</span>
           </div>
   </div>`
+  localStorage.setItem('startTime', [data.START_TIME, data.FINISH_TIME]);
   cards_count = 0
   return cardStruct;
 }else{
@@ -117,6 +120,9 @@ if(currentTime>timeToFinish && status != "On going"){
       <span class="contentText-finished-time">Finish at ${data.FINISH_TIME}</span>
           </div>
   </div>`
+  
+  localStorage.setItem('startTime', [data.START_TIME, data.FINISH_TIME]);
+  
 //  cardStruct = cardStruct.replace(/{{image}}/g, ` <img src="${imgTeste}" />`);
 //{{image}}←div の中に入れる
   return cardStruct;
