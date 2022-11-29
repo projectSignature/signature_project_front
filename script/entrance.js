@@ -371,8 +371,8 @@ function getTarget() {
 
 function addClient_again() {
   var obj = {
-    LESSON_NAME: localStorage.getItem('decricoes').split(',').toString(),
-    LESSON_HOUR: localStorage.getItem('startTime').split(',').toString(),
+    LESSON_NAME: localStorage.getItem('decricoes').split('~').toString(),
+    LESSON_HOUR: localStorage.getItem('startTime').split('~').toString(),
     MEMBER_ID: localStorage.getItem('id'),
     GYM_ID: localStorage.getItem('GYM_ID')
   }
