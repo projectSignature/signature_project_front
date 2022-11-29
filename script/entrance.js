@@ -340,6 +340,7 @@ function getTarget() {
     switch (e.target.id) {
       case 'card0':
         localStorage.setItem('decricoes', [seletorTarget(2), seletorTarget(3)]);
+        console.log("este", e.target.childNodes)
         break;
       case 'card1':
         localStorage.setItem('decricoes', [seletorTarget(8), seletorTarget(9)]);
