@@ -27,16 +27,24 @@ function previousSlide() {
 
 function classesHandler(classes) {
   console.log(classes)
+  const mountedClasses = []
   for (let index = 0; index < classes.length; index++) {
     const currentClass = classes[index];
     if (currentClass.DESCRITION_1 != '') {
         console.log(currentClass)
       let cardOfClass = mountCard(currentClass, index)
       cardOfClass = cardOfClass + `<span class="nextClass ${(index >= classes.length - 1) ? "last" : ""}">&#8594;</span>`
-
-      cards.innerHTML += cardOfClass;
+      // cards.innerHTML += cardOfClass;
+      mountedClasses.push(cardOfClass)
     };
   };
+  const next = mountedClasses.filter(classMount => classMount.includes('content-coming-next'))
+  const now = mountedClasses.filter(classMount => classMount.includes('now'))
+  const finished = mountedClasses.filter(classMount => classMount.includes('finish'))
+  const order = [...now, ...next, ...finished]
+  for(let i=0; i<order.length; i++){
+    cards.innerHTML += order[i]
+  }
 };
 
 function mountCard(data, index) {
@@ -293,8 +301,7 @@ function entrance_regist() {
           })
 
           if (res[0]) {
-            localStorage.setItem('id', res[0].id);
-            localStorage.setItem('GYM_ID', res[0].id);
+            localStorage.setItem('id', res[0].id)
             Swal.fire({
               icon: "success",
               title: 'concluido!',
@@ -357,8 +364,7 @@ function addClient_again() {
   var obj = {
     LESSON_NAME: localStorage.getItem('decricoes').split(',')[0],
     LESSON_HOUR: localStorage.getItem('decricoes').split(',')[1],
-    MEMBER_ID: localStorage.getItem('id'),
-    GYM_ID: localStorage.getItem('GYM_ID'),
+    MEMBER_ID: localStorage.getItem('id')
   }
 
   fetch('https://squid-app-ug7x6.ondigitalocean.app/registerentrance', {
