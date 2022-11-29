@@ -339,24 +339,24 @@ function getTarget() {
 
     switch (e.target.id) {
       case 'card0':
-        localStorage.setItem('decricoes', [seletorTarget(1), seletorTarget(3)]);
+        localStorage.setItem('decricoes', [e.target.childNodes[1].innerText, e.target.childNodes[3].innerText]);
         console.log("este", e.target.childNodes[1].innerText);
         console.log("este", e.target.childNodes[3].innerText);
         break;
       case 'card1':
-        localStorage.setItem('decricoes', [seletorTarget(1), seletorTarget(3)]);
+        localStorage.setItem('decricoes', [e.target.childNodes[1].innerText, e.target.childNodes[3].innerText]);
         break;
       case 'card2':
-        localStorage.setItem('decricoes', [seletorTarget(1), seletorTarget(3)]);
+        localStorage.setItem('decricoes', [e.target.childNodes[1].innerText, e.target.childNodes[3].innerText]);
         break;
       case 'card3':
-        localStorage.setItem('decricoes', [seletorTarget(1), seletorTarget(3)]);
+        localStorage.setItem('decricoes', [e.target.childNodes[1].innerText, e.target.childNodes[3].innerText]);
         break;
       case 'card4':
-        localStorage.setItem('decricoes', [seletorTarget(1), seletorTarget(3)]);
+        localStorage.setItem('decricoes', [e.target.childNodes[1].innerText, e.target.childNodes[3].innerText]);
         break;
       case 'card5':
-        localStorage.setItem('decricoes', [seletorTarget(1), seletorTarget(3)]);
+        localStorage.setItem('decricoes', [e.target.childNodes[1].innerText, e.target.childNodes[3].innerText]);
         break;
       default:
         console.log("error...")
@@ -365,9 +365,9 @@ function getTarget() {
   });
 };
 
-function seletorTarget(event, numberOfTarget) {
+/*function seletorTarget(event, numberOfTarget) {
   return event.target.childNodes[numberOfTarget].innerText
-};
+};*/
 
 function addClient_again() {
   var obj = {
