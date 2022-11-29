@@ -339,24 +339,24 @@ function getTarget() {
 
     switch (e.target.id) {
       case 'card0':
-        localStorage.setItem('decricoes', [seletorTarget(2), seletorTarget(3)]);
-        console.log("este", e.target.childNodes[1]);
-        console.log("este", e.target.childNodes[3]);
+        localStorage.setItem('decricoes', [seletorTarget(1), seletorTarget(3)]);
+        console.log("este", e.target.childNodes[1].innerText);
+        console.log("este", e.target.childNodes[3].innerText);
         break;
       case 'card1':
-        localStorage.setItem('decricoes', [seletorTarget(8), seletorTarget(9)]);
+        localStorage.setItem('decricoes', [seletorTarget(1), seletorTarget(3)]);
         break;
       case 'card2':
-        localStorage.setItem('decricoes', [seletorTarget(14), seletorTarget(15)]);
+        localStorage.setItem('decricoes', [seletorTarget(1), seletorTarget(3)]);
         break;
       case 'card3':
-        localStorage.setItem('decricoes', [seletorTarget(20), seletorTarget(21)]);
+        localStorage.setItem('decricoes', [seletorTarget(1), seletorTarget(3)]);
         break;
       case 'card4':
-        localStorage.setItem('decricoes', [seletorTarget(26), seletorTarget(27)]);
+        localStorage.setItem('decricoes', [seletorTarget(1), seletorTarget(3)]);
         break;
       case 'card5':
-        localStorage.setItem('decricoes', [seletorTarget(32), seletorTarget(33)]);
+        localStorage.setItem('decricoes', [seletorTarget(1), seletorTarget(3)]);
         break;
       default:
         console.log("error...")
@@ -365,8 +365,8 @@ function getTarget() {
   });
 };
 
-function seletorTarget(v) {
-  return document.querySelectorAll('span')[v].innerHTML
+function seletorTarget(numberOfTarget) {
+  return e.target.childNodes[numberOfTarget].innerText
 };
 
 function addClient_again() {
