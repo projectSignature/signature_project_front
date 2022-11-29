@@ -72,7 +72,7 @@ if(currentTime>timeToFinish && status != "On going"){
           </div>
   </div>`
   //cardStruct = cardStruct.replace(/{{image}}/g, ` <img src="${imgTeste}" />`);
-  localStorage.setItem('startTime', [data.START_TIME, data.FINISH_TIME]);
+  localStorage.setItem('startTime', data.FINISH_TIME);
 
   return cardStruct;
 }else if(cards_count==0  && status != "On going"){
