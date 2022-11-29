@@ -342,19 +342,19 @@ function getTarget() {
         localStorage.setItem('decricoes', [seletorTarget(2), seletorTarget(3)]);
         break;
       case 'card1':
-        localStorage.setItem('decricoes', [seletorTarget(6), seletorTarget(7)]);
+        localStorage.setItem('decricoes', [seletorTarget(8), seletorTarget(9)]);
         break;
       case 'card2':
-        localStorage.setItem('decricoes', [seletorTarget(10), seletorTarget(11)]);
-        break;
-      case 'card3':
         localStorage.setItem('decricoes', [seletorTarget(14), seletorTarget(15)]);
         break;
+      case 'card3':
+        localStorage.setItem('decricoes', [seletorTarget(20), seletorTarget(21)]);
+        break;
       case 'card4':
-        localStorage.setItem('decricoes', [seletorTarget(18), seletorTarget(19)]);
+        localStorage.setItem('decricoes', [seletorTarget(26), seletorTarget(27)]);
         break;
       case 'card5':
-        localStorage.setItem('decricoes', [seletorTarget(22), seletorTarget(23)]);
+        localStorage.setItem('decricoes', [seletorTarget(32), seletorTarget(33)]);
         break;
       default:
         console.log("error...")
