@@ -245,6 +245,7 @@ function error_massege_japanese(){
     document.getElementById("select-e").style.borderWidth = 'thin';
     document.getElementById("select-a").style.borderColor = '#333333';
     document.getElementById("select-a").style.borderWidth = 'thin';
+   document.getElementById("select-plan-f").style.background = '#000000';
   });
 
 function saveData() {
