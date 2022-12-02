@@ -233,6 +233,7 @@ function error_massege_japanese(){
   var plan = '';
   inputs[21].addEventListener('click', (e) => {
     plan = "Plan F"
+    document.getElementById("select-plan-f").style.background = '#000000';
     document.getElementById("select-f").style.borderColor = '#5507FF';
     document.getElementById("select-f").style.borderWidth = 'thick';
     document.getElementById("select-b").style.borderColor = '#333333';
@@ -245,7 +246,7 @@ function error_massege_japanese(){
     document.getElementById("select-e").style.borderWidth = 'thin';
     document.getElementById("select-a").style.borderColor = '#333333';
     document.getElementById("select-a").style.borderWidth = 'thin';
-   document.getElementById("select-plan-f").style.background = '#000000';
+   
   });
 
 function saveData() {
