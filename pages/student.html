@@ -114,61 +114,36 @@
         return row;
       }
     
-    let clients = [
-        {
-            id: 1,
-            client: "Helder",
-            currentRange: 'blue',
-            graduateDate: '2022-01-05',
-            firstDegree: '2022-01-05',
-            secondDegree: "",
-            thirdDegree: "",
-            fourthDegree: "",
-            postGraduationClass: "10",
-            observations: "faltou 3",
-            status: "active"
-        },
-        {
-            id: 2,
-            client: "karla",
-            currentRange: 'red',
-            graduateDate: '2021-12-27',
-            firstDegree: '2022-05-18',
-            secondDegree: "2022-07-15",
-            thirdDegree: "2022-08-10",
-            fourthDegree: "",
-            postGraduationClass: "39",
-            observations: "mês que vem graduação",
-            status: "active"
-        }
-    ]
+  //  let clients = [
+      // {
+        //    id: 1,
+        //    client: "Helder",
+        //    currentRange: 'blue',
+      //   graduateDate: '2022-01-05',
+         //   firstDegree: '2022-01-05',
+           // secondDegree: "",
+            //thirdDegree: "",
+            //fourthDegree: "",
+            //postGraduationClass: "10",
+            //observations: "faltou 3",
+            //status: "active"
+        //},
+        //{
+          //  id: 2,
+            //client: "karla",
+            //currentRange: 'red',
+            //graduateDate: '2021-12-27',
+            //firstDegree: '2022-05-18',
+            //secondDegree: "2022-07-15",
+            //thirdDegree: "2022-08-10",
+            //fourthDegree: "",
+            //postGraduationClass: "39",
+            //observations: "mês que vem graduação",
+            //status: "active"
+        //}
+    //]
 
-    function clientsHandler() {
-        for (let index = 0; index < clients.length; index++) {
-            const row = createNewTableRow(clients[index])
-            tbody.innerHTML += row
-        }
-    }
-
-    function createNewTableRow(data) {
-        let row = `
-        <td>${data.client}</td>
-        <td style="background-color: ${data.currentRange}"></td>
-        <td>${data.graduateDate}</td>
-        <td>${data.firstDegree}</td>
-        <td>${data.secondDegree}</td>
-        <td>${data.thirdDegree}</td>
-        <td>${data.fourthDegree}</td>
-        <td>${data.postGraduationClass}</td>
-        <td>${data.observations}</td>
-        <td>${data.status}</td>
-        <td>
-            <img src="./image/edit.svg" onClick="editClient(${data.id})" alt="" width="15">
-            <img src="./image/delete.svg" onClick="deleteClient(${data.id})" alt="" width="15">
-        </td>
-        `
-        return row
-    }
+ 
 
     function editClient(clientId) {
         let client = clients.find(client => client.id == clientId)
