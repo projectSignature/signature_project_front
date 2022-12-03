@@ -72,8 +72,47 @@
       .then((res) => {
         clients1 = res;
         console.log(clients1);
-        //clientsHandler();
+        clientsHandler();
       });
+    
+    function clientsHandler() {
+        for (let index = 0; index < client1s.length; index++) {
+          const row = createNewTableRow(clients[index]);
+          tbody.innerHTML += row;
+          console.log(index)
+        }
+      }
+
+      function createNewTableRow(data) {
+        if(data.color=="0"){
+          color = "branco"
+        }else if(data.color=="1"){
+          color = "azul"
+        }else if(data.color=="2"){
+          color = "roxa"
+        }else if(data.color=="3"){
+          color = "marrom"
+        }else{
+          color = "preta"
+        }
+        let row = `
+          <td class="email-tag">${data.nm_member}</td>
+         <td>${color}</td>
+          <td>${data.graduation_dt}</td>
+          <td>${data.first_point}</td>
+          <td class="email-tag">${data.second_point}</td>
+          <td class="email-tag">(${data.third_point}</td>
+          <td class="email-tag">${data.fourth_point}</td>
+          <td>${data.lesson_after}</td>
+          <td>${data.obs}</td>
+          <td>${data.status}</td>
+          <td>
+              <img src="../image/edit.svg" onClick="editClient(${data.id})" alt="" width="25">
+              <img src="../image/delete.svg" onClick="deleteClient(${data.id})" alt="" width="25">
+          </td>
+          `;
+        return row;
+      }
     
     let clients = [
         {
