@@ -95,41 +95,17 @@
         }else{
           color = "black"
         }
-          if(data.first_point=="null"){
-          first_point=""
-        }else{
-          first_point=data.first_point
-        }
-        if(data.second_point=="null"){
-          second_point=""
-        }else{
-          second_point=data.second_point
-        }
-        if(data.third_point=="null"){
-          third_point=""
-        }else{
-          third_point=data.third_point
-        }
-        if(data.fourth_point=="null"){
-          fourth_point=""
-        }else{
-          fourth_point=data.fourth_point
-        }
-        if(data.obs=="null"){
-          obs=""
-        }else{
-          obs=data.obs
-        }
+      
         let row = `
           <td class="email-tag">${data.nm_member}</td>
           <td><img src="../image/${color}.png" onClick="deleteClient(${data.id})" alt="" width="50"></td>
           <td>${data.graduation_dt}</td>
-          <td>${first_point}</td>
-          <td class="email-tag">${second_point}</td>
-          <td class="email-tag">(${third_point}</td>
-          <td class="email-tag">${fourth_point}</td>
+          <td>${data.first_point}</td>
+          <td class="email-tag">${data.second_point}</td>
+          <td class="email-tag">(${data.third_point}</td>
+          <td class="email-tag">${data.fourth_point}</td>
           <td>${data.lesson_after}</td>
-          <td>${obs}</td>
+          <td>${data.obs}</td>
           <td>${data.status}</td>
           <td>
               <img src="../image/edit.svg" onClick="editClient(${data.id})" alt="" width="25">
