@@ -97,7 +97,7 @@
         }
         let row = `
           <td class="email-tag">${data.nm_member}</td>
-          <td style="background-color: ${color}"></td>
+          <td><img src="../image/${color}.png" onClick="deleteClient(${data.id})" alt="" width="50"></td>
           <td>${data.graduation_dt}</td>
           <td>${data.first_point}</td>
           <td class="email-tag">${data.second_point}</td>
