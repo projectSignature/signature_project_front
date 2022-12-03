@@ -85,19 +85,19 @@
 
       function createNewTableRow(data) {
         if(data.color=="0"){
-          color = "branco"
+          color = "white"
         }else if(data.color=="1"){
-          color = "azul"
+          color = "blue"
         }else if(data.color=="2"){
-          color = "roxa"
+          color = "purpl"
         }else if(data.color=="3"){
-          color = "marrom"
+          color = "maroon"
         }else{
-          color = "preta"
+          color = "black"
         }
         let row = `
           <td class="email-tag">${data.nm_member}</td>
-         <td>${color}</td>
+          <td style="background-color: ${color}"></td>
           <td>${data.graduation_dt}</td>
           <td>${data.first_point}</td>
           <td class="email-tag">${data.second_point}</td>
