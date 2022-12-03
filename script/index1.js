@@ -297,7 +297,12 @@ function saveGraduation() {
     "color": "0",
     "status": "active",
     "graduation_dt": "2022-12-03",
+    "first_point" : "-",
+    "second_point" : "-",
+    "third_point" : "-",
+    "fourth_point" : "-",
     "lesson_after": "0",
+    "obs": "-",
     "gymname": sessionStorage.getItem("gym")
   };
 
