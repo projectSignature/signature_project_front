@@ -285,7 +285,7 @@ function saveData() {
     .then((response) => {
       console.log(response)})
       .then((y) => {
-      saveGraduation();
+      //saveGraduation();
       ejspdf();
       })
 }
