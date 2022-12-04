@@ -46,7 +46,7 @@
         </div>
     </div>
 </body>
-<script src="./script/swal.min.js"></script>
+<script src="../script/swal.min.js"></script>
 <script>
    const tbody = document.getElementsByTagName('tbody')[0]
     const gymName = document.getElementById("gym-name");
@@ -109,8 +109,7 @@
           <td>${data.obs}</td>
           <td>${data.status}</td>
           <td>
-              <img src="../image/edit.svg" onClick="editClient(${data.id})" alt="" width="25">
-              <img src="../image/delete.svg" onClick="deleteClient(${data.id})" alt="" width="25">
+              <img src="../image/edit.svg" onClick="editClient(${data.nm_member_id})" alt="" width="25">
           </td>
           `;
         return row;
