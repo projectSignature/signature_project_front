@@ -59,7 +59,7 @@
     const filter1 = ""//document.getElementById("filter1").value;
     const filter2 = ""//document.getElementById("filter2").value;
     const obj = { opt1: filter1, opt2: filter2 };
-    
+
     fetch("https://squid-app-ug7x6.ondigitalocean.app/graduationlist", {
       method: "POST",
       body: JSON.stringify({ opt1: "", opt2: "" }),
@@ -71,17 +71,18 @@
         console.log(clients1);
         clientsHandler();
       });
-    
+
     function clientsHandler() {
         for (let index = 0; index < clients1.length; index++) {
           const row = createNewTableRow(clients1[index]);
           tbody.innerHTML += row;
-          console.log(index)
+
         }
       }
 
       function createNewTableRow(data) {
-          console.log(data.nm_member_id)
+        //  console.log(data.nm_member_id)
+          console.log(data.color)
         if(data.color=="0"){
           color = "white"
         }else if(data.color=="1"){
@@ -93,7 +94,7 @@
         }else{
           color = "black"
         }
-      
+
         let row = `
           <td class="email-tag">${data.nm_member}</td>
           <td><img src="../image/${color}.png" alt="" width="50"></td>
@@ -111,7 +112,7 @@
           `;
         return row;
       }
-    
+
   //  let clients = [
       // {
         //    id: 1,
@@ -141,10 +142,10 @@
         //}
     //]
 
- 
+
 
         function editClient(clientId) {
-        let client = clients1.find(client => client.id == clientId)
+        let client = clients1.find(client => client.nm_member_id == clientId)
         let graduatedate = client.graduation_dt.replace("/","-")
            if(client.color=="0"){
           color = "white"
@@ -170,11 +171,11 @@
                         <span>Faixa atual: </span>
                         <select id="currentRange">
                             <option value="${client.color}" selected>${color}</option>
-                            <option value="white">white</option>
-                            <option value="blue">blue</option>
-                            <option value="purpl">purpl</option>
-                            <option value="brown">brown</option>
-                            <option value="black">black</option>
+                            <option value="0">white</option>
+                            <option value="1">blue</option>
+                            <option value="2">purpl</option>
+                            <option value="3">brown</option>
+                            <option value="4">black</option>
                         </select>
                     </div>
                     <div>
@@ -248,17 +249,16 @@
         }).then(result => {
             if (result.isConfirmed) {
                 const name = document.getElementById("clientName").value
-                const currentRange = document.getElementById("currentRange").value
-                const graduateDate = document.getElementById("graduateDate").value
-                const firstDegree = document.getElementById("firstDegree").value
-                const secondDegree = document.getElementById("secondDegree").value
-                const thirdDegree = document.getElementById("thirdDegree").value
-                const fourthDegree = document.getElementById("fourthDegree").value
-                const postGraduationClass = document.getElementById("postGraduationClass").value
-                const observations = document.getElementById("observations").value
-                const status = document.getElementById("status").value
+                var currentRange = document.getElementById("currentRange").value
+                var graduateDate = document.getElementById("graduateDate").value
+                var firstDegree = document.getElementById("firstDegree").value
+                var secondDegree = document.getElementById("secondDegree").value
+                var thirdDegree = document.getElementById("thirdDegree").value
+                var fourthDegree = document.getElementById("fourthDegree").value
+                var postGraduationClass = document.getElementById("postGraduationClass").value
+                var observations = document.getElementById("observations").value
+                var status = document.getElementById("status").value
                 console.log(currentRange)
-                 
                 if(client.first_point=="-"){
                     firstpoint=""
                 }else{
@@ -279,36 +279,99 @@
                 }else{
                     fourthpoint=client.fourth_point
                 }
-                
-                
+              update_id = client.nm_member_id
+              var graduateDateupdate=graduateDate
+              var change = "0"
+              if(currentRange==0){
+                color="white"
+              }else if(currentRange==1){
+              color="blue"
+            }else if(currentRange==2){
+              color="purpl"
+            }else if(currentRange==3){
+              color="brown"
+            }else if(currentRange==4){
+              color="black"
+              }
+
                 if(client.color!=currentRange){ //カラーの変更をした時の処理
-                  kubun = `graduar para faixa ${currentRange}`
-                  swall_confirm(name,kubun)
+                  kubun = `graduar para faixa ${color}`
+                  graduateDateupdate = getCurrentYYYYMMDD()
+                  firstDegree="-"
+                  secondDegree="-"
+                  thirdDegree="-"
+                  fourthDegree="-"
+                  console.log(graduateDateupdate)
+                  change = "1"
                 }else if(firstpoint!=firstDegree){
-                    console.log(client.first_point,firstDegree)
-                  kubun = `1º grau da faixa ${currentRange}`
-                  swall_confirm(name,kubun)
+                  kubun = `1º grau da faixa ${color}`
+                  change = "1"
                 }else if(secondpoint!=secondDegree){
-                  kubun = `2º grau da faixa ${currentRange}`
-                  swall_confirm(name,kubun)
+                  kubun = `2º grau da faixa ${color}`
+                  change = "1"
                 }else if(thirdpoint!=thirdDegree){
-                  kubun = `3º grau da faixa ${currentRange}`
-                  swall_confirm(name,kubun)
+                  kubun = `3º grau da faixa ${color}`
+                  change = "1"
                 }else if(fourthpoint!=fourthDegree){
-                  kubun = `4º grau da faixa ${currentRange}`
-                  swall_confirm(name,kubun)
+                  kubun = `4º grau da faixa ${color}`
+                  change = "1"
                 }else if(client.lesson_after!=postGraduationClass){
                   kubun = `Alterar quantidades de aulas para ${postGraduationClass}`
-                  swall_confirm(name,kubun)
+                  change = "1"
                 }
+
+                if (change==1){
+                if(firstDegree==""){
+                  firstDegree="-"
+                }
+                if(secondDegree==""){
+                  secondDegree="-"
+                }
+                if(thirdDegree==""){
+                  thirdDegree="-"
+                }
+                if(fourthDegree==""){
+                  fourthDegree="-"
+                }
+                if(observations==""){
+                  observations="-"
+                }
+
+                let obj = {
+                  id: client.nm_member_id,
+                  color: currentRange,
+                  status: status,
+                  graduation_dt: graduateDateupdate,
+                  first_point: firstDegree,
+                  second_point: secondDegree,
+                  third_point: thirdDegree,
+                  fourth_point: fourthDegree,
+                  lesson_after: 0,
+                  obs: observations,
+                };
+                swall_confirm(name,kubun,obj)
+                console.log(obj)
+              }else{
+
+              }
 
             }
         })
     }
 
-function swall_confirm(name,kubun){
+    function getCurrentYYYYMMDD() {
+
+    var date = new Date();
+    var y = date.getFullYear();
+    var m = ("00" + (date.getMonth() + 1)).slice(-2);
+    var d = ("00" + date.getDate()).slice(-2);
+    return [y, m, d].join("-");
+  }
+
+function swall_confirm(name,kubun,obj){
   console.log(name)
   console.log(kubun)
+
 Swal.fire({
     html: `
    <div id="title">
@@ -345,9 +408,21 @@ Swal.fire({
     confirmButtonText: "Salvar",
     cancelButtonText: "Cancelar",
 }).then(result => {
-    if (result.isConfirmed) {
-   console.log(kubun)
-}
+ if (result.isConfirmed) {
+   console.log(obj)
+    const attr = {
+      method: "POST",
+      body: JSON.stringify(obj),
+      headers: { "Content-type": "application/json; charset=UTF-8" },
+    };
+
+    fetch("https://squid-app-ug7x6.ondigitalocean.app/graduationUpdate", attr)
+      .then((x) => x.json())
+      .then((response) => {
+        console.log(response);
+      });
+    restartTable();
+  }
 });
 }
 
@@ -356,10 +431,29 @@ Swal.fire({
         restartTable()
     }
 
-    function restartTable() {
-        tbody.innerHTML = ''
-        clientsHandler()
-    }
+    async function restartTable() {
+       var removeTbody = document.querySelector("tbody");
+       while (removeTbody.hasChildNodes()) {
+         removeTbody.removeChild(removeTbody.firstChild);
+       }
+
+      setTimeout(() => {
+         fetch("https://squid-app-ug7x6.ondigitalocean.app/graduationlist", {
+           method: "POST",
+           body: JSON.stringify({ opt1: "", opt2: "" }),
+           headers: { "Content-type": "application/json; charset=UTF-8" },
+         })
+           .then((x) => x.json())
+           .then((res) => {
+             clients1 = res;
+             //console.log(clients)
+             clientsHandler();
+           });
+       }, 3000);
+     };
 
     clientsHandler()
+
+
+
 </script>
