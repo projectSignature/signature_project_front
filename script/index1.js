@@ -290,30 +290,30 @@ function saveData() {
       })
 }
 
-function saveGraduation() {
-  var obj =
-  {
-    "nm_member": inputs[0].value,
-    "color": "0",
-    "status": "active",
-    "graduation_dt": "2022-12-03",
-    "first_point" : "-",
-    "second_point" : "-",
-    "third_point" : "-",
-    "fourth_point" : "-",
-    "lesson_after": "0",
-    "obs": "-",
-    "gymname": sessionStorage.getItem("gym")
-  };
+//function saveGraduation() {
+  //var obj =
+  //{
+    //"nm_member": inputs[0].value,
+    //"color": "0",
+    //"status": "active",
+    //"graduation_dt": "2022-12-03",
+    //"first_point" : "-",
+    //"second_point" : "-",
+    //"third_point" : "-",
+    //"fourth_point" : "-",
+    //"lesson_after": "0",
+    //"obs": "-",
+    //"gymname": sessionStorage.getItem("gym")
+  //};
 
-  fetch('https://squid-app-ug7x6.ondigitalocean.app/graduation',
-    {method: 'POST',
-    body: JSON.stringify(obj),
-    headers: {"Content-type": "application/json; charset=UTF-8"}})
-    .then((x)=> x.json())
-    .then((response) => {
-      console.log(response)})
-}
+  //fetch('https://squid-app-ug7x6.ondigitalocean.app/graduation',
+    //{method: 'POST',
+    //body: JSON.stringify(obj),
+    //headers: {"Content-type": "application/json; charset=UTF-8"}})
+    //.then((x)=> x.json())
+    //.then((response) => {
+      //console.log(response)})
+//}
 
 function ejspdf() {
   fetch('https://squid-app-ug7x6.ondigitalocean.app/pdf')
