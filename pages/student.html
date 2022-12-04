@@ -148,7 +148,7 @@
  
 
         function editClient(clientId) {
-        let client = clients.find(client => client.id == clientId)
+        let client = clients1.find(client => client.id == clientId)
         let graduatedate = client.graduation_dt.replace("/","-")
         console.log(client)
         Swal.fire({
