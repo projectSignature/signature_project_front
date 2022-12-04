@@ -261,17 +261,6 @@
                 const observations = document.getElementById("observations").value
                 const status = document.getElementById("status").value
                 console.log(currentRange)
-                    if(currentRange=="0"){
-          color = "white"
-        }else if(currentRange=="1"){
-          color = "blue"
-        }else if(currentRange=="2"){
-          color = "purpl"
-        }else if(currentRange=="3"){
-          color = "brown"
-        }else{
-          color = "black"
-        }
                  
                 if(client.first_point=="-"){
                     firstpoint=""
@@ -296,20 +285,20 @@
                 
                 
                 if(client.color!=currentRange){ //カラーの変更をした時の処理
-                  kubun = `graduar para faixa ${color}`
+                  kubun = `graduar para faixa ${currentRange}`
                   swall_confirm(name,kubun)
                 }else if(firstpoint!=firstDegree){
                     console.log(client.first_point,firstDegree)
-                  kubun = `1º grau da faixa ${color}`
+                  kubun = `1º grau da faixa ${currentRange}`
                   swall_confirm(name,kubun)
                 }else if(secondpoint!=secondDegree){
-                  kubun = `2º grau da faixa ${color}`
+                  kubun = `2º grau da faixa ${currentRange}`
                   swall_confirm(name,kubun)
                 }else if(thirdpoint!=thirdDegree){
-                  kubun = `3º grau da faixa ${color}`
+                  kubun = `3º grau da faixa ${currentRange}`
                   swall_confirm(name,kubun)
                 }else if(fourthpoint!=fourthDegree){
-                  kubun = `4º grau da faixa ${color}`
+                  kubun = `4º grau da faixa ${currentRange}`
                   swall_confirm(name,kubun)
                 }else if(client.lesson_after!=postGraduationClass){
                   kubun = `Alterar quantidades de aulas para ${postGraduationClass}`
