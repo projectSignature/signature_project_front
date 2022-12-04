@@ -146,86 +146,97 @@
 
  
 
-    function editClient(clientId) {
+        function editClient(clientId) {
         let client = clients.find(client => client.id == clientId)
+        let graduatedate = client.graduation_dt.replace("/","-")
+        console.log(client)
         Swal.fire({
             html: `
                 <div id="client">
+                   <div class="main-div" id="left-div-edit">
                     <div>
                         <span>Nome: </span>
-                        <input type="text" id="clientName" value="${client.client}"/>
+                        <input type="text" id="clientName" disabled="disabled" value="${client.nm_member}"/>
                     </div>
                     <div>
                         <span>Faixa atual: </span>
                         <select id="currentRange">
-                            <option value="red">red</option>
+                            <option value="${client.color}" selected>${client.color}</option>
+                            <option value="white">white</option>
+                            <option value="blue">blue</option>
+                            <option value="purpl">purpl</option>
+                            <option value="brown">brown</option>
+                            <option value="black">black</option>
                         </select>
                     </div>
                     <div>
                         <span>Data de graduação: </span>
-                        <input type="date" id="graduateDate" value="${client.graduateDate}"/>
+                        <input type="date" id="graduateDate" value="${client.graduation_dt}"/>
                     </div>
                     <div>
                         <span>1º Grau: </span>
-                        <input type="date" id="firstDegree" value="${client.firstDegree}"/>
+                        <input type="date" id="firstDegree" value="${client.first_point}"/>
                     </div>
                     <div>
                         <span>2º Grau: </span>
-                        <input type="date" id="secondDegree" value="${client.secondDegree}"/>
+                        <input type="date" id="secondDegree" value="${client.second_point}"/>
                     </div>
+                  </div>
+                  <div class="main-div"  id ="right-div">
                     <div>
                         <span>3º Grau: </span>
-                        <input type="date" id="thirdDegree" value="${client.thirdDegree}"/>
+                        <input type="date" id="thirdDegree" value="${client.third_point}"/>
                     </div>
                     <div>
                         <span>4º Grau: </span>
-                        <input type="date" id="fourthDegree" value="${client.fourthDegree}"/>
+                        <input type="date" id="fourthDegree" value="${client.fourth_point}"/>
                     </div>
                     <div>
                         <span>Aula pós-graduação: </span>
-                        <input type="text" id="postGraduationClass" value="${client.postGraduationClass}"/>
+                        <input type="number" id="postGraduationClass" value="${client.lesson_after}"/>
                     </div>
                     <div>
                         <span>Observações: </span>
-                        <textarea type="text" id="observations" value="${client.observations}"/></textarea>
+                        <textarea type="text" id="observations" value="${client.obs}"/></textarea>
                     </div>
                     <div>
                         <span>Status: </span>
-                        <input type="text" id="status" value="${client.status}"/>
+                        <input type="text" id="status" value="${client.status}" disabled="disabled"/>
                     </div>
+                  </div>
                 </div>
 
                 <style>
+
                     #client{
                         width: 100%;
+                        height: 100%;
+                        height: 300px;
                         display: flex;
                         flex-wrap: wrap;
                         justify-content: flex-start;
                     }
-
-                    #client div{
-                        width: 30%;
-                        display: flex;
-                        justify-content: space-between;
-                        align-items: center;
-                        padding-left: 15%;
-                        padding-bottom: 2%;
+                    .main-div{
+                      width:50%;
+                      height;100%;
+                      display:block;
                     }
-
-                    #client div input, #client div select, #client div textarea{
-                        width: 80%;
-                        border-radius: 10px;
-                        height: 5vh;
-                        border: 1px solid gray;
-                        text-indent: 10px
+                    .main-div div{
+                      height:15%;
+                      display:flex;
+                      justify-content: flex-end;
+                      margin-top:15px;
                     }
-                    #client div select{
+                    .main-div input, select ,textarea{
+                      width:50%;
+                      height:90%;
+                      border-radius:10px;
                     }
                 </style>
             `,
             showCancelButton: true,
             confirmButtonText: "Salvar",
-            cancelButtonText: "Cancelar"
+            cancelButtonText: "Cancelar",
         }).then(result => {
             if (result.isConfirmed) {
                 const name = document.getElementById("clientName").value
@@ -239,27 +250,74 @@
                 const observations = document.getElementById("observations").value
                 const status = document.getElementById("status").value
 
-                clients = clients.map(clientAux => {
-                    if (clientAux.id == client.id) {
-                        client.client = name
-                        client.currentRange = currentRange
-                        client.graduateDate = graduateDate
-                        client.firstDegree = firstDegree
-                        client.secondDegree = secondDegree
-                        client.thirdDegree = thirdDegree
-                        client.fourthDegree = fourthDegree
-                        client.postGraduationClass = postGraduationClass
-                        client.observations = observations
-                        client.status = status
-                        return client
-                    } else {
-                        return clientAux
-                    }
-                })
-                restartTable()
+                if(client.color!=currentRange){ //カラーの変更をした時の処理
+                  kubun = `graduar para faixa ${currentRange}`
+                  swall_confirm(name,kubun)
+                }else if(client.first_point!=firstDegree){
+                  kubun = `1º grau da faixa ${currentRange}`
+                  swall_confirm(name,kubun)
+                }else if(client.second_point!=secondDegree){
+                  kubun = `2º grau da faixa ${currentRange}`
+                  swall_confirm(name,kubun)
+                }else if(client.third_point!=thirdDegree){
+                  kubun = `3º grau da faixa ${currentRange}`
+                  swall_confirm(name,kubun)
+                }else if(client.fourth_point!=fourthDegree){
+                  kubun = `4º grau da faixa ${currentRange}`
+                  swall_confirm(name,kubun)
+                }else if(client.lesson_after!=postGraduationClass){
+                  kubun = `Alterar quantidades de aulas para ${postGraduationClass}`
+                  swall_confirm(name,kubun)
+                }
+
             }
         })
     }
+
+function swall_confirm(name,kubun){
+  console.log(name)
+  console.log(kubun)
+Swal.fire({
+    html: `
+   <div id="title">
+    <span>Graduação do aluno ${name}
+   </div>
+   <div id="contentes-div">
+      <div id="contentes-center">
+      <span>${kubun}</span>
+      </div>
+    </div>
+    <style>
+      #title{
+        width:100%;
+        height:80px;
+        margin-button:250px;
+        font-size:3vw;
+        display:flex;
+        justify-content: center;
+      }
+      #contentes-div{
+        border:10px solid #EEEEEE;
+        border-radius:10px;
+        height:100px;
+        font-size:3vw;
+
+      }
+      #contentes-center{
+        display:flex;
+        justify-content: center;
+        margin-top : 15px;
+      }
+    </style>`,
+    showCancelButton: true,
+    confirmButtonText: "Salvar",
+    cancelButtonText: "Cancelar",
+}).then(result => {
+    if (result.isConfirmed) {
+   console.log(kubun)
+}
+});
+}
 
     function deleteClient(clientId) {
         clients = clients.filter(client => client.id != clientId)
