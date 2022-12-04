@@ -149,13 +149,13 @@
         function editClient(clientId) {
         let client = clients1.find(client => client.id == clientId)
         let graduatedate = client.graduation_dt.replace("/","-")
-           if(data.color=="0"){
+           if(client.color=="0"){
           color = "white"
-        }else if(data.color=="1"){
+        }else if(client.color=="1"){
           color = "blue"
-        }else if(data.color=="2"){
+        }else if(client.color=="2"){
           color = "purpl"
-        }else if(data.color=="3"){
+        }else if(client.color=="3"){
           color = "brown"
         }else{
           color = "black"
