@@ -260,21 +260,43 @@
                 const postGraduationClass = document.getElementById("postGraduationClass").value
                 const observations = document.getElementById("observations").value
                 const status = document.getElementById("status").value
-
+                 
+                if(client.first_point=="-"){
+                    firstpoint=""
+                }else{
+                    firstpoint=client.first_point
+                }
+                 if(client.second_point=="-"){
+                    secondpoint=""
+                }else{
+                    secondpoint=client.second_point
+                }
+                 if(client.third_point=="-"){
+                    thirdpoint=""
+                }else{
+                    thirdpoint=client.third_point
+                }
+                 if(client.fourth_point=="-"){
+                    fourthpoint=""
+                }else{
+                    fourthpoint=client.fourth_point
+                }
+                
+                
                 if(client.color!=currentRange){ //カラーの変更をした時の処理
                   kubun = `graduar para faixa ${currentRange}`
                   swall_confirm(name,kubun)
-                }else if(client.first_point!=firstDegree){
+                }else if(firstpoint!=firstDegree){
                     console.log(client.first_point,firstDegree)
                   kubun = `1º grau da faixa ${currentRange}`
                   swall_confirm(name,kubun)
-                }else if(client.second_point!=secondDegree){
+                }else if(secondpoint!=secondDegree){
                   kubun = `2º grau da faixa ${currentRange}`
                   swall_confirm(name,kubun)
-                }else if(client.third_point!=thirdDegree){
+                }else if(thirdpoint!=thirdDegree){
                   kubun = `3º grau da faixa ${currentRange}`
                   swall_confirm(name,kubun)
-                }else if(client.fourth_point!=fourthDegree){
+                }else if(fourthpoint!=fourthDegree){
                   kubun = `4º grau da faixa ${currentRange}`
                   swall_confirm(name,kubun)
                 }else if(client.lesson_after!=postGraduationClass){
