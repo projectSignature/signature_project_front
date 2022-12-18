@@ -127,11 +127,10 @@ function swallopen1() {
           </select>
       </div>
       <div id='swall-select' class='swall-div-class'>
-          <h2 class='swall-sub-title'>Kimono</h2>
+          <h2 class='swall-sub-title'>Graduar</h2>
           <select id="kimono-selected" class='input'>
-              <option value="monday1">monday1</option>
-              <option value="monday2">monday2</option>
-              <option value="empty" selected>empty</option>
+              <option value="1">sim</option>
+              <option value="2">não</option>
           </select>
 
       </div>
@@ -224,7 +223,7 @@ function swallopen1() {
                 cor: document.querySelector('#color').value,
                 img: document.querySelector('#kimono-selected').value
             }
-            update(objSwal) //chama função de update 
+            update(objSwal) //chama função de update
         })
 };
 
@@ -291,14 +290,14 @@ async function cols(data) {
             line3[i].innerHTML = data[i].DESCRITION_2;
 
             //kimonos
-            for (let i = initialValue; i < finishValue; i++) {
-                if (data[i].IMAGE == "empty") {
-                    line1[i].style.visibility = 'hidden';
-                } else {
-                    line1[i].style.visibility = 'visible';
-                    line1[i].src = `../image/${data[i].IMAGE}.png`;
-                };
-            };
+            //for (let i = initialValue; i < finishValue; i++) {
+              //  if (data[i].IMAGE == "empty") {
+                //    line1[i].style.visibility = 'hidden';
+                //} else {
+                  //  line1[i].style.visibility = 'visible';
+                //    line1[i].src = `../image/${data[i].IMAGE}.png`;
+              //  };
+            //};
 
         }
     };
@@ -308,7 +307,7 @@ async function cols(data) {
     cards(14, 21); //chamada 03
     cards(21, 28); //chamada 04
     cards(28, 35); //chamada 05
-    cards(35, 42); //chamada 06  
+    cards(35, 42); //chamada 06
 
 };
 
