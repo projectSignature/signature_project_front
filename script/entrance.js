@@ -9,6 +9,7 @@ fetch('https://squid-app-ug7x6.ondigitalocean.app/calender/entrance')
   .then((x) => x.json())
   .then((res) => {
     // console.log(res)
+    console.log(res)
     classesHandler(res);
     dadoCalender = res;
   })
@@ -30,15 +31,17 @@ function previousSlide() {
 }
 const mountedClasses = []
 var entrancearry = []
+
+
 function classesHandler(classes) {
   entrancearry = classes
   for (let index = 0; index < classes.length; index++) {
+    console.log(index)
     const currentClass = classes[index];
     if (currentClass.DESCRITION_1 != '') {
       let cardOfClass = mountCard(currentClass, index)
-      if(classes[index+1].DESCRITION_1 != ''&&index !=classes.length){
+      console.log(cardOfClass)
         cardOfClass = cardOfClass + `<span class="nextClass ${(index >= classes.length - 1) ? "last" : ""}">&#8594;</span>`
-      }
           mountedClasses.push(cardOfClass)
     };
   };
@@ -46,6 +49,9 @@ function classesHandler(classes) {
   const now = mountedClasses.filter(classMount => classMount.includes('now'))
   const finished = mountedClasses.filter(classMount => classMount.includes('finished'))
   const order = [...now, ...next, ...finished]
+  console.log(finished)
+  console.log(mountedClasses)
+  console.log(order)
   for(let i=0; i<order.length; i++){
     cards.innerHTML += order[i]
   }
@@ -269,25 +275,15 @@ function entrance_regist(number) {
             title: 'Registrando!',
             didOpen: () => { Swal.showLoading() }
           })
-
           if (res[0]) {
             localStorage.setItem('id', res[0].id);
             localStorage.setItem('GYM_ID', res[0].GYM_ID);
             addClient_again(number)
-            if(entrancearry[number].GRADUATION_FLUG==1){
+            if(entrancearry[number].IMAGE==1){
               entrance_count(res[0].id)
             }else{
 
             }
-            //Swal.fire({
-            //  icon: "success",
-            //  title: 'concluido!',
-            //  didOpen: () => { Swal.hideLoading() }
-          //  }).then((result) => {
-            //  if (result.isConfirmed) {
-              //  addClient_again()
-              //};
-            //});
           } else {
             Swal.fire({
               icon: "error",
@@ -317,6 +313,7 @@ function entrance_count(data){
             id: clients1[index].nm_member_id,
             lesson_after: (clients1[index].lesson_after -0) + 1
           };
+          //console.log(lesson_after)
           const attr = {
             method: "POST",
             body: JSON.stringify(obj),
@@ -325,6 +322,7 @@ function entrance_count(data){
           fetch("https://squid-app-ug7x6.ondigitalocean.app/graduationafter", attr)
             .then((x) => x.json())
             .then((response) => {
+              //acrescentar aqui o email , caso a aula for numero de
             });
         }
       }
