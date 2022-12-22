@@ -283,7 +283,9 @@ function saveData() {
     headers: {"Content-type": "application/json; charset=UTF-8"}})
     .then((x)=> x.json())
     .then((response) => {
-      console.log(response)})
+        fetch(`https://squid-app-ug7x6.ondigitalocean.app/payment/${obj.nm_member}/${obj.plans}/${obj.plans}`);
+	console.log(response)
+     })
       .then((y) => {
       //saveGraduation();
       ejspdf();
