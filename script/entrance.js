@@ -324,9 +324,7 @@ function entrance_count(data){
             .then((response) => {
               //acrescentar aqui o email , caso a aula for numero de
              console.log(response)
-              fetch(`https://squid-app-ug7x6.ondigitalocean.app/lesson_after/${attr.id}`)
-              .then((x) => x.json())
-              .then((res) => {console.log(res)})
+              fetch(`https://squid-app-ug7x6.ondigitalocean.app/lesson_after/${obj.id}`)
             });
         }
       }
