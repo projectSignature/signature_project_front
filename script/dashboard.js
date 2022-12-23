@@ -77,6 +77,15 @@ axios.get('https://squid-app-ug7x6.ondigitalocean.app/info')
     console.log(response)
   });
 
+
+//paymentGet------------------------------------------------->
+  axios.get('https://squid-app-ug7x6.ondigitalocean.app/paymentall')
+    .then(function (response) {
+      document.querySelector('#payment-yet').innerHTML = response.data;
+      console.log(response)
+    });
+
+
 document.querySelector('#gym-name').innerHTML = sessionStorage.getItem("gym");
 
 var next_graduation = 0
