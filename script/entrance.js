@@ -279,7 +279,8 @@ function entrance_regist(number) {
           if ('testes', res[0]) {
             localStorage.setItem('id', res[0].id);
             localStorage.setItem('GYM_ID', res[0].GYM_ID);
-            addClient_again(number)
+            addClient_again(number);
+            entrance_count(res[0].id);
             if(entrancearry[number].IMAGE==1){
               entrance_count(res[0].id)
             }else{
