@@ -275,6 +275,7 @@ function entrance_regist(number) {
             title: 'Registrando!',
             didOpen: () => { Swal.showLoading() }
           })
+        console.log(res[0])
           if (res[0]) {
             localStorage.setItem('id', res[0].id);
             localStorage.setItem('GYM_ID', res[0].GYM_ID);
