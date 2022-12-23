@@ -18,18 +18,6 @@ if (token == 567) {
 }
 
 
-/* const caminho = "http://localhost:8098/linestatus/"; //route 1
-axios.get(caminho)
-  .then(function (response) {
-   console.log(response.data);
- })
-
- const caminho2 = "http://localhost:8098/linestatus/"; //route 2
- axios.get(caminho)
-   .then(function (response) {
-    console.log(response.data);
-  }) */
-
 var past = {
   jp: {
     buttons: {
@@ -86,6 +74,7 @@ function navigator(ref) {
 axios.get('https://squid-app-ug7x6.ondigitalocean.app/info')
   .then(function (response) {
     document.querySelector('#member-total').innerHTML = response.data;
+    console.log(response)
   });
 
 document.querySelector('#gym-name').innerHTML = sessionStorage.getItem("gym");
@@ -138,50 +127,78 @@ var next_graduation = 0
         .then((x) => x.json())
         .then((res) => {
           membersarry = res;
+          var flugA = false;
+          var flugB = false;
+          var flugC = false;
+          var flugD = false;
+          var flugE = false;
+          var flugF = false;
+          var flugG = false;
+          var flugH = false;
+          var flugI = false;
+          var flugJ = false;
+          var flugK = false;
+          var flugL = false;
+          var flugM = false;
+          var flugN = false;
 
           for (let index = 0; index < membersarry.length; index++) {
                   console.log(membersarry[index].plans);
             switch(membersarry[index].plans){
               case "Plan A":
+              flugA = true;
             　 planA ++
             break;
               case "Plan B":
+                flugB = true;
                planB ++
                  break;
               case "Plan C":
+                flugC = true;
                 planC ++
                 break;
               case "Plan D":
+                flugD = true;
                 planD ++
                 break;
               case "Plan E":
+                flugE = true;
                 planE ++
                 break;
               case "Plan F":
+                flugF = true;
                planF ++
                break;
               case "Plan G":
+                flugG = true;
                 planG ++
                 break;
               case "Plan H":
+                flugH = true;
                 planH ++
                 break;
               case "Plan I":
+                flugI = true;
                 planI ++
                 break;
               case "Plan J":
+                flugJ = true;
                 planJ ++
                 break;
               case "Plan K":
+                flugK = true;
                 planK ++
                 break;
               case "Plan L":
               planL ++
+              flugL = true;
               break;
               case "Plan M":
+                flugM = true;
                 planM ++
                 break;
               case "Plan N":
+                flugN = true;
                 planN ++
                 break;
                 default:
@@ -189,47 +206,106 @@ var next_graduation = 0
 
             }
             console.log(planA,planB,planC,planD,planE,planF,planG,planH,planI,planJ,planK,planL,planM,planN)
-            create_chart(planA,planB,planC,planD,planE,planF,planG,planH,planI,planJ,planK,planL,planM,planN)
+            data1 =[]
+            data = []
+            datacontents = []
+            datacolor = []
+            data1.push(planA,planB,planC,planD,planE,planF,planG,planH,planI,planJ,planK,planL,planM,planN)
+              for (let index = 0; index < data1.length; index++) {
+                     if(data1[index]){
+                       data.push(data1[index])
+                     }
+              }
+              if(flugA){
+                datacontents.push("Plan A")
+                datacolor.push("#D0B0FF")
+              }
+              if (flugB){
+                datacontents.push("Plan B")
+                datacolor.push("#A4C6FF")
+              }
+              if (flugC){
+                datacontents.push("Plan C")
+                datacolor.push("#FFABCE")
+              }
+              if (flugD){
+                datacontents.push("Plan D")
+                datacolor.push("#A7F1FF")
+              }
+              if (flugE){
+                datacontents.push("Plan E")
+                datacolor.push("#E9FFA5")
+              }
+               if (flugF){
+                datacontents.push("Plan F")
+                datacolor.push("#9BF9CC")
+              }
+              if (flugG){
+                datacontents.push("Plan G")
+                datacolor.push("#AEFFBD")
+              }
+              if (flugH){
+                datacontents.push("Plan H")
+                datacolor.push("#CCCCCC")
+              }
+              if (flugI){
+                datacontents.push("Plan I")
+                datacolor.push("#FA8072")
+              }
+              if (flugJ){
+                datacontents.push("Plan J")
+                datacolor.push("#E9967A")
+              }
+              if (flugK){
+                datacontents.push("Plan K")
+                datacolor.push("#FF00FF")
+              }
+              if (flugL){
+                datacontents.push("Plan L")
+                datacolor.push("#90EE90")
+              }
+              if (flugM){
+                datacontents.push("Plan M")
+                datacolor.push("#48D1CC")
+              }
+              if (flugN){
+                datacontents.push("Plan N")
+                datacolor.push("#9ACD32")
+              }
+            create_chart(data,datacontents,datacolor)
         });
   }
 
 
-function create_chart(planA,planB,planC,planD,planE,planF,planG,planH,planI,planJ,planK,planL,planM,planN){
-    var pieData = [
-   {
-      value: planA,            // 値
-      color:"#F7464A",       // 色
-      highlight: "#FF5A5E",  // マウスが載った際の色
-      label: "Plan A"        // ラベル
-   },
-   {
-      value: planB,
-      color: "#41C44E",
-      highlight: "#6CD173",
-      label: "PLAN B"
-   },
-   {
-      value: planC,
-      color: "#FDB45C",
-      highlight: "#FFC870",
-      label: "PLAN C"
-   },
-   {
-      value: planD,
-      color: "#AA49B8",
-      highlight: "#C583CF",
-      label: "PLAN D"
-   },
-   {
-      value: planE,
-      color: "#4D5360",
-      highlight: "#616774",
-      label: "PLAN E"
-   }
+function create_chart(data,datacontents,datacolor){
 
-];
-   var ctx = document.getElementById("graph-area").getContext("2d");
-   window.myPie = new Chart(ctx).Pie(pieData);
-
-
+   var ctx = document.getElementById("graph-area")//.getContext("2d");
+  // window.myPie = new Chart(ctx).Pie(pieData);
+    console.log(data)
+    console.log(datacontents)
+  var graph_area = new Chart(ctx,{
+    type: 'pie',
+    data:{
+      labels:datacontents,
+      datasets:[{
+        backgroundColor:datacolor,
+        data: data
+      }]
+    },
+    options:{
+      title:{
+        display:false,
+        text: "Plan ratio chart1"
+      },
+legends:{
+  display:false ,
+},
+pieceLabel: {
+  render: "label",
+  fontSize: 10,
+  fontColor: "black",
+  position: "outside"
+  },
+}
+  });
 }
