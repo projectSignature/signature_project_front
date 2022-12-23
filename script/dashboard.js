@@ -90,3 +90,146 @@ axios.get('https://squid-app-ug7x6.ondigitalocean.app/info')
 
 document.querySelector('#gym-name').innerHTML = sessionStorage.getItem("gym");
 
+var next_graduation = 0
+//pagar todas do table de graduação-------------------------------->
+  fetch("https://squid-app-ug7x6.ondigitalocean.app/graduationlist", {
+    method: "POST",
+    body: JSON.stringify({ opt1: "", opt2: "" }),
+    headers: { "Content-type": "application/json; charset=UTF-8" },
+  })
+    .then((x) => x.json())
+    .then((res) => {
+      clients1 = res;
+      console.log(clients1)
+      for (let index = 0; index < clients1.length; index++) {
+        if(clients1[index].lesson_after>=39){
+          next_graduation ++
+        }
+      }
+      document.getElementById("member-total-graduation").innerHTML = next_graduation
+      console.log(next_graduation)
+      memberget_chart()
+    });
+//pagar todas do table de member------------------------------->
+    function memberget_chart(){
+      const filter1 = "";
+      const filter2 = "";
+      let planA = 0
+      let planB = 0
+      let planC = 0
+      let planD = 0
+      let planE = 0
+      let planF = 0
+      let planG = 0
+      let planH = 0
+      let planI = 0
+      let planJ = 0
+      let planK = 0
+      let planL = 0
+      let planM = 0
+      let planN = 0
+
+      const obj = { opt1: filter1, opt2: filter2 };
+      fetch("https://squid-app-ug7x6.ondigitalocean.app/list", {
+        method: "POST",
+        body: JSON.stringify(obj),
+        headers: { "Content-type": "application/json; charset=UTF-8" },
+      })
+        .then((x) => x.json())
+        .then((res) => {
+          membersarry = res;
+
+          for (let index = 0; index < membersarry.length; index++) {
+                  console.log(membersarry[index].plans);
+            switch(membersarry[index].plans){
+              case "Plan A":
+            　 planA ++
+            break;
+              case "Plan B":
+               planB ++
+                 break;
+              case "Plan C":
+                planC ++
+                break;
+              case "Plan D":
+                planD ++
+                break;
+              case "Plan E":
+                planE ++
+                break;
+              case "Plan F":
+               planF ++
+               break;
+              case "Plan G":
+                planG ++
+                break;
+              case "Plan H":
+                planH ++
+                break;
+              case "Plan I":
+                planI ++
+                break;
+              case "Plan J":
+                planJ ++
+                break;
+              case "Plan K":
+                planK ++
+                break;
+              case "Plan L":
+              planL ++
+              break;
+              case "Plan M":
+                planM ++
+                break;
+              case "Plan N":
+                planN ++
+                break;
+                default:
+              }
+
+            }
+            console.log(planA,planB,planC,planD,planE,planF,planG,planH,planI,planJ,planK,planL,planM,planN)
+            create_chart(planA,planB,planC,planD,planE,planF,planG,planH,planI,planJ,planK,planL,planM,planN)
+        });
+  }
+
+
+function create_chart(planA,planB,planC,planD,planE,planF,planG,planH,planI,planJ,planK,planL,planM,planN){
+    var pieData = [
+   {
+      value: planA,            // 値
+      color:"#F7464A",       // 色
+      highlight: "#FF5A5E",  // マウスが載った際の色
+      label: "Plan A"        // ラベル
+   },
+   {
+      value: planB,
+      color: "#41C44E",
+      highlight: "#6CD173",
+      label: "PLAN B"
+   },
+   {
+      value: planC,
+      color: "#FDB45C",
+      highlight: "#FFC870",
+      label: "PLAN C"
+   },
+   {
+      value: planD,
+      color: "#AA49B8",
+      highlight: "#C583CF",
+      label: "PLAN D"
+   },
+   {
+      value: planE,
+      color: "#4D5360",
+      highlight: "#616774",
+      label: "PLAN E"
+   }
+
+];
+   var ctx = document.getElementById("graph-area").getContext("2d");
+   window.myPie = new Chart(ctx).Pie(pieData);
+
+
+}
