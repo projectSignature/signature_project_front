@@ -299,6 +299,7 @@ function entrance_regist(number) {
 
 
 function entrance_count(data){
+  console.log('inicio da funcao')
   fetch("https://squid-app-ug7x6.ondigitalocean.app/graduationlist", {
     method: "POST",
     body: JSON.stringify({ opt1: "", opt2: "" }),
