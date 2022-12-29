@@ -274,7 +274,9 @@ function saveData() {
     "lang01": idioma,
     "plans": plan,
     "signature": signaturePad.toDataURL("image/png"),
-    "gymname": sessionStorage.getItem("gym")
+    "gymname": sessionStorage.getItem("gym"),
+    "active_date" : '2022-12-29'
+    "inactive_date": ''	  
   };
 
   fetch('https://squid-app-ug7x6.ondigitalocean.app/member',
