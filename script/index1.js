@@ -16,12 +16,15 @@ var errormessage12 = ""
 var gymname = sessionStorage.getItem("gym");
 console.log(gymname)
 var answer
+var today = new Date();  //今日
+
 
 window.onload = function open_page() {
 	console.log('P1')
 error_massege_portugues()
 estado_select_en()
 image_get(gymname)
+
 	//planget()
 }
 
@@ -246,10 +249,11 @@ function error_massege_japanese(){
     document.getElementById("select-plan-e").style.borderWidth = 'thin';
     document.getElementById("select-plan-a").style.background = '#333333';
     document.getElementById("select-plan-a").style.borderWidth = 'thin';
-   
+
   });
 
 function saveData() {
+	var activedate = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`
   let gen = () => {       //tratamento da seleção de gênero
     if(inputs[5].checked) {
       return 'man'
@@ -275,11 +279,11 @@ function saveData() {
     "lang01": idioma,
     "plans": plan,
     "signature": signaturePad.toDataURL("image/png"),
-    "gymname": sessionStorage.getItem("gym"),
-    "active_date" : '2022-12-29'
-    "inactive_date": ''	  
+    "gymname": 'Paulo',//sessionStorage.getItem("gym"),,
+		"active_date" : activedate,
+		"inactive_date": 0
   };
-
+console.log(obj)
   fetch('https://squid-app-ug7x6.ondigitalocean.app/member',
     {method: 'POST',
     body: JSON.stringify(obj),
@@ -422,7 +426,7 @@ function confirm_check(){
     kubun_check = 1
   }else{
     name_error.style.display ="none";
-  
+
   }
    if(birthday_year=="" || birthday_month=="" || birthday_day==""){
     birthday_year_error.style.display ="block";
@@ -431,7 +435,7 @@ function confirm_check(){
   }else if(kubun_check ==1){
   }else{
       birthday_year_error.style.display ="none";
- 
+
   }
   if(birthday_year=="YYYY" || birthday_month=="MM" || birthday_day=="DD"){
     birthday_year_error.style.display ="block";
@@ -440,7 +444,7 @@ function confirm_check(){
   }else if(kubun_check ==1){
   }else{
     birthday_year_error.style.display ="none";
-  
+
   }
 if(adress_input==""){
   adress_error.style.display ="block";
@@ -523,7 +527,7 @@ if(kubun_check==0){
        title: 'Completed'
      , html : 'Welcome to our gym'
      , type : 'info'
-     , onAfterClose : () => {	     
+     , onAfterClose : () => {
          location.reload();
        }
      });
@@ -596,7 +600,7 @@ if(birthday_month>13){
 }
 }
 function getAge(birthday){
-    var today = new Date();  //今日
+
     var thisYearsBirthday = new Date(today.getFullYear(), birthday.month-1, birthday.date);//今年の誕生
     var age = today.getFullYear() - birthday.year;  //年齢
    if(today < thisYearsBirthday){        //今年まだ誕生日が来ていない
@@ -992,27 +996,27 @@ function swallpolitic(){
   showConfirmButton: true,
   width: 710,
   html:`<div id="politc-span"> <span>Por meio deste, eu concordo com as regras estabelecidas no Kussano Dojo.
- 
-<br>Eu concordo em participar das aulas sabendo que há riscos de ocorrer lesões, 
+
+<br>Eu concordo em participar das aulas sabendo que há riscos de ocorrer lesões,
 sindrome pós-traumática ou morte, durante ou após o treino.
-<br>Eu também concordo em não processar os professores, os parceiros de treino e 
-o proprietário da academia, em caso de acidentes, lesões, sindrome pós 
+<br>Eu também concordo em não processar os professores, os parceiros de treino e
+o proprietário da academia, em caso de acidentes, lesões, sindrome pós
 traumática ou morte que possam ocorrer durante ou após o treino.
-<br>Eu também concordo que seja permitido mostrar publicamente qualquer  
-vídeo ou foto de treino através de panfletos, páginas na web, Youtube e 
+<br>Eu também concordo que seja permitido mostrar publicamente qualquer
+vídeo ou foto de treino através de panfletos, páginas na web, Youtube e
 redes sociais.
-<br>Eu li e estou ciente das declarações acima, e eu, com isso, concordo em 
+<br>Eu li e estou ciente das declarações acima, e eu, com isso, concordo em
 participar das aulas por minha própria conta.
-E com isso declaro que todas as informações na ficha de incrição são  
+E com isso declaro que todas as informações na ficha de incrição são
 verdadeirase corretas.
 <br>
 <br>
-PARA PAIS/RESPONSÁVEIS POR ALUNOS MENORES DE IDADE 
+PARA PAIS/RESPONSÁVEIS POR ALUNOS MENORES DE IDADE
 (ABAIXO DA IDADE DE 20 ANOS NO  ATO DA MATRÍCULA)
 <br>
 <br>
-Como pai/responsável, com responsabilidade legal por este aluno, eu certifico 
-que tendo lido as declarações contidas acima, eu concordo com a matrícula 
+Como pai/responsável, com responsabilidade legal por este aluno, eu certifico
+que tendo lido as declarações contidas acima, eu concordo com a matrícula
 dele/dela nesta academia.
 </div>
 </span>`,
@@ -1023,12 +1027,12 @@ dele/dela nesta academia.
 	  politic_check()
 	  console.log("checkdekita")
   console.log(result);
-	
+
   })
 }
 
 function politic_check(){
-	
+
 	document.getElementById("politic1").style.backgroundColor = '#6b1afa';
 	document.getElementById("politic2").style.Color = '#FFFFFF';
 }
@@ -1060,14 +1064,14 @@ function planget(){
 			      document.getElementById(`plan-${plan_loop}-detail4`).innerHTML　=  res[i].PLAN_DISCRITION4
 			      document.getElementById(`plan-${plan_loop}-detail5`).innerHTML　=  res[i].PLAN_DISCRITION5
 			      document.getElementById(`plan-select-${plan_loop}`).style.display =  '';
-						plan_loop = plan_loop +1 
+						plan_loop = plan_loop +1
 					 console.log(plan_loop)
 				 }
 				}
 				for(var ii=plan_loop;ii<7;ii++) {
 					document.getElementById(`plan-select-${ii}`).style.display = 'none';
 				}
-		         
+
 	  })
 }
 
