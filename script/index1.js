@@ -297,7 +297,7 @@ console.log(obj)
 	console.log(response)
      })
       .then((y) => {
-				console.log("OKpauLo")
+	console.log("OKpauLo")
       //saveGraduation();
       ejspdf();
       })
