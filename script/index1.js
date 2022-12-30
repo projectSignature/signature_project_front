@@ -14,6 +14,7 @@ var errormessage10 = ""
 var errormessage11 = ""
 var errormessage12 = ""
 var gymname = sessionStorage.getItem("gym");
+console.log(gymname)
 var answer
 
 window.onload = function open_page() {
