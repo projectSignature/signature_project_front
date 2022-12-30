@@ -329,11 +329,12 @@ console.log(obj)
 //}
 
 function ejspdf() {
+	input_clear()
   fetch('https://squid-app-ug7x6.ondigitalocean.app/pdf')
   .then((x) => x.json())
   .then((response) => {
     console.log(response)
-    input_clear()
+    
   })
 
 }
