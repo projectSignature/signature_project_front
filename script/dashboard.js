@@ -3,6 +3,9 @@ var menbers_active = ""
 var next_graduation = ""
 var my_division = ""
 var my_language = ""
+let yetpayment = []
+var membersCount = ""
+let membersarry = []
 
 var token = sessionStorage.getItem("token");
 const addMemberDiv = document.querySelector('#add_member_div');
@@ -15,6 +18,35 @@ if (token == 567) {
   memberDiv.style.display = 'none';
   paymentDiv.style.display = 'none';
   graduacaoDiv.style.display = 'none';
+}
+
+document.getElementById('paydiv').addEventListener('click', payswall)
+
+function payswall(){
+  let yetmemberswall = []
+  for (let index = 0; index < yetpayment.length; index++) {
+    let yetmember = `<div><p>${yetpayment[index].nm_member}</p></div>`
+        yetmemberswall=  yetmemberswall + yetmember
+    }
+    Swal.fire({
+      title: 'Membros com o pagamento atrasado',
+      showCancelButton: false,
+      showConfirmButton: true,
+      ConfirmButtonText: 'OK',
+      width: 1000,
+      html: `<div id="maindiv">${yetmemberswall}</div>
+      <style>
+      #maindiv{
+        display:block;
+        border:3px solid gray;
+      }
+      </style>`,
+      customClass: "sweet-alert",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        addClient_again(swall_add_existentes)
+      }
+    });
 }
 
 
@@ -69,21 +101,6 @@ function navigator(ref) {
   let path = `https://squid-app-ug7x6.ondigitalocean.app/signature-project-front/pages/${ref}.html`;
   location.href = path;
 }
-///https://squid-app-ug7x6.ondigitalocean.app/signature-project-front/pages/ficha.html
-
-axios.get('https://squid-app-ug7x6.ondigitalocean.app/info')
-  .then(function (response) {
-    document.querySelector('#member-total').innerHTML = response.data;
-    console.log(response)
-  });
-
-
-//paymentGet------------------------------------------------->
-  axios.get('https://squid-app-ug7x6.ondigitalocean.app/paymentall')
-    .then(function (response) {
-      document.querySelector('#payment-yet').innerHTML = response.data;
-      console.log(response)
-    });
 
 
 document.querySelector('#gym-name').innerHTML = sessionStorage.getItem("gym");
@@ -98,14 +115,12 @@ var next_graduation = 0
     .then((x) => x.json())
     .then((res) => {
       clients1 = res;
-      console.log(clients1)
       for (let index = 0; index < clients1.length; index++) {
         if(clients1[index].lesson_after>=39){
           next_graduation ++
         }
       }
       document.getElementById("member-total-graduation").innerHTML = next_graduation
-      console.log(next_graduation)
       memberget_chart()
     });
 //pagar todas do table de member------------------------------->
@@ -126,7 +141,6 @@ var next_graduation = 0
       let planL = 0
       let planM = 0
       let planN = 0
-
       const obj = { opt1: filter1, opt2: filter2 };
       fetch("https://squid-app-ug7x6.ondigitalocean.app/list", {
         method: "POST",
@@ -136,6 +150,7 @@ var next_graduation = 0
         .then((x) => x.json())
         .then((res) => {
           membersarry = res;
+          console.log(membersarry)
           var flugA = false;
           var flugB = false;
           var flugC = false;
@@ -150,9 +165,7 @@ var next_graduation = 0
           var flugL = false;
           var flugM = false;
           var flugN = false;
-
           for (let index = 0; index < membersarry.length; index++) {
-                  console.log(membersarry[index].plans);
             switch(membersarry[index].plans){
               case "Plan A":
               flugA = true;
@@ -212,9 +225,7 @@ var next_graduation = 0
                 break;
                 default:
               }
-
             }
-            console.log(planA,planB,planC,planD,planE,planF,planG,planH,planI,planJ,planK,planL,planM,planN)
             data1 =[]
             data = []
             datacontents = []
@@ -283,15 +294,14 @@ var next_graduation = 0
               }
             create_chart(data,datacontents,datacolor)
         });
+
   }
 
 
-function create_chart(data,datacontents,datacolor){
 
+function create_chart(data,datacontents,datacolor){
    var ctx = document.getElementById("graph-area")//.getContext("2d");
   // window.myPie = new Chart(ctx).Pie(pieData);
-    console.log(data)
-    console.log(datacontents)
   var graph_area = new Chart(ctx,{
     type: 'pie',
     data:{
@@ -306,15 +316,84 @@ function create_chart(data,datacontents,datacolor){
         display:false,
         text: "Plan ratio chart1"
       },
-legends:{
+legend:{
   display:false ,
 },
 pieceLabel: {
   render: "label",
-  fontSize: 10,
+  fontSize: 12,
   fontColor: "black",
   position: "outside"
   },
 }
   });
+
+  ///https://squid-app-ug7x6.ondigitalocean.app/signature-project-front/pages/ficha.html
+  axios.get('https://squid-app-ug7x6.ondigitalocean.app/info')
+    .then(function (response) {
+      document.querySelector('#member-total').innerHTML = response.data;
+      membersCount = response.data
+      console.log(membersCount)
+      line_chart(membersCount)
+    });
 }
+//paymentGet------------------------------------------------->
+  axios.get('https://squid-app-ug7x6.ondigitalocean.app/paymentall')
+    .then(function (response) {
+      document.querySelector('#payment-yet').innerHTML = response.data.length;
+      yetpayment = response.data
+    });
+    function line_chart(membersCount){
+      let day = new Date();
+      var ctx1 = document.getElementById('ex_chart');
+      console.log(membersarry.length)
+      let kongetsu = day.getMonth()+1
+      let kotoshi = day.getFullYear()
+      let mystartyear
+      let mystartmonth
+      if(kongetsu==12){
+        mystartyear=kotoshi
+        mystartmonth=kongetsu
+      }else{
+        mystartyear=(kotoshi-0)-1
+        mystartmonth=1+(kongetsu-0)
+      }
+      console.log(mystartyear)
+      console.log(mystartmonth)
+
+    //  var kongetsu = document.querySelector('#member-total').innerHTML
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+
+      for (let index = 0; index < membersarry.length; index++) {
+        console.log(membersarry[index].inactive_date.split("-")[0])
+          if(membersarry[index].inactive_date==0){
+            if(membersarry[index].active_date.split("-")[0]==kotoshi){
+              //if(membersarry[index].active_date.split("-")[0]==kotoshi)
+            }
+          //console.log(membersarry[index].inactive_date.split("-")[0])
+        //  console.log(membersarry[index].inactive_date.split("-")[1])
+          //console.log(membersarry[index].active_date.split("-")[0])
+        //  console.log(membersarry[index].active_date.split("-")[1])
+          }
+      }
+     let month_name = []//months[day.getMonth()];
+     for (let index = 11; index > 0; index--) {
+            month_name.push(months[day.getMonth()-index])
+     }
+      month_name.push(months[day.getMonth()])
+      var data = {
+          labels: month_name,//["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dez"],
+          datasets: [{
+              label: 'メンバー入会推移',
+              data: [membersCount, membersCount, membersCount, membersCount, membersCount,membersCount, membersCount, membersCount, membersCount, membersCount,membersCount,membersCount],
+              borderColor: '#00BFFF'
+          }]
+      };
+      var options = {};
+      var ex_chart = new Chart(ctx1, {
+          type: 'line',
+          data: data,
+          options: options
+      });
+    }
