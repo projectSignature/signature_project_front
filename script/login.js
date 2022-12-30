@@ -36,6 +36,7 @@ async function login_request(user, password) {
       if (response.data.token) {
         sessionStorage.setItem("token", response.data.token);
         sessionStorage.setItem("gym", response.data.gym);
+        sessionStorage.setItem("GYM_ID", response.data.number.ID);
 
         var loginName = response.data.number.NAME;
         var authority = response.data.number.AUTHORITY;
