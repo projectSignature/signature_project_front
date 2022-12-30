@@ -298,6 +298,7 @@ console.log(obj)
      })
       .then((y) => {
 	console.log("OKpauLo")
+	  input_clear()
       //saveGraduation();
       ejspdf();
       })
@@ -329,7 +330,6 @@ console.log(obj)
 //}
 
 function ejspdf() {
-	input_clear()
   fetch('https://squid-app-ug7x6.ondigitalocean.app/pdf')
   .then((x) => x.json())
   .then((response) => {
