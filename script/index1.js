@@ -14,7 +14,9 @@ var errormessage10 = ""
 var errormessage11 = ""
 var errormessage12 = ""
 var gymname = sessionStorage.getItem("gym");
+var gymid = sessionStorage.getItem("GYM_ID"); 
 console.log(gymname)
+console.log(gymid)
 var answer
 var today = new Date();  //今日
 
