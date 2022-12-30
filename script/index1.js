@@ -279,7 +279,7 @@ function saveData() {
     "lang01": idioma,
     "plans": plan,
     "signature": signaturePad.toDataURL("image/png"),
-    "gymname": 'Paulo',//sessionStorage.getItem("gym"),,
+    "gymname": gymname, //'Paulo',//sessionStorage.getItem("gym"),,
 		"active_date" : activedate,
 		"inactive_date": 0
   };
