@@ -279,9 +279,9 @@ function saveData() {
     "lang01": idioma,
     "plans": plan,
     "signature": signaturePad.toDataURL("image/png"),
-    "gymname": 'Paulo',//sessionStorage.getItem("gym"),,
-		"active_date" : activedate,
-		"inactive_date": 0
+    "gymname": sessionStorage.getItem("gym"),
+    "active_date" : activedate,
+    "inactive_date": 0
   };
 console.log(obj)
   fetch('https://squid-app-ug7x6.ondigitalocean.app/member',
