@@ -158,7 +158,7 @@ function error_massege_japanese(){
   //tratamento da seleção de planos e preços
   var plan = '';
   inputs[16].addEventListener('click', (e) => {
-    plan = "Plan A"
+    plan = document.getElementById("plan-1").innerHTML
     document.getElementById("select-plan-a").style.background = '#5507FF';
     document.getElementById("select-plan-a").style.borderWidth = 'thick';
     document.getElementById("select-plan-b").style.background = '#333333';
@@ -174,7 +174,7 @@ function error_massege_japanese(){
   });
   var plan = '';
   inputs[17].addEventListener('click', (e) => {
-    plan = "Plan B"
+    plan = document.getElementById("plan-2").innerHTML
     document.getElementById("select-plan-b").style.background = '#5507FF';
     document.getElementById("select-plan-b").style.borderWidth = 'thick';
     document.getElementById("select-plan-a").style.background = '#333333';
@@ -190,7 +190,7 @@ function error_massege_japanese(){
   });
   var plan = '';
   inputs[18].addEventListener('click', (e) => {
-    plan = "Plan C"
+    plan = document.getElementById("plan-3").innerHTML
     document.getElementById("select-plan-c").style.background = '#5507FF';
     document.getElementById("select-plan-c").style.borderWidth = 'thick';
     document.getElementById("select-plan-b").style.background = '#333333';
@@ -206,7 +206,7 @@ function error_massege_japanese(){
   });
   var plan = '';
   inputs[19].addEventListener('click', (e) => {
-    plan = "Plan D"
+    plan = document.getElementById("plan-4").innerHTML
     document.getElementById("select-plan-d").style.background = '#5507FF';
     document.getElementById("select-plan-d").style.borderWidth = 'thick';
     document.getElementById("select-plan-b").style.background = '#333333';
@@ -222,7 +222,7 @@ function error_massege_japanese(){
   });
   var plan = '';
   inputs[20].addEventListener('click', (e) => {
-    plan = "Plan E"
+    plan = document.getElementById("plan-5").innerHTML
     document.getElementById("select-plan-e").style.background = '#5507FF';
     document.getElementById("select-plan-e").style.borderWidth = 'thick';
     document.getElementById("select-plan-b").style.background = '#333333';
@@ -238,7 +238,7 @@ function error_massege_japanese(){
   });
   var plan = '';
   inputs[21].addEventListener('click', (e) => {
-    plan = "Plan F"
+    plan = document.getElementById("plan-6").innerHTML
     document.getElementById("select-plan-f").style.background = '#5507FF';
     document.getElementById("select-plan-f").style.borderWidth = 'thick';
     document.getElementById("select-plan-b").style.background = '#333333';
