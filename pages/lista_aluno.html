@@ -193,7 +193,7 @@
                         <span>Telefone: </span>
                         </div>
                         <div  id="phone-input" class="input-select">
-                        <input type="text" id="clientTel" value="(${client.phone01})${client.phone02}-${client.phone03}"/>
+                        <input type="text" id="clientTel" value="0${client.phone01}-${client.phone02}-${client.phone03}"/>
                     </div>
                     </div>
                     <div class="div-block">
@@ -229,6 +229,14 @@
                         <option value="Plan D">Plan D</option>/>
                         <option value="Plan E">Plan E</option>/>
                         <option value="Plan F">Plan F</option>/>
+                        <option value="Plan G">Plan G</option>/>
+                        <option value="Plan H">Plan H</option>/>
+                        <option value="Plan I">Plan I</option>/>
+                        <option value="Plan J">Plan J</option>/>
+                        <option value="Plan K">Plan K</option>/>
+                        <option value="Plan L">Plan L</option>/>
+                        <option value="Plan M">Plan M</option>/>
+                        <option value="Plan N">Plan N</option>/>
                         <option value="${client.plans}" selected>${client.plans}</option>
                         </select>
                         </div>
@@ -238,7 +246,7 @@
                         <span>Graduação: </span>
                         </div>
                         <div  id="graduacao-input" class="input-select">
-                        <input type="text" id="clientGraduation" value="${client.graduation}"/>
+                        <input type="text" id="clientGraduation" value="${client.graduation}" disabled="disabled"/>
                     </div>
                     </div>
                     <div class="div-block">
