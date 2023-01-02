@@ -448,7 +448,9 @@
           let obj = {
             id: clientId,
             nm_member: document.getElementById("clientName").value,
-            birth: document.getElementById("clientBirth").value,
+            birth1: document.getElementById("clientBirth").value.split("-")[0],
+            birth2: document.getElementById("clientBirth").value.split("-")[1],
+            birth3: document.getElementById("clientBirth").value.split("-")[2],
             age: document.getElementById("clientAge").value,
             gender: document.getElementById("clientGender").value,
             address: document.getElementById("clientAddress").value,
