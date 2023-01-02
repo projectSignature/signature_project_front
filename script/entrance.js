@@ -191,7 +191,6 @@ function entrance_regist(number) {
     showCancelButton: false,
     showConfirmButton: true,
     ConfirmButtonText: '戻る',
-    width: 400,
     html: `
       <div id="title">Digiti sua senha</div>
       <input type="password" id="keys_entrance" hiden/>
@@ -230,19 +229,19 @@ function entrance_regist(number) {
           }
           .number-div{
             border: 1px solid gray;
-            margin-right:30px;
+            margin-right:1%;
             width:30%;
-            height:6vh;
+            height:12%;
             font-size:4vh;
             text-align: center;
-            padding-top:20px;
+            padding-top:0.5%;
             margin-top:1%;
 
           }
           #keys_entrance{
-            height:10vh;
+            height:15%;
               width:90%;
-            border-radius: 10px;
+            border-radius: 3%;
             font-size:3vw;
           }
           #en1{
@@ -258,6 +257,25 @@ function entrance_regist(number) {
       margin-left:8%;
           }
 
+@media only screen and (max-width: 1200px) {
+  #title{
+    font-size:3vh;
+  }
+  .number-div{
+  font-size:2vh;
+  height:10%;
+}
+}
+
+@media only screen and (max-width: 700px) {
+  #title{
+    font-size:1.5vh;
+  }
+  .number-div{
+  font-size:0.5vh;
+  height:10%;
+}
+}
           </style>`
     ,
   }).then((result) => {
@@ -298,7 +316,6 @@ function entrance_regist(number) {
     };
   });
 };
-
 
 function entrance_count(data){
   console.log('inicio da funcao')
