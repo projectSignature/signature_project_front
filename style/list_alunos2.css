@@ -134,11 +134,13 @@ select{
 #btn-filter:hover{
     transform: scale(1.1);
 }
+#header-title{
+  font-size:5vh;
+}
 
 /* 500px以下の画面で適用 */
 @media only screen and (max-width: 500px) {
   .mobile-scroll {
-
     overflow-x: auto; /* 横スクロール */
     -webkit-overflow-scrolling: touch; /* スマホでスムーズにスクロールできるように */
   }
@@ -150,12 +152,19 @@ select{
   width:15%;
   font-size:1.5vh;
 }
+#header-title{
+  font-size:3vh;
 
+}
 }
 
 /* 500px以下の画面で適用 */
-@media only screen and (max-width:1200px) {
+@media screen and (min-width: 501px) and (max-width: 1200px) {
+
   #btn-filter{
     width:15%;
+  }
+  #header-title{
+    font-size:4vh;
   }
 }
