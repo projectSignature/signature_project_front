@@ -190,10 +190,10 @@ function entrance_regist(number) {
     showCancelButton: false,
     showConfirmButton: true,
     confirmButtonText: 'OK',
-
+     width : '640rem',
     html: `
       <div id="title">Digiti sua senha</div>
-      <div><input type="password" id="keys_entrance" hiden/></div>
+      <div id="pass-div"><input type="password" id="keys_entrance" hiden/></div>
       <div id="main-div">
        <div id="first-row" class="swall-row">
          <div id="en1" class="number-div" onclick="input_regist(1)">1</div>
@@ -217,6 +217,9 @@ function entrance_regist(number) {
        </div>
       </div>
           <style>
+          #pass-div{
+            height:80px;
+          }
           #main-div{
             width:95%;
             height:400px;
@@ -242,7 +245,7 @@ function entrance_regist(number) {
 
           }
           #keys_entrance{
-            height:15%;
+            height:90%;
               width:90%;
             border-radius: 3%;
             font-size:3vw;
@@ -269,12 +272,16 @@ function entrance_regist(number) {
 
 @media only screen and (max-width: 700px) {
   #title{
-    font-size:1.5vh;
+    font-size:3vh;
+  }
+  #clear{
+    font-size:3vh;
   }
 
 }
           </style>`
     ,
+    customClass: 'customizable',
   }).then((result) => {
     if (result.isConfirmed) {
       var password = document.querySelector('#keys_entrance').value;
