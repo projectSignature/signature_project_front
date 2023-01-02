@@ -121,6 +121,20 @@ select{
 .email-tag{
   width: 220px;
 }
+#btn-filter{
+  height:70%;
+  width:6%;
+  border:1px solid #888888;
+  background-color: #BBBBBB;
+  border-radius:5px;
+  font-size:2vh;
+  font-weight: bold;
+}
+
+#btn-filter:hover{
+    transform: scale(1.1);
+}
+
 /* 500px以下の画面で適用 */
 @media only screen and (max-width: 500px) {
   .mobile-scroll {
