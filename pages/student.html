@@ -18,7 +18,7 @@
 
     <div id="dash">
         <div id="header">
-           <h3>Controle de graduação</h3>
+           <sapn id ="header-title">Controle de graduação</span>
         </div>
         <div id="table">
             <table class="mobile-scroll"  cellspacing="0" cellpadding="0">
@@ -48,6 +48,7 @@
    const tbody = document.getElementsByTagName('tbody')[0]
     const gymName = document.getElementById("gym-name");
     const sessionGymName = sessionStorage.getItem("gym");
+    let maylanguage = "PT"
 
     if (sessionGymName) {
       gymName.innerHTML = sessionGymName;
@@ -69,20 +70,18 @@
       .then((res) => {
         clients1 = res;
         console.log(clients1);
-        clientsHandler();
+        clientsHandler(clients1);
       });
 
-    function clientsHandler() {
+    function clientsHandler(clients1) {
         for (let index = 0; index < clients1.length; index++) {
           const row = createNewTableRow(clients1[index]);
           tbody.innerHTML += row;
-
         }
       }
 
       function createNewTableRow(data) {
         //  console.log(data.nm_member_id)
-          console.log(data.color)
         if(data.color=="0"){
           color = "white"
         }else if(data.color=="1"){
@@ -163,54 +162,54 @@
             html: `
                 <div id="client">
                    <div class="main-div" id="left-div-edit">
-                    <div>
-                        <span>Nome: </span>
-                        <input type="text" id="clientName" disabled="disabled" value="${client.nm_member}"/>
+                    <div class="div-block-swall">
+                        <div><span>Nome: </span></div>
+                        <div><input type="text" id="clientName" disabled="disabled" value="${client.nm_member}"/></div>
                     </div>
-                    <div>
-                        <span>Faixa atual: </span>
-                        <select id="currentRange">
+                    <div class="div-block-swall">
+                        <div><span>Faixa atual: </span></div>
+                        <div><select id="currentRange">
                             <option value="${client.color}" selected>${color}</option>
                             <option value="0">white</option>
                             <option value="1">blue</option>
                             <option value="2">purpl</option>
                             <option value="3">brown</option>
                             <option value="4">black</option>
-                        </select>
+                        </select></div>
                     </div>
-                    <div>
-                        <span>Data da graduação: </span>
-                        <input type="date" id="graduateDate" value="${client.graduation_dt}"/>
+                    <div class="div-block-swall">
+                        <div><span>Data da graduação: </span></div>
+                        <div><input type="date" id="graduateDate" value="${client.graduation_dt}"/></div>
                     </div>
-                    <div>
-                        <span>1º Grau: </span>
-                        <input type="date" id="firstDegree" value="${client.first_point}"/>
+                    <div class="div-block-swall">
+                        <div><span>1º Grau: </span></div>
+                        <div><input type="date" id="firstDegree" value="${client.first_point}"/></div>
                     </div>
-                    <div>
-                        <span>2º Grau: </span>
-                        <input type="date" id="secondDegree" value="${client.second_point}"/>
+                    <div class="div-block-swall">
+                        <div><span>2º Grau: </span></div>
+                        <div><input type="date" id="secondDegree" value="${client.second_point}"/></div>
                     </div>
                   </div>
                   <div class="main-div"  id ="right-div">
-                    <div>
-                        <span>3º Grau: </span>
-                        <input type="date" id="thirdDegree" value="${client.third_point}"/>
+                    <div class="div-block-swall">
+                        <div><span>3º Grau: </span></div>
+                        <div><input type="date" id="thirdDegree" value="${client.third_point}"/></div>
                     </div>
-                    <div>
-                        <span>4º Grau: </span>
-                        <input type="date" id="fourthDegree" value="${client.fourth_point}"/>
+                    <div class="div-block-swall">
+                        <div><span>4º Grau: </span></div>
+                        <div><input type="date" id="fourthDegree" value="${client.fourth_point}"/></div>
                     </div>
-                    <div>
-                        <span>Aula pós-graduação: </span>
-                        <input type="number" id="postGraduationClass" value="${client.lesson_after}"/>
+                    <div class="div-block-swall">
+                        <div><span>Aula pós-graduação: </span></div>
+                        <div><input type="number" id="postGraduationClass" value="${client.lesson_after}"/></div>
                     </div>
-                    <div>
-                        <span>Observações: </span>
-                        <textarea type="text" id="observations" value="${client.obs}"/></textarea>
+                    <div class="div-block-swall">
+                        <div><span>Observações: </span></div>
+                        <div><textarea type="text" id="observations" value="${client.obs}"/></textarea></div>
                     </div>
-                    <div>
-                        <span>Status: </span>
-                        <input type="text" id="status" value="${client.status}" disabled="disabled"/>
+                    <div class="div-block-swall">
+                        <div><span>Status: </span></div>
+                        <div><input type="text" id="status" value="${client.status}" disabled="disabled"/></div>
                     </div>
                   </div>
                 </div>
@@ -219,33 +218,34 @@
 
                     #client{
                         width: 100%;
-                        height: 100%;
-                        height: 300px;
+                        height: 450px;
                         display: flex;
                         flex-wrap: wrap;
                         justify-content: flex-start;
                     }
                     .main-div{
                       width:50%;
-                      height;100%;
                       display:block;
                     }
                     .main-div div{
-                      height:15%;
                       display:flex;
                       justify-content: flex-end;
                       margin-top:15px;
                     }
-                    .main-div input, select ,textarea{
-                      width:50%;
-                      height:90%;
+                    .div-block-swall div{
+                      height:100%;
+                      width:100%;
+                    }
+                    input, select ,textarea{
+                      width:80%;
+                      height:50px;
                       border-radius:10px;
                     }
-                    
+
                     @media only screen and (max-width: 1000px) {
                       #client{
                         display: block;
-                        height: 450px;
+                        height: 1200px;
                         border:1px solid gray;
                         width:98%;
                       }
@@ -254,13 +254,27 @@
                       }
                       #right-div{
                         width:90%;
+                          margin-top:30px !important;
                       }
+                      .main-div div{
+                        display:block;
+                        margin-top:0px;
+                      }
+                      .div-block-swall{
+                        width:100%;
+                        margin-top:30px !important;
                     }
+
+                    }
+
+
+
                 </style>
             `,
             showCancelButton: true,
             confirmButtonText: "Salvar",
             cancelButtonText: "Cancelar",
+            title: 'Registrar graduação',
         }).then(result => {
             if (result.isConfirmed) {
                 const name = document.getElementById("clientName").value
@@ -432,11 +446,15 @@ Swal.fire({
     };
 
     fetch("https://squid-app-ug7x6.ondigitalocean.app/graduationUpdate", attr)
-      .then((x) => x.json())
-      .then((response) => {
-        console.log(response);
+    .then(response =>	{
+      if(!response.ok){
+        console.log(response)
+        swall_error(1)
+      }else{
+        restartTable();
+        swall_success()
+      }
       });
-    restartTable();
   }
 });
 }
@@ -462,13 +480,102 @@ Swal.fire({
            .then((res) => {
              clients1 = res;
              //console.log(clients)
-             clientsHandler();
+             clientsHandler(clients1);
            });
        }, 3000);
      };
 
     clientsHandler()
 
+
+    function swall_error(data,clientId){
+    if(maylanguage=="PT"){
+     errortitle = "Erro"
+     if(data==1){
+       errormessage = "Erro no registro, tente novamente"
+     }else if(data==2){
+       errormessage = "O campo do nome não pode está em branco"
+     }else if(data==3){
+       errormessage = "O campo da data de nascimento não pode está em branco"
+     }else if(data==4){
+       errormessage = "O campo da idade não pode está em branco"
+     }else if(data==5){
+       errormessage = "O campo do endereço não pode está em branco"
+     }else if(data==6){
+       errormessage = "O campo do telefone não pode está em branco"
+     }else if(data==7){
+       errormessage = "O campo do email não pode está em branco"
+     }else if(data==8){
+       errormessage = "O campo da senha não pode está em branco"
+     }
+    }else if(maylanguage=="EN"){
+     errortitle = "Error"
+     if(data==1){
+       errormessage = "Try again"
+     }else if(data==2){
+       errormessage = "Please enter full name"
+     }else if(data==3){
+       errormessage = "Please enter date of birth"
+     }else if(data==4){
+       errormessage = "Please enter age"
+     }else if(data==5){
+       errormessage = "Please enter adress"
+     }else if(data==6){
+       errormessage = "Please enter phone"
+     }else if(data==7){
+       errormessage = "Please enter email"
+     }else if(data==8){
+       errormessage = "Please enter password"
+     }
+    }else{
+       errortitle = "エラー"
+       if(data==1){
+         errormessage = "登録に失敗しました、再度試してください"
+       }else if(data==2){
+         errormessage = "名前を入力してください"
+       }else if(data==3){
+         errormessage = "生年月日を入力してください"
+       }else if(data==4){
+         errormessage = "年齢を入力してください"
+       }else if(data==5){
+         errormessage = "住所を入力してください"
+       }else if(data==6){
+         errormessage = "電話番号を入力してください"
+       }else if(data==7){
+         errormessage = "メールアドレスを入力してください"
+       }else if(data==8){
+         errormessage = "パスワードを入力してください"
+       }
+    }
+     Swal.fire({
+     title: errortitle
+    , html : errormessage
+    , icon : 'error'
+    }).then((result) => {
+    if (result.isConfirmed) {
+       editClient(clientId)
+    }
+    })
+       }
+
+       function swall_success(){
+           if(maylanguage=="PT"){
+             errormessage = "Alteração foi feita com sucesso"
+             errortitle = "Pronto"
+           }else if(maylanguage=="EN"){
+            errormessage = "Change was successfully made"
+            errortitle = "Success"
+          }else{
+            errormessage = "変更が完了しました"
+            errortitle = "完了"
+          }
+        Swal.fire({
+        title: errortitle
+      , html : errormessage
+      , icon : 'success'
+      , timer : '1500'
+      });
+          }
 
 
 </script>
