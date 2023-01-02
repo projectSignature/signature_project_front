@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="../style/list_alunos2.css" />
   </head>
 
-  <body>
+ <body>
     <div id="titlediv">
       <div id="titlemain">Gym Control System</div>
       <div id="gym-name">Kussano gym</div>
@@ -19,20 +19,28 @@
       <div id="header">
         <h3>Tabela de alunos</h3>
         <select name="" id="filter1">
-          <option value="">Filter</option>
+          <option value="">Category</option>
           <option value="All">All</option>
           <option value="Man">Man</option>
           <option value="Women">Women</option>
           <option value="teenagers">teenagers</option>
         </select>
         <select name="" id="filter2">
-          <option value="">categoria1</option>
+          <option value="">Planos</option>
           <option value="Plan A">Plan A</option>
           <option value="Plan B">Plan B</option>
           <option value="Plan C">Plan C</option>
           <option value="Plan D">Plan D</option>
           <option value="Plan E">Plan E</option>
           <option value="Plan F">Plan F</option>
+          <option value="Plan G">Plan G</option>
+          <option value="Plan H">Plan H</option>
+          <option value="Plan I">Plan I</option>
+          <option value="Plan J">Plan J</option>
+          <option value="Plan K">Plan K</option>
+          <option value="Plan L">Plan L</option>
+          <option value="Plan M">Plan M</option>
+          <option value="Plan N">Plan N</option>
         </select>
         <input type="button" id="btn-filter" value="Buscar" />
       </div>
@@ -40,17 +48,16 @@
         <table class="mobile-scroll" cellspacing="0" cellpadding="0">
           <thead>
             <tr>
-              <th class="email-tag">Name</th>
-              <th>Birth</th>
-              <th>Age</th>
-              <th>Gender</th>
-              <th class="email-tag">Address</th>
+              <th class="email-tag">Nome</th>
+              <th>Data de nascimento</th>
+              <th>Idade</th>
+              <th>Gênero</th>
+              <th class="email-tag">Endereço</th>
               <th class="email-tag">Tel</th>
               <th class="email-tag">Email</th>
-              <th>Language</th>
-              <th>Plan</th>
-              <th>Graduation</th>
-              <th>Status</th>
+              <th>Idioma</th>
+              <th>Plano</th>
+              <th>Situação</th>
               <th>Pass</th>
               <th>Ações</th>
             </tr>
@@ -66,6 +73,7 @@
     const btnFilter = document.getElementById("btn-filter");
     const gymName = document.getElementById("gym-name");
     const sessionGymName = sessionStorage.getItem("gym");
+    let maylanguage = "PT"
 
     if (sessionGymName) {
       gymName.innerHTML = sessionGymName;
@@ -117,18 +125,81 @@
     }
 
     function createNewTableRow(data) {
+      let genero
+      let language
+      let status
+      if(data.genero=="man"){
+         if(maylanguage=="PT"){
+           genero = "Homem"
+         }else if (maylanguage=="EN"){
+           genero = data.genero
+         }else{
+            genero =　"男性"
+         }
+      }else{
+        if(maylanguage=="PT"){
+          genero = "Mulher"
+        }else if (maylanguage=="EN"){
+          genero = data.genero
+        }else{
+           genero =　"女性"
+        }
+      }
+
+      if(data.status=="active"){
+         if(maylanguage=="PT"){
+           status = "Ativo"
+         }else if (maylanguage=="EN"){
+           status = "Active"
+         }else{
+            status = "在籍"
+         }
+      }else{
+        if(maylanguage=="PT"){
+          status = "Inativo"
+        }else if (maylanguage=="EN"){
+          status = "Inactive"
+        }else{
+           status = "退会"
+        }
+      }
+
+      if(maylanguage=="PT"){
+         if(data.lang01=="Portugues"){
+           language = "Português"
+         }else if (data.lang01=="Inglês"){
+            language = "Inglês"
+         }else{
+             language = "Japonês"
+         }
+      }else if(maylanguage=="EN"){
+        if(data.lang01=="Portugues"){
+          language = "Portuguese"
+        }else if (data.lang01=="Inglês"){
+           language = "English"
+        }else{
+            language = "Japanese"
+        }
+      }else{
+        if(data.lang01=="Portugues"){
+          language = "ポルトガル語"
+        }else if (data.lang01=="Inglês"){
+           language = "英語"
+        }else{
+            language = "日本語"
+        }
+      }
       let row = `
         <td class="email-tag">${data.nm_member}</td>
        <td>${data.birthday_year}/${data.birthday_month}/${data.birthday_day}</td>
         <td>${data.birthday_age}</td>
-        <td>${data.genero}</td>
+        <td>${genero}</td>
         <td class="email-tag">${data.adress_input}</td>
         <td class="email-tag">0${data.phone01}-${data.phone02}-${data.phone03}</td>
         <td class="email-tag">${data.email}</td>
-        <td>${data.lang01}</td>
+        <td>${language}</td>
         <td>${data.plans}</td>
-        <td>${data.graduation}</td>
-        <td>${data.status}</td>
+        <td>${status}</td>
         <td>${data.pass}</td>
         <td>
             <img src="../image/edit.svg" onClick="editClient(${data.id})" alt="" width="25">
@@ -237,17 +308,18 @@
                         <option value="Plan L">Plan L</option>/>
                         <option value="Plan M">Plan M</option>/>
                         <option value="Plan N">Plan N</option>/>
+                        <option value="Plan free">Plan Free</option>/>
                         <option value="${client.plans}" selected>${client.plans}</option>
                         </select>
                         </div>
                     </div>
                     <div class="div-block">
                         <div class="div-span-r">
-                        <span>Graduação: </span>
+                        <span>Pass: </span>
                         </div>
-                        <div  id="graduacao-input" class="input-select">
-                        <input type="text" id="clientGraduation" value="${client.graduation}" disabled="disabled"/>
-                    </div>
+                        <div id="pass-input" class="input-select">
+                        <input maxlength="4"  id="clientPass" value="${client.pass}"/>
+                     </div>
                     </div>
                     <div class="div-block">
                         <div class="div-span">
@@ -261,14 +333,7 @@
                         </select>
                     </div>
                     </div>
-                    <div class="div-block">
-                        <div class="div-span-r">
-                        <span>Pass: </span>
-                        </div>
-                        <div id="pass-input" class="input-select">
-                        <input maxlength="4"  id="clientPass" value="${client.pass}"/>
-                     </div>
-                    </div>
+
                 </div>
 
                 <style>
@@ -379,6 +444,7 @@
         width: 700,
       }).then((result) => {
        if (result.isConfirmed) {
+         try{
           let obj = {
             id: clientId,
             nm_member: document.getElementById("clientName").value,
@@ -386,51 +452,53 @@
             age: document.getElementById("clientAge").value,
             gender: document.getElementById("clientGender").value,
             address: document.getElementById("clientAddress").value,
-            tel: document.getElementById("clientTel").value,
+            tel1: document.getElementById("clientTel").value.split("-")[0],
+            tel2: document.getElementById("clientTel").value.split("-")[1],
+            tel3: document.getElementById("clientTel").value.split("-")[2],
             email: document.getElementById("clientEmail").value,
             language: document.getElementById("clientlanguage").value,
             plan: document.getElementById("clientplan").value,
-            graduation: document.getElementById("clientGraduation").value,
             status: document.getElementById("clientStatus").value,
             pass: document.getElementById("clientPass").value,
           };
 
+if(obj.nm_member==""){
+  swall_error(2,clientId)
+}else if(obj.birth==""){
+  swall_error(3,clientId)
+}else if(obj.age==""){
+  swall_error(4,clientId)
+}else if(obj.address==""){
+  swall_error(5,clientId)
+}else if(document.getElementById("clientTel").value==""){
+  swall_error(6,clientId)
+}else if(obj.email==""){
+swall_error(7,clientId)
+}else if(obj.pass==""){
+  swall_error(8,clientId)
+}else{
           console.log(obj);
-
           const attr = {
             method: "POST",
             body: JSON.stringify(obj),
             headers: { "Content-type": "application/json; charset=UTF-8" },
           };
-
           fetch("https://squid-app-ug7x6.ondigitalocean.app/listUpdate", attr)
-            .then((x) => x.json())
-            .then((response) => {
-              console.log(response);
-            });
-
-          //console.log(obj.tel);
-          /*
-          clients = clients.map((clientAux) => {
-            if (clientAux.id == client.id) {
-              client.client = name;
-              client.birth = birth;
-              client.age = age;
-              client.gender = gender;
-              client.address = address;
-              client.tel = tel;
-              client.email = email;
-              client.language = language;
-              client.plan = plan;
-              client.graduation = graduation;
-              client.status = status;
-              client.Pass = status;
-              return client;
-            } else {
-              return clientAux;
+            //.then((x) => x.json())
+          //  .then((response) => {
+          .then(response =>	{
+            if(!response.ok){
+              swall_error(1)
+            }else{
+              restartTable();
+              swall_success()
             }
-          }); */
-          restartTable();
+            });
+          }
+        }catch (error) {
+           swall_error(1)
+          console.log(error)
+        }
         }
       });
 
@@ -441,30 +509,27 @@
         var a = value.replace(/\D/g, ""); //Remove tudo o que não é dígito
         var b = a.replace(/^(\d{2})(\d)/g, "($1$2)"); //Coloca parênteses em volta dos dois primeiros dígitos
         var c = b.replace(/(\d)(\d{4})$/, "$1-$2"); //Coloca hífen entre o quarto e o quinto dígitos
-
         campoTel.value = c;
       });
     }
 
     function deleteClient(clientId) {
       clients = clients.filter((client) => client.id != clientId);
-
       const attr = {
         method: "POST",
         body: JSON.stringify({ id: clientId }),
         headers: { "Content-type": "application/json; charset=UTF-8" },
       };
-
       fetch("https://squid-app-ug7x6.ondigitalocean.app/listDelete", attr)
         .then((x) => x.json())
         .then((response) => {
           console.log(response);
         });
-
       restartTable();
     }
 
    async function restartTable() {
+     
       var removeTbody = document.querySelector("tbody");
       while (removeTbody.hasChildNodes()) {
         removeTbody.removeChild(removeTbody.firstChild);
@@ -483,5 +548,94 @@
           });
       }, 3000);
     };
+
+ function swall_error(data,clientId){
+if(maylanguage=="PT"){
+  errortitle = "Erro"
+  if(data==1){
+    errormessage = "Erro no registro, tente novamente"
+  }else if(data==2){
+    errormessage = "O campo do nome não pode está em branco"
+  }else if(data==3){
+    errormessage = "O campo da data de nascimento não pode está em branco"
+  }else if(data==4){
+    errormessage = "O campo da idade não pode está em branco"
+  }else if(data==5){
+    errormessage = "O campo do endereço não pode está em branco"
+  }else if(data==6){
+    errormessage = "O campo do telefone não pode está em branco"
+  }else if(data==7){
+    errormessage = "O campo do email não pode está em branco"
+  }else if(data==8){
+    errormessage = "O campo da senha não pode está em branco"
+  }
+}else if(maylanguage=="EN"){
+  errortitle = "Error"
+  if(data==1){
+    errormessage = "Try again"
+  }else if(data==2){
+    errormessage = "Please enter full name"
+  }else if(data==3){
+    errormessage = "Please enter date of birth"
+  }else if(data==4){
+    errormessage = "Please enter age"
+  }else if(data==5){
+    errormessage = "Please enter adress"
+  }else if(data==6){
+    errormessage = "Please enter phone"
+  }else if(data==7){
+    errormessage = "Please enter email"
+  }else if(data==8){
+    errormessage = "Please enter password"
+  }
+}else{
+    errortitle = "エラー"
+    if(data==1){
+      errormessage = "登録に失敗しました、再度試してください"
+    }else if(data==2){
+      errormessage = "名前を入力してください"
+    }else if(data==3){
+      errormessage = "生年月日を入力してください"
+    }else if(data==4){
+      errormessage = "年齢を入力してください"
+    }else if(data==5){
+      errormessage = "住所を入力してください"
+    }else if(data==6){
+      errormessage = "電話番号を入力してください"
+    }else if(data==7){
+      errormessage = "メールアドレスを入力してください"
+    }else if(data==8){
+      errormessage = "パスワードを入力してください"
+    }
+}
+  Swal.fire({
+  title: errortitle
+, html : errormessage
+, icon : 'error'
+}).then((result) => {
+ if (result.isConfirmed) {
+    editClient(clientId)
+ }
+})
+    }
+
+    function swall_success(){
+        if(maylanguage=="PT"){
+          errormessage = "Alteração foi feita com sucesso"
+          errortitle = "Pronto"
+        }else if(maylanguage=="EN"){
+         errormessage = "Change was successfully made"
+         errortitle = "Success"
+       }else{
+         errormessage = "変更が完了しました"
+         errortitle = "完了"
+       }
+     Swal.fire({
+     title: errortitle
+   , html : errormessage
+   , icon : 'success'
+   , timer : '1500'
+   });
+       }
   </script>
 </html>
