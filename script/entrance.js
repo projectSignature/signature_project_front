@@ -185,15 +185,15 @@ function swallerror(errormessage) {
 }
 
 //tratamento do registro de aula
-
 function entrance_regist(number) {
   Swal.fire({
     showCancelButton: false,
     showConfirmButton: true,
-    ConfirmButtonText: '戻る',
+    confirmButtonText: 'OK',
+
     html: `
       <div id="title">Digiti sua senha</div>
-      <input type="password" id="keys_entrance" hiden/>
+      <div><input type="password" id="keys_entrance" hiden/></div>
       <div id="main-div">
        <div id="first-row" class="swall-row">
          <div id="en1" class="number-div" onclick="input_regist(1)">1</div>
@@ -214,11 +214,13 @@ function entrance_regist(number) {
          <div id="en0" class="number-div" onclick="input_regist(0)">0</div>
          <div id="clear" class="number-div" onclick="input_clear()">Clear</div>
          <div id="en11" class="number-div" onclick="input_back()">←</div>
-       </di>
+       </div>
       </div>
           <style>
           #main-div{
             width:95%;
+            height:400px;
+            overflow:hidden;
           }
           #title{
             font-size:5vh;
@@ -226,16 +228,17 @@ function entrance_regist(number) {
           }
         .swall-row{
             display:flex;
+            height:22%;
+            margin-top:3px;
           }
           .number-div{
             border: 1px solid gray;
             margin-right:1%;
             width:30%;
-            height:12%;
-            font-size:4vh;
+            height:95%;
+            font-size:6vh;
             text-align: center;
-            padding-top:0.5%;
-            margin-top:1%;
+
 
           }
           #keys_entrance{
@@ -258,23 +261,17 @@ function entrance_regist(number) {
           }
 
 @media only screen and (max-width: 1200px) {
-  #title{
-    font-size:3vh;
+  #clear{
+    font-size:4vh;
   }
-  .number-div{
-  font-size:2vh;
-  height:10%;
-}
+
 }
 
 @media only screen and (max-width: 700px) {
   #title{
     font-size:1.5vh;
   }
-  .number-div{
-  font-size:0.5vh;
-  height:10%;
-}
+
 }
           </style>`
     ,
@@ -316,6 +313,7 @@ function entrance_regist(number) {
     };
   });
 };
+
 
 function entrance_count(data){
   console.log('inicio da funcao')
