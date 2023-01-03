@@ -5,8 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Payment</title>
-    <link rel="stylesheet" href="../style/header.css" />
-    <link rel="stylesheet" href="../style/dash.css" />
+    <link rel="stylesheet" href="../style/list_alunos1.css" />
+    <link rel="stylesheet" href="../style/payment.css" />
   </head>
 
   <body>
@@ -18,18 +18,20 @@
     <div id="dash">
       <div id="header">
         <h3>Controle de pagamento</h3>
-        <select name="" id="">
-          <option value="">2022</option>
+        <select name="" id="select-year">
+          <option value="2023">2023</option>
+          <option value="2023">2024</option>
         </select>
-        <select name="" id="">
-          <option value="">todos</option>
-        </select>
+        <div id="createdate-div">
+          <input type="button" id="createdate" value="Add"></input>
+        </div>
       </div>
       <div id="table">
         <table cellspacing="0" cellpadding="0">
           <thead>
             <tr>
               <th>Aluno</th>
+              <th>Plano</th>
               <th>Mensalidade</th>
               <th>Jan</th>
               <th>Feb</th>
@@ -52,467 +54,654 @@
     </div>
   </body>
   <script src="../script/swal.min.js"></script>
-  <script defer>
-    let clients = [
-      {
-        id: 1,
-        client: "Hélder de Lima da Silva",
-        payment: "1000",
-        monthsPayds: {
-          jan: false,
-          Feb: true,
-          Mar: true,
-          Apr: true,
-          May: true,
-          Jun: true,
-          Jul: true,
-          Aug: true,
-          Sep: true,
-          Oct: true,
-          Nov: true,
-          Dez: true,
-        },
-        isFree: true,
-      },
-      {
-        id: 2,
-        client: "karla de Lima da Silva",
-        payment: "1000",
-        monthsPayds: {
-          jan: true,
-          Feb: true,
-          Mar: true,
-          Apr: true,
-          May: false,
-          Jun: true,
-          Jul: true,
-          Aug: true,
-          Sep: true,
-          Oct: true,
-          Nov: true,
-          Dez: true,
-        },
-        isFree: false,
-      },
-      {
-        id: 2,
-        client: "karla de Lima da Silva",
-        payment: "1000",
-        monthsPayds: {
-          jan: true,
-          Feb: true,
-          Mar: true,
-          Apr: true,
-          May: false,
-          Jun: true,
-          Jul: true,
-          Aug: true,
-          Sep: true,
-          Oct: true,
-          Nov: true,
-          Dez: true,
-        },
-        isFree: false,
-      },
-      {
-        id: 2,
-        client: "karla de Lima da Silva",
-        payment: "1000",
-        monthsPayds: {
-          jan: true,
-          Feb: true,
-          Mar: true,
-          Apr: true,
-          May: false,
-          Jun: true,
-          Jul: true,
-          Aug: true,
-          Sep: true,
-          Oct: true,
-          Nov: true,
-          Dez: true,
-        },
-        isFree: false,
-      },
-      {
-        id: 2,
-        client: "karla de Lima da Silva",
-        payment: "1000",
-        monthsPayds: {
-          jan: true,
-          Feb: true,
-          Mar: true,
-          Apr: true,
-          May: false,
-          Jun: true,
-          Jul: true,
-          Aug: true,
-          Sep: true,
-          Oct: true,
-          Nov: true,
-          Dez: true,
-        },
-        isFree: false,
-      },
-      {
-        id: 2,
-        client: "karla de Lima da Silva",
-        payment: "1000",
-        monthsPayds: {
-          jan: true,
-          Feb: true,
-          Mar: true,
-          Apr: true,
-          May: false,
-          Jun: true,
-          Jul: true,
-          Aug: true,
-          Sep: true,
-          Oct: true,
-          Nov: true,
-          Dez: true,
-        },
-        isFree: false,
-      },
-      {
-        id: 2,
-        client: "karla de Lima da Silva",
-        payment: "1000",
-        monthsPayds: {
-          jan: true,
-          Feb: true,
-          Mar: true,
-          Apr: true,
-          May: false,
-          Jun: true,
-          Jul: true,
-          Aug: true,
-          Sep: true,
-          Oct: true,
-          Nov: true,
-          Dez: true,
-        },
-        isFree: false,
-      },
-      {
-        id: 2,
-        client: "karla de Lima da Silva",
-        payment: "1000",
-        monthsPayds: {
-          jan: true,
-          Feb: true,
-          Mar: true,
-          Apr: true,
-          May: false,
-          Jun: true,
-          Jul: true,
-          Aug: true,
-          Sep: true,
-          Oct: true,
-          Nov: true,
-          Dez: true,
-        },
-        isFree: false,
-      },
-      {
-        id: 2,
-        client: "karla de Lima da Silva",
-        payment: "1000",
-        monthsPayds: {
-          jan: true,
-          Feb: true,
-          Mar: true,
-          Apr: true,
-          May: false,
-          Jun: true,
-          Jul: true,
-          Aug: true,
-          Sep: true,
-          Oct: true,
-          Nov: true,
-          Dez: true,
-        },
-        isFree: false,
-      },
-      {
-        id: 2,
-        client: "karla de Lima da Silva",
-        payment: "1000",
-        monthsPayds: {
-          jan: true,
-          Feb: true,
-          Mar: true,
-          Apr: true,
-          May: false,
-          Jun: true,
-          Jul: true,
-          Aug: true,
-          Sep: true,
-          Oct: true,
-          Nov: true,
-          Dez: true,
-        },
-        isFree: false,
-      },
-      {
-        id: 2,
-        client: "karla de Lima da Silva",
-        payment: "1000",
-        monthsPayds: {
-          jan: true,
-          Feb: true,
-          Mar: true,
-          Apr: true,
-          May: false,
-          Jun: true,
-          Jul: true,
-          Aug: true,
-          Sep: true,
-          Oct: true,
-          Nov: true,
-          Dez: true,
-        },
-        isFree: false,
-      },
-      {
-        id: 2,
-        client: "karla de Lima da Silva",
-        payment: "1000",
-        monthsPayds: {
-          jan: true,
-          Feb: true,
-          Mar: true,
-          Apr: true,
-          May: false,
-          Jun: true,
-          Jul: true,
-          Aug: true,
-          Sep: true,
-          Oct: true,
-          Nov: true,
-          Dez: true,
-        },
-        isFree: false,
-      },
-      {
-        id: 2,
-        client: "karla de Lima da Silva",
-        payment: "1000",
-        monthsPayds: {
-          jan: true,
-          Feb: true,
-          Mar: true,
-          Apr: true,
-          May: false,
-          Jun: true,
-          Jul: true,
-          Aug: true,
-          Sep: true,
-          Oct: true,
-          Nov: true,
-          Dez: true,
-        },
-        isFree: false,
-      },
-      {
-        id: 2,
-        client: "karla de Lima da Silva",
-        payment: "1000",
-        monthsPayds: {
-          jan: true,
-          Feb: true,
-          Mar: true,
-          Apr: true,
-          May: false,
-          Jun: true,
-          Jul: true,
-          Aug: true,
-          Sep: true,
-          Oct: true,
-          Nov: true,
-          Dez: true,
-        },
-        isFree: false,
-      },
-    ];
-    const tbody = document.getElementsByTagName("tbody")[0];
+  <script>
 
-    function clientsHandler() {
-      for (let index = 0; index < clients.length; index++) {
-        const row = createNewTableRow(clients[index]);
-        tbody.innerHTML += row;
-      }
-    }
+  //var gymname = sessionStorage.getItem("gym");
+  //var gymid = sessionStorage.getItem("GYM_ID");
+  var today = new Date();
+  var month = today.getMonth()+1
+  const tbody = document.getElementsByTagName("tbody")[0];
+  const btnFilter = document.getElementById("btn-filter");
+ const gymName = document.getElementById("gym-name");
+  let maylanguage = "PT"
+  let gymid = 4
 
-    function createNewTableRow(data) {
-      let row = `
-        <td>${data.client}</td>
-        <td>${data.payment}</td>
-        <td>${
-          !data.isFree ? getEmojiOfPayment(data.monthsPayds.jan) : "🆓"
-        }</td>
-        <td>${
-          !data.isFree ? getEmojiOfPayment(data.monthsPayds.Feb) : "🆓"
-        }</td>
-        <td>${
-          !data.isFree ? getEmojiOfPayment(data.monthsPayds.Mar) : "🆓"
-        }</td>
-        <td>${
-          !data.isFree ? getEmojiOfPayment(data.monthsPayds.Apr) : "🆓"
-        }</td>
-        <td>${
-          !data.isFree ? getEmojiOfPayment(data.monthsPayds.May) : "🆓"
-        }</td>
-        <td>${
-          !data.isFree ? getEmojiOfPayment(data.monthsPayds.Jun) : "🆓"
-        }</td>
-        <td>${
-          !data.isFree ? getEmojiOfPayment(data.monthsPayds.Jul) : "🆓"
-        }</td>
-        <td>${
-          !data.isFree ? getEmojiOfPayment(data.monthsPayds.Aug) : "🆓"
-        }</td>
-        <td>${
-          !data.isFree ? getEmojiOfPayment(data.monthsPayds.Sep) : "🆓"
-        }</td>
-        <td>${
-          !data.isFree ? getEmojiOfPayment(data.monthsPayds.Oct) : "🆓"
-        }</td>
-        <td>${
-          !data.isFree ? getEmojiOfPayment(data.monthsPayds.Nov) : "🆓"
-        }</td>
-        <td>${
-          !data.isFree ? getEmojiOfPayment(data.monthsPayds.Dez) : "🆓"
-        }</td>
-        <td>
-            <img src="../image/edit.svg" onClick="editClient(${
-              data.id
-            })" alt="" width="15">
-            <img src="../image/delete.svg" onClick="deleteClient(${
-              data.id
-            })" alt="" width="15">
-        </td>
-        `;
-      return row;
-    }
 
-    function getEmojiOfPayment(month) {
-      switch (month) {
-        case true:
-          return "✔️";
-          break;
-        case false:
-          return "✖️";
-          break;
-        case check:
-          return "✖️";
-          break;
-        default:
-          return "🆓";
-          break;
-      }
-    }
 
-    function editClient(clientId) {
-      let client = clients.find((client) => client.id == clientId);
-      Swal.fire({
-        html: `
-                <div id="mensality">
-                    <div id="inputs">
-                        <span>Cliente:</span>
-                        <input type="text" value="${
-                          client.client
-                        }" id="clientNameToEdit">
-                        <span id="paymentText">Mensalidade</span>
-                        <input type="text" value="${
-                          client.payment
-                        }" id="clientPaymentToEdit">
-                    </div>
-                    <div id="checks">
-                        ${Object.keys(client.monthsPayds)
-                          .map((month) => {
-                            return `<div>${month}:&nbsp&nbsp&nbsp<input id="${month}" value="${month}" type="checkbox" ${
-                              client.monthsPayds[month] ? "checked" : ""
-                            }/></div>`;
-                          })
-                          .join(" ")}
-                    </div>
-                </div>
 
-                <style>
-                    #inputs{
-                        width: 100%;
-                        display: flex;
-                        justify-content: center;
-                        align-items: center
-                    }
+  //if (sessionGymName) {
+  //  gymName.innerHTML = sessionGymName;
+  //} else {
+  //  gymName.innerHTML = "GYM error";
+  //}
+//  fetch("https://squid-app-ug7x6.ondigitalocean.app/graduationlist", {
+  //  method: "POST",
+  //  body: JSON.stringify({ opt1: "", opt2: "" }),
+  //  headers: { "Content-type": "application/json; charset=UTF-8" },
+  //})
+  //  .then((x) => x.json())
+  //  .then((res) => {
+  //    clients1 = res;
+//      console.log(clients1);
+    //  clientsHandler(clients1);
+  //  });
 
-                    #inputs span{
-                        padding-right: 0.5vw
-                    }
 
-                    #paymentText{
-                        margin-left: 2vw
-                    }
 
-                    input{
-                        padding: 1vw;
-                        border-radius: 10px;
-                        border: 1px solid gray
-                    }
+      const select_year = document.getElementById("select-year").value;//year selecte
+      //data exist check------------------------------>
+//      fetch("https://squid-app-ug7x6.ondigitalocean.app/paymentallexist", {
+    //    method: 'POST',
+    //    body: JSON.stringify({ year: select_year ,gymid: gymid ,month:month}),
+    //    headers: { "Content-type": "application/json; charset=UTF-8" }
+    //  })
+    //    .then((x) => x.json())
+      //  .then((res) => {
+      //    console.log(res.length)
+      //     if(res.length==0){//当月データが0の場合には生成する
+      //       getplans()
+        //   }else{
+        //     console.log("今月はデータあり")
+        //     getpaymente_all()
+        //   }
+      //  })
 
-                    #checks{
-                        width: 100%;
-                        margin: auto;
-                        margin-top: 2%;
-                        display: flex;
-                    }
 
-                    #checks div{
-                        display: flex;
-                        width: 10%
-                    }
-                </style>
-            `,
-        showCancelButton: true,
-        confirmButtonText: "Salvar",
-        cancelButtonText: "Cancelar",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          const userName = document.getElementById("clientNameToEdit").value;
-          const userPayment = document.getElementById(
-            "clientPaymentToEdit"
-          ).value;
-          client.client = userName;
-          client.payment = userPayment;
 
-          clients = clients.map((clientAux) => {
-            if (clientAux.id == client.id) {
-              const months = Object.keys(client.monthsPayds);
-              for (let index = 0; index < months.length; index++) {
-                const monthCheck = document.getElementById(months[index]);
-                client.monthsPayds[months[index]] = monthCheck.checked;
-              }
-              return client;
-            } else {
-              return clientAux;
+var clients = {}
+getpaymente_all()
+//Get Allpayment data------------------------------------->
+function getpaymente_all(){
+  let memberslist =[]
+  clients = {}
+  fetch("https://squid-app-ug7x6.ondigitalocean.app/getpaymentAll", {//pegar todos dados do table de pagamentos
+    method: 'POST',
+    body: JSON.stringify({ year: select_year ,gymid: gymid}),
+    headers: { "Content-type": "application/json; charset=UTF-8" }
+  })
+    .then((x) => x.json())
+    .then((res) => {
+        clients = res //guardar na array os dados do table de pagamentos
+        const obj = { opt1: "", opt2: "" };
+        fetch("https://squid-app-ug7x6.ondigitalocean.app/list", {//pegar todos membros
+          method: "POST",
+          body: JSON.stringify(obj),
+          headers: { "Content-type": "application/json; charset=UTF-8" },
+        })
+          .then((x) => x.json())
+          .then((response) => {
+            for (let i = 0;i<response.length;i++){
+              memberslist.push([response[i].id,response[i].nm_member]) //fazer um array do membro
             }
-          });
+                for (let i = 0;i<memberslist.length;i++){ //loop memberlist
+                  let answer = {id:0,name:0,plan:0,planvalue:0,jan:"-",feb:"-",mar:"-",apr:"-",may:"-",jun:"-",jul:"-",aug:"-",sep:"-",oct:"-",nov:"-",dez:"-"}
+                  answer.id = memberslist[i][0]
+                  answer.name = memberslist[i][1]
+                  for(let ii =0; ii<res.length;ii++){
+                    if(res[ii].nm_member_id==memberslist[i][0]){
+                      if(res[ii].month==1){
+                        if(res[ii].division==1&&res[ii].plan!="Plan free"){
+                          jan = `<img src="../image/nopaid.png" width="35">`
+                        }else if(res[ii].division==2&&res[ii].plan!="Plan free"){
+                          jan = `<img src="../image/paid.png" width="35">`
+                        }else{
+                          jan = `<img src="../image/free.png" width="35">`
+                        }
+                        answer.jan = jan
+                        answer.plan = res[ii].plan;
+                        answer.planvalue = res[ii].plan_value;
+                      }else if(res[ii].month==2){
+                        if(res[ii].division==1&&res[ii].plan!="Plan free"){
+                          feb = `<img src="../image/nopaid.png" width="35">`
+                        }else if(res[ii].division==2&&res[ii].plan!="Plan free"){
+                          feb = `<img src="../image/paid.png" width="35">`
+                        }else{
+                          feb = `<img src="../image/free.png" width="35">`
+                        }
+                          answer.feb = feb
+                          answer.plan = res[ii].plan;
+                          answer.planvalue = res[ii].plan_value;
+                      }else if(res[ii].month==3){
+                        if(res[ii].division==1&&res[ii].plan!="Plan free"){
+                          mar = `<img src="../image/nopaid.png" width="35">`
+                        }else if(res[ii].division==2&&res[ii].plan!="Plan free"){
+                          mar = `<img src="../image/paid.png" width="35">`
+                        }else{
+                          mar = `<img src="../image/free.png" width="35">`
+                        }
+                          answer.mar = mar
+                          answer.plan = res[ii].plan;
+                          answer.planvalue = res[ii].plan_value;
+                      }else if(res[ii].month==4){
+                        if(res[ii].division==1&&res[ii].plan!="Plan free"){
+                          apr = `<img src="../image/nopaid.png" width="35">`
+                        }else if(res[ii].division==2&&res[ii].plan!="Plan free"){
+                          apr = `<img src="../image/paid.png" width="35">`
+                        }else{
+                          apr = `<img src="../image/free.png" width="35">`
+                        }
+                          answer.apr = apr
+                          answer.plan = res[ii].plan;
+                          answer.planvalue = res[ii].plan_value;
+                      }else if(res[ii].month==5){
+                        if(res[ii].division==1&&res[ii].plan!="Plan free"){
+                          may = `<img src="../image/nopaid.png" width="35">`
+                        }else if(res[ii].division==2&&res[ii].plan!="Plan free"){
+                          may = `<img src="../image/paid.png" width="35">`
+                        }else{
+                          may = `<img src="../image/free.png" width="35">`
+                        }
+                          answer.may = may
+                          answer.plan = res[ii].plan;
+                          answer.planvalue = res[ii].plan_value;
+                      }else if(res[ii].month==6){
+                        if(res[ii].division==1&&res[ii].plan!="Plan free"){
+                          jun = `<img src="../image/nopaid.png" width="35">`
+                        }else if(res[ii].division==2&&res[ii].plan!="Plan free"){
+                          jun = `<img src="../image/paid.png" width="35">`
+                        }else{
+                          jun = `<img src="../image/free.png" width="35">`
+                        }
+                          answer.jun = jun
+                          answer.plan = res[ii].plan;
+                          answer.planvalue = res[ii].plan_value;
+                      }else if(res[ii].month==7){
+                        if(res[ii].division==1&&res[ii].plan!="Plan free"){
+                          jul = `<img src="../image/nopaid.png" width="35">`
+                        }else if(res[ii].division==2&&res[ii].plan!="Plan free"){
+                          jul = `<img src="../image/paid.png" width="35">`
+                        }else{
+                          jul = `<img src="../image/free.png" width="35">`
+                        }
+                          answer.jul = jul
+                          answer.plan = res[ii].plan;
+                          answer.planvalue = res[ii].plan_value;
+                      }else if(res[ii].month==8){
+                        if(res[ii].division==1&&res[ii].plan!="Plan free"){
+                          aug = `<img src="../image/nopaid.png" width="35">`
+                        }else if(res[ii].division==2&&res[ii].plan!="Plan free"){
+                          aug = `<img src="../image/paid.png" width="35">`
+                        }else{
+                          aug = `<img src="../image/free.png" width="35">`
+                        }
+                          answer.aug = aug
+                          answer.plan = res[ii].plan;
+                          answer.planvalue = res[ii].plan_value;
+                      }else if(res[ii].month==9){
+                        if(res[ii].division==1&&res[ii].plan!="Plan free"){
+                          sep = `<img src="../image/nopaid.png" width="35">`
+                        }else if(res[ii].division==2&&res[ii].plan!="Plan free"){
+                          sep = `<img src="../image/paid.png" width="35">`
+                        }else{
+                          sep = `<img src="../image/free.png" width="35">`
+                        }
+                          answer.sep = sep
+                          answer.plan = res[ii].plan;
+                          answer.planvalue = res[ii].plan_value;
+                      }else if(res[ii].month==10){
+                        if(res[ii].division==1&&res[ii].plan!="Plan free"){
+                          oct = `<img src="../image/nopaid.png" width="35">`
+                        }else if(res[ii].division==2&&res[ii].plan!="Plan free"){
+                          oct = `<img src="../image/paid.png" width="35">`
+                        }else{
+                          oct = `<img src="../image/free.png" width="35">`
+                        }
+                          answer.oct = oct
+                          answer.plan = res[ii].plan;
+                          answer.planvalue = res[ii].plan_value;
+                      }else if(res[ii].month==11){
+                        if(res[ii].division==1&&res[ii].plan!="Plan free"){
+                          nov = `<img src="../image/nopaid.png" width="35">`
+                        }else if(res[ii].division==2&&res[ii].plan!="Plan free"){
+                          nov = `<img src="../image/paid.png" width="35">`
+                        }else{
+                          nov = `<img src="../image/free.png" width="35">`
+                        }
+                          answer.nov = nov
+                          answer.plan = res[ii].plan;
+                          answer.planvalue = res[ii].plan_value;
+                      }else if(res[ii].month==12){
+                        if(res[ii].division==1&&res[ii].plan!="Plan free"){
+                          dez = `<img src="../image/nopaid.png" width="35">`
+                        }else if(res[ii].division==2&&res[ii].plan!="Plan free"){
+                          dez = `<img src="../image/paid.png" width="35">`
+                        }else{
+                          dez = `<img src="../image/free.png" width="35">`
+                        }
+                         answer.dez = dez
+                         answer.plan = res[ii].plan;
+                         answer.planvalue = res[ii].plan_value;
+                      }
+                    }
+                  }
+                  const row = createNewTableRow(answer);
+                      tbody.innerHTML += row;
+                }
+             })
+    })
+}
 
-          restartTable();
+ function createNewTableRow(data) {
+  let row = `
+    <td class="email-tag">${data.name}</td>
+    <td class="email-tag">${data.plan}</td>
+    <td class="email-tag">￥${data.planvalue}</td>
+    <td class="email-tag" onClick="editpay('1_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.jan}</td>
+    <td class="email-tag" onClick="editpay('2_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.feb}</td>
+    <td class="email-tag" onClick="editpay('3_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.mar}</td>
+    <td class="email-tag" onClick="editpay('4_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.apr}</td>
+    <td class="email-tag" onClick="editpay('5_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.may}</td>
+    <td class="email-tag" onClick="editpay('6_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.jun}</td>
+    <td class="email-tag" onClick="editpay('7_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.jul}</td>
+    <td class="email-tag" onClick="editpay('8_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.aug}</td>
+    <td class="email-tag" onClick="editpay('9_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.sep}</td>
+    <td class="email-tag" onClick="editpay('10_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.oct}</td>
+    <td class="email-tag" onClick="editpay('11_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.nov}</td>
+    <td class="email-tag" onClick="editpay('12_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.dez}</td>
+    <td class="email-tag">
+        <img src="../image/edit.svg" onClick="editClient(${data.id})" alt="" width="35">
+    </td>
+    `;
+
+  return row;
+}
+
+function editpay(data){
+  console.log(data)
+  mymonth = data.split("_")[0]
+  myid = data.split("_")[1]
+  myname = data.split("_")[2]
+  let myworkmonth
+  switch(mymonth){
+    case "1":
+    myworkmonth = "Janeiro"
+    break;
+    case "2":
+    myworkmonth = "Fevereiro"
+    break;
+    case "3":
+    myworkmonth = "Março"
+    break;
+    myworkmonth = "Abril"
+    case "4":
+    break;
+    myworkmonth = "Maio"
+    case "5":
+    break;
+    myworkmonth = "Junho"
+    case "6":
+    break;
+    myworkmonth = "Julho"
+    case "7":
+    break;
+    myworkmonth = "Agosto"
+    case "8":
+    break;
+    myworkmonth = "Setembro"
+    case "9":
+    break;
+    myworkmonth = "Outubro"
+    case "10":
+    break;
+    case "11":
+    myworkmonth = "Novembro"
+    break;
+    case "12":
+    myworkmonth = "Dezembro"
+    break;
+    default:
+  }
+  Swal.fire({
+    html: `
+        <div class="title-font"><span>Nome do aluno: ${myname}</span></div>
+        <div class="title-font"><span>Mês: ${myworkmonth}</span></div>
+        <div id="clientes">
+          <div class="block-div" onClick="editbeforecheck('${data}_2')">
+            <div><span>pago</span></div>
+            <div><img src="../image/paid.png" width="60"></div>
+          </div>
+          <div class="block-div" onClick="editbeforecheck('${data}_1')">
+            <div><span>não pago</span></div>
+            <div><img src="../image/nopaid.png" width="60"></div>
+          </div>
+          <div class="block-div" onClick="editbeforecheck('${data}_3')">
+            <div><span>free</span></div>
+            <div><img src="../image/free.png" width="60"></div>
+          </div>
+        </div>
+         <style>
+           #clientes{
+             display:flex;
+           }
+           .block-div{
+             display:block;
+             border:2px solid gray;
+             margin-left:30px;
+             width:150px;
+             height:100px;
+           }
+           .title-font{
+             display:flex;
+             align-items: center;
+             justify-content: flex-start;
+             margin-bottom:30px;
+           }
+           .title-font span{
+             font-size:4vh;
+           }
+         </style>
+      `,
+    showCancelButton: true,
+    showConfirmButton:false,
+  confirmButtonText: "Salvar",
+    cancelButtonText: "Cancelar",
+  })
+}
+
+function editbeforecheck(data){
+  console.log(data)
+  fetch("https://squid-app-ug7x6.ondigitalocean.app/paymonthcheck", {
+    method: 'POST',
+    body: JSON.stringify({ year: select_year ,id: data.split("_")[1] ,month:data.split("_")[0]}),
+ headers: { "Content-type": "application/json; charset=UTF-8" }
+  })
+ .then((x) => x.json())
+   .then((res) => {
+   console.log(res.length)
+    if(res.length==0){
+         Swal.fire({
+       title: 'Ops',
+       html: `
+           <div>Ainda não existe dados desse aluno do mês selecionado</div>
+           <div>Podemos criar?</div>
+         `,
+       icon : 'error',
+       showCancelButton: true,
+       showConfirmButton:true,
+       confirmButtonText: "Sim",
+       cancelButtonText: "Cancelar",
+       }).then((result) => {
+        if (result.isConfirmed) {
+          swal.close()
+         creatpaydata_month(data)
+       }
+       })
+     }else{
+       swal.close()
+       paydata_update(data)
+     }
+})
+}
+
+function creatpaydata_month(data){
+
+  try{
+  fetch("https://squid-app-ug7x6.ondigitalocean.app/createpayment", {
+    method: 'POST',
+    body: JSON.stringify({
+      id:data.split("_")[1],
+      name:data.split("_")[2],
+      plans:data.split("_")[3],
+      gymid:4,
+      year:select_year,
+      division:data.split("_")[5],
+      month:data.split("_")[0],
+      valor:data.split("_")[4]}),
+    headers: { "Content-type": "application/json; charset=UTF-8" }
+  }).then((x) => x.json())
+  .then((res) => {
+    restartTable()
+  })
+
+  }catch (error) {
+    console.log(error)
+  }
+}
+
+function paydata_update(data){
+
+  try{
+  fetch("https://squid-app-ug7x6.ondigitalocean.app/paymentUpdate", {
+    method: 'POST',
+    body: JSON.stringify({
+      id:data.split("_")[1],
+      year:select_year,
+      division:data.split("_")[5],
+      month:data.split("_")[0]
+    }),
+    headers: { "Content-type": "application/json; charset=UTF-8" }
+  })
+  .then((x) => x.json())
+  .then((res) => {
+    restartTable()
+  })
+
+  }catch (error) {
+    console.log(error)
+  }
+
+}
+
+
+
+function swall_success(){
+    if(maylanguage=="PT"){
+      errormessage = "Alteração foi feita com sucesso"
+      errortitle = "Pronto"
+    }else if(maylanguage=="EN"){
+     errormessage = "Change was successfully made"
+     errortitle = "Success"
+   }else{
+     errormessage = "変更が完了しました"
+     errortitle = "完了"
+   }
+ Swal.fire({
+ title: errortitle
+, html : errormessage
+, icon : 'success'
+, timer : '1500'
+});
+   }
+
+
+
+async function restartTable() {
+   var removeTbody = document.querySelector("tbody");
+   while (removeTbody.hasChildNodes()) {
+     removeTbody.removeChild(removeTbody.firstChild);
+   }
+   getpaymente_all()
+ }
+
+document.getElementById("createdate").addEventListener("click", cretepayment_button)
+
+function cretepayment_button(){
+
+  Swal.fire({
+    html: `
+        <div class="title-font"><span>Escolha o mês para criarmos os dados</span></div>
+            <div class="title-select">
+             <select id="workselectmonth">
+               <option value="1">Janeiro</option>
+               <option value="2">Fevereiro</option>
+               <option value="3">Março</option>
+               <option value="4">Abril</option>
+               <option value="5">Maio</option>
+               <option value="6">Junho</option>
+               <option value="7">Julho</option>
+               <option value="8">Agosto</option>
+               <option value="9">Setembro</option>
+               <option value="10">Outubro</option>
+               <option value="11">Novembro</option>
+               <option value="12">Dezembro</option>
+             </select>
+            </div>
+         <style>
+           #clientes{
+             display:flex;
+           }
+            .title-select{
+              width:100%;
+            }
+            select{
+              width:50%;
+              height:80px;
+              font-size:4vh;
+              border-radius:3px;
+            }
+           .title-font{
+             display:flex;
+             justify-content: center;
+             margin-bottom:30px;
+           }
+           .title-font span{
+             font-size:4vh;
+           }
+         </style>
+      `,
+    showCancelButton: true,
+    showConfirmButton:true,
+  confirmButtonText: "Criar",
+    cancelButtonText: "Cancelar",
+  }).then((result) => {
+   if (result.isConfirmed) {
+     get_member(document.getElementById("workselectmonth").value)
+   }
+ })
+
+}
+
+//plans get------------------------------->
+ async function getplans(){
+  let plansarry = []
+  fetch('https://squid-app-ug7x6.ondigitalocean.app/planget')
+    .then((x) => x.json())
+    .then((res) => {
+      for (let i=0;i<res.length;i++){
+        if(res[i].GYM_ID==gymid){
+          plansarry.push([res[i].PLANS_NAME,res[i].PLAN_VALOR])
         }
-      });
-    }
+      }
+     })
+}
 
-    function deleteClient(clientId) {
-      clients = clients.filter((client) => client.id != clientId);
-      restartTable();
-    }
+function get_member(month){
+  console.log(month)
+  let plansarry = []
+  let memberslist = []
+  fetch('https://squid-app-ug7x6.ondigitalocean.app/planget')
+    .then((x) => x.json())
+    .then((res) => {
+      for (let i=0;i<res.length;i++){
+        if(res[i].GYM_ID==gymid){
+          plansarry.push([res[i].PLANS_NAME,res[i].PLAN_VALOR])
+        }
+      }
+     })
+     console.log(plansarry)
+       const obj = { opt1: "", opt2: "" };
+       fetch("https://squid-app-ug7x6.ondigitalocean.app/list", {//pegar todos membros
+         method: "POST",
+         body: JSON.stringify(obj),
+         headers: { "Content-type": "application/json; charset=UTF-8" },
+       })
+         .then((x) => x.json())
+         .then((response) => {
+           console.log(response)
+           for (let i = 0;i<response.length;i++){
+             for(let index = 0;index<plansarry.length;index++){
+                  if(response[i].plans==`PLAN ${plansarry[index][0]}`){
+                    memberslist.push([response[i].id,response[i].nm_member,response[i].plans,plansarry[index][1]]) //fazer um array do membro
+                  }
+                }
+           }
+           console.log(memberslist)
+           for(let i =0;i<memberslist.length;i++){
+               fetch("https://squid-app-ug7x6.ondigitalocean.app/paymonthcheck", {
+                 method: 'POST',
+                 body: JSON.stringify({ year: select_year ,id: memberslist[i][0] ,month:month}),
+                 headers: { "Content-type": "application/json; charset=UTF-8" }
+                })
+                .then((x) => x.json())
+                .then((res) => {
+                 if(res.length==0){
+                   let division
+                   try{
+                     if(memberslist[i][2]=="PLAN free"){
+                       division = 3
+                     }else{
+                       division = 1
+                     }
+                fetch("https://squid-app-ug7x6.ondigitalocean.app/createpayment", {
+                  method: 'POST',
+                  body: JSON.stringify({
+                    id:memberslist[i][0],
+                    name:memberslist[i][1],
+                    plans:memberslist[i][2],
+                    gymid:4,
+                    year:select_year,
+                    division:division,
+                    month:month,
+                    valor:memberslist[i][3]}),
+                  headers: { "Content-type": "application/json; charset=UTF-8" }
+                }).then((x) => x.json())
+                .then((res) => {
+                  restartTable()
 
-    function restartTable() {
-      tbody.innerHTML = "";
-      clientsHandler();
-    }
-    clientsHandler();
+                })
+
+                }catch (error) {
+                  console.log(error)
+                }
+
+                 }else{
+                   console.log("no")
+
+                 }
+               })
+             }
+             swall_success()
+         })
+         console.log(memberslist)
+
+
+  //let mypln
+//  const obj = { opt1: "", opt2: "" };
+//  fetch("https://squid-app-ug7x6.ondigitalocean.app/list", {//全メンバーのデータを取得
+//    method: "POST",
+//    body: JSON.stringify(obj),
+  //  headers: { "Content-type": "application/json; charset=UTF-8" },
+//  })
+  //  .then((x) => x.json())
+  //  .then((res) => {
+  //    for (let index = 0; index < res.length; index++) {
+    //     for(let i = 0; i< plans.length; i++){
+    //       if(res[index].plans==`Plan ${plans[i][0]}`){//プラン料金を取得
+    //                 myplan = plans[i][1]
+    //                 console.log(myplan)
+      //               break
+      //     }
+    //     }
+    //  fetch("https://squid-app-ug7x6.ondigitalocean.app/createpayment", {
+    //    method: 'POST',
+    //    body: JSON.stringify({
+    //      id:res[index].id,
+    //      name:res[index].nm_member,
+    //      plans:res[index].plans,
+    //      gymid:4,
+    //      year:select_year,
+    //      month:month,
+    //      division:1,
+    //      valor:myplan}),
+    //    headers: { "Content-type": "application/json; charset=UTF-8" }
+  //    })
+    //    .then((x) => x.json())
+  //      .then((res) => {
+
+  //      })
+  //      }
+  //  })
+  //  getpaymente_all()
+}
   </script>
 </html>
