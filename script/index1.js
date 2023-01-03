@@ -14,11 +14,12 @@ var errormessage10 = ""
 var errormessage11 = ""
 var errormessage12 = ""
 var gymname = sessionStorage.getItem("gym");
-var gymid = sessionStorage.getItem("GYM_ID"); 
+var gymid = sessionStorage.getItem("GYM_ID");
 console.log(gymname)
 console.log(gymid)
 var answer
 var today = new Date();  //今日
+
 
 
 window.onload = function open_page() {
@@ -157,8 +158,10 @@ function error_massege_japanese(){
 
   //tratamento da seleção de planos e preços
   var plan = '';
+	var valor = '';
   inputs[16].addEventListener('click', (e) => {
     plan = document.getElementById("plan-1").innerHTML
+		valor = document.getElementById("plan-1-price").innerHTML
     document.getElementById("select-plan-a").style.background = '#5507FF';
     document.getElementById("select-plan-a").style.borderWidth = 'thick';
     document.getElementById("select-plan-b").style.background = '#333333';
@@ -173,8 +176,10 @@ function error_massege_japanese(){
     document.getElementById("select-plan-f").style.borderWidth = 'thin';
   });
   var plan = '';
+	var valor = '';
   inputs[17].addEventListener('click', (e) => {
     plan = document.getElementById("plan-2").innerHTML
+		valor = document.getElementById("plan-2-price").innerHTML
     document.getElementById("select-plan-b").style.background = '#5507FF';
     document.getElementById("select-plan-b").style.borderWidth = 'thick';
     document.getElementById("select-plan-a").style.background = '#333333';
@@ -189,8 +194,10 @@ function error_massege_japanese(){
     document.getElementById("select-plan-f").style.borderWidth = 'thin';
   });
   var plan = '';
+	var valor = '';
   inputs[18].addEventListener('click', (e) => {
     plan = document.getElementById("plan-3").innerHTML
+		valor = document.getElementById("plan-3-price").innerHTML
     document.getElementById("select-plan-c").style.background = '#5507FF';
     document.getElementById("select-plan-c").style.borderWidth = 'thick';
     document.getElementById("select-plan-b").style.background = '#333333';
@@ -205,8 +212,10 @@ function error_massege_japanese(){
     document.getElementById("select-plan-f").style.borderWidth = 'thin';
   });
   var plan = '';
+	var valor = '';
   inputs[19].addEventListener('click', (e) => {
     plan = document.getElementById("plan-4").innerHTML
+		valor = document.getElementById("plan-4-price").innerHTML
     document.getElementById("select-plan-d").style.background = '#5507FF';
     document.getElementById("select-plan-d").style.borderWidth = 'thick';
     document.getElementById("select-plan-b").style.background = '#333333';
@@ -221,8 +230,10 @@ function error_massege_japanese(){
     document.getElementById("select-plan-f").style.borderWidth = 'thin';
   });
   var plan = '';
+	var valor = '';
   inputs[20].addEventListener('click', (e) => {
     plan = document.getElementById("plan-5").innerHTML
+		valor = document.getElementById("plan-5-price").innerHTML
     document.getElementById("select-plan-e").style.background = '#5507FF';
     document.getElementById("select-plan-e").style.borderWidth = 'thick';
     document.getElementById("select-plan-b").style.background = '#333333';
@@ -237,8 +248,10 @@ function error_massege_japanese(){
     document.getElementById("select-plan-f").style.borderWidth = 'thin';
   });
   var plan = '';
+	var valor = '';
   inputs[21].addEventListener('click', (e) => {
     plan = document.getElementById("plan-6").innerHTML
+		valor = document.getElementById("plan-6-price").innerHTML
     document.getElementById("select-plan-f").style.background = '#5507FF';
     document.getElementById("select-plan-f").style.borderWidth = 'thick';
     document.getElementById("select-plan-b").style.background = '#333333';
@@ -293,7 +306,7 @@ console.log(obj)
     headers: {"Content-type": "application/json; charset=UTF-8"}})
     .then((x)=> x.json())
     .then((response) => {
-        fetch(`https://squid-app-ug7x6.ondigitalocean.app/payment/${obj.nm_member}/${gymid}/${obj.plans}`);
+        fetch(`https://squid-app-ug7x6.ondigitalocean.app/payment/${obj.nm_member}/${gymid}/${obj.plans}/${valor.split('¥')[1]}`);
 	console.log(response)
      })
       .then((y) => {
@@ -334,7 +347,7 @@ function ejspdf() {
   .then((x) => x.json())
   .then((response) => {
     console.log(response)
-    
+
   })
 
 }
