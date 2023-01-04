@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="../style/list_alunos2.css" />
   </head>
 
- <body>
+  <body>
     <div id="titlediv">
       <div id="titlemain">Gym Control System</div>
       <div id="gym-name">Kussano gym</div>
@@ -45,27 +45,11 @@
         </select>
         <input type="button" id="btn-filter" value="Buscar" />
       </div>
-      <div id="table">
-        <table class="mobile-scroll" cellspacing="0" cellpadding="0">
-          <thead>
-            <tr>
-              <th class="email-tag">Nome</th>
-              <th>Data de nascimento</th>
-              <th>Idade</th>
-              <th>Gênero</th>
-              <th class="email-tag">Endereço</th>
-              <th class="email-tag">Tel</th>
-              <th class="email-tag">Email</th>
-              <th>Idioma</th>
-              <th>Plano</th>
-              <th>Situação</th>
-              <th>Pass</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
+      <div  class="twrapper">
+       <table>
+         <tbody></tbody>
+       </table>
+     </div>
     </div>
   </body>
   <script src="../script/swal.min.js"></script>
@@ -120,8 +104,17 @@
 
     function clientsHandler() {
       for (let index = 0; index < clients.length; index++) {
-        const row = createNewTableRow(clients[index]);
-        tbody.innerHTML += row;
+        if(index==0){
+                  const row1 = createNewTableRow_first(clients[index]);
+                      tbody.innerHTML += row1;
+                    const  row = createNewTableRow(clients[index]);
+                          tbody.innerHTML += row;
+                }else{
+                  const row = createNewTableRow(clients[index]);
+                      tbody.innerHTML += row;
+                }
+      //  const row = createNewTableRow(clients[index]);
+      //  tbody.innerHTML += row;
       }
     }
 
@@ -191,7 +184,8 @@
         }
       }
       let row = `
-        <td class="email-tag">${data.nm_member}</td>
+      <tr>
+        <th class="_sticky" name="_sticky_name">${data.nm_member}</th>
        <td>${data.birthday_year}/${data.birthday_month}/${data.birthday_day}</td>
         <td>${data.birthday_age}</td>
         <td>${genero}</td>
@@ -206,9 +200,35 @@
             <img src="../image/edit.svg" onClick="editClient(${data.id})" alt="" width="25">
             <img src="../image/delete.svg" onClick="deleteClient(${data.id})" alt="" width="25">
         </td>
+        </tr>
         `;
       return row;
     }
+
+    function createNewTableRow_first(data) {
+     let row = `
+       <tr>
+       <th class="_sticky z-02">Aluno</th>
+       <th class="_sticky">Data de nascimento</th>
+       <th class="_sticky">Idade</th>
+       <th class="_sticky">Gênero</th>
+       <th class="_sticky">Endereço</th>
+       <th class="_sticky">Tel</th>
+       <th class="_sticky">Email</th>
+       <th class="_sticky">Idioma</th>
+       <th class="_sticky">Plano</th>
+       <th class="_sticky">Situação</th>
+       <th class="_sticky">Pass</th>
+       <th class="_sticky">Ações</th>
+       </tr>
+       `;
+
+     return row;
+    }
+
+
+
+
 
     function editClient(clientId) {
       let client = clients.find((client) => client.id == clientId);
@@ -491,6 +511,7 @@ swall_error(7,clientId)
           //  .then((response) => {
           .then(response =>	{
             if(!response.ok){
+              console.log(response)
               swall_error(1)
             }else{
               restartTable();
@@ -499,8 +520,9 @@ swall_error(7,clientId)
             });
           }
         }catch (error) {
-           swall_error(1)
           console.log(error)
+           swall_error(1)
+
         }
         }
       });
@@ -532,7 +554,7 @@ swall_error(7,clientId)
     }
 
    async function restartTable() {
-     
+
       var removeTbody = document.querySelector("tbody");
       while (removeTbody.hasChildNodes()) {
         removeTbody.removeChild(removeTbody.firstChild);
