@@ -137,15 +137,44 @@ th[name="_sticky_name"]{
   font-size:3vh;
 
 }
+
+	th, td {
+  font-size: 8px;
+}
+
+._sticky.z-02 {
+  z-index: 2;
+  width: 100px;
+}
+	
+	
 }
 
 /* 500px以下の画面で適用 */
-@media screen and (min-width: 501px) and (max-width: 1200px) {
+@media screen and (min-width: 501px) and (max-width: 0px) {
 
   #btn-filter{
     width:15%;
   }
   #header-title{
     font-size:4vh;
+  }
+	#dash #header h3{
+      margin-right: 10%;
+  }
+  #dash #header select{
+      width: 20%;
+  }
+  #createdate{
+    width:20%;
+  }
+
+  th, td {
+    font-size: 10px;
+  }
+
+  ._sticky.z-02 {
+    z-index: 2;
+    width: 150px;
   }
 }
