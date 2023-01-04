@@ -22,38 +22,19 @@
           <option value="2023">2023</option>
           <option value="2023">2024</option>
         </select>
-        <div id="createdate-div">
+
           <input type="button" id="createdate" value="Add"></input>
-        </div>
+
       </div>
-      <div id="table">
-        <table cellspacing="0" cellpadding="0">
-          <thead>
-            <tr>
-              <th>Aluno</th>
-              <th>Plano</th>
-              <th>Mensalidade</th>
-              <th>Jan</th>
-              <th>Feb</th>
-              <th>Mar</th>
-              <th>Apr</th>
-              <th>May</th>
-              <th>Jun</th>
-              <th>Jul</th>
-              <th>Aug</th>
-              <th>Sep</th>
-              <th>Oct</th>
-              <th>Nov</th>
-              <th>Dez</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
+      <div  class="twrapper">
+        <table>
           <tbody></tbody>
         </table>
       </div>
     </div>
   </body>
   <script src="../script/swal.min.js"></script>
+  <script type="text/javascript" src="js/stickyfill.min.js"></script>
   <script>
 
   //var gymname = sessionStorage.getItem("gym");
@@ -66,52 +47,31 @@
   let maylanguage = "PT"
   let gymid = 4
 
-
-
-
   //if (sessionGymName) {
   //  gymName.innerHTML = sessionGymName;
   //} else {
   //  gymName.innerHTML = "GYM error";
   //}
-//  fetch("https://squid-app-ug7x6.ondigitalocean.app/graduationlist", {
-  //  method: "POST",
-  //  body: JSON.stringify({ opt1: "", opt2: "" }),
-  //  headers: { "Content-type": "application/json; charset=UTF-8" },
-  //})
-  //  .then((x) => x.json())
-  //  .then((res) => {
-  //    clients1 = res;
-//      console.log(clients1);
-    //  clientsHandler(clients1);
-  //  });
-
-
 
       const select_year = document.getElementById("select-year").value;//year selecte
-      //data exist check------------------------------>
-//      fetch("https://squid-app-ug7x6.ondigitalocean.app/paymentallexist", {
-    //    method: 'POST',
-    //    body: JSON.stringify({ year: select_year ,gymid: gymid ,month:month}),
-    //    headers: { "Content-type": "application/json; charset=UTF-8" }
-    //  })
-    //    .then((x) => x.json())
-      //  .then((res) => {
-      //    console.log(res.length)
-      //     if(res.length==0){//当月データが0の場合には生成する
-      //       getplans()
-        //   }else{
-        //     console.log("今月はデータあり")
-        //     getpaymente_all()
-        //   }
-      //  })
-
-
-
 var clients = {}
+
 getpaymente_all()
 //Get Allpayment data------------------------------------->
 function getpaymente_all(){
+  //処理中ダイアログ
+  Swal.fire({
+    icon:"info",
+    title: 'Processing'
+  , html: 'Wait'
+  , allowOutsideClick : false
+  , showConfirmButton: false,
+    timer: 4000,
+    timerProgressBar: true
+  , onBeforeOpen: () => {
+      Swal.showLoading();
+    }
+  });
   let memberslist =[]
   clients = {}
   fetch("https://squid-app-ug7x6.ondigitalocean.app/getpaymentAll", {//pegar todos dados do table de pagamentos
@@ -274,36 +234,75 @@ function getpaymente_all(){
                       }
                     }
                   }
-                  const row = createNewTableRow(answer);
-                      tbody.innerHTML += row;
+                  if(i==0){
+                    const row1 = createNewTableRow_first(answer);
+                        tbody.innerHTML += row1;
+                      const  row = createNewTableRow(answer);
+                            tbody.innerHTML += row;
+                  }else{
+                    const row = createNewTableRow(answer);
+                        tbody.innerHTML += row;
+                  }
+
                 }
              })
-    })
+    }).then(function() {
+       swal.close()
+
+    });
+
+
+
+
+
 }
 
  function createNewTableRow(data) {
   let row = `
-    <td class="email-tag">${data.name}</td>
-    <td class="email-tag">${data.plan}</td>
-    <td class="email-tag">￥${data.planvalue}</td>
-    <td class="email-tag" onClick="editpay('1_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.jan}</td>
-    <td class="email-tag" onClick="editpay('2_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.feb}</td>
-    <td class="email-tag" onClick="editpay('3_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.mar}</td>
-    <td class="email-tag" onClick="editpay('4_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.apr}</td>
-    <td class="email-tag" onClick="editpay('5_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.may}</td>
-    <td class="email-tag" onClick="editpay('6_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.jun}</td>
-    <td class="email-tag" onClick="editpay('7_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.jul}</td>
-    <td class="email-tag" onClick="editpay('8_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.aug}</td>
-    <td class="email-tag" onClick="editpay('9_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.sep}</td>
-    <td class="email-tag" onClick="editpay('10_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.oct}</td>
-    <td class="email-tag" onClick="editpay('11_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.nov}</td>
-    <td class="email-tag" onClick="editpay('12_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.dez}</td>
-    <td class="email-tag">
-        <img src="../image/edit.svg" onClick="editClient(${data.id})" alt="" width="35">
-    </td>
+    <tr>
+    <th class="_sticky" name="_sticky_name">${data.name}</th>
+    <td>${data.plan}</td>
+    <td>￥${data.planvalue}</td>
+    <td onClick="editpay('1_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.jan}</td>
+    <td onClick="editpay('2_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.feb}</td>
+    <td onClick="editpay('3_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.mar}</td>
+    <td onClick="editpay('4_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.apr}</td>
+    <td onClick="editpay('5_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.may}</td>
+    <td onClick="editpay('6_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.jun}</td>
+    <td onClick="editpay('7_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.jul}</td>
+    <td onClick="editpay('8_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.aug}</td>
+    <td onClick="editpay('9_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.sep}</td>
+    <td onClick="editpay('10_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.oct}</td>
+    <td onClick="editpay('11_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.nov}</td>
+    <td onClick="editpay('12_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.dez}</td>
+    </tr>
     `;
 
   return row;
+}
+
+function createNewTableRow_first(data) {
+ let row = `
+   <tr>
+   <th class="_sticky z-02">Aluno</th>
+   <th class="_sticky">Plano</th>
+   <th class="_sticky">Mensalidade</th>
+   <th class="_sticky">Jan</th>
+   <th class="_sticky">Feb</th>
+   <th class="_sticky">Mar</th>
+   <th class="_sticky">Apr</th>
+   <th class="_sticky">May</th>
+   <th class="_sticky">Jun</th>
+   <th class="_sticky">Jul</th>
+   <th class="_sticky">Aug</th>
+   <th class="_sticky">Sep</th>
+   <th class="_sticky">Oct</th>
+   <th class="_sticky">Nov</th>
+   <th class="_sticky">Dez</th>
+   </tr>
+   `;
+
+ return row;
 }
 
 function editpay(data){
@@ -377,7 +376,7 @@ function editpay(data){
              display:block;
              border:2px solid gray;
              margin-left:30px;
-             width:150px;
+             width:30%;
              height:100px;
            }
            .title-font{
@@ -389,6 +388,22 @@ function editpay(data){
            .title-font span{
              font-size:4vh;
            }
+
+  @media only screen and (max-width: 700px) {
+    .swal2-popup {
+        width: 90% !important;
+        height: 350px !important;
+    }
+  
+    .title-font span{
+      font-size:3vh;
+    }
+    .block-div span{
+      font-size:2vh;
+    }
+  }
+
+
          </style>
       `,
     showCancelButton: true,
@@ -399,7 +414,19 @@ function editpay(data){
 }
 
 function editbeforecheck(data){
-  console.log(data)
+  //処理中ダイアログ
+  Swal.fire({
+    icon:"info",
+    title: 'Processing'
+  , html: 'Wait'
+  , allowOutsideClick : false
+  , showConfirmButton: false,
+    timer: 4000,
+    timerProgressBar: true
+  , onBeforeOpen: () => {
+      Swal.showLoading();
+    }
+  });
   fetch("https://squid-app-ug7x6.ondigitalocean.app/paymonthcheck", {
     method: 'POST',
     body: JSON.stringify({ year: select_year ,id: data.split("_")[1] ,month:data.split("_")[0]}),
@@ -434,7 +461,6 @@ function editbeforecheck(data){
 }
 
 function creatpaydata_month(data){
-
   try{
   fetch("https://squid-app-ug7x6.ondigitalocean.app/createpayment", {
     method: 'POST',
