@@ -146,7 +146,10 @@ th[name="_sticky_name"]{
   z-index: 2;
   width: 100px;
 }
-	
+
+th[name="_sticky_name"]{
+  font-size: font-size: 20px;
+}
 	
 }
 
