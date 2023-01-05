@@ -380,7 +380,7 @@ width:32%;
     }
 }
 
-@media screen and (min-width: 2170px){
+@media screen and (min-width: 1400px) and (max-width: 1450px) {
   .right-first-div{
     background-color: red;
   }
