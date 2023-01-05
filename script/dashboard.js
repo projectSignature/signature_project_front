@@ -31,12 +31,21 @@ function payswall(){
   let row = `<tr><th class="_sticky" name="_sticky_name">${yetpayment[index].nm_member}</th><td class="_sticky_y">${yetpayment[index].year}</td><td class="_sticky_y">${months[yetpayment[index].month]}</td></tr>`
   yetmemberswall.push(row)
     }
-    console.log(yetmemberswall)
+    if(yetpayment.length==0){
+      Swal.fire({
+        title: 'Não há pagamento atrasado',
+        showCancelButton: true,
+        showConfirmButton: false,
+        cancelButtonText: 'Voltar',
+        width: 550,
+      })
+    }else{
     Swal.fire({
       title: 'Membros com o pagamento atrasado',
-      showCancelButton: false,
+      showCancelButton: true,
       showConfirmButton: true,
-      ConfirmButtonText: 'OK',
+      confirmButtonText: 'Tabela',
+      cancelButtonText: 'Voltar',
       width: 550,
       html: `<div class="twrapper">
         <table>
@@ -92,7 +101,8 @@ function payswall(){
       th[name="_sticky_name"]{
         background: #00BFFF;
       }
-          @media only screen and (max-width: 700px) {
+
+      @media only screen and (max-width: 700px) {
         ._sticky.z-02 {
           width: 15px !important;
         }
@@ -105,9 +115,11 @@ function payswall(){
    </style>`,
     }).then((result) => {
      if (result.isConfirmed) {
-      //addClient_again(swall_add_existentes)
+       let path = `https://squid-app-ug7x6.ondigitalocean.app/signature-project-front/pages/payment.html`;
+       location.href = path;
       }
     });
+    }
 }
 
 
