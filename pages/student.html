@@ -20,27 +20,11 @@
         <div id="header">
            <sapn id ="header-title">Controle de graduação</span>
         </div>
-        <div id="table">
-            <table class="mobile-scroll"  cellspacing="0" cellpadding="0">
-                <thead>
-                    <tr>
-                        <th class="email-tag">Name</th>
-                        <th class="email-tag">Faixa atual</th>
-                        <th class="email-tag">Data da graduação</th>
-                        <th class="email-tag">1º grau</th>
-                        <th class="email-tag">2º grau</th>
-                        <th class="email-tag">3º grau</th>
-                        <th class="email-tag">4º grau</th>
-                        <th class="email-tag">Aula pós-graduação</th>
-                        <th class="email-tag">Observação</th>
-                        <th class="email-tag">status</th>
-                        <th class="email-tag">Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-        </div>
+        <div  class="twrapper">
+         <table>
+           <tbody></tbody>
+         </table>
+       </div>
     </div>
 </body>
 <script src="../script/swal.min.js"></script>
@@ -75,8 +59,15 @@
 
     function clientsHandler(clients1) {
         for (let index = 0; index < clients1.length; index++) {
-          const row = createNewTableRow(clients1[index]);
-          tbody.innerHTML += row;
+          if(index==0){
+              const row1 = createNewTableRow_first(clients1[index]);
+                  tbody.innerHTML += row1;
+                const  row = createNewTableRow(clients1[index]);
+                      tbody.innerHTML += row;
+            }else{
+              const row = createNewTableRow(clients1[index]);
+                  tbody.innerHTML += row;
+            }
         }
       }
 
@@ -95,51 +86,44 @@
         }
 
         let row = `
-          <td class="email-tag">${data.nm_member}</td>
+        <tr>
+          <th class="_sticky" name="_sticky_name">${data.nm_member}</th>
           <td><img src="../image/${color}.png" alt="" width="50"></td>
           <td>${data.graduation_dt}</td>
           <td>${data.first_point}</td>
-          <td class="email-tag">${data.second_point}</td>
-          <td class="email-tag">${data.third_point}</td>
-          <td class="email-tag">${data.fourth_point}</td>
+          <td>${data.second_point}</td>
+          <td>${data.third_point}</td>
+          <td>${data.fourth_point}</td>
           <td>${data.lesson_after}</td>
           <td>${data.obs}</td>
           <td>${data.status}</td>
           <td>
               <img src="../image/edit.svg" onClick="editClient(${data.nm_member_id})" alt="" width="25">
           </td>
+        </tr>
           `;
         return row;
       }
 
-  //  let clients = [
-      // {
-        //    id: 1,
-        //    client: "Helder",
-        //    currentRange: 'blue',
-      //   graduateDate: '2022-01-05',
-         //   firstDegree: '2022-01-05',
-           // secondDegree: "",
-            //thirdDegree: "",
-            //fourthDegree: "",
-            //postGraduationClass: "10",
-            //observations: "faltou 3",
-            //status: "active"
-        //},
-        //{
-          //  id: 2,
-            //client: "karla",
-            //currentRange: 'red',
-            //graduateDate: '2021-12-27',
-            //firstDegree: '2022-05-18',
-            //secondDegree: "2022-07-15",
-            //thirdDegree: "2022-08-10",
-            //fourthDegree: "",
-            //postGraduationClass: "39",
-            //observations: "mês que vem graduação",
-            //status: "active"
-        //}
-    //]
+      function createNewTableRow_first(data) {
+           let row = `
+             <tr>
+              <th class="_sticky z-02">Aluno</th>
+              <th class="_sticky">Faixa atual</th>
+              <th class="_sticky">Data da graduação</th>
+              <th class="_sticky">1º grau</th>
+              <th class="_sticky">2º grau</th>
+              <th class="_sticky">3º grau</th>
+              <th class="_sticky">4º grau</th>
+              <th class="_sticky">Aula pós-graduação</th>
+              <th class="_sticky">Observação</th>
+              <th class="_sticky">status</th>
+              <th class="_sticky">Ações</th>
+             </tr>
+             `;
+
+           return row;
+          }
 
 
 
