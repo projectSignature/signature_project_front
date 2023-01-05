@@ -23,28 +23,79 @@ if (token == 567) {
 document.getElementById('paydiv').addEventListener('click', payswall)
 
 function payswall(){
+  console.log(yetpayment)
   let yetmemberswall = []
+  const months = ["0","Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+  yetmemberswall.push(`<tr><th class="_sticky z-02">Nome</th><th class="_sticky">Ano</th><th  class="_sticky">Mês</th></tr>`)
   for (let index = 0; index < yetpayment.length; index++) {
-    let yetmember = `<div><p>${yetpayment[index].nm_member}</p></div>`
-        yetmemberswall=  yetmemberswall + yetmember
+  let row = `<tr><th class="_sticky" name="_sticky_name">${yetpayment[index].nm_member}</th><td class="_sticky_y">${yetpayment[index].year}</td><td class="_sticky_y">${months[yetpayment[index].month]}</td></tr>`
+  yetmemberswall.push(row)
     }
+    console.log(yetmemberswall)
     Swal.fire({
       title: 'Membros com o pagamento atrasado',
       showCancelButton: false,
       showConfirmButton: true,
       ConfirmButtonText: 'OK',
-      width: 1000,
-      html: `<div id="maindiv">${yetmemberswall}</div>
+      width: 550,
+      html: `<div class="twrapper">
+        <table>
+          <tbody>${yetmemberswall}</tbody>
+        </table>
+      </div>
+
       <style>
-      #maindiv{
-        display:block;
-        border:3px solid gray;
+      .twrapper{
+        overflow-y:scroll;
+        height:500px !important;
       }
-      </style>`,
-      customClass: "sweet-alert",
+
+      table {
+        border-collapse: collapse;
+        border-spacing: 0;
+      }
+      th, td {
+        vertical-align: middle;
+        padding: 20px 15px;
+        font-size: 14px;
+        text-align: center;
+      }
+      th {
+        color: #EEEEEE;
+        background: #222222;
+      }
+      td{
+        border: 1px solid #ccc;
+      }
+      ._sticky {
+        position: sticky;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        width:80px !important;
+        height:5px !important;
+      }
+
+      ._sticky:before {
+        content: "";
+        position: absolute;
+        top: -1px;
+        left: -1px;
+        width: 100%;
+        height: 100%;
+        border: 1px solid #ccc;
+      }
+      ._sticky.z-02 {
+        z-index: 2;
+        width: 200px !important;
+      }
+      th[name="_sticky_name"]{
+        background: #00BFFF;
+      }
+   </style>`,
     }).then((result) => {
-      if (result.isConfirmed) {
-        addClient_again(swall_add_existentes)
+     if (result.isConfirmed) {
+      //addClient_again(swall_add_existentes)
       }
     });
 }
@@ -293,9 +344,6 @@ var next_graduation = 0
                 datacontents.push("Plan N")
                 datacolor.push("#9ACD32")
               }
-              console.log(data)
-              console.log(datacontents)
-              console.log(datacolor)
             create_chart(data,datacontents,datacolor)
         });
 
@@ -317,7 +365,7 @@ function create_chart(data,datacontents,datacolor){
     },
     options:{
       title:{
-          display:true,
+        display:true,
         text: "Alunos por plano"
       },
 legend:{
