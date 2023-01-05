@@ -13,6 +13,20 @@ const memberDiv = document.querySelector('#member_div');
 const paymentDiv = document.querySelector('#payment_div');
 const graduacaoDiv = document.querySelector('#graduacao_div');
 
+Swal.fire({
+  icon:"info",
+  title: 'Processing'
+, html: 'Wait'
+, allowOutsideClick : false
+, showConfirmButton: false,
+  timer: 5000,
+  timerProgressBar: true
+, onBeforeOpen: () => {
+    Swal.showLoading();
+  }
+});
+
+
 if (token == 567) {
   addMemberDiv.style.display = 'none';
   memberDiv.style.display = 'none';
