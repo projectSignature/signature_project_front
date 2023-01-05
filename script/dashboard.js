@@ -6,52 +6,12 @@ var my_language = ""
 let yetpayment = []
 var membersCount = ""
 let membersarry = []
-var next_graduation = 0
 
 var token = sessionStorage.getItem("token");
 const addMemberDiv = document.querySelector('#add_member_div');
 const memberDiv = document.querySelector('#member_div');
 const paymentDiv = document.querySelector('#payment_div');
 const graduacaoDiv = document.querySelector('#graduacao_div');
-
-//処理中ダイアログ
-Swal.fire({
-  icon:"info",
-  title: 'Processing'
-, html: 'Wait'
-, allowOutsideClick : false
-, showConfirmButton: false,
-  timerProgressBar: true
-, onBeforeOpen: () => {
-    Swal.showLoading();
-  }
-}).then({
-  //pagar todas do table de graduação-------------------------------->
-    fetch("https://squid-app-ug7x6.ondigitalocean.app/graduationlist", {
-      method: "POST",
-      body: JSON.stringify({ opt1: "", opt2: "" }),
-      headers: { "Content-type": "application/json; charset=UTF-8" },
-    })
-      .then((x) => x.json())
-      .then((res) => {
-        clients1 = res;
-        for (let index = 0; index < clients1.length; index++) {
-          if(clients1[index].lesson_after>=39){
-            next_graduation ++
-          }
-        }
-        document.getElementById("member-total-graduation").innerHTML = next_graduation
-        memberget_chart()
-      });
-
-
-
-
-
-})
-
-
-
 
 if (token == 567) {
   addMemberDiv.style.display = 'none';
@@ -63,11 +23,11 @@ if (token == 567) {
 document.getElementById('paydiv').addEventListener('click', payswall)
 
 function payswall(){
+  console.log(yetpayment)
   let yetmemberswall = []
   const months = ["0","Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
   yetmemberswall.push(`<tr><th class="_sticky z-02">Nome</th><th class="_sticky">Ano</th><th  class="_sticky">Mês</th></tr>`)
   for (let index = 0; index < yetpayment.length; index++) {
-    console.log(yetpayment[index])
   let row = `<tr><th class="_sticky" name="_sticky_name">${yetpayment[index].nm_member}</th><td class="_sticky_y">${yetpayment[index].year}</td><td class="_sticky_y">${months[yetpayment[index].month]}</td></tr>`
   yetmemberswall.push(row)
     }
@@ -147,7 +107,7 @@ function payswall(){
           width: 15px !important;
         }
         ._sticky {
-          width:60px !important;
+          width:80px !important;
         }
 
 }
@@ -217,10 +177,27 @@ function navigator(ref) {
 
 document.querySelector('#gym-name').innerHTML = sessionStorage.getItem("gym");
 
-
-
+var next_graduation = 0
+//pagar todas do table de graduação-------------------------------->
+  fetch("https://squid-app-ug7x6.ondigitalocean.app/graduationlist", {
+    method: "POST",
+    body: JSON.stringify({ opt1: "", opt2: "" }),
+    headers: { "Content-type": "application/json; charset=UTF-8" },
+  })
+    .then((x) => x.json())
+    .then((res) => {
+      clients1 = res;
+      for (let index = 0; index < clients1.length; index++) {
+        if(clients1[index].lesson_after>=39){
+          next_graduation ++
+        }
+      }
+      document.getElementById("member-total-graduation").innerHTML = next_graduation
+      memberget_chart()
+    });
 //pagar todas do table de member------------------------------->
     function memberget_chart(){
+      console.log('in')
       const filter1 = "";
       const filter2 = "";
       let planA = 0
@@ -246,6 +223,7 @@ document.querySelector('#gym-name').innerHTML = sessionStorage.getItem("gym");
         .then((x) => x.json())
         .then((res) => {
           membersarry = res;
+          console.log(membersarry)
           var flugA = false;
           var flugB = false;
           var flugC = false;
@@ -326,6 +304,7 @@ document.querySelector('#gym-name').innerHTML = sessionStorage.getItem("gym");
             datacontents = []
             datacolor = []
             data1.push(planA,planB,planC,planD,planE,planF,planG,planH,planI,planJ,planK,planL,planM,planN)
+            console.log(data1)
               for (let index = 0; index < data1.length; index++) {
                      if(data1[index]){
                        data.push(data1[index])
@@ -424,16 +403,16 @@ pieceLabel: {
   });
 
   ///https://squid-app-ug7x6.ondigitalocean.app/signature-project-front/pages/ficha.html
+
 //paymentGet------------------------------------------------->
   axios.get('https://squid-app-ug7x6.ondigitalocean.app/paymentall')
     .then(function (response) {
-      for (let i=0;i<response.data.length;i++){
-        if(response.data[i].plan!="PLAN free"){
-          yetpayment.push(response.data[i])
-        }
-      }
-      document.querySelector('#payment-yet').innerHTML = yetpayment.length;
+      document.querySelector('#payment-yet').innerHTML = response.data.length;
+      yetpayment = response.data
     });
+
+
+
 
     //create line chart--------------------------------->
     axios.get('https://squid-app-ug7x6.ondigitalocean.app/info')
@@ -443,7 +422,6 @@ pieceLabel: {
         line_chart(membersCount)
       });
   }
-
     function line_chart(membersCount){
       let day = new Date();
       var ctx1 = document.getElementById('ex_chart');
