@@ -353,10 +353,10 @@ function editpay(data){
  Swal.fire({
     html: `
         <div id="swall-member-namae-div">
-         <div class="title-font">
+         <div class="title-font" id="name-div">
           <span>Nome do aluno:</span>
          </div>
-         <div class="title-font">
+         <div class="title-font"  id="name-div-title">
           <span>${myname}</span>
          </div>
         </div>
@@ -402,9 +402,8 @@ function editpay(data){
   @media only screen and (max-width: 700px) {
     .swal2-popup {
         width: 90% !important;
-        height: 350px !important;
+        height: 500px !important;
     }
-  
     .title-font span{
       font-size:3vh;
     }
@@ -419,6 +418,12 @@ function editpay(data){
       width:30%;
       height:100px;
     }
+    #name-div{
+      margin-bottom:0px;
+    }
+    #name-div-title{
+      margin-top:10px;
+    }
   }
          </style>
       `,
@@ -428,7 +433,7 @@ function editpay(data){
     cancelButtonText: "Cancelar",
   })
 }
-
+    
 function editbeforecheck(data){
   //処理中ダイアログ
   Swal.fire({
