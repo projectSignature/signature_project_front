@@ -190,7 +190,7 @@ function entrance_regist(number) {
     showCancelButton: false,
     showConfirmButton: true,
     confirmButtonText: 'OK',
-     width : '640rem',
+    customClass: 'customizable',
     html: `
       <div id="title">Digiti sua senha</div>
       <div id="pass-div"><input type="password" id="keys_entrance" hiden/></div>
@@ -241,12 +241,10 @@ function entrance_regist(number) {
             height:95%;
             font-size:6vh;
             text-align: center;
-
-
           }
           #keys_entrance{
             height:90%;
-              width:90%;
+            width:90%;
             border-radius: 3%;
             font-size:3vw;
           }
@@ -262,6 +260,16 @@ function entrance_regist(number) {
           #en0{
       margin-left:8%;
           }
+          .customizable button {
+            margin-top:0px  !important;
+            font-size: 5vh  !important;
+            width: 250px !important;
+            height: 100px !important;
+          }
+
+          #fourth-row{
+            margin-bottom:0px;
+          }
 
 @media only screen and (max-width: 1200px) {
   #clear{
@@ -276,6 +284,12 @@ function entrance_regist(number) {
   }
   #clear{
     font-size:3vh;
+  }
+
+  .customizable button {
+    font-size: 3vh  !important;
+    width: 150px !important;
+    height: 800px !important;
   }
 
 }
