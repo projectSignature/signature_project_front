@@ -92,6 +92,16 @@ function payswall(){
       th[name="_sticky_name"]{
         background: #00BFFF;
       }
+          @media only screen and (max-width: 700px) {
+        ._sticky.z-02 {
+          width: 15px !important;
+        }
+        ._sticky {
+          width:60px !important;
+        }
+
+}
+
    </style>`,
     }).then((result) => {
      if (result.isConfirmed) {
