@@ -397,4 +397,8 @@ width:32%;
   #payment-yet{
     margin-top:5px;
   }
+      #ex_chart{
+    height:180px;
+    background-color:red;
+  }
 }
