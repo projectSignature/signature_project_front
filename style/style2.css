@@ -381,11 +381,11 @@ width:32%;
 }
 
 @media screen and (min-width: 1400px) and (max-width: 1450px) {
-  .title-bottons{
+ .title-bottons{
       font-size: 0.8em;
   }
   .atention-discrtion{
-    margin-top:15px;
+    margin-top:18px;
     font-size: 2.5vh;
   }
   .result-input{
@@ -393,5 +393,8 @@ width:32%;
   }
   #menubar{
     width:13%;
+  }
+  #payment-yet{
+    margin-top:5px;
   }
 }
