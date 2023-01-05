@@ -382,6 +382,15 @@ width:32%;
 
 @media screen and (min-width: 1400px) and (max-width: 1450px) {
   .title-bottons{
-      font-size: 1.1em;
+      font-size: 1.0em;
+  }
+  .atention-discrtion{
+      font-size: 2vh;
+  }
+  .result-input{
+    font-size: 8vh;
+  }
+  #menubar{
+    width:12%;
   }
 }
