@@ -350,9 +350,16 @@ function editpay(data){
     break;
     default:
   }
-  Swal.fire({
+ Swal.fire({
     html: `
-        <div class="title-font"><span>Nome do aluno: ${myname}</span></div>
+        <div id="swall-member-namae-div">
+         <div class="title-font">
+          <span>Nome do aluno:</span>
+         </div>
+         <div class="title-font">
+          <span>${myname}</span>
+         </div>
+        </div>
         <div class="title-font"><span>Mês: ${myworkmonth}</span></div>
         <div id="clientes">
           <div class="block-div" onClick="editbeforecheck('${data}_2')">
@@ -387,6 +394,9 @@ function editpay(data){
            }
            .title-font span{
              font-size:4vh;
+           }
+           #swall-member-namae-div{
+             display:flex;
            }
 
   @media only screen and (max-width: 700px) {
