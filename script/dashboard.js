@@ -317,8 +317,8 @@ function create_chart(data,datacontents,datacolor){
     },
     options:{
       title:{
-        display:false,
-        text: "Plan ratio chart1"
+          display:true,
+        text: "Alunos por plano"
       },
 legend:{
   display:false ,
