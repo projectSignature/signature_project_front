@@ -107,7 +107,7 @@ function payswall(){
           width: 15px !important;
         }
         ._sticky {
-          width:60px !important;
+          width:80px !important;
         }
 
 }
