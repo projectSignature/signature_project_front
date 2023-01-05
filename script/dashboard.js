@@ -102,7 +102,6 @@ function navigator(ref) {
   location.href = path;
 }
 
-
 document.querySelector('#gym-name').innerHTML = sessionStorage.getItem("gym");
 
 var next_graduation = 0
@@ -125,6 +124,7 @@ var next_graduation = 0
     });
 //pagar todas do table de member------------------------------->
     function memberget_chart(){
+      console.log('in')
       const filter1 = "";
       const filter2 = "";
       let planA = 0
@@ -167,59 +167,59 @@ var next_graduation = 0
           var flugN = false;
           for (let index = 0; index < membersarry.length; index++) {
             switch(membersarry[index].plans){
-              case "Plan A":
+              case "PLAN A":
               flugA = true;
             　 planA ++
             break;
-              case "Plan B":
+              case "PLAN B":
                 flugB = true;
                planB ++
                  break;
-              case "Plan C":
+              case "PLAN C":
                 flugC = true;
                 planC ++
                 break;
-              case "Plan D":
+              case "PLAN D":
                 flugD = true;
                 planD ++
                 break;
-              case "Plan E":
+              case "PLAN E":
                 flugE = true;
                 planE ++
                 break;
-              case "Plan F":
+              case "PLAN F":
                 flugF = true;
                planF ++
                break;
-              case "Plan G":
+              case "PLAN G":
                 flugG = true;
                 planG ++
                 break;
-              case "Plan H":
+              case "PLAN H":
                 flugH = true;
                 planH ++
                 break;
-              case "Plan I":
+              case "PLAN I":
                 flugI = true;
                 planI ++
                 break;
-              case "Plan J":
+              case "PLAN J":
                 flugJ = true;
                 planJ ++
                 break;
-              case "Plan K":
+              case "PLAN K":
                 flugK = true;
                 planK ++
                 break;
-              case "Plan L":
+              case "PLAN L":
               planL ++
               flugL = true;
               break;
-              case "Plan M":
+              case "PLAN M":
                 flugM = true;
                 planM ++
                 break;
-              case "Plan N":
+              case "PLAN N":
                 flugN = true;
                 planN ++
                 break;
@@ -231,6 +231,7 @@ var next_graduation = 0
             datacontents = []
             datacolor = []
             data1.push(planA,planB,planC,planD,planE,planF,planG,planH,planI,planJ,planK,planL,planM,planN)
+            console.log(data1)
               for (let index = 0; index < data1.length; index++) {
                      if(data1[index]){
                        data.push(data1[index])
@@ -292,6 +293,9 @@ var next_graduation = 0
                 datacontents.push("Plan N")
                 datacolor.push("#9ACD32")
               }
+              console.log(data)
+              console.log(datacontents)
+              console.log(datacolor)
             create_chart(data,datacontents,datacolor)
         });
 
@@ -329,64 +333,97 @@ pieceLabel: {
   });
 
   ///https://squid-app-ug7x6.ondigitalocean.app/signature-project-front/pages/ficha.html
-  axios.get('https://squid-app-ug7x6.ondigitalocean.app/info')
-    .then(function (response) {
-      document.querySelector('#member-total').innerHTML = response.data;
-      membersCount = response.data
-      console.log(membersCount)
-      line_chart(membersCount)
-    });
-}
+
 //paymentGet------------------------------------------------->
   axios.get('https://squid-app-ug7x6.ondigitalocean.app/paymentall')
     .then(function (response) {
       document.querySelector('#payment-yet').innerHTML = response.data.length;
       yetpayment = response.data
     });
+
+
+
+
+    //create line chart--------------------------------->
+    axios.get('https://squid-app-ug7x6.ondigitalocean.app/info')
+      .then(function (response) {
+        document.querySelector('#member-total').innerHTML = response.data; //input total de alunos registrados
+        membersCount = response.data
+        line_chart(membersCount)
+      });
+  }
     function line_chart(membersCount){
       let day = new Date();
       var ctx1 = document.getElementById('ex_chart');
-      console.log(membersarry.length)
-      let kongetsu = day.getMonth()+1
+      let kongetsu = day.getMonth()
       let kotoshi = day.getFullYear()
       let mystartyear
       let mystartmonth
-      if(kongetsu==12){
-        mystartyear=kotoshi
-        mystartmonth=kongetsu
-      }else{
-        mystartyear=(kotoshi-0)-1
-        mystartmonth=1+(kongetsu-0)
-      }
-      console.log(mystartyear)
-      console.log(mystartmonth)
-
-    //  var kongetsu = document.querySelector('#member-total').innerHTML
+      let month_name = []//months[day.getMonth()];
+      let month_answer = []//{0:0,1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0,10:0,11:0,12:0}//months[day.getMonth()];
       const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-
-      for (let index = 0; index < membersarry.length; index++) {
-        console.log(membersarry[index].inactive_date.split("-")[0])
-          if(membersarry[index].inactive_date==0){
-            if(membersarry[index].active_date.split("-")[0]==kotoshi){
-              //if(membersarry[index].active_date.split("-")[0]==kotoshi)
-            }
-          //console.log(membersarry[index].inactive_date.split("-")[0])
-        //  console.log(membersarry[index].inactive_date.split("-")[1])
-          //console.log(membersarry[index].active_date.split("-")[0])
-        //  console.log(membersarry[index].active_date.split("-")[1])
+      if(kongetsu==11){
+          for (let index = 0 ; index < kongetsu; index++) {
+            month_name.push(months[index])
           }
+          mystartyear = kotoshi
+          mystartmonth = "1"
+          myfinishmonth = "12"
+
+        }else{
+          for (let index = 1 + kongetsu ; index < 12; index++) {
+            month_name.push(months[index])
+          }
+
+          for (let index = 0 ; index < kongetsu; index++) {
+            month_name.push(months[index])
+          }
+          mystartyear = (kotoshi-0)-1
+          mystartmonth = 2 + kongetsu
+          myfinishmonth = "12"
+
+        }
+       month_name.push(months[kongetsu])
+       for (let i=0;i<membersarry.length;i++){
+         if(membersarry[i].inactive_date!="0"){
+           if(membersarry[i].inactive_date.split("-")[0]>=mystartyear&&membersarry[i].inactive_date.split("-")[1]>=mystartmonth){
+               month_answer.push(membersarry[i].inactive_date.split("-")[1])
+           }
+         }
+       }
+       let firstanswer = 0
+       let linevalue = []
+         for (let i=mystartmonth;i<=12;i++){
+               for(let ii=0; ii<month_answer.length;ii++){
+                 if(month_answer[ii]==i){
+                   firstanswer ++
+                 }
+               }
+                 linevalue.push(firstanswer)
+                 firstanswer= 0
+             }
+             if(kongetsu!=11){
+               for (let i=1;i<=kongetsu+1;i++){
+                     for(let ii=0; ii<month_answer.length;ii++){
+                       if(month_answer[ii]==i){
+                         firstanswer ++
+                       }
+                     }
+                       linevalue.push(firstanswer)
+                       firstanswer= 0
+                   }
+             }
+             let inactivecount = 0
+      for(let i=10;i>=0;i--){
+         inactivecount = linevalue[i] + inactivecount
+        linevalue[i] = membersCount + inactivecount
       }
-     let month_name = []//months[day.getMonth()];
-     for (let index = 11; index > 0; index--) {
-            month_name.push(months[day.getMonth()-index])
-     }
-      month_name.push(months[day.getMonth()])
+      linevalue[11]=membersCount
       var data = {
           labels: month_name,//["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dez"],
           datasets: [{
-              label: 'メンバー入会推移',
-              data: [membersCount, membersCount, membersCount, membersCount, membersCount,membersCount, membersCount, membersCount, membersCount, membersCount,membersCount,membersCount],
+              label: 'Quantidade de alunos ',
+              data: linevalue,
               borderColor: '#00BFFF'
           }]
       };
@@ -394,6 +431,15 @@ pieceLabel: {
       var ex_chart = new Chart(ctx1, {
           type: 'line',
           data: data,
-          options: options
+          options: {
+          scales: {
+          yAxes: [{
+            ticks: {
+              suggestedMin: 0,
+              stepSize: 10,
+            }
+          }]
+       },
+     },
       });
     }
