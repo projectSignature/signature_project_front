@@ -234,6 +234,13 @@ height:600px;
 }
 }
 
+@media screen and (min-width: 2100px){
+  .right-first-div{
+    background-color: red;
+  }
+}
+
+
 @media screen and (min-width: 726px) and (max-width: 1200px) {
 #menubar{
   width: 12%;
