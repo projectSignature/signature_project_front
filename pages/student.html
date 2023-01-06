@@ -163,25 +163,25 @@
                     </div>
                     <div class="div-block-swall">
                         <div><span>Data da graduação: </span></div>
-                        <div><input type="date" id="graduateDate" value="${client.graduation_dt}"/></div>
+                        <div class="input-80"><input type="date" id="graduateDate" value="${client.graduation_dt}"/></div>
                     </div>
                     <div class="div-block-swall">
                         <div><span>1º Grau: </span></div>
-                        <div><input type="date" id="firstDegree" value="${client.first_point}"/></div>
+                        <div class="input-80"><input type="date" id="firstDegree" value="${client.first_point}"/></div>
                     </div>
                     <div class="div-block-swall">
                         <div><span>2º Grau: </span></div>
-                        <div><input type="date" id="secondDegree" value="${client.second_point}"/></div>
+                        <div class="input-80"><input type="date" id="secondDegree" value="${client.second_point}"/></div>
                     </div>
                   </div>
                   <div class="main-div"  id ="right-div">
                     <div class="div-block-swall">
                         <div><span>3º Grau: </span></div>
-                        <div><input type="date" id="thirdDegree" value="${client.third_point}"/></div>
+                        <div class="input-80"><input type="date" id="thirdDegree" value="${client.third_point}"/></div>
                     </div>
                     <div class="div-block-swall">
                         <div><span>4º Grau: </span></div>
-                        <div><input type="date" id="fourthDegree" value="${client.fourth_point}"/></div>
+                        <div class="input-80"><input type="date" id="fourthDegree" value="${client.fourth_point}"/></div>
                     </div>
                     <div class="div-block-swall">
                         <div><span>Aula pós-graduação: </span></div>
@@ -221,7 +221,7 @@
                       width:100%;
                     }
                     input, select ,textarea{
-                      width:80%;
+                      width:100%;
                       height:50px;
                       border-radius:10px;
                     }
@@ -229,26 +229,30 @@
                     @media only screen and (max-width: 1000px) {
                       #client{
                         display: block;
-                        height: 1200px;
+                        height: 1100px;
                         border:1px solid gray;
                         width:98%;
                       }
                       #left-div-edit{
-                        width:90%;
+                        width:100%;
+                        padding-left:5%;
+                        padding-right:5%;
                       }
                       #right-div{
-                        width:90%;
+                        width:100%;
                           margin-top:30px !important;
+                        padding-left:5%;
+                        padding-right:5%;
                       }
                       .main-div div{
                         display:block;
                         margin-top:0px;
                       }
                       .div-block-swall{
-                        width:100%;
+                        width:90%;
                         margin-top:30px !important;
                     }
-                      .input-80{
+                    .input-80{
                         width:80%;
                     }
                     input{
