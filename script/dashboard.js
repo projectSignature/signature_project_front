@@ -136,6 +136,110 @@ function payswall(){
     }
 }
 
+document.getElementById('graduationdiv').addEventListener('click', graduationswall)
+
+function graduationswall(){
+  console.log(clients1)
+  let yetmemberswall = []
+  const months = ["Branca","Azul", "Roxa", "Marrom","Preta"];
+  yetmemberswall.push(`<tr><th class="_sticky z-02">Nome</th><th class="_sticky">Faixa atual</th><th  class="_sticky">Aulas</th></tr>`)
+  for (let index = 0; index < clients1.length; index++) {
+    if(clients1[index].lesson_after>=39){
+        let row = `<tr><th class="_sticky" name="_sticky_name">${clients1[index].nm_member}</th><td class="_sticky_y">${months[clients1[index].color]}</td><td class="_sticky_y">${clients1[index].lesson_after}</td></tr>`
+        yetmemberswall.push(row)
+    }
+  }
+  console.log(yetmemberswall.length)
+    if(yetmemberswall.length<=1){
+      Swal.fire({
+        title: 'Não há alunos para graduar',
+        showCancelButton: true,
+        showConfirmButton: false,
+        cancelButtonText: 'Voltar',
+        width: 550,
+      })
+    }else{
+    Swal.fire({
+      title: 'Próximas graduação',
+      showCancelButton: true,
+      showConfirmButton: true,
+      confirmButtonText: 'Tabela',
+      cancelButtonText: 'Voltar',
+      width: 550,
+      html: `<div class="twrapper">
+        <table>
+          <tbody>${yetmemberswall}</tbody>
+        </table>
+      </div>
+
+      <style>
+      .twrapper{
+        overflow-y:scroll;
+        height:500px !important;
+      }
+
+      table {
+        border-collapse: collapse;
+        border-spacing: 0;
+      }
+      th, td {
+        vertical-align: middle;
+        padding: 20px 15px;
+        font-size: 14px;
+        text-align: center;
+      }
+      th {
+        color: #EEEEEE;
+        background: #222222;
+      }
+      td{
+        border: 1px solid #ccc;
+      }
+      ._sticky {
+        position: sticky;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        width:80px !important;
+        height:5px !important;
+      }
+
+      ._sticky:before {
+        content: "";
+        position: absolute;
+        top: -1px;
+        left: -1px;
+        width: 100%;
+        height: 100%;
+        border: 1px solid #ccc;
+      }
+      ._sticky.z-02 {
+        z-index: 2;
+        width: 200px !important;
+      }
+      th[name="_sticky_name"]{
+        background: #00BFFF;
+      }
+
+      @media only screen and (max-width: 700px) {
+        ._sticky.z-02 {
+          width: 15px !important;
+        }
+        ._sticky {
+          width:80px !important;
+        }
+
+}
+
+   </style>`,
+    }).then((result) => {
+     if (result.isConfirmed) {
+       let path = `https://squid-app-ug7x6.ondigitalocean.app/signature-project-front/pages/student.html`;
+       location.href = path;
+      }
+    });
+    }
+}
 
 var past = {
   jp: {
