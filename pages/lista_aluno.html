@@ -198,7 +198,7 @@
         <td>${data.pass}</td>
         <td>
             <img src="../image/edit.svg" onClick="editClient(${data.id})" alt="" width="25">
-            <img src="../image/delete.svg" onClick="deleteClient(${data.id})" alt="" width="25">
+            <img src="../image/delete.svg" onClick="memberdelete_check('${data.id}_${data.nm_member}')" alt="" width="25">
         </td>
         </tr>
         `;
@@ -538,7 +538,36 @@ swall_error(7,clientId)
       });
     }
 
+    
+    function memberdelete_check(data){
+  Swal.fire({
+  title: 'Confirme'
+, html : `Iremos deletar todos os dados do aluno ${data.split("_")[1]}`
+, icon : 'info',
+  showCancelButton: true,
+  showConfirmButton: true,
+  confirmButtonText: 'Deletar',
+  cancelButtonText: 'Voltar',
+}).then((result) => {
+ if (result.isConfirmed) {
+    deleteClient(data.split("_")[0])
+ }
+})
+}
+    
     function deleteClient(clientId) {
+        Swal.fire({
+        icon:"info",
+        title: 'Processing'
+      , html: 'Wait'
+      , allowOutsideClick : false
+      , showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true
+      , onBeforeOpen: () => {
+          Swal.showLoading();
+        }
+      });
       clients = clients.filter((client) => client.id != clientId);
       const attr = {
         method: "POST",
