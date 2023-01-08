@@ -235,4 +235,20 @@ body{
     font-size: 2vw
 }
 
+.div-flex{
+  width:100%;
+  display: flex;
+}
+#refresh{
+  width:10%;
+  margin-top:3vw;
+  margin-right:2vw;
+  height:4vw;
+  border-radius:30px;
+  font-size:3vh;
+  cursor: pointer;
+  background-color: #4169E1;
+  color:white;
+}
+
 
