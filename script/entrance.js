@@ -14,6 +14,13 @@ fetch('https://squid-app-ug7x6.ondigitalocean.app/calender/entrance')
     dadoCalender = res;
   })
 
+  window.addEventListener("popstate", function (e) {
+
+    history.pushState(null, null, null);
+    return;
+
+});
+
 let clientes = []
 function classesHandler_today(classes) {
   clientes = classes
