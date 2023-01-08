@@ -10,7 +10,7 @@ function handleTabletChange(e) {
     document.getElementById("wednesday").innerHTML = "Wed"
     document.getElementById("thursdauy").innerHTML = "Thu"
     document.getElementById("friday").innerHTML = "Fri"
-    document.getElementById("suturday").innerHTML = "Sut"
+    document.getElementById("saturday").innerHTML = "Sat"
     document.getElementById("sunday").innerHTML = "Sun"
 
   }else{
@@ -19,7 +19,7 @@ function handleTabletChange(e) {
     document.getElementById("wednesday").innerHTML = "Wednesday"
     document.getElementById("thursdauy").innerHTML = "Thurday"
     document.getElementById("friday").innerHTML = "Friday"
-    document.getElementById("suturday").innerHTML = "Suturday"
+    document.getElementById("saturday").innerHTML = "Saturday"
     document.getElementById("sunday").innerHTML = "Sunday"
   }
 }
