@@ -342,7 +342,7 @@ body{
   text-transform:uppercase;
   letter-spacing:1px;
   font-size:15px;
-  float:right;
+
   width:220px;
   margin:5px 0 0;
 }
@@ -381,16 +381,21 @@ label:before{
 }
 #plan-family-div{
   display: flex;
-  width:90%;
+  width:100%;
 }
-
+#planselect-div{
+  width:35%;
+}
 .plan-select-plan-input{
   width:90%;
   background-color:#87CEEB;
   color:#444444;
 }
+#family-div{
+  width:65%;
+}
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 600px) {
 
 
   .plan_name{
@@ -407,7 +412,7 @@ label:before{
   }
 
   .family-block{
-    width:250px;
+    width:100%;
   }
   .family-block span{
     font-size:14px;
