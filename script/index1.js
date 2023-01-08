@@ -15,20 +15,152 @@ var errormessage11 = ""
 var errormessage12 = ""
 var gymname = sessionStorage.getItem("gym");
 var gymid = sessionStorage.getItem("GYM_ID");
-console.log(gymname)
-console.log(gymid)
+const plans_div = document.getElementById('plans-div');
+let plans_rows
+let plans_kubun
+let familyflug = false //ファミリープラン選択用のフラグ
+let familyconfirmflug = false //ファミリープラン選択用のフラグ
 var answer
 var today = new Date();  //今日
+var selectlanguage
+let plan = ""
+let valor = ""
 
 
+
+
+document.getElementById("birthday_year").addEventListener("change", birthday_date_get)
+document.getElementById("birthday_month").addEventListener("change", birthday_date_get)
+document.getElementById("birthday_day").addEventListener("change", birthday_date_get)
+document.getElementById("cheap").addEventListener("click", familyplan)
+
+var past={
+ pt:{
+   buttons:{
+   },
+   Text:{
+     Text1:"Seja bem-vindo　\n",
+     Text2:"Seja bem-vindo\nInsira seus dados pessoais",
+     Text3:"Nome completo:",
+     Text4:"Por favor, digite um nome",
+     Text5:"Data de nascimento",
+     Text6:"Por favor, digite a data de nascimento",
+     Text7:"Sexo",
+     Text8:"Homem",
+     Text9:"Mulher",
+     Text10:"Por favor, Escolha o sexo",
+     Text11:"Enderço",
+     Text12:"Por favor, digite o seu endereço",
+     Text13:"Número de telefone",
+     Text14:"Por favor, digite o seu número de telefone",
+     Text15:"E-mail",
+     Text16:"Por favor, digite o seu email",
+     Text17:"Idioma",
+     Text18:"Por favor, selecione o idioma",
+     Text19:"Escolha um plano",
+     Text20:"Verifique as politicas da academia e assine no campo a baixo",
+     Text21:"politicas da academia",
+     Text22:"Escolher",
+     Text23:"Apagar",
+     Text24:"Confirmar",
+		 Text25:"Registrar os dados do famliar"
+   },
+ },
+ jp:{
+   buttons:{
+   },
+   Text:{
+     Text1:"ようこそ",
+     Text2:"ようこそ\n下記にて個人情報をご入力ください。",
+     Text3:"フルネーム:",
+     Text4:"名前を入力してください。",
+     Text5:"生年月日",
+     Text6:"生年月日を入力してください。",
+     Text7:"性別",
+     Text8:"男性",
+     Text9:"女性",
+     Text10:"性別を選択してください。",
+     Text11:"住所",
+     Text12:"住所を入力してください。",
+     Text13:"電話番号",
+     Text14:"電話番号を入力してください。",
+     Text15:"メールアドレス",
+     Text16:"メールアドレスを入力してください",
+     Text17:"言語",
+     Text18:"言語を選択してください",
+     Text19:"プランを選択してください。",
+     Text20:"利用規約を確認し、署名をお願いします。",
+     Text21:"利用規約に同意します",
+     Text22:"選択",
+     Text23:"クリア",
+     Text24:"確定",
+		 Text25:"家族の情報の入力をお願いします"
+   },
+ },
+ en:{
+  buttons:{
+  },
+  Text:{
+    Text1:"Welcome",
+    Text2:"Welcome\nPlease enter your personal details below.",
+    Text3:"Full name",
+    Text4:"Name is required",
+    Text5:"Date of birth",
+    Text6:"Date of birth is required.",
+    Text7:"Gender",
+    Text8:"Male",
+    Text9:"Female",
+    Text10:"Gender is required",
+    Text11:"Address",
+    Text12:"Adress is requiered",
+    Text13:"Phone number",
+    Text14:"Phone number",
+    Text15:"Email",
+    Text16:"Email is required",
+    Text17:"Language",
+    Text18:"Language is required",
+    Text19:"Choose a membership",
+    Text20:"Please read the terms and conditions and sign.",
+    Text21:"I agree to the terms and conditions",
+    Text22:"Select",
+    Text23:"Clear",
+    Text24:"Confirm",
+		Text25:"Please enter your family details below."
+  },
+},
+}
+
+language_change()
+let familyarray = []
+function familyplan(){
+	if(document.getElementById("cheap").checked){
+	console.log('check')
+	plans_div.innerHTML = ""
+	plans_kubun = 4
+  Swal.fire({
+    icon:'info',
+    title: 'Processing'
+  , html: 'wait'
+  , allowOutsideClick : false     //枠外をクリックしても画面を閉じない
+  , showConfirmButton: false
+  ,timer:'2500'
+  , onBeforeOpen: () => {
+      Swal.showLoading();
+    }
+  });
+	planget(plans_kubun)
+	familyflug = true
+}else{
+			plans_div.innerHTML = ""
+	plans_kubun = member_kubun
+		planget(plans_kubun)
+}
+}
 
 window.onload = function open_page() {
-	console.log('P1')
 error_massege_portugues()
 estado_select_en()
 image_get(gymname)
-
-	//planget()
 }
 
 function image_get(){
@@ -59,28 +191,24 @@ inputs[6].addEventListener('click', () => {
 })
 
 function member_kubun_chech(){
-		//if(inputs[5].checked) {
-		//member_kubun = 1
-		//}
-		//if(inputs[6].checked) {
-			//member_kubun = 2
-		//}
 		if(document.getElementById("birthday_age").value!="" && member_kubun == 0){
 			console.log("nanimoshinai")
 		}else if(document.getElementById("birthday_age").value>=16 && member_kubun==1){
 			console.log("18ijyou,otoko")
-			planget()
+			plans_kubun = member_kubun
+			planget(plans_kubun)
 		}else if(document.getElementById("birthday_age").value>=16 && member_kubun==2){
 			console.log("18miman,onna")
-			planget()
+			plans_kubun = member_kubun
+			planget(plans_kubun)
 		}else{
 			member_kubun = 3
 			console.log("18miman,miman")
-			planget()
+			plans_kubun = member_kubun
+			planget(plans_kubun)
 		}
 }
 
-//var myage = new ageRestriction(18, 65, 'year', 'month', 'day');
 
 //tratamento da seleção de idioma
 var idioma = '';
@@ -139,7 +267,6 @@ function error_massege_ingles(){
    errormessage11 = "Check　date"
    errormessage12 = "Please enter date in 2 digits"
 }
-
 function error_massege_japanese(){
    errormessage1 = "年月日の月を選択してください"
    errormessage2 = "生年月日の非を選択してください"
@@ -156,117 +283,6 @@ function error_massege_japanese(){
 }
 
 
-  //tratamento da seleção de planos e preços
-  var plan = '';
-	var valor = '';
-  inputs[16].addEventListener('click', (e) => {
-    plan = document.getElementById("plan-1").innerHTML
-		valor = document.getElementById("plan-1-price").innerHTML
-    document.getElementById("select-plan-a").style.background = '#5507FF';
-    document.getElementById("select-plan-a").style.borderWidth = 'thick';
-    document.getElementById("select-plan-b").style.background = '#333333';
-    document.getElementById("select-plan-b").style.borderWidth = 'thin';
-    document.getElementById("select-plan-c").style.background = '#333333';
-    document.getElementById("select-plan-c").style.borderWidth = 'thin';
-    document.getElementById("select-plan-d").style.background = '#333333';
-    document.getElementById("select-plan-d").style.borderWidth = 'thin';
-    document.getElementById("select-plan-e").style.background = '#333333';
-    document.getElementById("select-plan-e").style.borderWidth = 'thin';
-    document.getElementById("select-plan-f").style.background = '#333333';
-    document.getElementById("select-plan-f").style.borderWidth = 'thin';
-  });
-  var plan = '';
-	var valor = '';
-  inputs[17].addEventListener('click', (e) => {
-    plan = document.getElementById("plan-2").innerHTML
-		valor = document.getElementById("plan-2-price").innerHTML
-    document.getElementById("select-plan-b").style.background = '#5507FF';
-    document.getElementById("select-plan-b").style.borderWidth = 'thick';
-    document.getElementById("select-plan-a").style.background = '#333333';
-    document.getElementById("select-plan-a").style.borderWidth = 'thin';
-    document.getElementById("select-plan-c").style.background = '#333333';
-    document.getElementById("select-plan-c").style.borderWidth = 'thin';
-    document.getElementById("select-plan-d").style.background = '#333333';
-    document.getElementById("select-plan-d").style.borderWidth = 'thin';
-    document.getElementById("select-plan-e").style.background = '#333333';
-    document.getElementById("select-plan-e").style.borderWidth = 'thin';
-    document.getElementById("select-plan-f").style.background = '#333333';
-    document.getElementById("select-plan-f").style.borderWidth = 'thin';
-  });
-  var plan = '';
-	var valor = '';
-  inputs[18].addEventListener('click', (e) => {
-    plan = document.getElementById("plan-3").innerHTML
-		valor = document.getElementById("plan-3-price").innerHTML
-    document.getElementById("select-plan-c").style.background = '#5507FF';
-    document.getElementById("select-plan-c").style.borderWidth = 'thick';
-    document.getElementById("select-plan-b").style.background = '#333333';
-    document.getElementById("select-plan-b").style.borderWidth = 'thin';
-    document.getElementById("select-plan-a").style.background = '#333333';
-    document.getElementById("select-plan-a").style.borderWidth = 'thin';
-    document.getElementById("select-plan-d").style.background = '#333333';
-    document.getElementById("select-plan-d").style.borderWidth = 'thin';
-    document.getElementById("select-plan-e").style.background = '#333333';
-    document.getElementById("select-plan-e").style.borderWidth = 'thin';
-    document.getElementById("select-plan-f").style.background = '#333333';
-    document.getElementById("select-plan-f").style.borderWidth = 'thin';
-  });
-  var plan = '';
-	var valor = '';
-  inputs[19].addEventListener('click', (e) => {
-    plan = document.getElementById("plan-4").innerHTML
-		valor = document.getElementById("plan-4-price").innerHTML
-    document.getElementById("select-plan-d").style.background = '#5507FF';
-    document.getElementById("select-plan-d").style.borderWidth = 'thick';
-    document.getElementById("select-plan-b").style.background = '#333333';
-    document.getElementById("select-plan-b").style.borderWidth = 'thin';
-    document.getElementById("select-plan-c").style.background = '#333333';
-    document.getElementById("select-plan-c").style.borderWidth = 'thin';
-    document.getElementById("select-plan-a").style.background = '#333333';
-    document.getElementById("select-plan-a").style.borderWidth = 'thin';
-    document.getElementById("select-plan-e").style.background = '#333333';
-    document.getElementById("select-plan-e").style.borderWidth = 'thin';
-    document.getElementById("select-plan-f").style.background = '#333333';
-    document.getElementById("select-plan-f").style.borderWidth = 'thin';
-  });
-  var plan = '';
-	var valor = '';
-  inputs[20].addEventListener('click', (e) => {
-    plan = document.getElementById("plan-5").innerHTML
-		valor = document.getElementById("plan-5-price").innerHTML
-    document.getElementById("select-plan-e").style.background = '#5507FF';
-    document.getElementById("select-plan-e").style.borderWidth = 'thick';
-    document.getElementById("select-plan-b").style.background = '#333333';
-    document.getElementById("select-plan-b").style.borderWidth = 'thin';
-    document.getElementById("select-plan-c").style.background = '#333333';
-    document.getElementById("select-plan-c").style.borderWidth = 'thin';
-    document.getElementById("select-plan-d").style.background = '#333333';
-    document.getElementById("select-plan-d").style.borderWidth = 'thin';
-    document.getElementById("select-plan-a").style.background = '#333333';
-    document.getElementById("select-plan-a").style.borderWidth = 'thin';
-    document.getElementById("select-plan-f").style.background = '#333333';
-    document.getElementById("select-plan-f").style.borderWidth = 'thin';
-  });
-  var plan = '';
-	var valor = '';
-  inputs[21].addEventListener('click', (e) => {
-    plan = document.getElementById("plan-6").innerHTML
-		valor = document.getElementById("plan-6-price").innerHTML
-    document.getElementById("select-plan-f").style.background = '#5507FF';
-    document.getElementById("select-plan-f").style.borderWidth = 'thick';
-    document.getElementById("select-plan-b").style.background = '#333333';
-    document.getElementById("select-plan-b").style.borderWidth = 'thin';
-    document.getElementById("select-plan-c").style.background = '#333333';
-    document.getElementById("select-plan-c").style.borderWidth = 'thin';
-    document.getElementById("select-plan-d").style.background = '#333333';
-    document.getElementById("select-plan-d").style.borderWidth = 'thin';
-    document.getElementById("select-plan-e").style.background = '#333333';
-    document.getElementById("select-plan-e").style.borderWidth = 'thin';
-    document.getElementById("select-plan-a").style.background = '#333333';
-    document.getElementById("select-plan-a").style.borderWidth = 'thin';
-
-  });
-
 function saveData() {
 	var activedate = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`
   let gen = () => {       //tratamento da seleção de gênero
@@ -277,7 +293,6 @@ function saveData() {
       return 'women'
     }
   }
-
   var obj =
   {
     "nm_member": inputs[0].value,
@@ -301,55 +316,39 @@ function saveData() {
   };
 console.log(obj)
   fetch('https://squid-app-ug7x6.ondigitalocean.app/member',
-    {method: 'POST',
-    body: JSON.stringify(obj),
-    headers: {"Content-type": "application/json; charset=UTF-8"}})
-    .then((x)=> x.json())
-    .then((response) => {
-        fetch(`https://squid-app-ug7x6.ondigitalocean.app/payment/${obj.nm_member}/${gymid}/${obj.plans}/${valor.split('¥')[1]}`);
-	console.log(response)
-     })
-      .then((y) => {
-	console.log("OKpauLo")
-	  input_clear()
-      //saveGraduation();
-      ejspdf();
-      })
+  {method: 'POST',
+ body: JSON.stringify(obj),
+  headers: {"Content-type": "application/json; charset=UTF-8"}})
+  .then((x)=> x.json())
+  .then((response) => {
+		console.log(response)
+        fetch(`https://squid-app-ug7x6.ondigitalocean.app/payment/${obj.nm_member}/${gymid}/${obj.plans}/${valor.split('￥')[1]}`);
+          if(familyarray.length!=0){
+              console.log(familyarray)
+            for(let i = 0;i<familyarray.length;i++){
+              console.log(i)
+              console.log("parentsin")
+                 name=familyarray[i].split("_")[0]
+                 birthday=familyarray[i].split("_")[1]
+                 gender=familyarray[i].split("_")[2]
+                 age=familyarray[i].split("_")[3]
+          fetch(`https://squid-app-ug7x6.ondigitalocean.app/parents/${name}/${birthday}/${gender}/${age}/${gymid}`)
+            }
+            }
+   }).then((y) => {
+					//input_clear()
+		 			ejspdf();
+          window.location.reload()
+			})
+
 }
-
-//function saveGraduation() {
-  //var obj =
-  //{
-    //"nm_member": inputs[0].value,
-    //"color": "0",
-    //"status": "active",
-    //"graduation_dt": "2022-12-03",
-    //"first_point" : "-",
-    //"second_point" : "-",
-    //"third_point" : "-",
-    //"fourth_point" : "-",
-    //"lesson_after": "0",
-    //"obs": "-",
-    //"gymname": sessionStorage.getItem("gym")
-  //};
-
-  //fetch('https://squid-app-ug7x6.ondigitalocean.app/graduation',
-    //{method: 'POST',
-    //body: JSON.stringify(obj),
-    //headers: {"Content-type": "application/json; charset=UTF-8"}})
-    //.then((x)=> x.json())
-    //.then((response) => {
-      //console.log(response)})
-//}
 
 function ejspdf() {
   fetch('https://squid-app-ug7x6.ondigitalocean.app/pdf')
   .then((x) => x.json())
   .then((response) => {
     console.log(response)
-
   })
-
 }
 
 function generatePDF() {
@@ -372,9 +371,7 @@ function generatePDF() {
 
 const canvas = document.querySelector("canvas");
 const btnClear = document.querySelector("#cancel-button");
-
 const signaturePad = new SignaturePad(canvas);
-
 signaturePad.minWidth = 1;
 signaturePad.maxWidth = 1;
 signaturePad.penColor = "#000";
@@ -395,8 +392,13 @@ btnClear.addEventListener('click', function (event) {
 });
 
 
+
+
 document.getElementById("confirm-button").addEventListener("click", confirm_check)
 function confirm_check(){
+	if(familyflug){
+     parentsdataCreate()
+	}else{
   let name_error = document.getElementById("nameerror");
   let birthday_year_error = document.getElementById("birthday-error");
   let adress_error = document.getElementById("adress-error");
@@ -413,17 +415,13 @@ function confirm_check(){
   let email1 = document.getElementById("email1").value;
   let email2 = document.getElementById("email2").value;
   let kubun_check = 0;
-
-  if(inputs[22].checked) {
+  if(document.getElementById("politic1").checked) {
   }else{
     errormessage = errormessage6
     swallerror(errormessage)
     kubun_check = 1
   }
-
   if(signaturePad.isEmpty()){
-	  console.log("input")
-	  console.log(signaturePad.isEmpty())
     errormessage = errormessage10
     swallerror(errormessage)
     kubun_check = 1
@@ -433,7 +431,7 @@ function confirm_check(){
     swallerror(errormessage)
     kubun_check = 1
   }
-　if(plan==""){
+	if(plan==""){
     errormessage = errormessage4
     swallerror(errormessage)
     kubun_check = 1
@@ -444,7 +442,6 @@ function confirm_check(){
     kubun_check = 1
   }else{
     name_error.style.display ="none";
-
   }
    if(birthday_year=="" || birthday_month=="" || birthday_day==""){
     birthday_year_error.style.display ="block";
@@ -453,7 +450,6 @@ function confirm_check(){
   }else if(kubun_check ==1){
   }else{
       birthday_year_error.style.display ="none";
-
   }
   if(birthday_year=="YYYY" || birthday_month=="MM" || birthday_day=="DD"){
     birthday_year_error.style.display ="block";
@@ -462,7 +458,6 @@ function confirm_check(){
   }else if(kubun_check ==1){
   }else{
     birthday_year_error.style.display ="none";
-
   }
 if(adress_input==""){
   adress_error.style.display ="block";
@@ -471,7 +466,6 @@ if(adress_input==""){
 }else if(kubun_check ==1){
   }else{
     adress_error.style.display ="none";
-
 }
 if(phone1=="" || phone2=="" || phone3==""){
   phone_error.style.display ="block";
@@ -482,7 +476,6 @@ if(phone1=="" || phone2=="" || phone3==""){
     phone_error.style.display ="none";
     kubun_check = 0
 }
-
 if(inputs[5].checked) {
 }
 else if(inputs[6].checked) {
@@ -491,7 +484,6 @@ else if(inputs[6].checked) {
   swallerror(errormessage)
   kubun_check = 1
 }
-
  if(email1=="" || email2==""){
   email_error.style.display ="block";
   location.href = "#email";
@@ -511,14 +503,11 @@ if(kubun_check==0){
 , cancelButtonText: 'Cancel'
 , reverseButtons: true
 }).then(function(result) {
-   //キャンセル時
    if (!result.value) {
-       //何もしない
        console.log('キャンセルのため何もしない');
        return;
    }
 
-   //処理中ダイアログ
    Swal.fire({
      title: 'Processing'
    , html: 'wait'
@@ -528,17 +517,13 @@ if(kubun_check==0){
        Swal.showLoading();
      }
    });
-
-   //何らかの処理（ここでは動作確認用にスリープさせます）
-
- //何らかの処理（ここでは動作確認用にスリープさせます）
-  saveData()
+ saveData()
   var sleep = function(sec) {
        return new Promise(resolve => {
          setTimeout(resolve, sec * 1000);
        });
    };
-   sleep(5).then(function() {
+   sleep(6).then(function() {
 
      //完了ダイアログ
      Swal.fire({
@@ -557,14 +542,176 @@ if(kubun_check==0){
 
 }
 
-
-//generatePDF();
+	}
 }
 
+function parentsdataCreate(){
+	if(mylanguage=="pt"){
+		text1 = "Registrar os dados do familiar"
+		text2 = "Nome completo"
+		text3 = "Data de nascimento"
+		text4 = "Sexo"
+		text5 = "Adicionar mais"
+		text6 = "Salvar"
+		text7 = `<option value="1">Masculino</option><option value="2">Feminino</option>`
+	}else if(mylanguage=="en"){
+		text1 = "Please enter your family details below"
+		text2 = "Full name"
+		text3 = "Birthday"
+		text4 = "Gender"
+		text5 = "Next regist"
+		text6 = "Save"
+		text7 = `<option value="1">Male</option><option value="2">Female</option>`
+	}else{
+		text1 = "家族として登録する人の情報を入力してください"
+		text2 = "フルネーム"
+		text3 = "生年月日"
+		text4 = "性別"
+		text5 = "次の人を登録"
+		text6 = "完了"
+		text7 = `<option value="1">男性</option><option value="2">女性</option>`
+	}
+	Swal.fire({//mylanguage
+ 	 title: `${text1}`,
+	 showCancelButton: true,
+	 showConfirmButton: true,
+	 confirmButtonText: `${text5}`,
+	 cancelButtonText: `${text6}`,
+	 customClass: 'customizable'
+  , html : `
+	 <div>
+	  <div class="div-block">
+		 <div class="div-div"><span>${text2}</span></div>
+		 <div class="div-div"><input id="familyname"/></div>
+		</div>
+		<hr class="underbar" />
+		<div  class="div-block">
+		 <div class="div-div"><span>${text3}</span></div>
+     <div  class="div-div" id ="try">
+				<input
+					maxlength="4"
+					id="f-birthday_year"
+					class="birthday"
+					placeholder="YYYY"
+				/>
+				<input
+					maxlength="2"
+					id="f-birthday_month"
+					class="birthday"
+					placeholder="MM"
+				/>
+				<input
+					maxlength="2"
+					id="f-birthday_day"
+					class="birthday"
+	        placeholder="DD"
+				/>
+		</div>
+	 </div>
+	 <hr class="underbar" />
+	 <div class="div-block">
+		<div class="div-div"><span>${text4}</span></div>
+		<div class="div-div">
+		  <select id="f-gender">
+       ${text7}
+			</select>
+		</div>
+	 </div>
+	</div>
 
-document.getElementById("birthday_year").addEventListener("change", birthday_date_get)
-document.getElementById("birthday_month").addEventListener("change", birthday_date_get)
-document.getElementById("birthday_day").addEventListener("change", birthday_date_get)
+	 <style>
+span{
+	font-size:2vw;
+}
+input {
+	width:80%;
+	height:60px;
+}
+	 .div-block{
+		 display:block;
+     width:90%;
+		 align-items: left;
+		 margin-top:15px;
+		 margin-left: 5%;
+	 }
+	 .swal2-popup {
+	     width: 70% !important
+	 }
+	 .div-div{
+		 display:flex;
+		  width:90% !important;
+
+	 }
+	 .birthday {
+		 width:25%;
+    margin-left:3px;
+	 }
+	 select{
+		 width:50%;
+		 height:60px;
+		 font-size:2.5vw;
+	 }
+	 .underbar{
+	   width: 95%;
+	 }
+	 .customizable button {
+		 margin-top:0px  !important;
+		 font-size: 2.5vh  !important;
+		 width: 250px !important;
+		 height: 70px !important;
+	 }
+
+@media screen and (max-width: 500px) {
+  span{
+  	font-size:2.5vw;
+  }
+  .div-block{
+    margin-top:4px;
+  }
+  select{
+    width:80%;
+    height:40px;
+  }
+  input {
+  	width:100%;
+  	height:40px;
+  }
+  .birthday {
+    width:30%;
+  }
+  .underbar{
+    margin-top: 5px;
+}
+
+}
+	 </style>
+	 `
+  }).then((result) => {
+		myname = document.getElementById("familyname").value
+		mybirthday = document.getElementById("f-birthday_year").value + "-" + document.getElementById("f-birthday_month").value + "-" + document.getElementById("f-birthday_day").value
+		mygender = document.getElementById("f-gender").value
+		const birthday = {
+		year: document.getElementById("f-birthday_year").value,
+		month: document.getElementById("f-birthday_month").value,
+		date: document.getElementById("f-birthday_day").value
+		 };
+	 let age = getAge(birthday)
+	 console.log(age)
+		myfamily = `${myname}_${mybirthday}_${mygender}_${age}`
+    if (result.isConfirmed) {
+			 familyarray.push(myfamily)
+			 parentsdataCreate()
+		}else{
+			familyconfirmflug = true
+			familyarray.push(myfamily)
+			familyflug = false
+			console.log(familyarray)
+			confirm_check()
+		}
+	})
+
+}
+
 
 
 function birthday_date_get(){
@@ -588,18 +735,16 @@ if(birthday_month>13){
       errormessage = errormessage8
       swallerror(errormessage)
    }else if(birthday_day.length!=2){
-      console.log('2桁じゃない')
       document.getElementById("birthday_age").value = ""
       errormessage = errormessage12
       swallerror(errormessage)
     }else{
-      const birthday = {
+    const birthday = {
     year: birthday_year,
     month: birthday_month,
     date: birthday_day
   };
      var strDate = birthday_year + "/" + birthday_month + "/" + birthday_day
-
      if(!strDate.match(/^\d{4}\/\d{2}\/\d{2}$/)){
          }
          var y = strDate.split("/")[0];
@@ -617,10 +762,12 @@ if(birthday_month>13){
   console.log('ng')
 }
 }
-function getAge(birthday){
 
+function getAge(birthday){
+	console.log(birthday)
     var thisYearsBirthday = new Date(today.getFullYear(), birthday.month-1, birthday.date);//今年の誕生
     var age = today.getFullYear() - birthday.year;  //年齢
+		console.log(age)
    if(today < thisYearsBirthday){        //今年まだ誕生日が来ていない
       age--;
     }
@@ -646,117 +793,33 @@ if(birthday_year==""){
 }
 
 
-var past={
- pt:{
-   buttons:{
-   },
-   Text:{
-     Text1:"Seja bem-vindo　\n",
-     Text2:"Seja bem-vindo\nInsira seus dados pessoais",
-     Text3:"Nome completo:",
-     Text4:"Por favor, digite um nome",
-     Text5:"Data de nascimento",
-     Text6:"Por favor, digite a data de nascimento",
-     Text7:"Sexo",
-     Text8:"Homem",
-     Text9:"Mulher",
-     Text10:"Por favor, Escolha o sexo",
-     Text11:"Enderço",
-     Text12:"Por favor, digite o seu endereço",
-     Text13:"Número de telefone",
-     Text14:"Por favor, digite o seu número de telefone",
-     Text15:"E-mail",
-     Text16:"Por favor, digite o seu email",
-     Text17:"Idioma",
-     Text18:"Por favor, selecione o idioma",
-     Text19:"Escolha um plano",
-     Text20:"Verifique as politicas da academia e assine no campo a baixo",
-     Text21:"politicas da academia",
-     Text22:"Escolher",
-     Text23:"Apagar",
-     Text24:"Confirmar"
-   },
- },
- jp:{
-   buttons:{
-   },
-   Text:{
-     Text1:"ようこそ",
-     Text2:"ようこそ\n下記にて個人情報をご入力ください。",
-     Text3:"フルネーム:",
-     Text4:"名前を入力してください。",
-     Text5:"生年月日",
-     Text6:"生年月日を入力してください。",
-     Text7:"性別",
-     Text8:"男性",
-     Text9:"女性",
-     Text10:"性別を選択してください。",
-     Text11:"住所",
-     Text12:"住所を入力してください。",
-     Text13:"電話番号",
-     Text14:"電話番号を入力してください。",
-     Text15:"メールアドレス",
-     Text16:"メールアドレスを入力してください",
-     Text17:"言語",
-     Text18:"言語を選択してください",
-     Text19:"プランを選択してください。",
-     Text20:"利用規約を確認し、署名をお願いします。",
-     Text21:"利用規約に同意します",
-     Text22:"選択",
-     Text23:"クリア",
-     Text24:"確定"
-   },
- },
- en:{
-  buttons:{
-  },
-  Text:{
-    Text1:"Welcome",
-    Text2:"Welcome\nPlease enter your personal details below.",
-    Text3:"Full name",
-    Text4:"Name is required",
-    Text5:"Date of birth",
-    Text6:"Date of birth is required.",
-    Text7:"Gender",
-    Text8:"Male",
-    Text9:"Female",
-    Text10:"Gender is required",
-    Text11:"Address",
-    Text12:"Adress is requiered",
-    Text13:"Phone number",
-    Text14:"Phone number",
-    Text15:"Email",
-    Text16:"Email is required",
-    Text17:"Language",
-    Text18:"Language is required",
-    Text19:"Choose a membership",
-    Text20:"Please read the terms and conditions and sign.",
-    Text21:"I agree to the terms and conditions",
-    Text22:"Select",
-    Text23:"Clear",
-    Text24:"Confirm"
-  },
-},
-}
+
 
 
 document.getElementById("selectlanguage").addEventListener("change",language_change)
 
 function language_change(){
-  const selectlanguage = document.getElementById( "selectlanguage" ).value
+   selectlanguage = document.getElementById( "selectlanguage" ).value
+	 if(document.getElementById("birthday_age").value!=""){
+		 console.log(plans_kubun)
+		  planget(plans_kubun)
+	 }
   console.log(selectlanguage)
 if (selectlanguage=="Português"){
    portugues()
    error_massege_portugues()
    estado_select_en()
+	 mylanguage = "pt"
 } else if(selectlanguage=="Inglês"){
  ingles()
  error_massege_ingles()
  estado_select_en()
+ mylanguage = "en"
 }else{
 japones()
 error_massege_japanese()
 estado_select_jp()
+mylanguage = "jp"
 }
 
 function portugues() {
@@ -781,14 +844,10 @@ document.getElementById("languagen-error").innerText=past.pt.Text.Text18;
 document.getElementById("planselect").innerText=past.pt.Text.Text19;
 document.getElementById("politic-title").innerText=past.pt.Text.Text20;
 document.getElementById("politiclink").innerText=past.pt.Text.Text21;
-document.getElementById("select-plan-a").innerText=past.pt.Text.Text22;
-document.getElementById("select-plan-b").innerText=past.pt.Text.Text22;
-document.getElementById("select-plan-c").innerText=past.pt.Text.Text22;
-document.getElementById("select-plan-d").innerText=past.pt.Text.Text22;
-document.getElementById("select-plan-e").innerText=past.pt.Text.Text22;
-document.getElementById("select-plan-f").innerText=past.pt.Text.Text22;
 document.getElementById("cancel-button").value=past.pt.Text.Text23;
 document.getElementById("confirm-button").value=past.pt.Text.Text24;
+
+
 }
 function japones() {
   document.getElementById("welcomemessage").innerText=past.jp.Text.Text1;
@@ -812,12 +871,6 @@ function japones() {
   document.getElementById("planselect").innerText=past.jp.Text.Text19;
   document.getElementById("politic-title").innerText=past.jp.Text.Text20;
   document.getElementById("politiclink").innerText=past.jp.Text.Text21;
-  document.getElementById("select-plan-a").innerText=past.jp.Text.Text22;
-  document.getElementById("select-plan-b").innerText=past.jp.Text.Text22;
-  document.getElementById("select-plan-c").innerText=past.jp.Text.Text22;
-  document.getElementById("select-plan-d").innerText=past.jp.Text.Text22;
-  document.getElementById("select-plan-e").innerText=past.jp.Text.Text22;
-  document.getElementById("select-plan-f").innerText=past.jp.Text.Text22;
   document.getElementById("cancel-button").value=past.jp.Text.Text23;
   document.getElementById("confirm-button").value=past.jp.Text.Text24;
 }
@@ -843,12 +896,6 @@ function ingles() {
     document.getElementById("planselect").innerText=past.en.Text.Text19;
     document.getElementById("politic-title").innerText=past.en.Text.Text20;
     document.getElementById("politiclink").innerText=past.en.Text.Text21;
-    document.getElementById("select-plan-a").innerText=past.en.Text.Text22;
-    document.getElementById("select-plan-b").innerText=past.en.Text.Text22;
-    document.getElementById("select-plan-c").innerText=past.en.Text.Text22;
-    document.getElementById("select-plan-d").innerText=past.en.Text.Text22;
-    document.getElementById("select-plan-e").innerText=past.en.Text.Text22;
-    document.getElementById("select-plan-f").innerText=past.en.Text.Text22;
     document.getElementById("cancel-button").value=past.en.Text.Text23;
     document.getElementById("confirm-button").value=past.en.Text.Text24;
 }
@@ -936,6 +983,7 @@ document.getElementById("phone3").value="";
 document.getElementById("email1").value="";
 document.getElementById("email2").value="";
 document.getElementById("birthday_age").value="";
+plans_div.innerHTML =""
 signaturePad.clear();
 }
 
@@ -1051,7 +1099,6 @@ dele/dela nesta academia.
 }
 
 function politic_check(){
-
 	document.getElementById("politic1").style.backgroundColor = '#6b1afa';
 	document.getElementById("politic2").style.Color = '#FFFFFF';
 }
@@ -1065,32 +1112,65 @@ function swall_success(){
    )
 }
 
-function planget(){
+//プランセレクト時の処理、ボタン色・div枠線、色の変更
+function select_plan_click(data){
+	console.log(plan)
+	console.log(data)
+	plan=data.split("_")[2]
+	let mydiv = data.split("_")[3]
+	for(let i= 1; i<=plans_rows; i++){
+		var obj = document.getElementById(`'plan_div_${i}'`).style
+		var obj1 = document.getElementById(`'select_button_${i}'`).style
+		if(i==mydiv){
+			obj.borderColor = 'blue';
+			obj.borderWidth = '10px';
+			obj1.backgroundColor = '#9057FF';
+			obj1.color = '#EEEEEE'
+			valor=document.getElementById(`'planvalue_${i}'`).innerText
+		}else{
+			obj.borderColor = '#333333';
+			obj.borderWidth = '2px';
+			obj1.backgroundColor = '#87CEEB';
+			obj1.color = '#444444'
+		}
+	}
+	console.log(valor)
+}
+
+//年齢、性別選択時のプランdivの生成
+function planget(data){
+
+	if(selectlanguage=="Português"){
+		buttontext = "escolher"
+	}else if(selectlanguage=="Inglês"){
+			buttontext = "select"
+	}else{
+		buttontext = "選択"
+	}
+	plans_rows = 0
+	plansarray = []
+	let row = ""
 	fetch('https://squid-app-ug7x6.ondigitalocean.app/planget')
 	  .then((x) => x.json())
 	  .then((res) => {
 	     console.log(res)
-		var plan_loop = 1
-		var price_p = ""
-			 for(var i=0;i<res.length;i++){
-				 if(member_kubun==res[i].PLAN_KUBUN){
-					 console.log(res[i].PLAN_VALOR)
-			      document.getElementById(`plan-${plan_loop}-price`).innerHTML　=  `¥${res[i].PLAN_VALOR}`
-			      document.getElementById(`plan-${plan_loop}`).innerHTML　=  `PLAN ${res[i].PLANS_NAME}`
-			      document.getElementById(`plan-${plan_loop}-detail1`).innerHTML　=  res[i].PLAN_DISCRITION1
-			      document.getElementById(`plan-${plan_loop}-detail2`).innerHTML　=  res[i].PLAN_DISCRITION2
-		              document.getElementById(`plan-${plan_loop}-detail3`).innerHTML　=  res[i].PLAN_DISCRITION3
-			      document.getElementById(`plan-${plan_loop}-detail4`).innerHTML　=  res[i].PLAN_DISCRITION4
-			      document.getElementById(`plan-${plan_loop}-detail5`).innerHTML　=  res[i].PLAN_DISCRITION5
-			      document.getElementById(`plan-select-${plan_loop}`).style.display =  '';
-						plan_loop = plan_loop +1
-					 console.log(plan_loop)
-				 }
-				}
-				for(var ii=plan_loop;ii<7;ii++) {
-					document.getElementById(`plan-select-${ii}`).style.display = 'none';
-				}
+        for(let i=0;i<res.length;i++){
+					if(res[i].PLAN_KUBUN==data){
+						plans_rows ++
+						row += `<div class="div-select-plan" id="'plan_div_${plans_rows}'">
+						  <div class="center-span"><span class="plan_name">${res[i].PLANS_NAME}</span></div>
+							<div class="center-span" id="planvalue-div"><span class="plan_value" id="'planvalue_${plans_rows}'">￥${res[i].PLAN_VALOR}</span></div>
+							<div class="div-discrition-span"><span class="discrition-span">${res[i].PLAN_DISCRITION1}</span></div>
+							<div class="div-discrition-span"><span class="discrition-span">${res[i].PLAN_DISCRITION2}</span></div>
+							<div class="div-discrition-span"><span class="discrition-span">${res[i].PLAN_DISCRITION3}</span></div>
+							<div class="div-discrition-span"><span class="discrition-span">${res[i].PLAN_DISCRITION4}</span></div>
+							<div class="div-discrition-span"><span class="discrition-span">${res[i].PLAN_DISCRITION5}</span></div>
+							<div class="center-span"><input class="plan-select-plan-input" type="button" id="'select_button_${plans_rows}'" value="${buttontext}" onclick="select_plan_click('plan_div_${res[i].PLANS_NAME}_${plans_rows}')"></input></div>
+						 </div>`
 
+					}
+				}
+			plans_div.innerHTML = row
 	  })
 }
 
