@@ -15,7 +15,7 @@
     <link
       rel="stylesheet"
       type="text/css"
-      href="/signature-project-front/style/style.css"
+      href="../style/style.css"
     />
     <!--   <link rel="stylesheet" type="text/css" href="../style/style.css" />
      <base href="/" /> -->
@@ -227,145 +227,15 @@
       <hr class="underbar" />
 
       <div class="div-kirikae">
-        <span id="planselect">Escolha um plano</span>
-        <div id="planscontainer">
-          <div id="plan-select-1" class="container">
-            <div class="contentes">
-              <div id="plan-1" class="plan">Plan A</div>
-              <div class="price">
-                <h2 id="plan-1-price" class="plan-valor">¥11,000</h2>
-              </div>
-              <hr id="plan-under-bar" />
-              <div class="detals">
-                <h4 id="plan-1-detail1">BJJ</h4>
-                <h4 id="plan-1-detail2"></h4>
-                <h4 id="plan-1-detail3"></h4>
-                <h4 id="plan-1-detail4"></h4>
-                <h4 id="plan-1-detail5"></h4>
-              </div>
-              <input
-                type="button"
-                id="select-plan-a"
-                class="select-plan"
-                value="Escolher"
-              />
+        <div id="plan-family-div">
+            <div><span id="planselect">Escolha um plano</span></div>
+            <div id="family-div" class="family-block">
+              <span id="family-plan">Plano familhar</span>
+              <input data-index="0" id="cheap" type="checkbox" />
+              <label id="family-label" for="cheap"></label>
             </div>
-          </div>
-
-          <div id="plan-select-2" class="container">
-            <div class="contentes">
-              <div id="plan-2" class="plan">Plan B</div>
-              <div class="price">
-                <h2 id="plan-2-price" class="plan-valor">¥11,000</h2>
-              </div>
-              <hr id="plan-under-bar" />
-              <div class="detals">
-                <h4 id="plan-2-detail1">Kickboxing</h4>
-                <h4 id="plan-2-detail2"></h4>
-                <h4 id="plan-2-detail3"></h4>
-                <h4 id="plan-2-detail4"></h4>
-                <h4 id="plan-2-detail5"></h4>
-              </div>
-              <input
-                type="button"
-                id="select-plan-b"
-                class="select-plan"
-                value="Escolher"
-              />
-            </div>
-          </div>
-
-          <div id="plan-select-3" class="container">
-            <div class="contentes">
-              <div id="plan-3" class="plan">Plan C</div>
-              <div class="price">
-                <h2 id="plan-3-price" class="plan-valor">¥11,000</h2>
-              </div>
-              <hr id="plan-under-bar" />
-              <div class="detals">
-                <h4 id="plan-3-detail1">MMA</h4>
-                <h4 id="plan-3-detail2"></h4>
-                <h4 id="plan-3-detail3"></h4>
-                <h4 id="plan-3-detail4"></h4>
-                <h4 id="plan-3-detail5"></h4>
-              </div>
-              <input
-                type="button"
-                id="select-plan-c"
-                class="select-plan"
-                value="Escolher"
-              />
-            </div>
-          </div>
-
-          <div id="plan-select-4" class="container">
-            <div class="contentes">
-              <div id="plan-4" class="plan">Plan D</div>
-              <div class="price">
-                <h2 id="plan-4-price" class="plan-valor">¥13,200</h2>
-              </div>
-              <hr id="plan-under-bar" />
-              <div class="detals">
-                <h4 id="plan-4-detail1">BJJ</h4>
-                <h4 id="plan-4-detail2">Kickboxing</h4>
-                <h4 id="plan-4-detail3"></h4>
-                <h4 id="plan-4-detail4"></h4>
-                <h4 id="plan-4-detail5"></h4>
-              </div>
-              <input
-                type="button"
-                id="select-plan-d"
-                class="select-plan"
-                value="Escolher"
-              />
-            </div>
-          </div>
-
-          <div id="plan-select-5" class="container">
-            <div class="contentes">
-              <div id="plan-5" class="plan">Plan E</div>
-              <div class="price">
-                <h2 id="plan-5-price" class="plan-valor">¥13,200</h2>
-              </div>
-              <hr id="plan-under-bar" />
-              <div class="detals">
-                <h4 id="plan-5-detail1">BJJ</h4>
-                <h4 id="plan-5-detail2">MMA</h4>
-                <h4 id="plan-5-detail3"></h4>
-                <h4 id="plan-5-detail4"></h4>
-                <h4 id="plan-5-detail5"></h4>
-              </div>
-              <input
-                type="button"
-                id="select-plan-e"
-                class="select-plan"
-                value="Escolher"
-              />
-            </div>
-          </div>
-
-          <div id="plan-select-6" class="container">
-            <div class="contentes">
-              <div id="plan-6" class="plan">Plan F</div>
-              <div class="price">
-                <h2 id="plan-6-price" class="plan-valor">¥15,400</h2>
-              </div>
-              <hr id="plan-under-bar" />
-              <div class="detals">
-                <h4 id="plan-6-detail1">BBJ</h4>
-                <h4 id="plan-6-detail2">Kickboxing</h4>
-                <h4 id="plan-6-detail3">MMA</h4>
-                <h4 id="plan-6-detail4"></h4>
-                <h4 id="plan-6-detail5"></h4>
-              </div>
-              <input
-                type="button"
-                id="select-plan-f"
-                class="select-plan"
-                value="Escolher"
-              />
-            </div>
-          </div>
+        </div>
+        <div  id="plans-div">
         </div>
       </div>
 
@@ -411,16 +281,16 @@
 
     <script
       type="text/javascript"
-      src="/signature-project-front/plugin/package/dist/signature_pad.umd.min.js"
+      src="../plugin/package/dist/signature_pad.umd.min.js"
     ></script>
     <script
       type="text/javascript"
-      src="/signature-project-front/plugin/html2pdf.bundle.min.js"
+      src="../plugin/html2pdf.bundle.min.js"
     ></script>
-    <script src="/signature-project-front/script/swal.js"></script>
+    <script src="../script/swal.js"></script>
     <script
       type="text/javascript"
-      src="/signature-project-front/script/index1.js"
+      src="../script/index1.js"
     ></script>
   </body>
 </html>
