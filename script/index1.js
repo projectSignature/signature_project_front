@@ -675,6 +675,7 @@ input {
   input {
   	width:100%;
   	height:40px;
+	font-size:2.5vw;
   }
   .birthday {
     width:30%;
