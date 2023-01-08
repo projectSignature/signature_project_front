@@ -10,138 +10,155 @@ fetch('https://squid-app-ug7x6.ondigitalocean.app/calender/entrance')
   .then((res) => {
     // console.log(res)
     console.log(res)
-    classesHandler(res);
+    classesHandler_today(res);
     dadoCalender = res;
   })
 
-  //const japanStandardTime = new Date().toLocaleString({ timeZone: 'Asia/Tokyo' });
-  //const japantime = new Date(japanStandardTime)
-  //console.log(japantime.getDay())
+let clientes = []
+function classesHandler_today(classes) {
+  clientes = classes
+  for(let index=0;index<classes.length;index++){
+     if (classes[index].DESCRITION_1 != '') {
+       row=`
+       <div class="content-finish" id="card${index}" onclick="entrance_regist(${index})">
+           <span class="contentText-finished" name="desc1" id="discrition${index}" >${classes[index].DESCRITION_1}</span>
+           <span class="contentText-finished" name="desc2" id="subdiscrition${index}" >${classes[index].DESCRITION_2}</span>
+           <span class="contentTimeText-coming-next" disabled="disable" id="starttime${index}" >Start at ${classes[index].START_TIME}</span>
+           <span class="contentText-finished-time"   id="finishtime${index}">finished at ${classes[index].FINISH_TIME}</span>
+           </div>
+           `
+           cards.innerHTML += row
+     }
+  }
+}
+
 
 //スライド移動
 function assignEventsInButtons() {
   document.getElementById('next').addEventListener('click', nextSlide)
   document.getElementById('previous').addEventListener('click', previousSlide)
 }
+
 function nextSlide() {
   cards.scrollLeft += 1300
 }
+
 function previousSlide() {
   cards.scrollLeft -= 1300
 }
+
 const mountedClasses = []
 var entrancearry = []
 
 
-function classesHandler(classes) {
-  entrancearry = classes
-  for (let index = 0; index < classes.length; index++) {
-    console.log(index)
-    const currentClass = classes[index];
-    if (currentClass.DESCRITION_1 != '') {
-      let cardOfClass = mountCard(currentClass, index)
-      console.log(cardOfClass)
-        cardOfClass = cardOfClass + `<span class="nextClass ${(index >= classes.length - 1) ? "last" : ""}">&#8594;</span>`
-          mountedClasses.push(cardOfClass)
-    };
-  };
-  const next = mountedClasses.filter(classMount => classMount.includes('content-coming-next'))
-  const now = mountedClasses.filter(classMount => classMount.includes('now'))
-  const finished = mountedClasses.filter(classMount => classMount.includes('finished'))
-  const order = [...now, ...next, ...finished]
-  console.log(finished)
-  console.log(mountedClasses)
-  console.log(order)
-  for(let i=0; i<order.length; i++){
-    cards.innerHTML += order[i]
-  }
-};
+//function classesHandler(classes) {
+//  entrancearry = classes
+  //for (let index = 0; index < classes.length; index++) {
+  //  console.log(index)
+  //  const currentClass = classes[index];
+  //  if (currentClass.DESCRITION_1 != '') {
+  //  let cardOfClass = mountCard(currentClass, index)
+    //    cardOfClass = cardOfClass + `<span class="nextClass ${(index >= classes.length - 1) ? "last" : ""}">&#8594;</span>`
+    //      mountedClasses.push(cardOfClass)
+  //  };
+  //};
+  //const next = mountedClasses.filter(classMount => classMount.includes('content-coming-next'))
+  //const now = mountedClasses.filter(classMount => classMount.includes('now'))
+  //const finished = mountedClasses.filter(classMount => classMount.includes('finished'))
+  //const order = [...now, ...next, ...finished]
+  //console.log(finished)
+  //console.log(mountedClasses)
+  //console.log(order)
+  //for(let i=0; i<order.length; i++){
+  //  cards.innerHTML += order[i]
+  //}
+//};
 
-function mountCard(data, index) {
+//function mountCard(data, index) {
   //const timeOfClass = new Date(data.START_TIME)
-  const currentTime = new Date()
-  const year = currentTime.getFullYear()
-  const month = currentTime.getMonth()+1
-  const day = currentTime.getDate()
-  var status = ""
-   const timeToFinish = new Date(`${year}/${month}/${day} ${data.FINISH_TIME}`)
-   const timeOfClass = new Date(`${year}/${month}/${day} ${data.START_TIME}`)
-   const test = new Date('2022/11/27 15:40')
-   if(currentTime>timeOfClass && currentTime<timeToFinish){
-     status = "On going" //最中
-   }
-if(currentTime>timeToFinish && status != "On going"){
-  let cardStruct = `
-  <div class="card ${(currentTime.getHours() == timeOfClass.getHours()) ? 'now' : ""}">
-      <span class="title">Finished</span>
-      <div class="content-finish" id="card${index}" onclick="entrance_regist(${index})">
-          <span class="contentText-finished" name="desc1" id="discrition${index}" >${data.DESCRITION_1}</span>
-          <span class="contentText-finished" name="desc2" id="subdiscrition${index}" >${data.DESCRITION_2}</span>
-          <span class="contentTimeText-coming-next" disabled="disable" id="starttime${index}" >Start at ${data.START_TIME}</span>
-          <span class="contentText-finished-time"   id="finishtime${index}">finished at ${data.FINISH_TIME}</span>
-          </div>
-  </div>`
+  //const currentTime = new Date()
+  //const year = currentTime.getFullYear()
+  //const month = currentTime.getMonth()+1
+  //const day = currentTime.getDate()
+  //var status = ""
+   //const timeToFinish = new Date(`${year}/${month}/${day} ${data.FINISH_TIME}`)
+   //const timeOfClass = new Date(`${year}/${month}/${day} ${data.START_TIME}`)
+  // const test = new Date('2022/11/27 15:40')
+  // if(currentTime>timeOfClass && currentTime<timeToFinish){
+  //   status = "On going" //最中
+  // }
+//if(currentTime>timeToFinish && status != "On going"){
+//  let cardStruct = `
+//  <div class="card ${(currentTime.getHours() == timeOfClass.getHours()) ? 'now' : ""}">
+    //  <span class="title">Finished</span>
+    //  <div class="content-finish" id="card${index}" onclick="entrance_regist(${index})">
+    //      <span class="contentText-finished" name="desc1" id="discrition${index}" >${data.DESCRITION_1}</span>
+      //    <span class="contentText-finished" name="desc2" id="subdiscrition${index}" >${data.DESCRITION_2}</span>
+      //    <span class="contentTimeText-coming-next" disabled="disable" id="starttime${index}" >Start at ${data.START_TIME}</span>
+      //    <span class="contentText-finished-time"   id="finishtime${index}">finished at ${data.FINISH_TIME}</span>
+      //    </div>
+//  </div>`
   //cardStruct = cardStruct.replace(/{{image}}/g, ` <img src="${imgTeste}" />`);
 //  localStorage.setItem('startTime', data.FINISH_TIME);
-  return cardStruct;
-}else if(cards_count==0  && status != "On going"){
-    let cardStruct = `
-    <div class="card ${(currentTime.getHours() == timeOfClass.getHours()) ? 'now' : ""}">
-        <span class="title">
-            ${(timeOfClass.getDate() < currentTime.getDate() || timeOfClass.getHours() < currentTime.getHours()) ? "Finished" : "Coming next"}
-        </span>
-        <div class="content-coming-next" id="card${index}" onclick="entrance_regist(${index})">
-            <span class="contentText-coming-next" name="desc1"  id="discrition${index}">${data.DESCRITION_1}</span>
-            <span class="contentText-coming-next" name="desc2"  id="subdiscrition${index}">${data.DESCRITION_2}</span>
-            <span class="contentTimeText-coming-next"   id="starttime${index}" >Start at ${data.START_TIME}</span>
-            <span class="contentTimeText-coming-next"  id="finishtime${index}">Finish at ${data.FINISH_TIME}</span>
-            </div>
-    </div>`
-    cards_count = cards_count +1
+//  return cardStruct;
+//}else if(cards_count==0  && status != "On going"){
+//    let cardStruct = `
+  //  <div class="card ${(currentTime.getHours() == timeOfClass.getHours()) ? 'now' : ""}">
+  //      <span class="title">
+    //        ${(timeOfClass.getDate() < currentTime.getDate() || timeOfClass.getHours() < currentTime.getHours()) ? "Finished" : "Coming next"}
+    //    </span>
+      //  <div class="content-coming-next" id="card${index}" onclick="entrance_regist(${index})">
+      ////      <span class="contentText-coming-next" name="desc1"  id="discrition${index}">${data.DESCRITION_1}</span>
+        //    <span class="contentText-coming-next" name="desc2"  id="subdiscrition${index}">${data.DESCRITION_2}</span>
+        //    <span class="contentTimeText-coming-next"   id="starttime${index}" >Start at ${data.START_TIME}</span>
+        //    <span class="contentTimeText-coming-next"  id="finishtime${index}">Finish at ${data.FINISH_TIME}</span>
+        //    </div>
+  //  </div>`
+  //  cards_count = cards_count +1
   //   localStorage.setItem('startTime', [data.START_TIME, data.FINISH_TIME]);
-    return cardStruct;
-}else if(status=="On going"){
-  let cardStruct = `
-  <div class="card ${(currentTime.getHours() == timeOfClass.getHours()) ? 'now' : ""}">
-      <span class="title">
-          ${(timeOfClass.getDate() < currentTime.getDate() || timeOfClass.getHours() < currentTime.getHours()) ? "Finished" : "On going"}
-      </span>
-      <div class="content-ongoing" id="card${index}" onclick="entrance_regist(${index})">
-          <span class="contentText-ongoing" name="desc1" id="discrition${index}" >${data.DESCRITION_1}</span>
-          <span class="contentText-ongoing" name="desc2" id="subdiscrition${index}" >${data.DESCRITION_2}</span>
-          <span class="contentTimeText-ongoing"  id="starttime${index}" >Start at ${data.START_TIME}</span>
-          <span class="contentTimeText-ongoing"  id="finishtime${index}">Finish at ${data.FINISH_TIME}</span>
-          </div>
-  </div>`
+//    return cardStruct;
+//}else if(status=="On going"){
+//  let cardStruct = `
+//  <div class="card ${(currentTime.getHours() == timeOfClass.getHours()) ? 'now' : ""}">
+  //    <span class="title">
+  //        ${(timeOfClass.getDate() < currentTime.getDate() || timeOfClass.getHours() < currentTime.getHours()) ? "Finished" : "On going"}
+    //  </span>
+    //  <div class="content-ongoing" id="card${index}" onclick="entrance_regist(${index})">
+    //      <span class="contentText-ongoing" name="desc1" id="discrition${index}" >${data.DESCRITION_1}</span>
+    //      <span class="contentText-ongoing" name="desc2" id="subdiscrition${index}" >${data.DESCRITION_2}</span>
+      //    <span class="contentTimeText-ongoing"  id="starttime${index}" >Start at ${data.START_TIME}</span>
+    //      <span class="contentTimeText-ongoing"  id="finishtime${index}">Finish at ${data.FINISH_TIME}</span>
+      //    </div>
+//  </div>`
 //  localStorage.setItem('startTime', [data.START_TIME, data.FINISH_TIME]);
-  cards_count = 0
-  return cardStruct;
-}else{
-  let cardStruct = `
-  <div class="card ${(currentTime.getHours() == timeOfClass.getHours()) ? 'now' : ""}">
-      <span class="title">
-          ${ (timeOfClass.getDate() < currentTime.getDate() || timeOfClass.getHours() < currentTime.getHours()) ? "Finished" : "Coming"}
-      </span>
-      <div class="content-finish" id="card${index}" onclick="entrance_regist(${index})">
-      <span class="contentText-finished" name="desc1" id="discrition${index}" >${data.DESCRITION_1}</span>
-      <span class="contentText-finished" name="desc2" id="subdiscrition${index}" >${data.DESCRITION_2}</span>
-      <span class="contentText-finished-time"  id="starttime${index}" >Start at ${data.START_TIME}</span>
-      <span class="contentText-finished-time"  id="finishtime${index}" >Finish at ${data.FINISH_TIME}</span>
-          </div>
-  </div>`
+//  cards_count = 0
+//  return cardStruct;
+//}else{
+//  let cardStruct = `
+//  <div class="card ${(currentTime.getHours() == timeOfClass.getHours()) ? 'now' : ""}">
+  //    <span class="title">
+  //        ${ (timeOfClass.getDate() < currentTime.getDate() || timeOfClass.getHours() < currentTime.getHours()) ? "Finished" : "Coming"}
+    //  </span>
+    //  <div class="content-finish" id="card${index}" onclick="entrance_regist(${index})">
+    //  <span class="contentText-finished" name="desc1" id="discrition${index}" >${data.DESCRITION_1}</span>
+    //  <span class="contentText-finished" name="desc2" id="subdiscrition${index}" >${data.DESCRITION_2}</span>
+    //  <span class="contentText-finished-time"  id="starttime${index}" >Start at ${data.START_TIME}</span>
+    //  <span class="contentText-finished-time"  id="finishtime${index}" >Finish at ${data.FINISH_TIME}</span>
+    //      </div>
+  //</div>`
 
 ///  localStorage.setItem('startTime', [data.START_TIME, data.FINISH_TIME]);
 
 //  cardStruct = cardStruct.replace(/{{image}}/g, ` <img src="${imgTeste}" />`);
 //{{image}}←div の中に入れる
-  return cardStruct;
-}
+  //return cardStruct;
+//}
 
-};
+//};
 
-function getFormattedTime(time) {
-  return `${(time.getHours() > 10) ? time.getHours() : '0' + time.getHours()}:${(time.getMinutes() > 10) ? time.getMinutes() : '0' + time.getMinutes()}`
-}
+//function getFormattedTime(time) {
+//  return `${(time.getHours() > 10) ? time.getHours() : '0' + time.getHours()}:${(time.getMinutes() > 10) ? time.getMinutes() : '0' + time.getMinutes()}`
+//}
 
 assignEventsInButtons()
 //classesHandler()
@@ -307,21 +324,21 @@ function entrance_regist(number) {
       })
         .then((x) => x.json())
         .then((res) => {
-          Swal.fire({
-            title: 'Registrando!',
-            didOpen: () => { Swal.showLoading() }
-          })
-        console.log(res[0])
-          if ('testes', res[0]) {
-            localStorage.setItem('id', res[0].id);
-            localStorage.setItem('GYM_ID', res[0].GYM_ID);
-            addClient_again(number);
-            entrance_count(res[0].id);
-            if(entrancearry[number].IMAGE==1){
-              entrance_count(res[0].id)
-            }else{
 
-            }
+        console.log(res[0])
+          if (res.length==1) {
+            Swal.fire({
+              title: 'Registrando!',
+              didOpen: () => { Swal.showLoading() }
+            })
+            localStorage.setItem('id', res[0].id);
+            localStorage.setItem('GYM_ID', res[0].gymid);
+            addEntrance(number);
+            entrance_count(res[0].id);
+          }else if(res.length>1){
+            localStorage.setItem('GYM_ID', res[0].gymid);
+            console.log(number)
+            selectmember(res,number)
           } else {
             Swal.fire({
               icon: "error",
@@ -336,8 +353,51 @@ function entrance_regist(number) {
 };
 
 
+function selectmember(res,number){
+  swal.close()
+  let namerow =[]
+  console.log(res,number)
+  for(let i=0;i<res.length;i++){
+    namerow +=`
+    <div><input class="nameinput" value="${res[i].nm_member}" onclick="addentrancMult('${res[i].id}_${number}')"/><div>
+    `
+  }
+  Swal.fire({
+    icon: "info",
+    title: 'Select name',
+    showConfirmButton:false,
+
+    html:`${namerow}
+    <style>
+    input{
+        background-color: #00BFFF;
+        color:white;
+          cursor: pointer;
+      width:70% !important;
+      height:70px !important;
+      font-size:4vw;
+      margin-top:10px;
+      border-radius:50px;
+      text-align: center;
+    }
+    </style>`
+  });
+}
+
+function addentrancMult(data){
+  Swal.fire({
+    title: 'Registrando!',
+    didOpen: () => { Swal.showLoading() }
+  })
+  console.log(data)
+  console.log(data.split("_")[0])
+  console.log(data.split("_")[1])
+  localStorage.setItem('id', data.split("_")[1]);
+  addEntrance(data.split("_")[1]);
+  entrance_count(data.split("_")[0]);
+}
+
 function entrance_count(data){
-  console.log('inicio da funcao')
   fetch("https://squid-app-ug7x6.ondigitalocean.app/graduationlist", {
     method: "POST",
     body: JSON.stringify({ opt1: "", opt2: "" }),
@@ -352,7 +412,6 @@ function entrance_count(data){
             id: clients1[index].nm_member_id,
             lesson_after: (clients1[index].lesson_after -0) + 1
           };
-          //console.log(lesson_after)
           const attr = {
             method: "POST",
             body: JSON.stringify(obj),
@@ -361,9 +420,7 @@ function entrance_count(data){
           fetch("https://squid-app-ug7x6.ondigitalocean.app/graduationafter", attr)
             .then((x) => x.json())
             .then((response) => {
-              //acrescentar aqui o email , caso a aula for numero de
-             console.log(response)
-              fetch(`https://squid-app-ug7x6.ondigitalocean.app/lesson_after/${obj.id}`)
+              fetch(`https://squid-app-ug7x6.ondigitalocean.app/lesson_after/${obj.id}`)//verificar o email
             });
         }
       }
@@ -371,9 +428,9 @@ function entrance_count(data){
     });
 }
 
-function addClient_again(number) {
-  var starttime = document.getElementById(`starttime${number}`).innerHTML.substr(10,5)
-  var finishtime = document.getElementById(`finishtime${number}`).innerHTML.substr(10,5)
+function addEntrance(number) {
+  var starttime = clientes[number].START_TIME
+  var finishtime = clientes[number].FINISH_TIME
   var obj = {
     LESSON_NAME: document.getElementById(`discrition${number}`).innerHTML + "_" + document.getElementById(`subdiscrition${number}`).innerHTML,
     LESSON_HOUR: starttime +"~"+finishtime,
