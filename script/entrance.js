@@ -32,6 +32,9 @@ function classesHandler_today(classes) {
   }
 }
 
+document.getElementById("refresh").addEventListener('click',()=>{
+  window.location.reload()
+})
 
 //スライド移動
 function assignEventsInButtons() {
