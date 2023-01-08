@@ -26,22 +26,6 @@
           <option value="teenagers">Menores</option>
         </select>
         <select name="" id="filter2">
-          <option value="">Planos</option>
-          <option value="Plan A">Plano A</option>
-          <option value="Plan B">Plano B</option>
-          <option value="Plan C">Plano C</option>
-          <option value="Plan D">Plano D</option>
-          <option value="Plan E">Plano E</option>
-          <option value="Plan F">Plano F</option>
-          <option value="Plan G">Plano G</option>
-          <option value="Plan H">Plano H</option>
-          <option value="Plan I">Plano I</option>
-          <option value="Plan J">Plano J</option>
-          <option value="Plan K">Plano K</option>
-          <option value="Plan L">Plano L</option>
-          <option value="Plan M">Plano M</option>
-          <option value="Plan N">Plano N</option>
-          <option value="Plan free">Plano free</option>
         </select>
         <input type="button" id="btn-filter" value="Buscar" />
       </div>
@@ -59,6 +43,7 @@
     const gymName = document.getElementById("gym-name");
     const sessionGymName = sessionStorage.getItem("gym");
     let maylanguage = "PT"
+    let myplan = []
 
     if (sessionGymName) {
       gymName.innerHTML = sessionGymName;
@@ -67,6 +52,7 @@
     }
 
 processing_wait()
+plan_option_create()
 function processing_wait(){
   Swal.fire({
     icon:'info',
@@ -81,7 +67,20 @@ function processing_wait(){
   });
 }
 
-
+function plan_option_create(){
+  fetch('https://squid-app-ug7x6.ondigitalocean.app/planget')
+    .then((x) => x.json())
+    .then((res) => {
+      console.log(res)
+      row = `<option value="">Planos</option>`
+      myplan.push(row)
+      for(let i=0;i<res.length;i++){
+        row = `<option value=${res[i].PLANS_NAME}>${res[i].PLANS_NAME}</option>`
+        myplan.push(row)
+      }
+      document.getElementById("filter2").innerHTML = myplan
+    })
+}
 
 
     //função para executar filtros--------------------------->
@@ -250,7 +249,7 @@ function processing_wait(){
 
     function editClient(clientId) {
       let client = clients.find((client) => client.id == clientId);
-      let myplan = []
+
         fetch('https://squid-app-ug7x6.ondigitalocean.app/planget')
           .then((x) => x.json())
           .then((res) => {
