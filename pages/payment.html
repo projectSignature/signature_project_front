@@ -37,15 +37,17 @@
   <script type="text/javascript" src="js/stickyfill.min.js"></script>
   <script>
 
-  //var gymname = sessionStorage.getItem("gym");
-  //var gymid = sessionStorage.getItem("GYM_ID");
+  var gymname = sessionStorage.getItem("gym");
+  var gymid = sessionStorage.getItem("GYM_ID");
   var today = new Date();
   var month = today.getMonth()+1
   const tbody = document.getElementsByTagName("tbody")[0];
   const btnFilter = document.getElementById("btn-filter");
  const gymName = document.getElementById("gym-name");
   let maylanguage = "PT"
-  let gymid = 4
+  //let gymid = 4
+    let plansarry = []
+    getplans()
 
   //if (sessionGymName) {
   //  gymName.innerHTML = sessionGymName;
@@ -66,7 +68,7 @@ function getpaymente_all(){
   , html: 'Wait'
   , allowOutsideClick : false
   , showConfirmButton: false,
-    timer: 4000,
+    timer: 5000,
     timerProgressBar: true
   , onBeforeOpen: () => {
       Swal.showLoading();
@@ -90,13 +92,24 @@ function getpaymente_all(){
         })
           .then((x) => x.json())
           .then((response) => {
+
             for (let i = 0;i<response.length;i++){
-              memberslist.push([response[i].id,response[i].nm_member]) //fazer um array do membro
+              memberslist.push([response[i].id,response[i].nm_member,response[i].plans]) //fazer um array do membro
             }
                 for (let i = 0;i<memberslist.length;i++){ //loop memberlist
                   let answer = {id:0,name:0,plan:0,planvalue:0,jan:"-",feb:"-",mar:"-",apr:"-",may:"-",jun:"-",jul:"-",aug:"-",sep:"-",oct:"-",nov:"-",dez:"-"}
                   answer.id = memberslist[i][0]
                   answer.name = memberslist[i][1]
+                  for(let ii=0;ii<plansarry.length;ii++){
+                    //console.log(plansarry[ii][0])
+                    if(plansarry[ii][0]==memberslist[i][2]){
+                      console.log(plansarry[ii][1])
+                      console.log('in')
+                      answer.planvalue= plansarry[ii][1]
+                    }
+                  }
+                  answer.plan = memberslist[i][2];
+                  //answer.planvalue = res[ii].plan_value;
                   for(let ii =0; ii<res.length;ii++){
                     if(res[ii].nm_member_id==memberslist[i][0]){
                       if(res[ii].month==1){
@@ -108,8 +121,6 @@ function getpaymente_all(){
                           jan = `<img src="../image/free.png" width="35">`
                         }
                         answer.jan = jan
-                        answer.plan = res[ii].plan;
-                        answer.planvalue = res[ii].plan_value;
                       }else if(res[ii].month==2){
                         if(res[ii].division==1&&res[ii].plan!="Plan free"){
                           feb = `<img src="../image/nopaid.png" width="35">`
@@ -119,8 +130,6 @@ function getpaymente_all(){
                           feb = `<img src="../image/free.png" width="35">`
                         }
                           answer.feb = feb
-                          answer.plan = res[ii].plan;
-                          answer.planvalue = res[ii].plan_value;
                       }else if(res[ii].month==3){
                         if(res[ii].division==1&&res[ii].plan!="Plan free"){
                           mar = `<img src="../image/nopaid.png" width="35">`
@@ -130,8 +139,6 @@ function getpaymente_all(){
                           mar = `<img src="../image/free.png" width="35">`
                         }
                           answer.mar = mar
-                          answer.plan = res[ii].plan;
-                          answer.planvalue = res[ii].plan_value;
                       }else if(res[ii].month==4){
                         if(res[ii].division==1&&res[ii].plan!="Plan free"){
                           apr = `<img src="../image/nopaid.png" width="35">`
@@ -141,8 +148,6 @@ function getpaymente_all(){
                           apr = `<img src="../image/free.png" width="35">`
                         }
                           answer.apr = apr
-                          answer.plan = res[ii].plan;
-                          answer.planvalue = res[ii].plan_value;
                       }else if(res[ii].month==5){
                         if(res[ii].division==1&&res[ii].plan!="Plan free"){
                           may = `<img src="../image/nopaid.png" width="35">`
@@ -152,8 +157,6 @@ function getpaymente_all(){
                           may = `<img src="../image/free.png" width="35">`
                         }
                           answer.may = may
-                          answer.plan = res[ii].plan;
-                          answer.planvalue = res[ii].plan_value;
                       }else if(res[ii].month==6){
                         if(res[ii].division==1&&res[ii].plan!="Plan free"){
                           jun = `<img src="../image/nopaid.png" width="35">`
@@ -163,8 +166,6 @@ function getpaymente_all(){
                           jun = `<img src="../image/free.png" width="35">`
                         }
                           answer.jun = jun
-                          answer.plan = res[ii].plan;
-                          answer.planvalue = res[ii].plan_value;
                       }else if(res[ii].month==7){
                         if(res[ii].division==1&&res[ii].plan!="Plan free"){
                           jul = `<img src="../image/nopaid.png" width="35">`
@@ -174,8 +175,6 @@ function getpaymente_all(){
                           jul = `<img src="../image/free.png" width="35">`
                         }
                           answer.jul = jul
-                          answer.plan = res[ii].plan;
-                          answer.planvalue = res[ii].plan_value;
                       }else if(res[ii].month==8){
                         if(res[ii].division==1&&res[ii].plan!="Plan free"){
                           aug = `<img src="../image/nopaid.png" width="35">`
@@ -185,8 +184,6 @@ function getpaymente_all(){
                           aug = `<img src="../image/free.png" width="35">`
                         }
                           answer.aug = aug
-                          answer.plan = res[ii].plan;
-                          answer.planvalue = res[ii].plan_value;
                       }else if(res[ii].month==9){
                         if(res[ii].division==1&&res[ii].plan!="Plan free"){
                           sep = `<img src="../image/nopaid.png" width="35">`
@@ -196,8 +193,6 @@ function getpaymente_all(){
                           sep = `<img src="../image/free.png" width="35">`
                         }
                           answer.sep = sep
-                          answer.plan = res[ii].plan;
-                          answer.planvalue = res[ii].plan_value;
                       }else if(res[ii].month==10){
                         if(res[ii].division==1&&res[ii].plan!="Plan free"){
                           oct = `<img src="../image/nopaid.png" width="35">`
@@ -207,8 +202,6 @@ function getpaymente_all(){
                           oct = `<img src="../image/free.png" width="35">`
                         }
                           answer.oct = oct
-                          answer.plan = res[ii].plan;
-                          answer.planvalue = res[ii].plan_value;
                       }else if(res[ii].month==11){
                         if(res[ii].division==1&&res[ii].plan!="Plan free"){
                           nov = `<img src="../image/nopaid.png" width="35">`
@@ -218,8 +211,6 @@ function getpaymente_all(){
                           nov = `<img src="../image/free.png" width="35">`
                         }
                           answer.nov = nov
-                          answer.plan = res[ii].plan;
-                          answer.planvalue = res[ii].plan_value;
                       }else if(res[ii].month==12){
                         if(res[ii].division==1&&res[ii].plan!="Plan free"){
                           dez = `<img src="../image/nopaid.png" width="35">`
@@ -229,8 +220,6 @@ function getpaymente_all(){
                           dez = `<img src="../image/free.png" width="35">`
                         }
                          answer.dez = dez
-                         answer.plan = res[ii].plan;
-                         answer.planvalue = res[ii].plan_value;
                       }
                     }
                   }
@@ -433,7 +422,7 @@ function editpay(data){
     cancelButtonText: "Cancelar",
   })
 }
-    
+
 function editbeforecheck(data){
   //処理中ダイアログ
   Swal.fire({
@@ -608,7 +597,7 @@ function cretepayment_button(){
     select{
       width:80%;
     }
-       } 
+       }
          </style>
       `,
     showCancelButton: true,
@@ -625,7 +614,7 @@ function cretepayment_button(){
 
 //plans get------------------------------->
  async function getplans(){
-  let plansarry = []
+
   fetch('https://squid-app-ug7x6.ondigitalocean.app/planget')
     .then((x) => x.json())
     .then((res) => {
@@ -714,7 +703,9 @@ function get_member(month){
              }
              swall_success()
          })
-    }   
+    }
+
+
   //let mypln
 //  const obj = { opt1: "", opt2: "" };
 //  fetch("https://squid-app-ug7x6.ondigitalocean.app/list", {//全メンバーのデータを取得
@@ -752,6 +743,6 @@ function get_member(month){
   //      }
   //  })
   //  getpaymente_all()
-//}
+
   </script>
 </html>
