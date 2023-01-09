@@ -12,7 +12,7 @@
   <body>
     <div id="titlediv">
       <div id="titlemain">Gym Control System</div>
-      <div id="gym-name">Kussano gym</div>
+      <div id="gym-name">Kussano dojo</div>
     </div>
 
     <div id="dash">
@@ -37,15 +37,15 @@
   <script type="text/javascript" src="js/stickyfill.min.js"></script>
   <script>
 
-  var gymname = sessionStorage.getItem("gym");
-  var gymid = sessionStorage.getItem("GYM_ID");
+  //var gymname = sessionStorage.getItem("gym");
+  //var gymid = sessionStorage.getItem("GYM_ID");
   var today = new Date();
   var month = today.getMonth()+1
   const tbody = document.getElementsByTagName("tbody")[0];
   const btnFilter = document.getElementById("btn-filter");
  const gymName = document.getElementById("gym-name");
   let maylanguage = "PT"
-  //let gymid = 4
+  let gymid = 4
     let plansarry = []
     getplans()
 
