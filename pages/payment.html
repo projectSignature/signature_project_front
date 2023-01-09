@@ -662,7 +662,7 @@ function get_member(month){
            console.log(response)
            for (let i = 0;i<response.length;i++){
              for(let index = 0;index<plansarry.length;index++){
-                  if(response[i].plans==`PLAN ${plansarry[index][0]}`){
+                  if(response[i].plans==plansarry[index][0]){
                     memberslist.push([response[i].id,response[i].nm_member,response[i].plans,plansarry[index][1]]) //fazer um array do membro
                   }
                 }
@@ -690,7 +690,7 @@ function get_member(month){
                     id:memberslist[i][0],
                     name:memberslist[i][1],
                     plans:memberslist[i][2],
-                    gymid:4,
+                    gymid:gymid,
                     year:select_year,
                     division:division,
                     month:month,
@@ -714,9 +714,7 @@ function get_member(month){
              }
              swall_success()
          })
-         console.log(memberslist)
-
-
+    }   
   //let mypln
 //  const obj = { opt1: "", opt2: "" };
 //  fetch("https://squid-app-ug7x6.ondigitalocean.app/list", {//全メンバーのデータを取得
@@ -754,6 +752,6 @@ function get_member(month){
   //      }
   //  })
   //  getpaymente_all()
-}
+//}
   </script>
 </html>
