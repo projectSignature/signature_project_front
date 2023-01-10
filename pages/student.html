@@ -141,7 +141,8 @@
         }else{
           color = "black"
         }
-        console.log(client)
+            mydatecheck = client.graduation_dt
+      )
         Swal.fire({
             html: `
                 <div id="client">
@@ -319,7 +320,7 @@
 
                 if(client.color!=currentRange){ //カラーの変更をした時の処理
                   kubun = `graduar para faixa ${color}`
-                  graduateDateupdate = getCurrentYYYYMMDD()
+                  graduateDateupdate = graduateDate
                   firstDegree="-"
                   secondDegree="-"
                   thirdDegree="-"
@@ -340,6 +341,9 @@
                   change = "1"
                 }else if(client.lesson_after!=postGraduationClass){
                   kubun = `Alterar quantidades de aulas para ${postGraduationClass}`
+                  change = "1"
+                }else if(mydatecheck!=graduateDate){
+                  kubun = `Alterar a data da graduação para ${graduateDate}`
                   change = "1"
                 }
 
