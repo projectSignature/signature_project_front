@@ -196,6 +196,12 @@ document.getElementById("configration").addEventListener("click",config_main)
            .button-input:hover{
              transform: scale(1.1);
            }
+           @media only screen and (max-width: 700px) {
+             .swal2-popup {
+             width: 100% !important;
+              height:550px !important;
+            }
+           }
 
            </style>
           `
@@ -386,6 +392,11 @@ Swal.fire({
            ._sticky {
              width:80px !important;
            }
+           .swal2-popup {
+           width: 100% !important;
+            height:550px !important;
+          }
+
    }
         </style>
         `
