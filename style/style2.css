@@ -372,9 +372,11 @@ width:32%;
     width: 15%;
   }
   #config-img{
-    position: absolute;
-    top: 5%;
-    left:85%;
+     position: absolute;
+    top: 6%;
+    left:86%;
+    height:40px;
+    width:40px;
   }
   .boarde{
     margin-left: 10px;
