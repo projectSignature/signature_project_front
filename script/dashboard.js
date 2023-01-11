@@ -415,8 +415,8 @@ Swal.fire({
             font-size: 3vw;
             width:100px;
           }
-          th[name="_sticky_controlname"]{
-            width:100px;
+            th[name="_sticky_controlname"]{
+            width:130px;
           }
 
    }
