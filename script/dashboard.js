@@ -206,7 +206,11 @@ document.getElementById("configration").addEventListener("click",config_main)
               font-size:3vw;
             }
             .div-block div span{
-              font-size:2.5vw;
+              font-size:3vw;
+            }
+            .text-input-language{
+              width:75% !important;
+              font-size:2vw;
             }
            }
 
