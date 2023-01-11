@@ -201,7 +201,15 @@ document.getElementById("configration").addEventListener("click",config_main)
              width: 100% !important;
               height:550px !important;
             }
+            .button-input{
+              width:30%;
+              font-size:3vw;
+            }
+            .div-block div span{
+              font-size:2.5vw;
+            }
            }
+
 
            </style>
           `
@@ -396,6 +404,13 @@ Swal.fire({
            width: 100% !important;
             height:550px !important;
           }
+          .button-input{
+            width:30%;
+            font-size:3vw;
+          }
+          th, td {
+            font-size: 10px;
+          }
 
    }
         </style>
@@ -570,6 +585,13 @@ cancelButtonText:　stext10[my_language]
              width:70% !important;
 
            }
+           @media only screen and (max-width: 700px) {
+             .swal2-popup {
+             width: 100% !important;
+            }
+
+
+     }
 
             </style>
             `
