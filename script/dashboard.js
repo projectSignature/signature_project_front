@@ -291,7 +291,7 @@ fetch('https://squid-app-ug7x6.ondigitalocean.app/planget')
                     <td class="_sticky_y">${res[index].PLAN_DISCRITION3}</td>
                     <td class="_sticky_y">${res[index].PLAN_DISCRITION4}</td>
                     <td class="_sticky_y">${res[index].PLAN_DISCRITION5}</td>
-                    <td class="_sticky_y">${res[index].CONTROL_NAME}</td>
+                    <td class="_sticky_y" name="_sticky_controlname">${res[index].CONTROL_NAME}</td>
                     <td>
                         <img class="image-cursor"  src="../image/edit.svg" onClick="editPlan(${index})" alt="" width="25">
                         <img class="image-cursor"  src="../image/delete.svg" onClick="Plandelete_check(${index})" alt="" width="25">
@@ -405,11 +405,18 @@ Swal.fire({
             height:550px !important;
           }
           .button-input{
-            width:30%;
+            width:27%;
             font-size:3vw;
           }
           th, td {
             font-size: 10px;
+          }
+          th[name="_sticky_name"]{
+            font-size: 3vw;
+            width:100px;
+          }
+          th[name="_sticky_controlname"]{
+            width:100px;
           }
 
    }
@@ -669,9 +676,7 @@ function kanmaChange(inputAns){
 };
 
 function language_select(data){
-  console.log(data)
   if(data==0){
-    console.log('in')
     my_language = 0
     //document.getElementById("languagePT").style.backgroundColor= "#666666"
     //document.getElementById("languagePT").style.Color='white'
@@ -977,7 +982,6 @@ var next_graduation = 0
     });
 //pagar todas do table de member------------------------------->
     function memberget_chart(){
-      console.log('in')
       const filter1 = "";
       const filter2 = "";
       let planA = 0
