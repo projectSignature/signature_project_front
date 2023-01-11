@@ -368,7 +368,7 @@ Swal.fire({
            top: 0;
            left: 0;
            z-index: 1;
-           width:80px !important;
+           width:90px !important;
            height:5px !important;
          }
          ._sticky:before {
@@ -398,7 +398,7 @@ Swal.fire({
              width: 15px !important;
            }
            ._sticky {
-             width:80px !important;
+             width:90px !important;
            }
            .swal2-popup {
            width: 100% !important;
@@ -416,7 +416,7 @@ Swal.fire({
             width:100px;
           }
           th[name="_sticky_controlname"]{
-            width:500px !important;
+            width:100px !important;
           }
 
    }
