@@ -300,6 +300,7 @@ width:32%;
 
   }
 
+
   #maindiv{
     display:block;
   }
@@ -321,16 +322,39 @@ width:32%;
   .title-bottons{
     display:none;
   }
+
+
+  #menuber-bottons-title{
+    height:50px;
+    width:100%;
+    display: flex;
+    margin-top: 0px;
+
+  }
+
   .menu-div{
     margin-right: 1%;
     margin-left: 0px;
     margin-top: 0px;
+
+    height:100%;
+    width:12.5%;
+
+  }
+  .men-div div{
+
+    height:100%;
+    width:100%;
+  }
+.master-image{
+    margin-top: 15px;
+}
+  #config-img{
+
+    height:40px;
   }
 
-  #menuber-bottons-title{
-    display: flex;
-    margin-top: 0px;
-  }
+
   #right-board{
     display: block;
     width: 100%;
@@ -371,13 +395,7 @@ width:32%;
   .master-image-menu{
     width: 15%;
   }
-  #config-img{
-     position: absolute;
-    top: 6%;
-    left:86%;
-    height:40px;
-    width:40px;
-  }
+
   .boarde{
     margin-left: 10px;
     margin-top: 3px;
