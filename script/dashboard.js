@@ -416,7 +416,7 @@ Swal.fire({
             width:100px;
           }
           th[name="_sticky_controlname"]{
-            width:130px !important;
+            width:180px !important;
           }
 
    }
