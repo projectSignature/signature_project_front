@@ -398,7 +398,7 @@ Swal.fire({
              width: 15px !important;
            }
            ._sticky {
-             width:90px !important;
+             width:120px !important;
            }
            .swal2-popup {
            width: 100% !important;
