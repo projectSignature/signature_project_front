@@ -165,7 +165,9 @@ canvas{
   border:0.3px solid #222222;
   background-color:white;
 }
-
+#configration{
+  font-size:1.2vw;
+}
 
 
 @media screen and (min-width: 501px) and (max-width: 725px) {
@@ -368,6 +370,11 @@ width:32%;
   }
   .master-image-menu{
     width: 15%;
+  }
+  #config-img{
+    position: absolute;
+    top: 5%;
+    left:85%;
   }
   .boarde{
     margin-left: 10px;
