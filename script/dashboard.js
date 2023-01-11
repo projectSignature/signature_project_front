@@ -199,7 +199,7 @@ document.getElementById("configration").addEventListener("click",config_main)
            @media only screen and (max-width: 700px) {
              .swal2-popup {
              width: 100% !important;
-              height:550px !important;
+             height:600px !important;
             }
             .button-input{
               width:30%;
@@ -420,7 +420,7 @@ Swal.fire({
             width:100px;
           }
           th[name="_sticky_controlname"]{
-            width:180px !important;
+            width:250px !important;
           }
 
    }
