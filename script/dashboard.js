@@ -413,10 +413,10 @@ Swal.fire({
           }
           th[name="_sticky_name"]{
             font-size: 3vw;
-            width:100px;
+            width:100px !important;
           }
             th[name="_sticky_controlname"]{
-            width:130px;
+            width:100px !important;
           }
 
    }
