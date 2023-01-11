@@ -277,7 +277,7 @@ fetch('https://squid-app-ug7x6.ondigitalocean.app/planget')
                  <th class="_sticky">${stext17[my_language]}</th>
                  <th class="_sticky">${stext18[my_language]}</th>
                  <th class="_sticky">${stext19[my_language]}</th>
-                 <th class="_sticky">${stext25[my_language]}</th>
+                 <th class="_sticky" name="_sticky_controlname" >${stext25[my_language]}</th>
                  <th class="_sticky">${stext21[my_language]}</th>
                  </tr>`)
   for (let index = 0; index < res.length; index++) {
@@ -291,7 +291,7 @@ fetch('https://squid-app-ug7x6.ondigitalocean.app/planget')
                     <td class="_sticky_y">${res[index].PLAN_DISCRITION3}</td>
                     <td class="_sticky_y">${res[index].PLAN_DISCRITION4}</td>
                     <td class="_sticky_y">${res[index].PLAN_DISCRITION5}</td>
-                    <td class="_sticky_y" name="_sticky_controlname">${res[index].CONTROL_NAME}</td>
+                    <td class="_sticky_y" >${res[index].CONTROL_NAME}</td>
                     <td>
                         <img class="image-cursor"  src="../image/edit.svg" onClick="editPlan(${index})" alt="" width="25">
                         <img class="image-cursor"  src="../image/delete.svg" onClick="Plandelete_check(${index})" alt="" width="25">
@@ -412,11 +412,11 @@ Swal.fire({
             font-size: 10px;
           }
           th[name="_sticky_name"]{
-            font-size: 3vw;
-            width:100px !important;
+            font-size: 2.8vw;
+            width:100px;
           }
-            th[name="_sticky_controlname"]{
-            width:100px !important;
+          th[name="_sticky_controlname"]{
+            width:500px !important;
           }
 
    }
