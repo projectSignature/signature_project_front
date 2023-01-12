@@ -17,7 +17,7 @@ function handleTabletChange(e) {
     document.getElementById("monday").innerHTML = "Monday"
     document.getElementById("tuesday").innerHTML = "Tuesday"
     document.getElementById("wednesday").innerHTML = "Wednesday"
-    document.getElementById("thursdauy").innerHTML = "Thurday"
+    document.getElementById("thursdauy").innerHTML = "Thursday"
     document.getElementById("friday").innerHTML = "Friday"
     document.getElementById("suturday").innerHTML = "Saturday"
     document.getElementById("sunday").innerHTML = "Sunday"
