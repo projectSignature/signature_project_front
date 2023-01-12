@@ -249,6 +249,11 @@ function plan_option_create(){
 
     function editClient(clientId) {
       let client = clients.find((client) => client.id == clientId);
+        if(client.genero=="man"){
+        genero = "Male"
+      }else{
+        genero = "Female"
+      }
 
         fetch('https://squid-app-ug7x6.ondigitalocean.app/planget')
           .then((x) => x.json())
@@ -295,7 +300,7 @@ function plan_option_create(){
                         <select type="text" id="clientGender">
                         <option value="man">Male</option>/>
                         <option value="women">Female</option>/>
-                        <option value="${client.genero}" selected>${client.genero}</option>
+                        <option value="${client.genero}" selected>${genero}</option>
                         </select>
                         </div>
                     </div>
