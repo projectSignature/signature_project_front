@@ -21,13 +21,13 @@
         <select name="" id="filter1">
           <option value="">Categoria</option>
           <option value="All">Todos</option>
-          <option value="Man">Homem</option>
-          <option value="Women">Mulher</option>
+          <option value="man">Homem</option>
+          <option value="women">Mulher</option>
           <option value="teenagers">Menores</option>
         </select>
         <select name="" id="filter2">
         </select>
-        <input type="button" id="btn-filter" value="Buscar" />
+        <!--<input type="button" id="btn-filter" value="Buscar" />-->
       </div>
       <div  class="twrapper">
        <table>
@@ -42,6 +42,8 @@
     const btnFilter = document.getElementById("btn-filter");
     const gymName = document.getElementById("gym-name");
     const sessionGymName = sessionStorage.getItem("gym");
+    let filter1select = document.getElementById("filter1");
+    let filter2select = document.getElementById("filter2");
     let maylanguage = "PT"
     let myplan = []
 
@@ -53,6 +55,7 @@
 
 processing_wait()
 plan_option_create()
+dadosget()
 function processing_wait(){
   Swal.fire({
     icon:'info',
@@ -60,7 +63,7 @@ function processing_wait(){
   , html: 'wait'
   , allowOutsideClick : false     //枠外をクリックしても画面を閉じない
   , showConfirmButton: false
-  ,timer:'2500'
+  ,timer:'3500'
   , onBeforeOpen: () => {
       Swal.showLoading();
     }
@@ -71,43 +74,49 @@ function plan_option_create(){
   fetch('https://squid-app-ug7x6.ondigitalocean.app/planget')
     .then((x) => x.json())
     .then((res) => {
-      console.log(res)
       row = `<option value="">Planos</option>`
       myplan.push(row)
       for(let i=0;i<res.length;i++){
-        row = `<option value=${res[i].PLANS_NAME}>${res[i].PLANS_NAME}</option>`
+        row = `<option value="${res[i].PLANS_NAME}">${res[i].PLANS_NAME}</option>`
         myplan.push(row)
       }
       document.getElementById("filter2").innerHTML = myplan
     })
 }
 
+filter1select.addEventListener('change', filteron)
+filter2select.addEventListener('change', filteron)
 
+function filteron(){
+  processing_wait()
+  restartTable_filter()
+  dadosget()
+}
     //função para executar filtros--------------------------->
-    btnFilter.addEventListener("click", function () {
-      const filter1 = document.getElementById("filter1").value;
-      const filter2 = document.getElementById("filter2").value;
-      const obj = { opt1: filter1, opt2: filter2 };
+    //btnFilter.addEventListener("click", function () {
+    //  const filter1 = document.getElementById("filter1").value;
+    //  const filter2 = document.getElementById("filter2").value;
+    //  const obj = { opt1: filter1, opt2: filter2 };
 
-      fetch("https://squid-app-ug7x6.ondigitalocean.app/list", {
-        method: "POST",
-        body: JSON.stringify(obj),
-        headers: { "Content-type": "application/json; charset=UTF-8" },
-      })
-        .then((x) => x.json())
-        .then((res) => {
-          var removeTbody = document.querySelector("tbody");
-          while (removeTbody.hasChildNodes()) {
-            removeTbody.removeChild(removeTbody.firstChild);
-          }
-          clients = res;
-          clientsHandler();
-        });
-    });
+    //  fetch("https://squid-app-ug7x6.ondigitalocean.app/list", {
+    //    method: "POST",
+    //    body: JSON.stringify(obj),
+    //    headers: { "Content-type": "application/json; charset=UTF-8" },
+    //  })
+      //  .then((x) => x.json())
+      //  .then((res) => {
+      //    var removeTbody = document.querySelector("tbody");
+      //    while (removeTbody.hasChildNodes()) {
+      //      removeTbody.removeChild(removeTbody.firstChild);
+      //    }
+      //    clients = res;
+      //    clientsHandler();
+      //  });
+  //  });
 
     //função para pegar todos os registros quando o user entrar na página---->
     let clients;
-
+function dadosget(){
     fetch("https://squid-app-ug7x6.ondigitalocean.app/list", {
       method: "POST",
       body: JSON.stringify({ opt1: "", opt2: "" }),
@@ -116,26 +125,81 @@ function plan_option_create(){
       .then((x) => x.json())
       .then((res) => {
         clients = res;
+        console.log(res)
         clientsHandler();
       });
+      }
 
     function clientsHandler() {
+      console.log(clients)
+      filter1 = document.getElementById("filter1").value
+      filter2 = document.getElementById("filter2").value
+console.log(filter1,filter2)
+      filter1array = []
+      filter2array = []
       for (let index = 0; index < clients.length; index++) {
-        if(index==0){
-                  const row1 = createNewTableRow_first(clients[index]);
-                      tbody.innerHTML += row1;
-                    const  row = createNewTableRow(clients[index]);
-                          tbody.innerHTML += row;
-                }else{
-                  const row = createNewTableRow(clients[index]);
-                      tbody.innerHTML += row;
-                }
-      //  const row = createNewTableRow(clients[index]);
-      //  tbody.innerHTML += row;
+        if(filter2!=""){
+          if(clients[index].plans==filter2){
+            filter2array.push(clients[index])
+          }
+        }else{
+          filter2array.push(clients[index])
+        }
       }
+console.log(filter2array)
+        if(filter1=="All" || filter1==""){
+          for (let index = 0; index < filter2array.length; index++) {
+            filter1array.push(filter2array[index])
+          }
+          console.log('in1')
+      }else{
+        console.log('in')
+        if(filter1=="teenagers"){
+          for (let index = 0; index < filter2array.length; index++) {
+            if(filter2array[index].birthday_age<=18){
+              filter1array.push(filter2array[index])
+            }
+           }
+        }else{
+          console.log("checkok")
+          for (let index = 0; index < filter2array.length; index++) {
+            console.log()
+            if(filter2array[index].genero==filter1){
+              filter1array.push(filter2array[index])
+            }
+          }
+        }
+
+      }
+
+        console.log(filter1array)
+        for (let index = 0; index < filter1array.length; index++) {
+            if(index==0){
+                 const row1 = createNewTableRow_first();
+                        tbody.innerHTML += row1;
+                   const  row = createNewTableRow(filter1array[index]);
+                           tbody.innerHTML += row;
+              }else{
+                   const row = createNewTableRow(filter1array[index]);
+                       tbody.innerHTML += row;
+                 }
+              }
+              if(filter1array.length==0){
+                Swal.fire({
+                  icon:'info',
+                  title: 'Não há membros da categoria e plano selecionado'
+                , allowOutsideClick : false     //枠外をクリックしても画面を閉じない
+                , showConfirmButton: false
+                ,timer:'2500'
+                , onBeforeOpen: () => {
+                    Swal.showLoading();
+                  }
+                });
+              }
     }
 
     function createNewTableRow(data) {
+
       let genero
       let language
       let status
@@ -222,7 +286,7 @@ function plan_option_create(){
       return row;
     }
 
-    function createNewTableRow_first(data) {
+    function createNewTableRow_first() {
      let row = `
        <tr>
        <th class="_sticky z-02">Aluno</th>
@@ -248,19 +312,21 @@ function plan_option_create(){
 
 
     function editClient(clientId) {
+      myplan =[]
       let client = clients.find((client) => client.id == clientId);
-        if(client.genero=="man"){
-        genero = "Male"
+      if(client.genero=="man"){
+        genero = "Homem"
       }else{
-        genero = "Female"
+        genero = "Mulher"
       }
+
 
         fetch('https://squid-app-ug7x6.ondigitalocean.app/planget')
           .then((x) => x.json())
           .then((res) => {
             console.log(res)
             for(let i=0;i<res.length;i++){
-              row = `<option value=${res[i].PLANS_NAME}>${res[i].PLANS_NAME}</option>`
+              row = `<option value="${res[i].PLANS_NAME}">${res[i].PLANS_NAME}</option>`
               myplan.push(row)
             }
 
@@ -346,7 +412,7 @@ function plan_option_create(){
                         <span>Plano: </span>
                         </div>
                         <div class="input-select">
-                        <select type="text" id="clientplan">
+                        <select type="text" id="clientplan_edit">
                         ${myplan}
                         <option value="${client.plans}" selected>${client.plans}</option>
                         </select>
@@ -494,6 +560,10 @@ function plan_option_create(){
         width: 700,
       }).then((result) => {
        if (result.isConfirmed) {
+         console.log(document.getElementById("clientTel").value)
+         console.log(document.getElementById("clientTel").value.split("-")[0])
+         console.log(document.getElementById("clientTel").value.split("-")[1])
+         console.log(document.getElementById("clientTel").value.split("-")[2])
          try{
           let obj = {
             id: clientId,
@@ -509,7 +579,7 @@ function plan_option_create(){
             tel3: document.getElementById("clientTel").value.split("-")[2],
             email: document.getElementById("clientEmail").value,
             language: document.getElementById("clientlanguage").value,
-            plan: document.getElementById("clientplan").value,
+            plan: document.getElementById("clientplan_edit").value,
             status: document.getElementById("clientStatus").value,
             pass: document.getElementById("clientPass").value,
           };
@@ -558,14 +628,14 @@ swall_error(7,clientId)
       });
 
       //mascara para o campo de telefone
-      let campoTel = document.getElementById("clientTel");
-      campoTel.addEventListener("blur", () => {
-        var value = campoTel.value;
-        var a = value.replace(/\D/g, ""); //Remove tudo o que não é dígito
-        var b = a.replace(/^(\d{2})(\d)/g, "($1$2)"); //Coloca parênteses em volta dos dois primeiros dígitos
-        var c = b.replace(/(\d)(\d{4})$/, "$1-$2"); //Coloca hífen entre o quarto e o quinto dígitos
-        campoTel.value = c;
-      });
+      //let campoTel = document.getElementById("clientTel");
+      //campoTel.addEventListener("blur", () => {
+      //  var value = campoTel.value;
+        //var a = value.replace(/\D/g, ""); //Remove tudo o que não é dígito
+        //var b = a.replace(/^(\d{2})(\d)/g, "($1$2)"); //Coloca parênteses em volta dos dois primeiros dígitos
+        //var c = a.replace(/(\d)(\d{4})$/, "$1-$2"); //Coloca hífen entre o quarto e o quinto dígitos
+      //  campoTel.value = a;
+      //});
     })
     }
 
@@ -858,6 +928,15 @@ function memberdelete_check(data){
         processing_wait()
       restartTable();
     }
+
+    async function restartTable_filter() {
+
+       var removeTbody = document.querySelector("tbody");
+       while (removeTbody.hasChildNodes()) {
+         removeTbody.removeChild(removeTbody.firstChild);
+       }
+     }
+
 
    async function restartTable() {
 
