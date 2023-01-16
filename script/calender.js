@@ -32,26 +32,27 @@ var my_language = 0
 document.getElementById('calendar-title').innerHTML = stext13[my_language]
 proccesing_swal()
 getDados();
-
 const mediaQuery = window.matchMedia('(max-width: 1200px)')
+mediaQuery.addListener(handleTabletChange)
+handleTabletChange(mediaQuery)
 function handleTabletChange(e) {
   if (e.matches) {
-    document.getElementById("monday").innerHTML = "Mon"
-    document.getElementById("tuesday").innerHTML = "Tue"
-    document.getElementById("wednesday").innerHTML = "Wed"
-    document.getElementById("thursdauy").innerHTML = "Thu"
-    document.getElementById("friday").innerHTML = "Fri"
-    document.getElementById("suturday").innerHTML = "Sat"
-    document.getElementById("sunday").innerHTML = "Sun"
+    document.getElementById("span-mon").innerHTML = " Mon"
+    document.getElementById("span-tue").innerHTML = " Tue"
+    document.getElementById("span-wed").innerHTML = " Wed"
+    document.getElementById("span-thu").innerHTML = " Thu"
+    document.getElementById("span-fri").innerHTML = " Fri"
+    document.getElementById("span-sat").innerHTML = " Sat"
+    document.getElementById("span-sun").innerHTML = " Sun"
 
   }else{
-    document.getElementById("monday").innerHTML = "Monday"
-    document.getElementById("tuesday").innerHTML = "Tuesday"
-    document.getElementById("wednesday").innerHTML = "Wednesday"
-    document.getElementById("thursdauy").innerHTML = "Thursday"
-    document.getElementById("friday").innerHTML = "Friday"
-    document.getElementById("suturday").innerHTML = "Saturday"
-    document.getElementById("sunday").innerHTML = "Sunday"
+    document.getElementById("span-mon").innerHTML = "Monday"
+    document.getElementById("span-tue").innerHTML = "Tuesday"
+    document.getElementById("span-wed").innerHTML = "Wednesday"
+    document.getElementById("span-thu").innerHTML = "Thursday"
+    document.getElementById("span-fri").innerHTML = "Friday"
+    document.getElementById("span-sat").innerHTML = "Saturday"
+    document.getElementById("span-sun").innerHTML = "Sunday"
   }
 }
 
@@ -359,12 +360,14 @@ function editClient(data) {
                   font-size: 1em;
                   width: 80%;
               }
+              #swall-title-div{
+                display:block;
+              }
+              #swall-title-div h1{
+                width:100%;
+                font-size:6vw;
+              }
           }
-          label.btn span {
-  font-size: 1.5em ;
-}
-
-
       </style>
      </div>`,
         showCancelButton: true,
