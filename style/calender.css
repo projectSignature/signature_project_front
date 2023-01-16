@@ -67,9 +67,8 @@ text-align: right;
   height:100%;
   display: flex;
   align-items: center;
-
 }
-.sechedule-day p{
+.sechedule-day span{
     margin:0 auto ;
     font-size: 2vw;
 }
@@ -93,7 +92,7 @@ text-align: right;
   cursor:pointer;
 }
 .style-div-title-calender{
-  height:25%;
+  height:27%;
   display: flex;
   margin-bottom: 2%;
 }
@@ -103,7 +102,7 @@ text-align: right;
 }
 .calender-discrition{
     display:block;
-  height:75%;
+  height:73%;
 }
 .calender-discrition div a {
     font-size: 1.4vw;
