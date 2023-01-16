@@ -7,9 +7,7 @@ body {
   height: 100%;
   margin: 0;
 }
-#sotowaku {
-  height: 100%;
-}
+
 #titlediv{
    height:5%;
    background-color: #222222;
@@ -22,8 +20,8 @@ body {
 color:white;
 width: 40%;
 height: 90%;
-  font-size: 3vh;
-  text-align: right;
+font-size: 3vh;
+text-align: right;
 
 }
 #titlemain{
@@ -33,258 +31,151 @@ height: 90%;
   font-size: 2Vh;
   color:lightgray;
 }
-
 #maindiv{
-  height:98%;
-  background-color: darkgray;
-}
-#settings-row{
-  width: 100%;
-  height:7%;
-}
-#first-row{
-  width: 100%;
-  height:5%;
-  display:flex;
-  margin-top: 5px;
-}
-.sechedule-day{
-  width: 14%;
-  height:90%;
-  background-color: 	#666666;
-  margin-left: 10px;
-  margin-right: 10px;
-  text-align: center;
-  color: white;
-  font-size: 3vh;
-  vertical-align: middle;
-}
-
-#second-row{
-  height: 14%;
-  width: 100%;
-  display: flex;
-
-}
-#second-row-5{
-  height: 14%;
-    width: 100%;
-  display: flex;
-}
-#third-row{
-  height: 14%;
-    width: 100%;
-  display: flex;
-}
-#fourth-row{
-  height: 14%;
-    width: 100%;
-  display: flex;
-}
-#fifth-row{
-  height: 14%;
-    width: 100%;
-  display: flex;
-}
-#sixth-row{
-  height: 14%;
-    width: 100%;
-    display: flex;
-}
-#settings-row{
-  display: flex;
-  margin-right: 10px;
+  width:100%;
+  height:95%;
+  background-color: #EEEEEE
 }
 #calendar-title{
-
-  width:60%;
-  font-size: 5vh;
+  font-size: 2.5vw;
+  font-weight: bold;
+  width:80%;
   display: flex;
   justify-content: flex-start;
 }
 #settings-button{
-height: 100%;
-  width:40%;
+  width:20%;
   display: flex;
   justify-content: flex-end;
-padding-right: 30px;
 }
-.setting-right-button:hover{
-  box-shadow: 0 5px 10px white;
+#settings-row{
+  display: flex;;
+  justify-content: space-around;
+  height:7%;
 }
-
-#img{
-  margin-right: 20px;
-   cursor: pointer;
-}
-
-.sweet-alert-acess{
-  height: 300px;
-}
-
-
-
-
-#update-time{
-  background-color: orange;
-}
-
-#img2{
- cursor: pointer;
- margin-top: 3px;
-}
-.sechedule-time{
-  margin-top: 0;
-  margin-bottom: 0;
-  background-color: orange;
-  height: 30%;
-  color:#444444;
-  width: 100%;
-  font-size: 2.5vh;
-}
-.sechedule-div{
-  width: 100%;
-  height: 70%;
-    margin-top: 0;
+.sechedule-rows{
   display: flex;
-  background-color: white;
-  color:black;
-
-}
-.sechedulename{
-  font-size: 0.8em;
-  margin-top: 0px;
-  margin-bottom: 0px;
-  height: 50%;
-}
-
-.title-image-div{
-  width: 100%;
-
-}
-.master-image{
-
-}
-
-.sechedule{
-  background-color: red;
-  width: 14%;
-}
-
-.sechedule{
-  width: 14%;
-  height:90%;
-  margin-left: 10px;
-  margin-right: 10px;
-  text-align: center;
-  color: white;
-  font-size: 3vh;
-  vertical-align: middle;
-}
-@media screen and (min-width: 1100px) and (max-width: 1300px) {
-  .sechedule-day{
-    margin-left: 1px;
-    margin-right: 1px;
-    padding-top: 5px;
-    font-size: 1em;
-  }
-  .master-image{
-
-  }
-  .sechedulename{
-    font-size: 0.6em;
-  }
-  .sechedule-time{
-    padding-top: 10px;
-      font-size: 0.8em;
-      word-wrap: break-word;;
-  }
-  .sechedule{
-    margin-left: 1px;
-    margin-right: 1px;
-    text-align: center;
-  }
-  .sechedule-div{
-    width: 100%;
-  }
-  .setting-right-button{
-    width: 30px;
-    height: 30px;
-  }
-}
-@media screen and (min-width: 801px) and (max-width: 1100px) {
-  .sechedule-day{
-    margin-left: 1px;
-    margin-right: 1px;
-    padding-top: 5px;
-    font-size: 1em;
-  }
-  .master-image{
-
-  }
-  .sechedulename{
-    font-size: 0.2em;
-  }
-  .sechedule-time{
-    padding-top: 10px;
-      font-size: 0.5em;
-      word-wrap: break-word;;
-  }
-  .sechedule{
-    margin-left: 1px;
-    margin-right: 1px;
-    text-align: center;
-  }
-  .sechedule-div{
-    width: 100%;
-  }
-  .setting-right-button{
-    width: 30px;
-    height: 30px;
-  }
-}
-@media only screen and (max-width: 800px) {
-#calendar-title{
-  font-size: 3vh;
-  padding-top: 7px;
-}
-      #img2{
-            height: 20px
-      }
-#settings-button img{
-  padding-top: 8px;
-      padding-right:3px;
+  justify-content:space-between;
+  height:5%;
+  align-items: center;
 }
 .sechedule-day{
-  margin-left: 1px;
-  margin-right: 1px;
-  padding-top: 5px;
-  font-size: 1em;
-}
-.master-image{
-  display: none;
+  background-color: 	#444444;
+  color:white;
+  font-weight: bold;
+  width:14%;
+  height:100%;
+  display: flex;
+  align-items: center;
 
 }
-.sechedulename{
-  font-size: 0.4em;
+.sechedule-day p{
+    margin:0 auto ;
+    font-size: 2vw;
 }
-.sechedule-time{
-    font-size: 0.4em;
-    word-wrap: break-word;
+#div-flex{
+  display: flex;
+  justify-content: space-between;
+  width:100%;
+  height:80%;
 }
-.sechedule{
-  margin-left: 1px;
-  margin-right: 1px;
-  text-align: center;
+.calender-div-block{
+  display:block;
+  width:14%;
 }
-.sechedule-div{
-  width: 100%;
+.calender-div-block-height{
+  width:99%;
+  display:block;
+  height:17.5%;
+  border:1px solid #AAAAAA;
+  margin-top:1%;
+  background-color: white;
+  cursor:pointer;
 }
-.setting-right-button{
-  width: 30px;
-  height: 30px;
+.style-div-title-calender{
+  height:25%;
+  display: flex;
+  margin-bottom: 2%;
 }
- #gym-name{
-   font-size:2vh;
-      }
+.style-div-title-calender p{
+  margin:0 auto;
+  font-size: 1.4vw;
+}
+.calender-discrition{
+    display:block;
+  height:75%;
+}
+.calender-discrition div a {
+    font-size: 1.4vw;
+}
+.disctrion-a{
+  display:flex;
+}
+.disctrion-a a{
+  margin:0 auto
+}
+
+
+input {
+  position: absolute;
+  left: -9999px;
+}
+
+label {
+  display: block;
+  position: relative;
+  margin: 20px;
+  padding: 15px 30px 15px 62px;
+  border: 3px solid #fff;
+  border-radius: 100px;
+  color: #fff;
+  background-color: #6a8494;
+  box-shadow: 0 0 20px rgba(0, 0, 0, .2);
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color .2s, box-shadow .2s;
+}
+
+label::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  left: 10px;
+  width: 32px;
+  border: 3px solid #fff;
+  border-radius: 100px;
+  transition: background-color .2s;
+}
+
+label:first-of-type {
+  transform: translateX(-40px);
+}
+
+label:last-of-type {
+  transform: translateX(40px);
+}
+
+label:hover, input:focus + label {
+  box-shadow: 0 0 20px rgba(0, 0, 0, .6);
+}
+
+input:checked + label {
+  background-color: #ab576c;
+}
+
+input:checked + label::before {
+  background-color: #fff;
+}
+
+@media screen and (min-width: 1100px) and (max-width: 1300px) {
+
+}
+@media screen and (min-width: 801px) and (max-width: 1100px) {
+
+}
+@media only screen and (max-width: 800px) {
+
 }
