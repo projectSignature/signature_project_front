@@ -116,12 +116,12 @@ text-align: right;
 }
 
 
-input {
+.container input {
   position: absolute;
   left: -9999px;
 }
 
-label {
+.container label {
   display: block;
   position: relative;
   margin: 20px;
@@ -137,7 +137,7 @@ label {
   transition: background-color .2s, box-shadow .2s;
 }
 
-label::before {
+.container label::before {
   content: '';
   display: block;
   position: absolute;
@@ -150,23 +150,23 @@ label::before {
   transition: background-color .2s;
 }
 
-label:first-of-type {
+.container label:first-of-type {
   transform: translateX(-40px);
 }
 
-label:last-of-type {
+.container label:last-of-type {
   transform: translateX(40px);
 }
 
-label:hover, input:focus + label {
+.container label:hover, input:focus + label {
   box-shadow: 0 0 20px rgba(0, 0, 0, .6);
 }
 
-input:checked + label {
+.container input:checked + label {
   background-color: #ab576c;
 }
 
-input:checked + label::before {
+.container input:checked + label::before {
   background-color: #fff;
 }
 
