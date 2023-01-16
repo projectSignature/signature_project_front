@@ -32,18 +32,17 @@ var my_language = 0
 document.getElementById('calendar-title').innerHTML = stext13[my_language]
 proccesing_swal()
 getDados();
+
 const mediaQuery = window.matchMedia('(max-width: 1200px)')
-mediaQuery.addListener(handleTabletChange)
-handleTabletChange(mediaQuery)
 function handleTabletChange(e) {
   if (e.matches) {
-    document.getElementById("monday").innerHTML = " Mon"
-    document.getElementById("tuesday").innerHTML = " Tue"
-    document.getElementById("wednesday").innerHTML = " Wed"
-    document.getElementById("thursdauy").innerHTML = " Thu"
-    document.getElementById("friday").innerHTML = " Fri"
-    document.getElementById("suturday").innerHTML = " Sat"
-    document.getElementById("sunday").innerHTML = " Sun"
+    document.getElementById("monday").innerHTML = "Mon"
+    document.getElementById("tuesday").innerHTML = "Tue"
+    document.getElementById("wednesday").innerHTML = "Wed"
+    document.getElementById("thursdauy").innerHTML = "Thu"
+    document.getElementById("friday").innerHTML = "Fri"
+    document.getElementById("suturday").innerHTML = "Sat"
+    document.getElementById("sunday").innerHTML = "Sun"
 
   }else{
     document.getElementById("monday").innerHTML = "Monday"
@@ -360,14 +359,12 @@ function editClient(data) {
                   font-size: 1em;
                   width: 80%;
               }
-              #swall-title-div{
-                display:block;
-              }
-              #swall-title-div h1{
-                width:100%;
-                font-size:6vw;
-              }
           }
+          label.btn span {
+  font-size: 1.5em ;
+}
+
+
       </style>
      </div>`,
         showCancelButton: true,
