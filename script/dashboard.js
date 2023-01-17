@@ -14,6 +14,14 @@ const error5 = ["O campo do nome do plano não pode está em branco","Enter plan
 const error6 = ["O campo do valor não pode está em branco","Enter plan price", "金額を入力してください"];
 const error7 = ["O campo da discrição 1 não pode está em branco","Enter plan discretion 1", "プラン説明1を入力してください"];
 const error8 = ["O campo do nome para controle não pode está em branco","Enter name for control", "管理用の名称を入力してください"];
+const error9 = ["Por favor, digite sua senha atual","Please enter your current password", "現在のパスワードを入力してください"];
+const error10 = ["por favor digite uma nova senha","please enter a new password", "新しいパスワードを入力してください"];
+const error11 = ["Insira uma senha de confirmação","Please enter a confirmation password", "確認パスワードを入力してください"];
+const error12 = ["A nova senha e a senha de confirmação estão diferentes","New password and confirmation password are different", "新しいパスワードと確認パスワードが違ってます"];
+const error13 = ["Erro na senha atual","Error in current password", "現在のパスワードに誤りがあります"];
+const error14 = ["Erro na alteração, tente novamente","Change error, try again", "変更に失敗しました,　再度お試しください"];
+const error15 = ["Senha inválida, senha tem que ter no mínimo 8 dígitos","Invalid password, password must have at least 8 digits", "無効なパスワード、パスワードは少なくとも8桁でなければなりません"];
+
 const language = ["PT","EN","JP"]
 const stext1 = ["Nome do representant","Name of the representative","代表者名"]
 const stext2 = ["Nome da academia","Gym name","ジム名"]
@@ -41,6 +49,11 @@ const stext23=["Deletar o plano","Delete the plan","プランの削除"]
 const stext24 = ["Deletar","Delete","削除"]
 const stext25 = ["Nome para controle","name for control","管理用の名称"]
 const stext26 = ["Início","Home","ホーム"]
+const stext27 = ["Alterar a senha","Change the password","パスワードの変更をします"]
+const stext28 = ["Senha atual","Current Password","現在のパスワード"]
+const stext29 = ["Nova Senha","New Password","新しいパスワード"]
+const stext30 = ["Confirme a Senha","Confirm password","パスワードの確認入力"]
+const stext31 = ["Letras inválidas","invalid character","半角英数字で入力してください"]
 var token = sessionStorage.getItem("token");
 const addMemberDiv = document.querySelector('#add_member_div');
 const memberDiv = document.querySelector('#member_div');
@@ -49,6 +62,7 @@ const graduacaoDiv = document.querySelector('#graduacao_div');
 let clients
 let gymid = 4
 var my_language = 0
+const regex = /^(?=.*[A-Z])[a-zA-Z0-9.?/-]{8,24}/;
 
 
 Swal.fire({
@@ -104,7 +118,7 @@ document.getElementById("configration").addEventListener("click",config_main)
    html: `
            <div class="div-flex">
             <input class="button-input" type="button" value="${stext6[my_language]}"/>
-            <input class="button-input" type="button" id="select-pass" value="${stext7[my_language]}"/>
+            <input class="button-input" type="button" id="select-pass" value="${stext7[my_language]}" onclick="password_change()"/>
             <input class="button-input" type="button" id="select-plans" onclick="config_plan()" value="${stext8[my_language]}"/>
            </div>
            <hr class="underbar" />
@@ -199,7 +213,7 @@ document.getElementById("configration").addEventListener("click",config_main)
            @media only screen and (max-width: 700px) {
              .swal2-popup {
              width: 100% !important;
-             height:600px !important;
+              height:600px !important;
             }
             .button-input{
               width:30%;
@@ -266,6 +280,147 @@ document.getElementById("configration").addEventListener("click",config_main)
   })
 }
 
+
+
+function password_change() {
+    Swal.fire({
+        html: `
+             <div id="title">${stext27[my_language]}</div>
+             <div id="client">
+                 <div id="passdiv" class="right-div">
+                     <input  type="password" pattern="^[0-9a-zA-Z]{8,16}" placeholder="${stext28[my_language]}"  id="password" />
+                     <span id="buttonEye1" class="fa fa-eye" onclick="pushHideButton(1)"></span>
+                 </div>
+                 <span class="error-red" id="atention-color1">${stext31[my_language]}</span>
+                 <div class="right-div">
+                     <input  type="password" pattern="^[0-9a-zA-Z]{8,16}" placeholder="${stext29[my_language]}"  id="newPassword" />
+                     <span id="buttonEye2" class="fa fa-eye" onclick="pushHideButton(2)"></span>
+
+                 </div>
+                 <span class="error-red" disabled>${stext31[my_language]}</span>
+                 <div class="right-div">
+                     <input  type="password" pattern="^[0-9a-zA-Z]{8,16}" placeholder="${stext30[my_language]}"  id="confirmpassword" />
+                     <span id="buttonEye3" class="fa fa-eye" onclick="pushHideButton(3)"></span>
+                 </div>
+                 <span class="error-red" disabled>${stext31[my_language]}</span>
+             </div>
+             <style>
+             .swal2-popup {
+                 width: 40% !important;
+             }
+                 #title{
+                   font-size:4vh;
+                 }
+                 #client{
+                     width: 100%;
+                 }
+                 #client div{
+                     width: 100%;
+                 }
+                 #client input {
+                     border-radius: 10px;
+                     height: 5vh;
+                     border: 1px solid gray;
+                     text-indent: 10px;
+                 }
+                 #textPassword {
+                         border: none; /* デフォルトの枠線を消す */
+                       }
+                       #fieldPassword {
+                         border-width: thin;
+                         border-style: solid;
+                         width: 200px;
+                       }
+                       .error-red{
+                         color:white;
+                       }
+                          @media only screen and (max-width: 700px) {
+                            .swal2-popup {
+                                width: 80% !important;
+                            }
+                          }
+             </style>
+           `,
+        showCancelButton: true,
+        cancelButtonText: "キャンセル",
+        confirmButtonText: "変更する",
+    }).then(result => {
+      let passchange
+        if (result.isConfirmed) {
+          let pass= document.getElementById("password").value
+         let newpass = document.getElementById("newPassword").value
+         let confirmpass = document.getElementById("confirmpassword").value
+         if(pass==""){
+           swallerror(error9[my_language],3)
+         }else if(newpass==""){
+           swallerror(error10[my_language],3)
+         }else if(newpass!=confirmpass){
+           swallerror(error12[my_language],3)
+         }else{
+           hankaku2Zenkaku(newpass)
+           .then((str1)=>{
+           })
+           hankaku2Zenkaku(confirmpass)
+           .then((str1)=>{
+           }).then((passcheck)=>{
+             if(regex.test(confirmpass)){
+                  axios.get(`https://squid-app-ug7x6.ondigitalocean.app/clientesDados/${gymid}`)
+                    .then(function (response) {
+                      console.log(response)
+                      if(response.status==200){
+                        if(response.data[0].PASSWORD==pass){
+                          console.log('ok20onaji')
+                          fetch("https://squid-app-ug7x6.ondigitalocean.app/passupdate", {//pegar todos dados do table de pagamentos
+                            method: 'POST',
+                            body: JSON.stringify({ id:gymid,pass:confirmpass}),
+                            headers: { "Content-type": "application/json; charset=UTF-8" }
+                          })
+                            .then((x) => x.json())
+                            .then((res) => {
+                              swall_success()
+                            })
+                        }else{
+                          swallerror(error13[my_language],3)
+                        }
+                      }else{
+                        swallerror(error14[my_language],3)
+                      }
+
+                   })
+    　　　　　     }else{
+               swallerror(error15[my_language],3)
+    }
+           })
+         }
+      }
+    })
+}
+
+
+function pushHideButton(data) {
+  switch (data) {
+    case 1:
+    txtPass = document.getElementById("password")
+    btnEye = document.getElementById("buttonEye1")
+    break;
+    case 2:
+   txtPass = document.getElementById("newPassword")
+   btnEye = document.getElementById("buttonEye2")
+   break;
+    case 3:
+    txtPass = document.getElementById("confirmpassword")
+    btnEye = document.getElementById("buttonEye3")
+      break;
+  }
+        if (txtPass.type === "text") {
+          txtPass.type = "password";
+          btnEye.className = "fa fa-eye";
+        } else {
+          txtPass.type = "text";
+          btnEye.className = "fa fa-eye-slash";
+        }
+      }
+
 function config_plan(){
 fetch('https://squid-app-ug7x6.ondigitalocean.app/planget')
   .then((x) => x.json())
@@ -281,21 +436,21 @@ fetch('https://squid-app-ug7x6.ondigitalocean.app/planget')
                  <th class="_sticky">${stext17[my_language]}</th>
                  <th class="_sticky">${stext18[my_language]}</th>
                  <th class="_sticky">${stext19[my_language]}</th>
-                 <th class="_sticky" name="_sticky_controlname" >${stext25[my_language]}</th>
+                 <th class="_sticky">${stext25[my_language]}</th>
                  <th class="_sticky">${stext21[my_language]}</th>
                  </tr>`)
   for (let index = 0; index < res.length; index++) {
     if(res[index].GYM_ID==gymid){
       plans.push(`<tr>
                     <th class="_sticky" name="_sticky_name">${res[index].PLANS_NAME}</th>
-                    <td class="_sticky_y">${res[index].PLAN_VALOR}</td>
-                    <td class="_sticky_y">${division[res[index].PLAN_KUBUN]}</td>
-                    <td class="_sticky_y">${res[index].PLAN_DISCRITION1}</td>
-                    <td class="_sticky_y">${res[index].PLAN_DISCRITION2}</td>
-                    <td class="_sticky_y">${res[index].PLAN_DISCRITION3}</td>
-                    <td class="_sticky_y">${res[index].PLAN_DISCRITION4}</td>
-                    <td class="_sticky_y">${res[index].PLAN_DISCRITION5}</td>
-                    <td class="_sticky_y" >${res[index].CONTROL_NAME}</td>
+                    <td>${res[index].PLAN_VALOR}</td>
+                    <td>${division[res[index].PLAN_KUBUN]}</td>
+                    <td>${res[index].PLAN_DISCRITION1}</td>
+                    <td>${res[index].PLAN_DISCRITION2}</td>
+                    <td>${res[index].PLAN_DISCRITION3}</td>
+                    <td>${res[index].PLAN_DISCRITION4}</td>
+                    <td>${res[index].PLAN_DISCRITION5}</td>
+                    <td>${res[index].CONTROL_NAME}</td>
                     <td>
                         <img class="image-cursor"  src="../image/edit.svg" onClick="editPlan(${index})" alt="" width="25">
                         <img class="image-cursor"  src="../image/delete.svg" onClick="Plandelete_check(${index})" alt="" width="25">
@@ -316,40 +471,15 @@ Swal.fire({
          <hr class="underbar" />
          <div class="twrapper">
          <table>
-           <tbody> ${plans}　</tbody>
+           <tbody>${plans}</tbody>
          </table>
          </div>
-
-
          <style>
-         .swal2-popup {
-             width: 80% !important;
-         }
-         .twrapper{
-           overflow-y:scroll;
-           overflow-x:scroll;
-           height:85%;
-         }
-         #select-pass ,#mydata{
-           background-color:#CCCCCC !important;
-           color:#555555 !important;
-         }
-         #select-plans{
-           background-color: #4169E1 !important;
-         }
-         .button-input{
-           border-radius:50px;
-           color:white;
-           width:25%;
-           height:70px;
-           margin-left:15px;
-           cursor:pointer;
-           font-size:2vw;
-         }
          .twrapper{
            overflow-y:scroll;
            height:500px !important;
          }
+
          table {
            border-collapse: collapse;
            border-spacing: 0;
@@ -372,9 +502,10 @@ Swal.fire({
            top: 0;
            left: 0;
            z-index: 1;
-           width:100px !important;
+           width:80px !important;
            height:5px !important;
          }
+
          ._sticky:before {
            content: "";
            position: absolute;
@@ -391,37 +522,14 @@ Swal.fire({
          th[name="_sticky_name"]{
            background: #00BFFF;
          }
-         .image-cursor{
-           cursor:pointer
-         }
-         .button-input:hover{
-           transform: scale(1.1);
-         }
+
          @media only screen and (max-width: 700px) {
            ._sticky.z-02 {
              width: 15px !important;
            }
            ._sticky {
-             width:120px !important;
+             width:80px !important;
            }
-           .swal2-popup {
-           width: 100% !important;
-            height:550px !important;
-          }
-          .button-input{
-            width:27%;
-            font-size:3vw;
-          }
-          th, td {
-            font-size: 10px;
-          }
-          th[name="_sticky_name"]{
-            font-size: 2.8vw;
-            width:100px;
-          }
-          th[name="_sticky_controlname"]{
-            width:250px !important;
-          }
 
    }
         </style>
@@ -464,9 +572,6 @@ cancelButtonText:　stext10[my_language]
 })
 }
   function editPlan(data){
-    console.log(clients)
-    console.log(division)
-    console.log(division[0])
     Swal.fire({
       title: stext22[my_language],
       customClass: 'customizable',
@@ -594,16 +699,12 @@ cancelButtonText:　stext10[my_language]
            }
            #palanvalue{
              width:70% !important;
-
            }
            @media only screen and (max-width: 700px) {
              .swal2-popup {
              width: 100% !important;
             }
-
-
      }
-
             </style>
             `
     , allowOutsideClick : true     //枠外をクリックしても画面を閉じない
@@ -663,8 +764,39 @@ cancelButtonText:　stext10[my_language]
     config_plan()
   }
 })
-
 }
+//半角に修正------------------------------>
+function hankaku2Zenkaku(str) {
+  console.log(str)
+  return new Promise(function (resolve, reject) {
+  let syuuseigo =""
+  for (let index = 0; index < str.length; index++) {
+    var aa = str[index].replace(/[Ａ-Ｚａ-ｚ０-９]/g, function(s) {
+        return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+    });
+    syuuseigo = syuuseigo + aa
+  }
+  let returnpass = checkChar(syuuseigo)
+  console.log(returnpass)
+  resolve(returnpass)
+  //return returnpass;
+})
+}
+//英文字のみチェック------------------------------>
+function checkChar(elm){
+  console.log(elm)
+    //var txt=elm.;
+    for(i=0 ; i < elm.length ; i++){
+        if(escape(elm.charAt(i)).length >= 4){
+            //alert("半角英数字を入力してください");
+            return 0;
+            break;
+        }else{
+          return elm
+        }
+    }
+}
+
 
 function kanmaChange(inputAns){
  console.log(inputAns);
@@ -709,14 +841,15 @@ function language_select(data){
 
 
 function payswall(){
-  console.log(yetpayment)
   let yetmemberswall = []
+  let row
   const months = ["0","Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-  yetmemberswall.push(`<tr><th class="_sticky z-02">Nome</th><th class="_sticky">Ano</th><th  class="_sticky">Mês</th></tr>`)
+  yetmemberswall.push(`<tr><th class="_sticky z-02">Nome</th><th class="_stickyy">Ano</th><th class="_stickyy">Mês</th></tr>`)
   for (let index = 0; index < yetpayment.length; index++) {
-  let row = `<tr><th class="_sticky" name="_sticky_name">${yetpayment[index].nm_member}</th><td class="_sticky_y">${yetpayment[index].year}</td><td class="_sticky_y">${months[yetpayment[index].month]}</td></tr>`
+   row = `<tr><th class="_sticky" name="_sticky_name">${yetpayment[index].nm_member}</th><td>${yetpayment[index].year}</td><td>${months[yetpayment[index].month]}</td></tr>`
   yetmemberswall.push(row)
     }
+    console.log(yetmemberswall)
     if(yetpayment.length==0){
       Swal.fire({
         title: 'Não há pagamento atrasado',
@@ -734,71 +867,70 @@ function payswall(){
       cancelButtonText: 'Voltar',
       width: 550,
       html: `<div class="twrapper">
-        <table>
-          <tbody>${yetmemberswall}</tbody>
-        </table>
-      </div>
+                <table>
+                  <tbody>${yetmemberswall}</tbody>
+                </table>
+            </div>
+            <style>
+            .twrapper{
+              overflow-y:scroll;
+              height:500px !important;
+            }
 
-      <style>
-      .twrapper{
-        overflow-y:scroll;
-        height:500px !important;
+            table {
+              border-collapse: collapse;
+              border-spacing: 0;
+            }
+            th, td {
+              vertical-align: middle;
+              padding: 20px 15px;
+              font-size: 14px;
+              text-align: center;
+            }
+            th {
+              color: #EEEEEE;
+              background: #222222;
+            }
+            td{
+              border: 1px solid #ccc;
+            }
+            ._sticky {
+              position: sticky;
+              top: 0;
+              left: 0;
+              z-index: 1;
+              width:80px !important;
+              height:5px !important;
+            }
+
+            ._sticky:before {
+              content: "";
+              position: absolute;
+              top: -1px;
+              left: -1px;
+              width: 100%;
+              height: 100%;
+              border: 1px solid #ccc;
+            }
+            ._sticky.z-02 {
+              z-index: 2;
+              width: 200px !important;
+            }
+            th[name="_sticky_name"]{
+              background: #00BFFF;
+            }
+
+            @media only screen and (max-width: 700px) {
+              ._sticky.z-02 {
+                width: 15px !important;
+              }
+              ._sticky {
+                width:80px !important;
+              }
+
       }
 
-      table {
-        border-collapse: collapse;
-        border-spacing: 0;
-      }
-      th, td {
-        vertical-align: middle;
-        padding: 20px 15px;
-        font-size: 14px;
-        text-align: center;
-      }
-      th {
-        color: #EEEEEE;
-        background: #222222;
-      }
-      td{
-        border: 1px solid #ccc;
-      }
-      ._sticky {
-        position: sticky;
-        top: 0;
-        left: 0;
-        z-index: 1;
-        width:80px !important;
-        height:5px !important;
-      }
-
-      ._sticky:before {
-        content: "";
-        position: absolute;
-        top: -1px;
-        left: -1px;
-        width: 100%;
-        height: 100%;
-        border: 1px solid #ccc;
-      }
-      ._sticky.z-02 {
-        z-index: 2;
-        width: 200px !important;
-      }
-      th[name="_sticky_name"]{
-        background: #00BFFF;
-      }
-
-      @media only screen and (max-width: 700px) {
-        ._sticky.z-02 {
-          width: 15px !important;
-        }
-        ._sticky {
-          width:80px !important;
-        }
-
-}
-
-   </style>`,
+         </style>`,
     }).then((result) => {
      if (result.isConfirmed) {
        let path = `https://squid-app-ug7x6.ondigitalocean.app/signature-project-front/pages/payment.html`;
@@ -982,188 +1114,50 @@ var next_graduation = 0
         }
       }
       document.getElementById("member-total-graduation").innerHTML = next_graduation
-      memberget_chart()
+      //memberget_chart()
     });
-//pagar todas do table de member------------------------------->
-    function memberget_chart(){
-      const filter1 = "";
-      const filter2 = "";
-      let planA = 0
-      let planB = 0
-      let planC = 0
-      let planD = 0
-      let planE = 0
-      let planF = 0
-      let planG = 0
-      let planH = 0
-      let planI = 0
-      let planJ = 0
-      let planK = 0
-      let planL = 0
-      let planM = 0
-      let planN = 0
-      const obj = { opt1: filter1, opt2: filter2 };
-      fetch("https://squid-app-ug7x6.ondigitalocean.app/list", {
-        method: "POST",
-        body: JSON.stringify(obj),
-        headers: { "Content-type": "application/json; charset=UTF-8" },
+
+function plansget(){
+  let plansArray = []
+  let plans = []
+  let plansCount = []
+  fetch('https://squid-app-ug7x6.ondigitalocean.app/planget')
+    .then((x) => x.json())
+    .then((res) => {
+    clients = res
+    for(let i=0;i<clients.length;i++){
+      plans.push(clients[i].CONTROL_NAME)
+    }
+  }).then((res)=>{
+    const obj = { opt1: '', opt2: '' };
+    fetch("https://squid-app-ug7x6.ondigitalocean.app/list", {
+      method: "POST",
+      body: JSON.stringify(obj),
+      headers: { "Content-type": "application/json; charset=UTF-8" },
+    })
+      .then((x) => x.json())
+      .then((res) => {
+        for(let i =0;i<res.length;i++){
+           plansArray.push(res[i].plans)
+        }
+        var count = []
+        for (var i = 0; i < plans.length; i++) {
+          mycount = plansArray.countCertainElements(plans[i])
+          plansCount.push(mycount)
+        }
+        datacolor = ["#D0B0FF","#A4C6FF","#FFABCE","Plan D","#A7F1FF","#E9FFA5","#9BF9CC","#AEFFBD","#CCCCCC","#FA8072","#E9967A","#FF00FF","#90EE90","#48D1CC","#9ACD32"]
+        create_chart(plansCount,plans,datacolor)
       })
-        .then((x) => x.json())
-        .then((res) => {
-          membersarry = res;
-          console.log(membersarry)
-          var flugA = false;
-          var flugB = false;
-          var flugC = false;
-          var flugD = false;
-          var flugE = false;
-          var flugF = false;
-          var flugG = false;
-          var flugH = false;
-          var flugI = false;
-          var flugJ = false;
-          var flugK = false;
-          var flugL = false;
-          var flugM = false;
-          var flugN = false;
-          for (let index = 0; index < membersarry.length; index++) {
-            switch(membersarry[index].plans){
-              case "PLAN A":
-              flugA = true;
-            　 planA ++
-            break;
-              case "PLAN B":
-                flugB = true;
-               planB ++
-                 break;
-              case "PLAN C":
-                flugC = true;
-                planC ++
-                break;
-              case "PLAN D":
-                flugD = true;
-                planD ++
-                break;
-              case "PLAN E":
-                flugE = true;
-                planE ++
-                break;
-              case "PLAN F":
-                flugF = true;
-               planF ++
-               break;
-              case "PLAN G":
-                flugG = true;
-                planG ++
-                break;
-              case "PLAN H":
-                flugH = true;
-                planH ++
-                break;
-              case "PLAN I":
-                flugI = true;
-                planI ++
-                break;
-              case "PLAN J":
-                flugJ = true;
-                planJ ++
-                break;
-              case "PLAN K":
-                flugK = true;
-                planK ++
-                break;
-              case "PLAN L":
-              planL ++
-              flugL = true;
-              break;
-              case "PLAN M":
-                flugM = true;
-                planM ++
-                break;
-              case "PLAN N":
-                flugN = true;
-                planN ++
-                break;
-                default:
-              }
-            }
-            data1 =[]
-            data = []
-            datacontents = []
-            datacolor = []
-            data1.push(planA,planB,planC,planD,planE,planF,planG,planH,planI,planJ,planK,planL,planM,planN)
-            console.log(data1)
-              for (let index = 0; index < data1.length; index++) {
-                     if(data1[index]){
-                       data.push(data1[index])
-                     }
-              }
-              if(flugA){
-                datacontents.push("Plan A")
-                datacolor.push("#D0B0FF")
-              }
-              if (flugB){
-                datacontents.push("Plan B")
-                datacolor.push("#A4C6FF")
-              }
-              if (flugC){
-                datacontents.push("Plan C")
-                datacolor.push("#FFABCE")
-              }
-              if (flugD){
-                datacontents.push("Plan D")
-                datacolor.push("#A7F1FF")
-              }
-              if (flugE){
-                datacontents.push("Plan E")
-                datacolor.push("#E9FFA5")
-              }
-               if (flugF){
-                datacontents.push("Plan F")
-                datacolor.push("#9BF9CC")
-              }
-              if (flugG){
-                datacontents.push("Plan G")
-                datacolor.push("#AEFFBD")
-              }
-              if (flugH){
-                datacontents.push("Plan H")
-                datacolor.push("#CCCCCC")
-              }
-              if (flugI){
-                datacontents.push("Plan I")
-                datacolor.push("#FA8072")
-              }
-              if (flugJ){
-                datacontents.push("Plan J")
-                datacolor.push("#E9967A")
-              }
-              if (flugK){
-                datacontents.push("Plan K")
-                datacolor.push("#FF00FF")
-              }
-              if (flugL){
-                datacontents.push("Plan L")
-                datacolor.push("#90EE90")
-              }
-              if (flugM){
-                datacontents.push("Plan M")
-                datacolor.push("#48D1CC")
-              }
-              if (flugN){
-                datacontents.push("Plan N")
-                datacolor.push("#9ACD32")
-              }
-            create_chart(data,datacontents,datacolor)
-        });
+  })
+}
+plansget()
 
-  }
-
-
+Array.prototype.countCertainElements = function(value){
+    return this.reduce((sum, element) => (element == value ? sum + 1 : sum), 0)
+}
 
 function create_chart(data,datacontents,datacolor){
    var ctx = document.getElementById("graph-area")//.getContext("2d");
-  // window.myPie = new Chart(ctx).Pie(pieData);
   var graph_area = new Chart(ctx,{
     type: 'pie',
     data:{
@@ -1183,7 +1177,7 @@ legend:{
 },
 pieceLabel: {
   render: "label",
-  fontSize: 12,
+  fontSize: 10,
   fontColor: "black",
   position: "outside"
   },
@@ -1198,9 +1192,6 @@ pieceLabel: {
       document.querySelector('#payment-yet').innerHTML = response.data.length;
       yetpayment = response.data
     });
-
-
-
 
     //create line chart--------------------------------->
     axios.get('https://squid-app-ug7x6.ondigitalocean.app/info')
@@ -1227,7 +1218,6 @@ pieceLabel: {
           mystartyear = kotoshi
           mystartmonth = "1"
           myfinishmonth = "12"
-
         }else{
           for (let index = 1 + kongetsu ; index < 12; index++) {
             month_name.push(months[index])
@@ -1319,6 +1309,8 @@ pieceLabel: {
            config_main()
          }else if(kubun==2){
            editPlan(data)
+         }else if(kubun==3){
+           password_change()
          }
        }
      })
