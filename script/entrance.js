@@ -439,13 +439,18 @@ function entrance_count(data){
 }
 
 function addEntrance(number) {
-  var starttime = clientes[number].START_TIME
+   var starttime = clientes[number].START_TIME
   var finishtime = clientes[number].FINISH_TIME
+  const date = new Date(Date.now() + ((new Date().getTimezoneOffset() + (9 * 60)) * 60 * 1000));
+  const japanweekeday = date.getDay()
+  var d1 = date.getFullYear() + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' +('0' + date.getDate()).slice(-2) + ' ' +  ('0' + date.getHours()).slice(-2) + ':' + ('0' + date.getMinutes()).slice(-2) + ':' + ('0' + date.getSeconds()).slice(-2) + '.' + date.getMilliseconds();
   var obj = {
     LESSON_NAME: document.getElementById(`discrition${number}`).innerHTML + "_" + document.getElementById(`subdiscrition${number}`).innerHTML,
     LESSON_HOUR: starttime +"~"+finishtime,
     MEMBER_ID: localStorage.getItem('id'),
-    GYM_ID: localStorage.getItem('GYM_ID')
+    GYM_ID: 4,//localStorage.getItem('GYM_ID'),
+    LESSON_DATE: d1,
+    LESSON_DAY:japanweekeday
   }
   fetch('https://squid-app-ug7x6.ondigitalocean.app/registerentrance', {
     method: 'POST',
