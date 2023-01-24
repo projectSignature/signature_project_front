@@ -172,7 +172,9 @@ console.log(filter2array)
 
       }
 
-        console.log(filter1array)
+        filter1array.sort( function(a, b) {
+    return a.nm_member < b.nm_member ? -1 : 1;
+  })
         for (let index = 0; index < filter1array.length; index++) {
             if(index==0){
                  const row1 = createNewTableRow_first();
