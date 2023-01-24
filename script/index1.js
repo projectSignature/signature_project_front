@@ -34,6 +34,8 @@ document.getElementById("birthday_month").addEventListener("change", birthday_da
 document.getElementById("birthday_day").addEventListener("change", birthday_date_get)
 document.getElementById("cheap").addEventListener("click", familyplan)
 
+
+
 var past={
  pt:{
    buttons:{
@@ -134,7 +136,6 @@ language_change()
 let familyarray = []
 function familyplan(){
 	if(document.getElementById("cheap").checked){
-	console.log('check')
 	plans_div.innerHTML = ""
 	plans_kubun = 4
   Swal.fire({
@@ -176,7 +177,7 @@ inputs[5].addEventListener('click', () => {
 	document.getElementById("women1").style.Color = '#B6B6B4';
 	document.getElementById("women1").style.backgroundColor = '#B6B6B4';
 	inputs[6].checked.false;
-	console.log(member_kubun)
+  inputs[5].checked.true;
 		member_kubun_chech()
 })
 inputs[6].addEventListener('click', () => {
@@ -186,24 +187,20 @@ inputs[6].addEventListener('click', () => {
 	document.getElementById("man1").style.Color = '#B6B6B4';
 	document.getElementById("man1").style.backgroundColor = '#B6B6B4';
 	inputs[5].checked.false;
-	console.log(member_kubun)
+  inputs[6].checked.true;
 	member_kubun_chech()
 })
 
 function member_kubun_chech(){
 		if(document.getElementById("birthday_age").value!="" && member_kubun == 0){
-			console.log("nanimoshinai")
 		}else if(document.getElementById("birthday_age").value>=16 && member_kubun==1){
-			console.log("18ijyou,otoko")
 			plans_kubun = member_kubun
 			planget(plans_kubun)
 		}else if(document.getElementById("birthday_age").value>=16 && member_kubun==2){
-			console.log("18miman,onna")
 			plans_kubun = member_kubun
 			planget(plans_kubun)
 		}else{
 			member_kubun = 3
-			console.log("18miman,miman")
 			plans_kubun = member_kubun
 			planget(plans_kubun)
 		}
@@ -314,20 +311,15 @@ function saveData() {
     "active_date" : activedate,
     "inactive_date": 0
   };
-console.log(obj)
   fetch('https://squid-app-ug7x6.ondigitalocean.app/member',
   {method: 'POST',
  body: JSON.stringify(obj),
   headers: {"Content-type": "application/json; charset=UTF-8"}})
   .then((x)=> x.json())
   .then((response) => {
-		console.log(response)
         fetch(`https://squid-app-ug7x6.ondigitalocean.app/payment/${obj.nm_member}/${gymid}/${obj.plans}/${valor.split('￥')[1]}`);
           if(familyarray.length!=0){
-              console.log(familyarray)
             for(let i = 0;i<familyarray.length;i++){
-              console.log(i)
-              console.log("parentsin")
                  name=familyarray[i].split("_")[0]
                  birthday=familyarray[i].split("_")[1]
                  gender=familyarray[i].split("_")[2]
@@ -347,7 +339,6 @@ function ejspdf() {
   fetch('https://squid-app-ug7x6.ondigitalocean.app/pdf')
   .then((x) => x.json())
   .then((response) => {
-    console.log(response)
   })
 }
 
@@ -504,7 +495,6 @@ if(kubun_check==0){
 , reverseButtons: true
 }).then(function(result) {
    if (!result.value) {
-       console.log('キャンセルのため何もしない');
        return;
    }
 
@@ -675,7 +665,7 @@ input {
   input {
   	width:100%;
   	height:40px;
-	font-size:2.5vw;
+    font-size:2.5vw;
   }
   .birthday {
     width:30%;
@@ -697,7 +687,6 @@ input {
 		date: document.getElementById("f-birthday_day").value
 		 };
 	 let age = getAge(birthday)
-	 console.log(age)
 		myfamily = `${myname}_${mybirthday}_${mygender}_${age}`
     if (result.isConfirmed) {
 			 familyarray.push(myfamily)
@@ -706,7 +695,6 @@ input {
 			familyconfirmflug = true
 			familyarray.push(myfamily)
 			familyflug = false
-			console.log(familyarray)
 			confirm_check()
 		}
 	})
@@ -760,15 +748,19 @@ if(birthday_month>13){
           getAge(birthday)
      }
 }else{
-  console.log('ng')
 }
 }
 
 function getAge(birthday){
-	console.log(birthday)
     var thisYearsBirthday = new Date(today.getFullYear(), birthday.month-1, birthday.date);//今年の誕生
     var age = today.getFullYear() - birthday.year;  //年齢
-		console.log(age)
+    if(age>=16&&inputs[5].checked){
+      member_kubun = 1
+    }else if(age>=16&&inputs[6].checked){
+      member_kubun = 2
+    }else{
+      member_kubun = 3
+    }
    if(today < thisYearsBirthday){        //今年まだ誕生日が来ていない
       age--;
     }
@@ -802,10 +794,8 @@ document.getElementById("selectlanguage").addEventListener("change",language_cha
 function language_change(){
    selectlanguage = document.getElementById( "selectlanguage" ).value
 	 if(document.getElementById("birthday_age").value!=""){
-		 console.log(plans_kubun)
 		  planget(plans_kubun)
 	 }
-  console.log(selectlanguage)
 if (selectlanguage=="Português"){
    portugues()
    error_massege_portugues()
@@ -972,7 +962,6 @@ ken_select_option_add(arr)
 }
 
 function input_clear(){
-	console.log("in");
 document.getElementById("name-input").value="";
 document.getElementById("birthday_year").value="YYYY";
 document.getElementById("birthday_month").value="MM";
@@ -1093,9 +1082,6 @@ dele/dela nesta academia.
 	  }).then(function(result) {
 	  swall.close
 	  politic_check()
-	  console.log("checkdekita")
-  console.log(result);
-
   })
 }
 
@@ -1115,8 +1101,6 @@ function swall_success(){
 
 //プランセレクト時の処理、ボタン色・div枠線、色の変更
 function select_plan_click(data){
-	console.log(plan)
-	console.log(data)
 	plan=data.split("_")[2]
 	let mydiv = data.split("_")[3]
 	for(let i= 1; i<=plans_rows; i++){
@@ -1135,12 +1119,22 @@ function select_plan_click(data){
 			obj1.color = '#444444'
 		}
 	}
-	console.log(valor)
 }
 
 //年齢、性別選択時のプランdivの生成
 function planget(data){
-
+  if(inputs[6].checked||inputs[5].checked){
+  Swal.fire({
+    icon:'info',
+    title: 'Processing'
+  , html: 'wait'
+  , allowOutsideClick : false     //枠外をクリックしても画面を閉じない
+  , showConfirmButton: false
+  ,timer:'2500'
+  , onBeforeOpen: () => {
+      Swal.showLoading();
+    }
+  });
 	if(selectlanguage=="Português"){
 		buttontext = "escolher"
 	}else if(selectlanguage=="Inglês"){
@@ -1148,13 +1142,13 @@ function planget(data){
 	}else{
 		buttontext = "選択"
 	}
-	plans_rows = 0
+
 	plansarray = []
 	let row = ""
 	fetch('https://squid-app-ug7x6.ondigitalocean.app/planget')
 	  .then((x) => x.json())
 	  .then((res) => {
-	     console.log(res)
+      	plans_rows = 0
         for(let i=0;i<res.length;i++){
 					if(res[i].PLAN_KUBUN==data){
 						plans_rows ++
@@ -1166,13 +1160,14 @@ function planget(data){
 							<div class="div-discrition-span"><span class="discrition-span">${res[i].PLAN_DISCRITION3}</span></div>
 							<div class="div-discrition-span"><span class="discrition-span">${res[i].PLAN_DISCRITION4}</span></div>
 							<div class="div-discrition-span"><span class="discrition-span">${res[i].PLAN_DISCRITION5}</span></div>
-							<div class="center-span"><input class="plan-select-plan-input" type="button" id="'select_button_${plans_rows}'" value="${buttontext}" onclick="select_plan_click('plan_div_${res[i].PLANS_NAME}_${plans_rows}')"></input></div>
+							<div class="center-span"><input class="plan-select-plan-input" type="button" id="'select_button_${plans_rows}'" value="${buttontext}" onclick="select_plan_click('plan_div_${res[i].CONTROL_NAME}_${plans_rows}')"></input></div>
 						 </div>`
 
 					}
 				}
 			plans_div.innerHTML = row
 	  })
+    }
 }
 
 
