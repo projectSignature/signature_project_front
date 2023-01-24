@@ -77,7 +77,7 @@ function plan_option_create(){
       row = `<option value="">Planos</option>`
       myplan.push(row)
       for(let i=0;i<res.length;i++){
-        row = `<option value="${res[i].PLANS_NAME}">${res[i].PLANS_NAME}</option>`
+        row = `<option value="${res[i].CONTROL_NAME}">${res[i].CONTROL_NAME}</option>`
         myplan.push(row)
       }
       document.getElementById("filter2").innerHTML = myplan
@@ -326,7 +326,7 @@ console.log(filter2array)
           .then((res) => {
             console.log(res)
             for(let i=0;i<res.length;i++){
-              row = `<option value="${res[i].PLANS_NAME}">${res[i].PLANS_NAME}</option>`
+              row = `<option value="${res[i].CONTROL_NAME}">${res[i].CONTROL_NAME}</option>`
               myplan.push(row)
             }
 
