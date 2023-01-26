@@ -6,6 +6,31 @@ let yetpayment = []
 var membersCount = ""
 let membersarry = []
 let division
+let clients
+const regex = /^(?=.*[A-Z])[a-zA-Z0-9.?/-]{8,24}/;
+//前ページからの情報を処理----------------------------------------------->
+var token = sessionStorage.getItem("token");//token
+let gymid = sessionStorage.getItem("GYM_ID")
+var language
+if(sessionStorage.getItem("Language")=="PT"){
+  language = 0
+}else if(sessionStorage.getItem("Language")=="EN"){
+  language = 1
+}else{
+  language = 2
+}
+language=0
+gymid=4
+document.querySelector('#gym-name').innerHTML = sessionStorage.getItem("gym");//gymname
+if (token == 567) {
+  addMemberDiv.style.display = 'none';
+  memberDiv.style.display = 'none';
+  paymentDiv.style.display = 'none';
+  graduacaoDiv.style.display = 'none';
+}else if(token==""){
+  window.location = `https://squid-app-ug7x6.ondigitalocean.app/signature-project-front`
+}
+//翻訳テキスト----------------------------------------------------------->
 const error1 = ["O campo do nome não pode está em branco","Enter name of the representative", "代表者名を入力してください"];
 const error2 = ["O campo do nome da academia não pode está em branco","Enter gym name", "ジム名を入力してください"];
 const error3 = ["O campo do email não pode está em branco","Enter  email", "メールアドレスを入力してください"];
@@ -21,9 +46,9 @@ const error12 = ["A nova senha e a senha de confirmação estão diferentes","Ne
 const error13 = ["Erro na senha atual","Error in current password", "現在のパスワードに誤りがあります"];
 const error14 = ["Erro na alteração, tente novamente","Change error, try again", "変更に失敗しました,　再度お試しください"];
 const error15 = ["Senha inválida, senha tem que ter no mínimo 8 dígitos","Invalid password, password must have at least 8 digits", "無効なパスワード、パスワードは少なくとも8桁でなければなりません"];
-
-const language = ["PT","EN","JP"]
-const stext1 = ["Nome do representant","Name of the representative","代表者名"]
+const error16 = ["Erro de acesso no banco de dados, tente novamente","Access error in database, try again", "データベースとの接続に失敗しました、再度試してください"];
+//const language = ["PT","EN","JP"]
+const stext1 = ["Nome do representante","Name of the representative","代表者名"]
 const stext2 = ["Nome da academia","Gym name","ジム名"]
 const stext3 = ["Email","Email","メールアドレス"]
 const stext4 = ["Telefone","Telephone","電話番号"]
@@ -54,16 +79,31 @@ const stext28 = ["Senha atual","Current Password","現在のパスワード"]
 const stext29 = ["Nova Senha","New Password","新しいパスワード"]
 const stext30 = ["Confirme a Senha","Confirm password","パスワードの確認入力"]
 const stext31 = ["Letras inválidas","invalid character","半角英数字で入力してください"]
-var token = sessionStorage.getItem("token");
-const addMemberDiv = document.querySelector('#add_member_div');
-const memberDiv = document.querySelector('#member_div');
-const paymentDiv = document.querySelector('#payment_div');
-const graduacaoDiv = document.querySelector('#graduacao_div');
-let clients
-let gymid = 4
-var my_language = 0
-const regex = /^(?=.*[A-Z])[a-zA-Z0-9.?/-]{8,24}/;
-
+const stext32 = ["alunos registrados","numbers of registered members","登録会員数"]
+const stext33 = ["quantidade de alunos","Numbers of registered","メンバー数推移"]
+const stext34 = ["Alunos por plano","Menbers by plan","プラン別登録者数"]
+const stext35 = ["Inscrição","Inscription","入会"]
+const stext36 = ["Alunos","Menbers","メンバー"]
+const stext37 = ["Recibos","Receipts","月謝管理"]
+const stext38 = ["Calendário","Calender","カレンダー"]
+const stext39 = ["Graduação","Graduation","帯管理"]
+const stext40 = ["Configuração","Setting","設定"]
+const stext41 = ["Entrada","Entrance","入場管理"]
+const stext42 = ["Pagamentos atrasados","Late payments","月謝未払いメンバー"]
+const stext43 = ["Graduações próximas","Graduations near","帯昇格者"]
+const stext44 = ["Número de acessos nos últimos 7 dias","Number of accesses in the last 7 days","直近７日のアクセス数"]
+const stext45 = ["Número de acessos por aulas nos últimos 7 dias","Number of accesses by class in the last 7 days","直近７日のクラス別アクセス数"]
+document.getElementById("inscricao").innerHTML = stext35[language]
+document.getElementById("member").innerHTML = stext36[language]
+document.getElementById("payment").innerHTML = stext37[language]
+document.getElementById("entrance").innerHTML = stext41[language]
+document.getElementById("calender").innerHTML = stext38[language]
+document.getElementById("graduacao").innerHTML = stext39[language]
+document.getElementById("config-span").innerHTML = stext40[language]
+document.getElementById("menbers-discrtion").innerHTML = stext32[language]
+document.getElementById("payment-discrtion").innerHTML = stext42[language]
+document.getElementById("graduation-discrtion").innerHTML = stext43[language]
+//翻訳関係はここまで------------------------------------->
 
 Swal.fire({
   icon:"info",
@@ -77,58 +117,42 @@ Swal.fire({
     Swal.showLoading();
   }
 });
-
-
-if (token == 567) {
-  addMemberDiv.style.display = 'none';
-  memberDiv.style.display = 'none';
-  paymentDiv.style.display = 'none';
-  graduacaoDiv.style.display = 'none';
-}
-
-
-
+const addMemberDiv = document.querySelector('#add_member_div');
+const memberDiv = document.querySelector('#member_div');
+const paymentDiv = document.querySelector('#payment_div');
+const graduacaoDiv = document.querySelector('#graduacao_div');
 document.getElementById('paydiv').addEventListener('click', payswall)
-
+//設定ボタンクリック時の操作------------------------------------------->
 document.getElementById("configration").addEventListener("click",config_main)
   function config_main(){
- my_language = ""
   axios.get(`https://squid-app-ug7x6.ondigitalocean.app/clientesDados/${gymid}`)
     .then(function (response) {
       if(response.status==200){
-        console.log(response.data)
-      }else{
-        console.log('ng')
-      }
-      if(response.data[0].LANGUAGE=="PT"){
-        my_language =0
-        languageNow ="Português"
-        division = ["Adulto-homem","Adulto-mulher", "Menores", "Plano familiar","Plan free"]
-      }else if(response.data[0].LANGUAGE=="JP"){
-        languageNow ="日本語"
-        my_language =2
-          division = ["男性-成人","女性-成人", "未成年", "ﾌｧﾐﾘｰﾌﾟﾗﾝ","ﾌﾘｰﾌﾟﾗﾝ"]
-      }else{
-        languageNow ="Inglês"
-        my_language =1
-          division = ["Male-adult","Famale-adult", "underage", "Family plan","Free plan"]
-      }
-
+          if(language==0){
+            languageNow ="Português"
+            division = ["Adulto-homem","Adulto-mulher", "Menores", "Plano familiar","Plan free"]
+          }else if(language==2){
+            languageNow ="日本語"
+              division = ["男性-成人","女性-成人", "未成年", "ﾌｧﾐﾘｰﾌﾟﾗﾝ","ﾌﾘｰﾌﾟﾗﾝ"]
+          }else{
+            languageNow ="Inglês"
+              division = ["Male-adult","Famale-adult", "underage", "Family plan","Free plan"]
+          }
+          console.log(languageNow)
   Swal.fire({
-   html: `
-           <div class="div-flex">
-            <input class="button-input" type="button" value="${stext6[my_language]}"/>
-            <input class="button-input" type="button" id="select-pass" value="${stext7[my_language]}" onclick="password_change()"/>
-            <input class="button-input" type="button" id="select-plans" onclick="config_plan()" value="${stext8[my_language]}"/>
+   html: `  <div class="div-flex">
+              <input class="button-input" type="button" id="select-dada" value="${stext6[language]}"/>
+              <input class="button-input" type="button" id="select-pass" value="${stext7[language]}" onclick="password_change()"/>
+              <input class="button-input" type="button" id="select-plans" onclick="config_plan()" value="${stext8[language]}"/>
            </div>
            <hr class="underbar" />
            <div class="div-flex">
             <div id="left-div" class="div-block">
-               <div><span>${stext1[my_language]}</span></div>
-               <div><span>${stext2[my_language]}</span></div>
-               <div><span>${stext3[my_language]}</span></div>
-               <div><span>${stext4[my_language]}</span></div>
-               <div><span>${stext5[my_language]}</span></div>
+               <div><span>${stext1[language]}</span></div>
+               <div><span>${stext2[language]}</span></div>
+               <div><span>${stext3[language]}</span></div>
+               <div><span>${stext4[language]}</span></div>
+               <div><span>${stext5[language]}</span></div>
             </div>
             <div id="right-div" class="div-block">
               <div class="div-text-input"><input class="text-input" type="text" id="representant" value="${response.data[0].REPRESENTATIVE}"/></div>
@@ -146,26 +170,13 @@ document.getElementById("configration").addEventListener("click",config_main)
             </div>
            </div>
            <style>
-           .text-input-language:hover{
-             transform: scale(1.1);
-           }
            .div-flex{
              display:flex;
              width:100%;
            }
-           .button-input{
-             border-radius:50px;
-             background-color: #4169E1 !important;
-             color:white;
-             width:25%;
-             height:70px;
-             margin-left:15px;
-             cursor:pointer;
-             font-size:2vw;
-           }
            .swal2-popup {
                width: 60% !important;
-               height:650px !important;
+               height:700px !important;
            }
            .div-block{
              display:block;
@@ -189,6 +200,9 @@ document.getElementById("configration").addEventListener("click",config_main)
              margin-left:50px;
              width:100%;
              height:50px;
+             border-radius:5px;
+             font-size:1.2vw;
+             color:#555555 !important;
            }
            .div-text-input{
              width:70%;
@@ -202,18 +216,22 @@ document.getElementById("configration").addEventListener("click",config_main)
              width:40% !important;
              margin-left:3px !important;
              font-size:1.2vw;
+             color:#555555 !important;
            }
            #select-pass ,#select-plans{
              background-color:#CCCCCC !important;
              color:#555555 !important;
            }
-           .button-input:hover{
-             transform: scale(1.1);
+           button{
+             width:150px;
+             height:70px;
+             font-size:2vw;
            }
+
            @media only screen and (max-width: 700px) {
              .swal2-popup {
              width: 100% !important;
-              height:600px !important;
+              height:700px !important;
             }
             .button-input{
               width:30%;
@@ -226,32 +244,35 @@ document.getElementById("configration").addEventListener("click",config_main)
               width:75% !important;
               font-size:2vw;
             }
+            .div-block div input{
+              margin-left:10px;
+            }
            }
-
-
            </style>
           `
   , allowOutsideClick : false     //枠外をクリックしても画面を閉じない
   , showConfirmButton: true
   ,showCancelButton: true
-  ,confirmButtonText: stext9[my_language]
-  ,cancelButtonText: stext10[my_language]
+  ,confirmButtonText: stext9[language]
+  ,cancelButtonText: 'Home'
+  ,preConfirm: (login) => {
+    representant = document.getElementById("representant").value;
+    gymname = document.getElementById("gymname").value;
+    email = document.getElementById("email").value;
+    tel = document.getElementById("tel").value;
+    if(representant==""){
+      Swal.showValidationMessage(`${error1[language]}`)
+    }else if(gymname==""){
+      Swal.showValidationMessage(`${error2[language]}`)
+    }else if(email==""){
+      Swal.showValidationMessage(`${error3[language]}`)
+    }else if(tel==""){
+      Swal.showValidationMessage(`${error4[language]}`  )
+    }else{
+    }
+  }
   }).then((result) => {
    if (result.isConfirmed) {
-     representant = document.getElementById("representant").value;
-     gymname = document.getElementById("gymname").value;
-     email = document.getElementById("email").value;
-     tel = document.getElementById("tel").value;
-
-     if(representant==""){
-       swallerror(error1[my_language],1)
-     }else if(gymname==""){
-       swallerror(error2[my_language],1)
-     }else if(email==""){
-       swallerror(error3[my_language],1)
-     }else if(tel==""){
-       swallerror(error4[my_language],1)
-     }else{
        try{
        fetch("https://squid-app-ug7x6.ondigitalocean.app/clientUpdate", {
          method: 'POST',
@@ -267,46 +288,53 @@ document.getElementById("configration").addEventListener("click",config_main)
        })
        .then((x) => x.json())
        .then((res) => {
-         console.log(res)
          swall_success()
        })
-
        }catch (error) {
-         console.log(error)
+         swallerror(error[language],1)
        }
-     }
+   }else{
+       swal.close()
    }
 })
-  })
+}else{
+   swallerror(error[language],1)
 }
-
-
-
+})
+}
+//パスワード変更の処理-------------------------------------------------->
 function password_change() {
     Swal.fire({
         html: `
-             <div id="title">${stext27[my_language]}</div>
+        <div class="div-flex">
+                   <input class="button-input" type="button" id="select-dada" value="${stext6[language]}" onclick="config_main()"/>
+                   <input class="button-input" type="button" id="select-pass" value="${stext7[language]}" onclick="password_change()"/>
+                   <input class="button-input" type="button" id="select-plans" onclick="config_plan()" value="${stext8[language]}"/>
+                </div>
+                <hr class="underbar" />
+             <div id="title">${stext27[language]}</div>
              <div id="client">
                  <div id="passdiv" class="right-div">
-                     <input  type="password" pattern="^[0-9a-zA-Z]{8,16}" placeholder="${stext28[my_language]}"  id="password" />
+                     <input  type="password" pattern="^[0-9a-zA-Z]{8,16}" placeholder="${stext28[language]}"  id="password" />
                      <span id="buttonEye1" class="fa fa-eye" onclick="pushHideButton(1)"></span>
                  </div>
-                 <span class="error-red" id="atention-color1">${stext31[my_language]}</span>
                  <div class="right-div">
-                     <input  type="password" pattern="^[0-9a-zA-Z]{8,16}" placeholder="${stext29[my_language]}"  id="newPassword" />
+                     <input  type="password" pattern="^[0-9a-zA-Z]{8,16}" placeholder="${stext29[language]}"  id="newPassword" />
                      <span id="buttonEye2" class="fa fa-eye" onclick="pushHideButton(2)"></span>
-
                  </div>
-                 <span class="error-red" disabled>${stext31[my_language]}</span>
                  <div class="right-div">
-                     <input  type="password" pattern="^[0-9a-zA-Z]{8,16}" placeholder="${stext30[my_language]}"  id="confirmpassword" />
+                     <input  type="password" pattern="^[0-9a-zA-Z]{8,16}" placeholder="${stext30[language]}"  id="confirmpassword" />
                      <span id="buttonEye3" class="fa fa-eye" onclick="pushHideButton(3)"></span>
                  </div>
-                 <span class="error-red" disabled>${stext31[my_language]}</span>
              </div>
              <style>
              .swal2-popup {
-                 width: 40% !important;
+                 width: 60% !important;
+                 height:700px !important;
+             }
+             #select-dada ,#select-plans{
+               background-color:#CCCCCC !important;
+               color:#555555 !important;
              }
                  #title{
                    font-size:4vh;
@@ -318,10 +346,16 @@ function password_change() {
                      width: 100%;
                  }
                  #client input {
+                     width:50%;
                      border-radius: 10px;
-                     height: 5vh;
+                     height:70px;
                      border: 1px solid gray;
                      text-indent: 10px;
+                     font-size:2.0vw;
+                     margin-top:25px;
+                 }
+                 #client span {
+                     font-size:2vw;
                  }
                  #textPassword {
                          border: none; /* デフォルトの枠線を消す */
@@ -331,45 +365,63 @@ function password_change() {
                          border-style: solid;
                          width: 200px;
                        }
-                       .error-red{
-                         color:white;
+                       button{
+                         width:150px;
+                         height:70px;
+                         font-size:2vw;
                        }
+
                           @media only screen and (max-width: 700px) {
                             .swal2-popup {
-                                width: 80% !important;
+                            width: 100% !important;
+                             height:700px !important;
+                           }
+                            .button-input{
+                              width:28%;
+                              font-size:3vw;
+                            }
+                            #client span {
+                                font-size:4vw;
+                            }
+                            #client input {
+                                width:70%;
+                                font-size:3.0vw;
                             }
                           }
              </style>
            `,
+        allowOutsideClick : false,
         showCancelButton: true,
-        cancelButtonText: "キャンセル",
-        confirmButtonText: "変更する",
+        confirmButtonText: stext9[language],
+        cancelButtonText:  'Home',
+        preConfirm: (login) => {
+           pass= document.getElementById("password").value
+           newpass = document.getElementById("newPassword").value
+           confirmpass = document.getElementById("confirmpassword").value
+           if(pass==""){
+             Swal.showValidationMessage(`${error9[language]}`)
+           }else if(newpass==""){
+             Swal.showValidationMessage(`${error10[language]}`)
+           }else if(newpass!=confirmpass){
+             Swal.showValidationMessage(`${error12[language]}`)
+           }else{
+           }
+        }
     }).then(result => {
       let passchange
         if (result.isConfirmed) {
           let pass= document.getElementById("password").value
-         let newpass = document.getElementById("newPassword").value
-         let confirmpass = document.getElementById("confirmpassword").value
-         if(pass==""){
-           swallerror(error9[my_language],3)
-         }else if(newpass==""){
-           swallerror(error10[my_language],3)
-         }else if(newpass!=confirmpass){
-           swallerror(error12[my_language],3)
-         }else{
-           hankaku2Zenkaku(newpass)
-           .then((str1)=>{
-           })
-           hankaku2Zenkaku(confirmpass)
+          let newpass = document.getElementById("newPassword").value
+          let confirmpass = document.getElementById("confirmpassword").value
+            hankaku2Zenkaku(newpass)//半角に変換
+            hankaku2Zenkaku(confirmpass)
            .then((str1)=>{
            }).then((passcheck)=>{
              if(regex.test(confirmpass)){
                   axios.get(`https://squid-app-ug7x6.ondigitalocean.app/clientesDados/${gymid}`)
                     .then(function (response) {
-                      console.log(response)
                       if(response.status==200){
                         if(response.data[0].PASSWORD==pass){
-                          console.log('ok20onaji')
                           fetch("https://squid-app-ug7x6.ondigitalocean.app/passupdate", {//pegar todos dados do table de pagamentos
                             method: 'POST',
                             body: JSON.stringify({ id:gymid,pass:confirmpass}),
@@ -380,23 +432,24 @@ function password_change() {
                               swall_success()
                             })
                         }else{
-                          swallerror(error13[my_language],3)
+                          swallerror(error13[language],3)
                         }
                       }else{
-                        swallerror(error14[my_language],3)
+                        swallerror(error14[language],3)
                       }
-
                    })
     　　　　　     }else{
-               swallerror(error15[my_language],3)
+               swallerror(error15[language],3)
     }
            })
-         }
+
+
+      }else{
+        swal.close()
       }
     })
 }
-
-
+//パスワード変更時の目マーククリックからのパスを表示------------------------>
 function pushHideButton(data) {
   switch (data) {
     case 1:
@@ -420,28 +473,29 @@ function pushHideButton(data) {
           btnEye.className = "fa fa-eye-slash";
         }
       }
-
+//Plan変更の処理-------------------------------------------------->
 function config_plan(){
 fetch('https://squid-app-ug7x6.ondigitalocean.app/planget')
   .then((x) => x.json())
   .then((res) => {
   clients = res
   let plans = []
-  plans.push(`<tr>
-                 <th class="_sticky z-02">${stext13[my_language]}</th>
-                 <th class="_sticky">${stext14[my_language]}</th>
-                 <th class="_sticky">${stext20[my_language]}</th>
-                 <th class="_sticky">${stext15[my_language]}</th>
-                 <th class="_sticky">${stext16[my_language]}</th>
-                 <th class="_sticky">${stext17[my_language]}</th>
-                 <th class="_sticky">${stext18[my_language]}</th>
-                 <th class="_sticky">${stext19[my_language]}</th>
-                 <th class="_sticky">${stext25[my_language]}</th>
-                 <th class="_sticky">${stext21[my_language]}</th>
-                 </tr>`)
+  row = `<tr>
+                 <th class="_sticky z-02">${stext13[language]}</th>
+                 <th class="_sticky">${stext14[language]}</th>
+                 <th class="_sticky">${stext20[language]}</th>
+                 <th class="_sticky">${stext15[language]}</th>
+                 <th class="_sticky">${stext16[language]}</th>
+                 <th class="_sticky">${stext17[language]}</th>
+                 <th class="_sticky">${stext18[language]}</th>
+                 <th class="_sticky">${stext19[language]}</th>
+                 <th class="_sticky">${stext25[language]}</th>
+                 <th class="_sticky">${stext21[language]}</th>
+                 </tr>`
+                 plans += row
   for (let index = 0; index < res.length; index++) {
     if(res[index].GYM_ID==gymid){
-      plans.push(`<tr>
+      row =`<tr>
                     <th class="_sticky" name="_sticky_name">${res[index].PLANS_NAME}</th>
                     <td>${res[index].PLAN_VALOR}</td>
                     <td>${division[res[index].PLAN_KUBUN]}</td>
@@ -456,56 +510,87 @@ fetch('https://squid-app-ug7x6.ondigitalocean.app/planget')
                         <img class="image-cursor"  src="../image/delete.svg" onClick="Plandelete_check(${index})" alt="" width="25">
                     </td>
                   </tr>`
-                )
+                plans += row
     }
-
     }
-
 Swal.fire({
  html: `
          <div class="div-flex">
-          <input class="button-input" type="button" id="mydata" value="${stext6[my_language]}" onClick="config_main()"/>
-          <input class="button-input" type="button" id="select-pass" value="${stext7[my_language]}"/>
-          <input class="button-input" type="button" id="select-plans"  value="${stext8[my_language]}"/>
+          <input class="button-input" type="button" id="select-dada" value="${stext6[language]}" onClick="config_main()"/>
+          <input class="button-input" type="button" id="select-pass"  value="${stext7[language]}" onclick="password_change()"/>
+          <input class="button-input" type="button" id="select-plans"  value="${stext8[language]}"/>
          </div>
          <hr class="underbar" />
-         <div class="twrapper">
-         <table>
-           <tbody>${plans}</tbody>
-         </table>
-         </div>
+         <div  class="twrapper">
+          <table  id="#my-table1">
+            <tbody>${plans}</tbody>
+          </table>
+        </div>
          <style>
+         #select-dada ,#select-pass{
+           background-color:#CCCCCC !important;
+           color:#555555 !important;
+         }
+
+         #table{
+         	overflow-y:auto;
+         }
+         .swal2-popup {
+             width: 80% !important
+         }
+
+         select{
+             cursor: pointer
+         }
+         .email-tag{
+           width: 150px;
+         }
+         #btn-filter{
+           height:70%;
+           width:6%;
+           border:1px solid #888888;
+           background-color: #BBBBBB;
+           border-radius:5px;
+           font-size:2vh;
+           font-weight: bold;
+         }
+
+         #btn-filter:hover{
+             transform: scale(1.1);
+         }
+         #header-title{
+           font-size:5vh;
+         }
          .twrapper{
            overflow-y:scroll;
-           height:500px !important;
+           overflow-x:scroll;
+           height:85%;
          }
 
          table {
            border-collapse: collapse;
            border-spacing: 0;
+           width: 100%;
+           min-width: 1000px;
          }
          th, td {
            vertical-align: middle;
            padding: 20px 15px;
+           border: 1px solid #ccc;
            font-size: 14px;
            text-align: center;
          }
          th {
-           color: #EEEEEE;
-           background: #222222;
-         }
-         td{
-           border: 1px solid #ccc;
+           color: #fff;
+           background: #795548;
          }
          ._sticky {
            position: sticky;
            top: 0;
            left: 0;
            z-index: 1;
-           width:80px !important;
-           height:5px !important;
+           background: #333333;
          }
-
          ._sticky:before {
            content: "";
            position: absolute;
@@ -517,28 +602,93 @@ Swal.fire({
          }
          ._sticky.z-02 {
            z-index: 2;
-           width: 200px !important;
+           width: 200px;
          }
+
          th[name="_sticky_name"]{
-           background: #00BFFF;
+           background: #795548;
          }
 
-         @media only screen and (max-width: 700px) {
-           ._sticky.z-02 {
-             width: 15px !important;
-           }
-           ._sticky {
-             width:80px !important;
-           }
+         #createdate{
+           width:10%;
+           height:70%;
+           font-size:5vh;
+         }
 
-   }
+         .image-cursor{
+           cursor: pointer
+         }
+
+         /* 500px以下の画面で適用 */
+         @media only screen and (max-width: 700px) {
+           .swal2-popup {
+           width: 100% !important;
+            height:700px !important;
+          }
+           .button-input{
+             width:28%;
+             font-size:3vw;
+           }
+           #client span {
+               font-size:4vw;
+           }
+           #client input {
+               width:70%;
+               font-size:3.0vw;
+           }
+           .mobile-scroll {
+             overflow-x: auto; /* 横スクロール */
+             -webkit-overflow-scrolling: touch; /* スマホでスムーズにスクロールできるように */
+           }
+           th, td {
+           padding: 5px 15px; /* 上下 左右 */
+         }
+
+         #dash #header{
+             width: 100%;
+             height: 15vh;
+             display: block;
+         }
+
+         #btn-filter{
+           width:15%;
+           font-size:1.5vh;
+         }
+         #header-title{
+           font-size:3vh;
+         }
+           th, td {
+           font-size: 8px;
+         }
+
+         ._sticky.z-02 {
+           z-index: 2;
+           width: 100px;
+         }
+
+         th[name="_sticky_name"]{
+           font-size: 20px;
+         }
+         #dash #header h3{
+             font-size: 5vw;
+             color: 	#777777;
+             margin-right: 1%;
+         }
+         #dash #header select{
+             width: 35%;
+             height: 45%;
+             margin-top: 5%;
+             font-size: 2.5vw;
+         }
+         }
+
         </style>
         `
 , allowOutsideClick : false     //枠外をクリックしても画面を閉じない
 , showConfirmButton: true
 ,showCancelButton: true
-,confirmButtonText:stext10[my_language]
-,cancelButtonText:stext26[my_language]
+,confirmButtonText:stext10[language]
+,cancelButtonText: 'Home'
 }).then((result) => {
  if (result.isConfirmed) {
    config_main()
@@ -551,12 +701,12 @@ Swal.fire({
 
 function Plandelete_check(data){
   Swal.fire({
-  title: `${stext23[my_language]}:${clients[data].PLANS_NAME}`
+  title: `${stext23[language]}:${clients[data].PLANS_NAME}`
 , icon : 'info',
 showConfirmButton: true,
-confirmButtonText: stext24[my_language],
+confirmButtonText: stext24[language],
 showCancelButton:true,
-cancelButtonText:　stext10[my_language]
+cancelButtonText:　stext10[language]
 }).then((result) => {
  if (result.isConfirmed) {
     fetch("https://squid-app-ug7x6.ondigitalocean.app/planDelete", {//pegar todos dados do table de pagamentos
@@ -573,13 +723,13 @@ cancelButtonText:　stext10[my_language]
 }
   function editPlan(data){
     Swal.fire({
-      title: stext22[my_language],
+      title: stext22[language],
       customClass: 'customizable',
       html: `
              <div id="clientes-div">
                 <div class="div-flex">
                  <div class="div-flex-span">
-                   <span>${stext13[my_language]}</span>
+                   <span>${stext13[language]}</span>
                  </div>
                  <div class="div-flex-input">
                    <input id="planname" value="${clients[data].PLANS_NAME}"/>
@@ -587,7 +737,7 @@ cancelButtonText:　stext10[my_language]
                 </div>
                 <div class="div-flex">
                 <div class="div-flex-span">
-                   <span>${stext14[my_language]}</span>
+                   <span>${stext14[language]}</span>
                  </div>
                  <div class="div-flex-input">
                     <span id="yenmark">￥</span>
@@ -596,7 +746,7 @@ cancelButtonText:　stext10[my_language]
                 </div>
                 <div class="div-flex">
                  <div class="div-flex-span">
-                   <span>${stext20[my_language]}</span>
+                   <span>${stext20[language]}</span>
                  </div>
                  <div class="div-flex-input">
                  <select class="text-input-language" id="division">
@@ -611,7 +761,7 @@ cancelButtonText:　stext10[my_language]
                 </div>
                 <div class="div-flex">
                  <div class="div-flex-span">
-                   <span>${stext15[my_language]}</span>
+                   <span>${stext15[language]}</span>
                  </div>
                  <div class="div-flex-input">
                    <input id="plandis1" value="${clients[data].PLAN_DISCRITION1}"/>
@@ -619,7 +769,7 @@ cancelButtonText:　stext10[my_language]
                 </div>
                 <div class="div-flex">
                  <div class="div-flex-span">
-                   <span>${stext16[my_language]}</span>
+                   <span>${stext16[language]}</span>
                  </div>
                  <div class="div-flex-input">
                    <input id="plandis2" value="${clients[data].PLAN_DISCRITION2}"/>
@@ -627,7 +777,7 @@ cancelButtonText:　stext10[my_language]
                 </div>
                 <div class="div-flex">
                  <div class="div-flex-span">
-                   <span>${stext17[my_language]}</span>
+                   <span>${stext17[language]}</span>
                  </div>
                  <div class="div-flex-input">
                    <input id="plandis3" value="${clients[data].PLAN_DISCRITION3}"/>
@@ -635,7 +785,7 @@ cancelButtonText:　stext10[my_language]
                 </div>
                 <div class="div-flex">
                  <div class="div-flex-span">
-                   <span>${stext18[my_language]}</span>
+                   <span>${stext18[language]}</span>
                  </div>
                  <div class="div-flex-input">
                    <input id="plandis4" value="${clients[data].PLAN_DISCRITION4}"/>
@@ -643,7 +793,7 @@ cancelButtonText:　stext10[my_language]
                 </div>
                 <div class="div-flex">
                  <div class="div-flex-span">
-                   <span>${stext19[my_language]}</span>
+                   <span>${stext19[language]}</span>
                  </div>
                  <div class="div-flex-input">
                    <input id="plandis5" value="${clients[data].PLAN_DISCRITION5}"/>
@@ -651,7 +801,7 @@ cancelButtonText:　stext10[my_language]
                 </div>
                 <div class="div-flex">
                  <div class="div-flex-span">
-                   <span>${stext25[my_language]}</span>
+                   <span>${stext25[language]}</span>
                  </div>
                  <div class="div-flex-input">
                    <input id="controlname" value="${clients[data].CONTROL_NAME}"/>
@@ -660,7 +810,7 @@ cancelButtonText:　stext10[my_language]
              </div>
              <style>
              .swal2-popup {
-                 width: 40% !important;
+                 width: 50% !important;
                  border:2px solid gray;
              }
              #clientes-div{
@@ -676,6 +826,7 @@ cancelButtonText:　stext10[my_language]
                font-size:1.5vw;
                width:80% !important;
                height:35px !important;
+               color:#555555 !important;
 
                border-radius:10px;
              }
@@ -710,8 +861,8 @@ cancelButtonText:　stext10[my_language]
     , allowOutsideClick : true     //枠外をクリックしても画面を閉じない
     , showConfirmButton: true
     ,showCancelButton: true
-    ,confirmButtonText:stext9[my_language]
-    ,cancelButtonText:stext10[my_language]
+    ,confirmButtonText:stext9[language]
+    ,cancelButtonText:stext10[language]
     }).then((result) => {
      if (result.isConfirmed) {
          name = document.getElementById("planname").value
@@ -724,17 +875,16 @@ cancelButtonText:　stext10[my_language]
          dis5 = document.getElementById("plandis5").value
          control_name = document.getElementById("controlname").value
          if(name==""){
-           swallerror(error5[my_language],2,data)
+           swallerror(error5[language],2,data)
          }else if(pvalue==""){
-           swallerror(error6[my_language],2,data)
+           swallerror(error6[language],2,data)
          }else if(dis1==""){
-           swallerror(error7[my_language],2,data)
+           swallerror(error7[language],2,data)
          }else if(control_name==""){
-           swallerror(error8[my_language],2,data)
+           swallerror(error8[language],2,data)
          }else{
            try{
-             console.log(clients[data].ID)
-           fetch("https://squid-app-ug7x6.ondigitalocean.app/planUpdate", {
+             fetch("https://squid-app-ug7x6.ondigitalocean.app/planUpdate", {
              method: 'POST',
              body: JSON.stringify({
                name : name,
@@ -752,11 +902,9 @@ cancelButtonText:　stext10[my_language]
            })
            .then((x) => x.json())
            .then((res) => {
-             console.log(res)
              swall_success()
            })
            }catch (error) {
-             console.log(error)
            }
      }
   }else{
@@ -767,7 +915,6 @@ cancelButtonText:　stext10[my_language]
 }
 //半角に修正------------------------------>
 function hankaku2Zenkaku(str) {
-  console.log(str)
   return new Promise(function (resolve, reject) {
   let syuuseigo =""
   for (let index = 0; index < str.length; index++) {
@@ -777,14 +924,12 @@ function hankaku2Zenkaku(str) {
     syuuseigo = syuuseigo + aa
   }
   let returnpass = checkChar(syuuseigo)
-  console.log(returnpass)
   resolve(returnpass)
   //return returnpass;
 })
 }
 //英文字のみチェック------------------------------>
 function checkChar(elm){
-  console.log(elm)
     //var txt=elm.;
     for(i=0 ; i < elm.length ; i++){
         if(escape(elm.charAt(i)).length >= 4){
@@ -796,60 +941,33 @@ function checkChar(elm){
         }
     }
 }
-
-
 function kanmaChange(inputAns){
- console.log(inputAns);
  let inputAnsValue = inputAns.value;
- console.log(inputAnsValue);
  let numberAns = inputAnsValue.replace(/[^0-9]/g, "");
  kanmaAns = numberAns.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
- console.log(kanmaAns);
  if(kanmaAns.match(/[^0-9]/g)){
   inputAns.value= kanmaAns;
   return true;
  }
 };
-
 function language_select(data){
   if(data==0){
-    my_language = 0
-    //document.getElementById("languagePT").style.backgroundColor= "#666666"
-    //document.getElementById("languagePT").style.Color='white'
-    //document.getElementById("languageJP").style.backgroundColor= 'blue'
-    //document.getElementById("languageJP").style.Color='#666666'
-    //document.getElementById("languageEN").style.backgroundColor='yellow !important'
-    //document.getElementById("languageEN").style.Color='#666666'
+    language = 0
   }else if(data==2){
-    my_language = 2
-    //document.getElementById("languagePT").style.backgroundColor='#white'
-    //document.getElementById("languagePT").style.Color='#666666'
-    //document.getElementById("languageJP").style.backgroundColor='#4169E1'
-    //document.getElementById("languageJP").style.Color='white'
-    //document.getElementById("languageEN").style.backgroundColor='#white'
-    //document.getElementById("languageEN").style.Color='#666666'
+    language = 2
   }else{
-    my_language = 1
-    //document.getElementById("languagePT").style.backgroundColor="#white"
-    //document.getElementById("languagePT").style.Color="#666666"
-    //document.getElementById("languageJP").style.backgroundColor="#white"
-    //document.getElementById("languageJP").style.Color="#666666"
-    //document.getElementById("languageEN").style.backgroundColor="#4169E1"
-    //document.getElementById("languageEN").style.Color="white"
+    language = 1
   }
 }
-
-
 function payswall(){
   let yetmemberswall = []
   let row
   const months = ["0","Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-  yetmemberswall.push(`<tr><th class="_sticky z-02">Nome</th><th class="_stickyy">Ano</th><th class="_stickyy">Mês</th></tr>`)
+  yetmemberswall += `<tr><th class="_sticky z-02">Nome</th><th class="_sticky">Ano</th><th class="_sticky">Mês</th></tr>`
   for (let index = 0; index < yetpayment.length; index++) {
    row = `<tr><th class="_sticky" name="_sticky_name">${yetpayment[index].nm_member}</th><td>${yetpayment[index].year}</td><td>${months[yetpayment[index].month]}</td></tr>`
-  yetmemberswall.push(row)
+  yetmemberswall += row
     }
-    console.log(yetmemberswall)
     if(yetpayment.length==0){
       Swal.fire({
         title: 'Não há pagamento atrasado',
@@ -876,7 +994,6 @@ function payswall(){
               overflow-y:scroll;
               height:500px !important;
             }
-
             table {
               border-collapse: collapse;
               border-spacing: 0;
@@ -902,7 +1019,6 @@ function payswall(){
               width:80px !important;
               height:5px !important;
             }
-
             ._sticky:before {
               content: "";
               position: absolute;
@@ -919,7 +1035,6 @@ function payswall(){
             th[name="_sticky_name"]{
               background: #00BFFF;
             }
-
             @media only screen and (max-width: 700px) {
               ._sticky.z-02 {
                 width: 15px !important;
@@ -927,9 +1042,7 @@ function payswall(){
               ._sticky {
                 width:80px !important;
               }
-
       }
-
          </style>`,
     }).then((result) => {
      if (result.isConfirmed) {
@@ -939,20 +1052,17 @@ function payswall(){
     });
     }
 }
-
 document.getElementById('graduationdiv').addEventListener('click', graduationswall)
-
 function graduationswall(){
   let yetmemberswall = []
   const months = ["Branca","Azul", "Roxa", "Marrom","Preta"];
-  yetmemberswall.push(`<tr><th class="_sticky z-02">Nome</th><th class="_sticky">Faixa atual</th><th  class="_sticky">Aulas</th></tr>`)
+  yetmemberswall += `<tr><th class="_sticky z-02">Nome</th><th class="_sticky">Faixa atual</th><th  class="_sticky">Aulas</th></tr>`
   for (let index = 0; index < clients1.length; index++) {
     if(clients1[index].lesson_after>=39){
         let row = `<tr><th class="_sticky" name="_sticky_name">${clients1[index].nm_member}</th><td class="_sticky_y">${months[clients1[index].color]}</td><td class="_sticky_y">${clients1[index].lesson_after}</td></tr>`
-        yetmemberswall.push(row)
+          yetmemberswall += row
     }
   }
-  console.log(yetmemberswall.length)
     if(yetmemberswall.length<=1){
       Swal.fire({
         title: 'Não há alunos para graduar',
@@ -1006,7 +1116,6 @@ function graduationswall(){
         width:80px !important;
         height:5px !important;
       }
-
       ._sticky:before {
         content: "";
         position: absolute;
@@ -1023,7 +1132,6 @@ function graduationswall(){
       th[name="_sticky_name"]{
         background: #00BFFF;
       }
-
       @media only screen and (max-width: 700px) {
         ._sticky.z-02 {
           width: 15px !important;
@@ -1031,9 +1139,7 @@ function graduationswall(){
         ._sticky {
           width:80px !important;
         }
-
 }
-
    </style>`,
     }).then((result) => {
      if (result.isConfirmed) {
@@ -1043,7 +1149,6 @@ function graduationswall(){
     });
     }
 }
-
 var past = {
   jp: {
     buttons: {
@@ -1064,24 +1169,21 @@ var past = {
     },
   },
 }
-
 document.getElementById("gym-name").value = gymname;
 document.getElementById("member-total").value = menbers_active;
 document.getElementById("payment-yet").value = next_graduation;
 document.getElementById("member-total-graduation").value = next_graduation;
-
 function myDivisionCheck() {
-  if (my_language == 1) {
+  if (language == 1) {
     document.getElementById("menbers-discrtion").innerText = past.jp.Text.Text1;
     document.getElementById("payment-discrtion").innerText = past.jp.Text.Text2;
     document.getElementById("graduation-discrtion").innerText = past.jp.Text.Text3;
-  } else if (my_language == 2) {
+  } else if (language == 2) {
     document.getElementById("menbers-discrtion").innerText = past.en.Text.Text1;
     document.getElementById("payment-discrtion").innerText = past.en.Text.Text2;
     document.getElementById("graduation-discrtion").innerText = past.en.Text.Text3;
   }
 }
-
 function myLanguageCheck() {
   if (my_division == 2) {
     document.getElementById("add_member_div").style.display = "none";
@@ -1089,15 +1191,11 @@ function myLanguageCheck() {
     document.getElementById("payment_div").style.display = "none";
   }
 }
-
 //função para navegar entre as páginas do sistema, o arquivo principal é passado por param pelo front
 function navigator(ref) {
   let path = `https://squid-app-ug7x6.ondigitalocean.app/signature-project-front/pages/${ref}.html`;
   location.href = path;
 }
-
-document.querySelector('#gym-name').innerHTML = sessionStorage.getItem("gym");
-
 var next_graduation = 0
 //pagar todas do table de graduação-------------------------------->
   fetch("https://squid-app-ug7x6.ondigitalocean.app/graduationlist", {
@@ -1116,7 +1214,6 @@ var next_graduation = 0
       document.getElementById("member-total-graduation").innerHTML = next_graduation
       //memberget_chart()
     });
-
 function plansget(){
   let plansArray = []
   let plans = []
@@ -1151,11 +1248,9 @@ function plansget(){
   })
 }
 plansget()
-
 Array.prototype.countCertainElements = function(value){
     return this.reduce((sum, element) => (element == value ? sum + 1 : sum), 0)
 }
-
 function create_chart(data,datacontents,datacolor){
    var ctx = document.getElementById("graph-area")//.getContext("2d");
   var graph_area = new Chart(ctx,{
@@ -1170,7 +1265,7 @@ function create_chart(data,datacontents,datacolor){
     options:{
       title:{
         display:true,
-        text: "Alunos por plano"
+        text: stext34[language]
       },
 legend:{
   display:false ,
@@ -1183,16 +1278,12 @@ pieceLabel: {
   },
 }
   });
-
-  ///https://squid-app-ug7x6.ondigitalocean.app/signature-project-front/pages/ficha.html
-
 //paymentGet------------------------------------------------->
   axios.get('https://squid-app-ug7x6.ondigitalocean.app/paymentall')
     .then(function (response) {
       document.querySelector('#payment-yet').innerHTML = response.data.length;
       yetpayment = response.data
     });
-
     //create line chart--------------------------------->
     axios.get('https://squid-app-ug7x6.ondigitalocean.app/info')
       .then(function (response) {
@@ -1222,14 +1313,12 @@ pieceLabel: {
           for (let index = 1 + kongetsu ; index < 12; index++) {
             month_name.push(months[index])
           }
-
           for (let index = 0 ; index < kongetsu; index++) {
             month_name.push(months[index])
           }
           mystartyear = (kotoshi-0)-1
           mystartmonth = 2 + kongetsu
           myfinishmonth = "12"
-
         }
        month_name.push(months[kongetsu])
        for (let i=0;i<membersarry.length;i++){
@@ -1270,7 +1359,7 @@ pieceLabel: {
       var data = {
           labels: month_name,//["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dez"],
           datasets: [{
-              label: 'Quantidade de alunos ',
+              label: stext33[language],
               data: linevalue,
               borderColor: '#00BFFF'
           }]
@@ -1292,8 +1381,148 @@ pieceLabel: {
       });
     }
 
+const date =new Date();
+const japanweekeday = date.getDay()
+var d1 = date.getFullYear() + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' +('0' + date.getDate()).slice(-2) + ' ' +  ('0' + date.getHours()).slice(-2) + ':' + ('0' + date.getMinutes()).slice(-2) + ':' + ('0' + date.getSeconds()).slice(-2) + '.' + date.getMilliseconds();
+date.setDate(date.getDate() - 6)
+entrancedate = date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' +('0' + date.getDate()).slice(-2)
+weekStart = date.getDay()
+const weekDay = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]//週の名称
+    weekdayArray =[] //グラフのラベル
+    weekCount = []　//グラフのラベルを週№に変換
+    entranceChartArray = []　//グラフの値
+    lessontype = []
+    if(weekStart==1){//月曜日なら、月曜日から日曜日まで並べる
+      for(let i=weekStart;i<=6;i++){
+              weekdayArray.push(weekDay[i])
+              weekCount.push(i)
+      }
+    }else{
+      for(let i=weekStart;i<=6;i++){//月曜日以外であれば、その次のから土曜日まで並ぶ
+            weekdayArray.push(weekDay[i])
+            weekCount.push(i)
+      }
+      for (let i=0;i<=weekStart-1;i++){//日曜日からその日まで並べる
+            weekdayArray.push(weekDay[i])
+            weekCount.push(i)
+      }
+    }
+ var obj = {
+    entrancedate: entrancedate,
+    }
+    let lessonWorkerCount =[]
+ fetch('https://squid-app-ug7x6.ondigitalocean.app/entrancehistory', {//今日から７日前のエントランスデータ取得
+    method: 'POST',
+    body: JSON.stringify(obj),
+   headers: { "Content-type": "application/json; charset=UTF-8" }
+   })
+    .then((x) => x.json())
+    .then((res) => {
+      lessontype = res
+      for(let i=0;i<res.length;i++){//曜日番号のみを配列に入れる
+        lessonWorkerCount.push(res[i].LESSON_DAY)
+        //lessontype.push(res[i].LESSON_NAME)
+      }
+      var count = lessonWorkerCount.reduce(function(prev, current) {//曜日番号ごとに集計
+    prev[current] = (prev[current] || 0) + 1;
+    return prev;
+     }, {});
+for(let i=0;i<weekCount.length;i++){//7日分データを数える
+  if(count[weekCount[i]]==undefined){//エントランス存在しない場合は0
+    entranceChartArray.push(0)
+  }else{
+      entranceChartArray.push(count[weekCount[i]])//存在する場合は連想配列から取得
+  }
+}
+var ctx2 = document.getElementById("graph-area-entrance")//.getContext("2d");
+var data = {
+  labels: weekdayArray,//7日前から並べたもの
+    datasets: [{
+        label: stext44[language],
+        data: entranceChartArray,
+        borderColor: '#00BFFF'
+    }]
+};
+var options = {};
+var ex_chart1 = new Chart(ctx2, {
+    type: 'line',
+    data: data,
+    options: {
+    scales: {
+    yAxes: [{
+      ticks: {
+        suggestedMin: 0,
+        stepSize: 10,
+      }
+    }]
+ },
+},
+});
+}).then((res)=>{
+  classaccss()
+})
+
+
+function classaccss(){
+  let calenderArray = []
+  let lessonNameEntrace = []
+  fetch('https://squid-app-ug7x6.ondigitalocean.app/calenderteste')
+    .then((x) => x.json())
+    .then((res) => {
+      for (let i=0;i<res.length;i++){
+        if(res[i].DESCRITION_1!=""){
+          calenderArray.push(`${res[i].DESCRITION_1}_${res[i].DESCRITION_2}`)
+        }
+      }
+      const arrayB = Array.from(new Set(calenderArray));
+      for(let i=0;i<lessontype.length;i++){//曜日番号のみを配列に入れる
+        lessonNameEntrace.push(lessontype[i].LESSON_NAME)
+        //lessontype.push(res[i].LESSON_NAME)
+      }
+      var count = lessonNameEntrace.reduce(function(prev, current) {//曜日番号ごとに集計
+    prev[current] = (prev[current] || 0) + 1;
+    return prev;
+     }, {});
+    var array = Object.keys(count).map((k)=>({ key: k, value: count[k] }));
+    array.sort((a, b) => b.value - a.value  );
+count = Object.assign({}, ...array.map((item) => ({
+    [item.key]: item.value,
+})));
+graphLabel = []
+graphLabelAnswer = []
+  for (key in count){
+    graphLabel.push(key)
+    graphLabelAnswer.push(count[key])
+  }
+
+var ctx3 = document.getElementById("graph-area-entrance2")//.getContext("2d");
+var data = {
+  labels: graphLabel,//7日前から並べたもの
+    datasets: [{
+        label: stext45[language],
+        data: graphLabelAnswer,
+        borderColor: '#00BFFF'
+    }]
+};
+var options = {};
+var ex_chart2 = new Chart(ctx3, {
+    type: 'horizontalBar',
+    data: data,
+    options: {
+    scales: {
+    yAxes: [{
+      ticks: {
+        suggestedMin: 0,
+        stepSize: 10,
+      }
+    }]
+ },
+},
+});
+    })
+}
+
     function swallerror(errormessage,kubun,data){
-      console.log(errormessage,kubun,data)
       Swal.fire({
       title: 'error',
       icon: 'warning',
@@ -1315,11 +1544,10 @@ pieceLabel: {
        }
      })
     }
-
     function swall_success(){
      Swal.fire({
-     title: stext11[my_language]
-    , html : stext12[my_language]
+     title: stext11[language]
+    , html : stext12[language]
     , icon : 'success'
     , timer : '1500'
     });
