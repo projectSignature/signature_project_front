@@ -110,9 +110,26 @@ padding-left: 13px;
   height:37%;
   width:98%;
   align-items: center;
-
+  display:flex;
 }
 
+.button-input{
+  margin-top:30px;
+  border-radius:50px;
+  background-color: #4169E1 !important;
+  color:white;
+  width:25%;
+  height:70px;
+  margin-left:15px;
+  cursor:pointer;
+  font-size:2vw;
+}
+.text-input-language:hover{
+  transform: scale(1.1);
+}
+.button-input:hover{
+  transform: scale(1.1);
+}
 .confirmbutton:hover{
     text-decoration: none;
     border: 2px solid gray;
@@ -153,6 +170,15 @@ padding-left: 13px;
   height:100%;
   margin-left:0.5%;
 }
+#right-second-right-entrancd-2{
+    margin-left:0.5%;
+    width:50%
+}
+#right-second-right-entrnce{
+  width:40%;
+  height:100%;
+  margin-left:0.5%;
+}
 #graph-area{
   height:500px;
 }
@@ -170,71 +196,6 @@ canvas{
 }
 
 
-@media screen and (min-width: 501px) and (max-width: 725px) {
- #menubar{
-  width:15%;
-height:600px;
-}
-.right-first-div{
-  width: 95%;
-  height:55px;
-  margin-top: 10px;
-  padding-bottom: 3px;
-  margin-left: 10px;
-}
-  #right-board{
-  width: 85%;
-}
-.atention-discrtion{
-  width:100%;
-  padding-top: 0px;
-  font-size: 1.2em;
-  padding-left: 0px;
-  height:100%;
-  overflow: hidden;
-
-}
-  .result-input{
-    font-size: 2em;
-    margin-left: 20px;
-    margin-top: 0px;
-    width:70px;
-  }
-
-      .title-bottons{
-        display:none;
-
-      }
-      .menu-div{
-        margin-left: 20%;
-      }
-      #menubar-title{
-        margin-left: 10%;
-        font-size: 1.5em;
-      }
-
-    #right-first{
-      display:block;
-    }
-
-    .right-first-div{
-      width: 95%;
-      height:55px;
-      margin-top: 10px;
-      padding-bottom: 3px;
-      margin-left: 10px;
-    }
-    #right-second{
-      margin-top:2px;
-    }
-#right-first{
-
-  height:200px;
-}
-#member-total{
-  margin-left: 2px;
-}
-}
 
 
 
@@ -294,7 +255,7 @@ width:32%;
 }
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 725px) {
   html{
   overflow-y: scroll;
 
@@ -360,6 +321,7 @@ width:32%;
     width: 100%;
     height:850px
   }
+
   #right-first{
     height:200px;
     width:100%;
@@ -412,6 +374,12 @@ width:32%;
     #right-second{
       display:block;
     }
+    #right-third{
+      display:block;
+    }
+    #right-third div{
+      width:100%;
+    }
     #right-second-left{
       width:100%;
     }
@@ -430,7 +398,7 @@ width:32%;
     #ex_chart{
   height:200px !important;
 }
-    #graph-area{
+    #graph-area ,#graph-area-entrance ,#graph-area-entrance2{
           height:200px !important;
     }
     #right-second-right{
