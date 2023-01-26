@@ -13,7 +13,7 @@
 <body>
   <div id="titlediv">
           <div id="titlemain" >Gym Control System</div>
-          <div id="gym-name" >Kussano gym</div>
+          <div id="gym-name" >Kussano dojo</div>
   </div>
 
     <div id="dash">
@@ -120,8 +120,10 @@ function clientsdataGet(){
             return (a.lesson_after-0) > (b.lesson_after -0) ? -1 : 1;
               });
             }
-      clientsHandler(clients1);
-      });
+
+    }).then((res)=>{
+        clientsHandler(clients1);
+    })
     }
 
     function clientsHandler(clients1) {
@@ -214,253 +216,219 @@ function clientsdataGet(){
           color = "black"
         }
         mydatecheck = client.graduation_dt
-        console.log(client)
         Swal.fire({
             html: `
-                <div id="client">
-                   <div class="main-div" id="left-div-edit">
-                    <div class="div-block-swall">
-                        <div><span>Nome: </span></div>
-                        <div><input type="text" id="clientName" disabled="disabled" value="${client.nm_member}"/></div>
+                <div class="main-div-flex-swall">
+                    <div class="sub-div-50">
+                      <span>Nome: </span>
+                      <input type="text" id="clientName" disabled="disabled" value="${client.nm_member}"/>
                     </div>
-                    <div class="div-block-swall">
-                        <div><span>Faixa atual: </span></div>
-                        <div><select id="currentRange">
-                            <option value="${client.color}" selected>${color}</option>
-                            <option value="0">white</option>
-                            <option value="1">blue</option>
-                            <option value="2">purpl</option>
-                            <option value="3">brown</option>
-                            <option value="4">black</option>
-                        </select></div>
+                    <div class="sub-div-50">
+                      <span>Faixa atual:</span>
+                      <select id="currentRange">
+                        <option value="${client.color}" selected>${color}</option>
+                        <option value="0">white</option>
+                        <option value="1">blue</option>
+                        <option value="2">purpl</option>
+                        <option value="3">brown</option>
+                        <option value="4">black</option>
+                        </select>
                     </div>
-                    <div class="div-block-swall">
-                        <div><span>Data da graduação: </span></div>
-                        <div class="input-80"><input type="date" id="graduateDate" value="${client.graduation_dt}"/></div>
+                    <div class="sub-div-50">
+                      <span>Data da graduação:</span>
+                      <input type="date" id="graduateDate" value="${client.graduation_dt}"/>
                     </div>
-                    <div class="div-block-swall">
-                        <div><span>1º Grau: </span></div>
-                        <div class="input-80"><input type="date" id="firstDegree" value="${client.first_point}"/></div>
+                    <div class="sub-div-50">
+                     <span>1º Grau: </span>
+                     <input type="date" id="firstDegree" value="${client.first_point}"/>
                     </div>
-                    <div class="div-block-swall">
-                        <div><span>2º Grau: </span></div>
-                        <div class="input-80"><input type="date" id="secondDegree" value="${client.second_point}"/></div>
+                    <div class="sub-div-50">
+                      <span>2º Grau: </span>
+                      <input type="date" id="secondDegree" value="${client.second_point}"/>
                     </div>
-                  </div>
-                  <div class="main-div"  id ="right-div">
-                    <div class="div-block-swall">
-                        <div><span>3º Grau: </span></div>
-                        <div class="input-80"><input type="date" id="thirdDegree" value="${client.third_point}"/></div>
+                    <div class="sub-div-50">
+                      <span>3º Grau: </span>
+                      <input type="date" id="thirdDegree" value="${client.third_point}"/>
                     </div>
-                    <div class="div-block-swall">
-                        <div><span>4º Grau: </span></div>
-                        <div class="input-80"><input type="date" id="fourthDegree" value="${client.fourth_point}"/></div>
+                    <div class="sub-div-50">
+                      <span>4º Grau: </span>
+                      <input type="date" id="fourthDegree" value="${client.fourth_point}"/>
                     </div>
-                    <div class="div-block-swall">
-                        <div><span>Aula pós-graduação: </span></div>
-                        <div><input type="number" id="postGraduationClass" value="${client.lesson_after}"/></div>
+                    <div class="sub-div-50">
+                      <span>Aula pós-graduação: </span>
+                      <input type="number" id="postGraduationClass" value="${client.lesson_after}"/>
                     </div>
-                    <div class="div-block-swall">
-                        <div><span>Observações: </span></div>
-                        <div><textarea type="text" id="observations" value="${client.obs}"/></textarea></div>
+                    <div class="sub-div-50">
+                      <span>Observações: </span>
+                      <textarea type="text" id="observations" />${client.obs}</textarea>
                     </div>
-                    <div class="div-block-swall">
-                        <div><span>Status: </span></div>
-                        <div><input type="text" id="status" value="${client.status}" disabled="disabled"/></div>
+                    <div class="sub-div-50">
+                      <span>Status: </span>
+                      <input type="text" id="status" value="${client.status}" disabled="disabled"/>
                     </div>
-                  </div>
                 </div>
-
                 <style>
-
-                    #client{
-                        width: 100%;
-                        height: 450px;
-                        display: flex;
-                        flex-wrap: wrap;
-                        justify-content: flex-start;
-                    }
-                    .main-div{
-                      width:50%;
-                      display:block;
-                    }
-                    .main-div div{
-                      display:flex;
-                      justify-content: flex-end;
-                      margin-top:15px;
-                    }
-                    .div-block-swall div{
-                      height:100%;
-                      width:100%;
-                    }
-                    input, select ,textarea{
-                      width:100%;
-                      height:50px;
-                      border-radius:10px;
-                    }
-
-                    @media only screen and (max-width: 1000px) {
-                      #client{
-                        display: block;
-                        height: 1100px;
-                        border:1px solid gray;
-                        width:98%;
-                      }
-                      #left-div-edit{
-                        width:100%;
-                        padding-left:5%;
-                        padding-right:5%;
-                      }
-                      #right-div{
-                        width:100%;
-                        margin-top:30px !important;
-                        padding-left:5%;
-                        padding-right:5%;
-                      }
-                      .main-div div{
-                        display:block;
-                        margin-top:0px;
-                      }
-                      .div-block-swall{
-                        width:90%;
-                        margin-top:30px !important;
-                    }
-                    .input-80{
-                        width:100%;
-                    }
-                    input{
-                      width:100%
-                    }
-
-                    }
-
-
-
+                 .main-div-flex-swall{
+                   width:100%;
+                   display:flex;
+                   flex-wrap: wrap;
+                 }
+                 .sub-div-50{
+                   width:49%;
+                   height:80px;
+                   display:flex;
+                  justify-content: flex-end;
+                  margin-top:20px;
+                 }
+                 input ,textarea ,select{
+                   width:300px;
+                   height:50px;
+                   margin-right:80px;
+                   font-size:1.5vw;
+                 }
+                 span{
+                   margin-right:20px;
+                 }
+                 .swal2-popup {
+                 width: 80% !important;
+                  height:700px !important;
+                }
                 </style>
             `,
             showCancelButton: true,
             confirmButtonText: "Salvar",
             cancelButtonText: "Cancelar",
             title: 'Registrar graduação',
+            allowOutsideClick : false ,
+            preConfirm: (login) => {
+              const name = document.getElementById("clientName").value
+              var currentRange = document.getElementById("currentRange").value
+              var graduateDate = document.getElementById("graduateDate").value
+              var firstDegree = document.getElementById("firstDegree").value
+              var secondDegree = document.getElementById("secondDegree").value
+              var thirdDegree = document.getElementById("thirdDegree").value
+              var fourthDegree = document.getElementById("fourthDegree").value
+              var postGraduationClass = document.getElementById("postGraduationClass").value
+              var observations = document.getElementById("observations").value
+              var status = document.getElementById("status").value
+              if(client.first_point=="-"){
+                  firstpoint=""
+              }else{
+                  firstpoint=client.first_point
+              }
+               if(client.second_point=="-"){
+                  secondpoint=""
+              }else{
+                  secondpoint=client.second_point
+              }
+               if(client.third_point=="-"){
+                  thirdpoint=""
+              }else{
+                  thirdpoint=client.third_point
+              }
+               if(client.fourth_point=="-"){
+                  fourthpoint=""
+              }else{
+                  fourthpoint=client.fourth_point
+              }
+              if(client.obs=="-"){
+                obs =""
+              }else{
+                obs = client.obs
+              }
+            update_id = client.nm_member_id
+            var graduateDateupdate=graduateDate
+            var change = "0"
+            if(currentRange==0){
+              color="white"
+            }else if(currentRange==1){
+            color="blue"
+          }else if(currentRange==2){
+            color="purpl"
+          }else if(currentRange==3){
+            color="brown"
+          }else if(currentRange==4){
+            color="black"
+            }
+              if(client.color!=currentRange){ //カラーの変更をした時の処理
+              }else if(firstpoint!=firstDegree){
+              }else if(secondpoint!=secondDegree){
+              }else if(thirdpoint!=thirdDegree){
+              }else if(fourthpoint!=fourthDegree){
+              }else if(client.lesson_after!=postGraduationClass){
+              }else if(mydatecheck!=graduateDate){
+              }else if(observations!=obs){
+              }else{
+                Swal.showValidationMessage(`Não teve alteração`)
+              }
+            },
         }).then(result => {
             if (result.isConfirmed) {
-                const name = document.getElementById("clientName").value
-                var currentRange = document.getElementById("currentRange").value
-                var graduateDate = document.getElementById("graduateDate").value
-                var firstDegree = document.getElementById("firstDegree").value
-                var secondDegree = document.getElementById("secondDegree").value
-                var thirdDegree = document.getElementById("thirdDegree").value
-                var fourthDegree = document.getElementById("fourthDegree").value
-                var postGraduationClass = document.getElementById("postGraduationClass").value
-                var observations = document.getElementById("observations").value
-                var status = document.getElementById("status").value
-                console.log(graduateDate)
-                if(client.first_point=="-"){
-                    firstpoint=""
-                }else{
-                    firstpoint=client.first_point
-                }
-                 if(client.second_point=="-"){
-                    secondpoint=""
-                }else{
-                    secondpoint=client.second_point
-                }
-                 if(client.third_point=="-"){
-                    thirdpoint=""
-                }else{
-                    thirdpoint=client.third_point
-                }
-                 if(client.fourth_point=="-"){
-                    fourthpoint=""
-                }else{
-                    fourthpoint=client.fourth_point
-                }
-              update_id = client.nm_member_id
-              var graduateDateupdate=graduateDate
-              var change = "0"
-              if(currentRange==0){
-                color="white"
-              }else if(currentRange==1){
-              color="blue"
-            }else if(currentRange==2){
-              color="purpl"
-            }else if(currentRange==3){
-              color="brown"
-            }else if(currentRange==4){
-              color="black"
-              }
-
-                if(client.color!=currentRange){ //カラーの変更をした時の処理
-                  kubun = `graduar para faixa ${color}`
-                  graduateDateupdate = graduateDate
-                  firstDegree="-"
-                  secondDegree="-"
-                  thirdDegree="-"
-                  fourthDegree="-"
-                  console.log(graduateDateupdate)
-                  change = "1"
-                }else if(firstpoint!=firstDegree){
-                  kubun = `1º grau da faixa ${color}`
-                  change = "1"
-                }else if(secondpoint!=secondDegree){
-                  kubun = `2º grau da faixa ${color}`
-                  change = "1"
-                }else if(thirdpoint!=thirdDegree){
-                  kubun = `3º grau da faixa ${color}`
-                  change = "1"
-                }else if(fourthpoint!=fourthDegree){
-                  kubun = `4º grau da faixa ${color}`
-                  change = "1"
-                }else if(client.lesson_after!=postGraduationClass){
-                  kubun = `Alterar quantidades de aulas para ${postGraduationClass}`
-                  change = "1"
-                }else if(mydatecheck!=graduateDate){
-                  console.log('in')
-                  kubun = `Alterar a data da graduação para ${graduateDate}`
-                  change = "1"
-                }
-
-                if (change==1){
-                if(firstDegree==""){
-                  firstDegree="-"
-                }
-                if(secondDegree==""){
-                  secondDegree="-"
-                }
-                if(thirdDegree==""){
-                  thirdDegree="-"
-                }
-                if(fourthDegree==""){
-                  fourthDegree="-"
-                }
-                if(observations==""){
-                  observations="-"
-                }
-
-                let obj = {
-                  id: client.nm_member_id,
-                  color: currentRange,
-                  status: status,
-                  graduation_dt: graduateDateupdate,
-                  first_point: firstDegree,
-                  second_point: secondDegree,
-                  third_point: thirdDegree,
-                  fourth_point: fourthDegree,
-                  lesson_after: postGraduationClass,
-                  obs: observations,
-                };
-              //  swall_confirm(name,kubun,obj)
-                console.log(obj)
-              }else{
-
-              }
-
+                  const name = document.getElementById("clientName").value
+                  var currentRange = document.getElementById("currentRange").value
+                  var graduateDate = document.getElementById("graduateDate").value
+                  var firstDegree = document.getElementById("firstDegree").value
+                  var secondDegree = document.getElementById("secondDegree").value
+                  var thirdDegree = document.getElementById("thirdDegree").value
+                  var fourthDegree = document.getElementById("fourthDegree").value
+                  var postGraduationClass = document.getElementById("postGraduationClass").value
+                  var observations = document.getElementById("observations").value
+                  var status = document.getElementById("status").value
+                  if(client.color!=currentRange){ //カラーの変更をした時の処理
+                    kubun = `graduar para faixa ${color}`
+                    firstDegree="-"
+                    secondDegree="-"
+                    thirdDegree="-"
+                    fourthDegree="-"
+                    change = "1"
+                  }else if(firstpoint!=firstDegree){
+                    kubun = `1º grau da faixa ${color}`
+                  }else if(secondpoint!=secondDegree){
+                    kubun = `2º grau da faixa ${color}`
+                  }else if(thirdpoint!=thirdDegree){
+                    kubun = `3º grau da faixa ${color}`
+                  }else if(fourthpoint!=fourthDegree){
+                    kubun = `4º grau da faixa ${color}`
+                  }else if(client.lesson_after!=postGraduationClass){
+                    kubun = `Alterar quantidades de aulas para ${postGraduationClass}`
+                  }else if(mydatecheck!=graduateDate){
+                    kubun = `Alterar a data da graduação para ${graduateDate}`
+                  }else if(observations!=obs){
+                    kubun = `Alterar a Observação`
+                  }
+                  if(firstDegree==""){
+                    firstDegree="-"
+                  }
+                  if(secondDegree==""){
+                    secondDegree="-"
+                  }
+                  if(thirdDegree==""){
+                    thirdDegree="-"
+                  }
+                  if(fourthDegree==""){
+                    fourthDegree="-"
+                  }
+                  if(observations==""){
+                    observations="-"
+                  }
+                  let obj = {
+                    id: client.nm_member_id,
+                    color: currentRange,
+                    status: status,
+                    graduation_dt: graduateDate,
+                    first_point: firstDegree,
+                    second_point: secondDegree,
+                    third_point: thirdDegree,
+                    fourth_point: fourthDegree,
+                    lesson_after: postGraduationClass,
+                    obs: observations,
+                  };
+                swall_confirm(name,kubun,obj)
             }
         })
     }
 
     function getCurrentYYYYMMDD() {
-
     var date = new Date();
     var y = date.getFullYear();
     var m = ("00" + (date.getMonth() + 1)).slice(-2);
@@ -469,9 +437,6 @@ function clientsdataGet(){
   }
 
 function swall_confirm(name,kubun,obj){
-  console.log(name)
-  console.log(kubun)
-
 Swal.fire({
     html: `
    <div id="title">
@@ -509,21 +474,34 @@ Swal.fire({
     cancelButtonText: "Cancelar",
 }).then(result => {
  if (result.isConfirmed) {
-   console.log(obj)
     const attr = {
       method: "POST",
       body: JSON.stringify(obj),
       headers: { "Content-type": "application/json; charset=UTF-8" },
     };
-
     fetch("https://squid-app-ug7x6.ondigitalocean.app/graduationUpdate", attr)
     .then(response =>	{
       if(!response.ok){
         console.log(response)
         swall_error(1)
       }else{
-        restartTable();
-        swall_success()
+        Swal.fire({
+          icon:"info",
+          title: 'Processing'
+        , html: 'Wait'
+        , allowOutsideClick : false
+        , showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true
+        , onBeforeOpen: () => {
+            Swal.showLoading();
+          }
+        })
+        restartTable()
+
+        .then((res)=>{
+          swall_success()
+        })
       }
       });
   }
@@ -540,23 +518,10 @@ Swal.fire({
        while (removeTbody.hasChildNodes()) {
          removeTbody.removeChild(removeTbody.firstChild);
        }
-
-      setTimeout(() => {
-         fetch("https://squid-app-ug7x6.ondigitalocean.app/graduationlist", {
-           method: "POST",
-           body: JSON.stringify({ opt1: "", opt2: "" }),
-           headers: { "Content-type": "application/json; charset=UTF-8" },
-         })
-           .then((x) => x.json())
-           .then((res) => {
-             clients1 = res;
-             //console.log(clients)
-             clientsHandler(clients1);
-           });
-       }, 3000);
+       clientsdataGet()
      };
 
-    clientsHandler()
+
 
 
     function swall_error(data,clientId){
@@ -628,7 +593,6 @@ Swal.fire({
     }
     })
        }
-
        function swall_success(){
            if(maylanguage=="PT"){
              errormessage = "Alteração foi feita com sucesso"
@@ -647,21 +611,4 @@ Swal.fire({
       , timer : '1500'
       });
           }
-
-
-          const sortableTable = new SortableTable();
-   // set table element
-   sortableTable.setTable(document.querySelector('#my-table1'));
-   // set data to be sorted
-   sortableTable.setData(data);
-   // handling events
-   sortableTable.events()
-       .on('sort', (event) => {
-         console.log(`[SortableTable#onSort]
-       event.colId=${event.colId}
-       event.sortDir=${event.sortDir}
-       event.data=\n${JSON.stringify(event.data)}`);
-       });
-
-
 </script>
