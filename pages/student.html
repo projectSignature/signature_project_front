@@ -47,14 +47,11 @@
     let maylanguage = "PT"
     let nameselect = []
     let clients1;
-
-
     if (sessionGymName) {
       gymName.innerHTML = sessionGymName;
     } else {
       gymName.innerHTML = "GYM error";
     }
-
 clientsdataGet(name)
 let select1 = document.querySelector(`#filter1`);
 select1.addEventListener(`change`, function () {
@@ -62,7 +59,6 @@ select1.addEventListener(`change`, function () {
   tbody.innerHTML = ""
 	clientsdataGet()
 });
-
 let select2 = document.querySelector(`#filter2`);
 select2.addEventListener(`change`, function () {
   myname = document.getElementById("filter2").value
@@ -85,18 +81,12 @@ select2.addEventListener(`change`, function () {
       }
     }
   }
-
-
-
 });
-
-
 function clientsdataGet(){
   clients1 =""
     const filter1 = ""//document.getElementById("filter1").value;
     const filter2 = ""//document.getElementById("filter2").value;
     const obj = { opt1: filter1, opt2: filter2 };
-
     fetch("https://squid-app-ug7x6.ondigitalocean.app/graduationlist", {
       method: "POST",
       body: JSON.stringify({ opt1: "", opt2: "" }),
@@ -120,12 +110,10 @@ function clientsdataGet(){
             return (a.lesson_after-0) > (b.lesson_after -0) ? -1 : 1;
               });
             }
-
     }).then((res)=>{
         clientsHandler(clients1);
     })
     }
-
     function clientsHandler(clients1) {
         for (let index = 0; index < clients1.length; index++) {
           if(index==0){
@@ -144,7 +132,6 @@ function clientsdataGet(){
       //  console.log(nameselect)
         document.getElementById("filter2").innerHTML = nameselect
       }
-
       function createNewTableRow(data) {
         //  console.log(data.nm_member_id)
         if(data.color=="0"){
@@ -158,7 +145,6 @@ function clientsdataGet(){
         }else{
           color = "black"
         }
-
         let row = `
         <tr id="${data.nm_member}">
           <th class="_sticky" name="_sticky_name">${data.nm_member}</th>
@@ -178,7 +164,6 @@ function clientsdataGet(){
           `;
         return row;
       }
-
       function createNewTableRow_first(data) {
            let row = `
              <tr>
@@ -293,6 +278,19 @@ function clientsdataGet(){
                  width: 80% !important;
                   height:700px !important;
                 }
+                 @media only screen and (max-width: 700px) {
+                   .main-div-flex-swall{
+                     display:block;
+                     flex-wrap: nowrap;
+                   }
+                   .sub-div-50{
+                     width:100%;
+                     display:block;
+                   }
+                   input ,textarea ,select{
+                     font-size:3vw;
+                   }
+                 }
                 </style>
             `,
             showCancelButton: true,
@@ -493,7 +491,7 @@ Swal.fire({
         , showConfirmButton: false,
           timer: 3000,
           timerProgressBar: true
-        , onBeforeOpen: () => {
+        ,onBeforeOpen: () => {
             Swal.showLoading();
           }
         })
