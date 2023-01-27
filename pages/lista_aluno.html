@@ -74,6 +74,7 @@ function plan_option_create(){
   fetch('https://squid-app-ug7x6.ondigitalocean.app/planget')
     .then((x) => x.json())
     .then((res) => {
+      console.log(res)
       row = `<option value="">Planos</option>`
       myplan.push(row)
       for(let i=0;i<res.length;i++){
@@ -172,7 +173,7 @@ console.log(filter2array)
 
       }
 
-        filter1array.sort( function(a, b) {
+      filter1array.sort( function(a, b) {
     return a.nm_member < b.nm_member ? -1 : 1;
   })
         for (let index = 0; index < filter1array.length; index++) {
@@ -321,8 +322,6 @@ console.log(filter2array)
       }else{
         genero = "Mulher"
       }
-
-
         fetch('https://squid-app-ug7x6.ondigitalocean.app/planget')
           .then((x) => x.json())
           .then((res) => {
@@ -617,9 +616,23 @@ swall_error(7,clientId)
             }else{
               processing_wait()
               restartTable();
-              swall_success()
             }
-            });
+            })
+            .then((res)=>{
+              console.log(obj.nm_member)
+              console.log(clientId)
+              console.log(obj.status)
+              fetch("https://squid-app-ug7x6.ondigitalocean.app/graduationmemberupdate", {//pegar todos dados do table de pagamentos
+                method: 'POST',
+                body: JSON.stringify({ id: clientId,name:obj.nm_member,status:obj.status}),
+                headers: { "Content-type": "application/json; charset=UTF-8" }
+              })
+                .then((x) => x.json())
+                .then((res) => {
+                  console.log(res)
+                  swall_success()
+                })
+            })
           }
         }catch (error) {
           console.log(error)
