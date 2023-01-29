@@ -8,23 +8,21 @@
     <link rel="stylesheet" href="../style/list_alunos1.css" />
     <link rel="stylesheet" href="../style/payment.css" />
   </head>
-
   <body>
     <div id="titlediv">
       <div id="titlemain">Gym Control System</div>
       <div id="gym-name">Kussano dojo</div>
     </div>
-
     <div id="dash">
       <div id="header">
-        <h3>Controle de pagamento</h3>
+        <h3 id="page-title">Controle de pagamento</h3>
+        <select name="" id="filter1">
+        </select>
         <select name="" id="select-year">
           <option value="2023">2023</option>
-          <option value="2023">2024</option>
+          <option value="2024">2024</option>
         </select>
-
           <input type="button" id="createdate" value="Add"></input>
-
       </div>
       <div  class="twrapper">
         <table>
@@ -36,214 +34,218 @@
   <script src="../script/swal.min.js"></script>
   <script type="text/javascript" src="js/stickyfill.min.js"></script>
   <script>
-
   //var gymname = sessionStorage.getItem("gym");
   //var gymid = sessionStorage.getItem("GYM_ID");
   var today = new Date();
   var month = today.getMonth()+1
   const tbody = document.getElementsByTagName("tbody")[0];
   const btnFilter = document.getElementById("btn-filter");
- const gymName = document.getElementById("gym-name");
-  let maylanguage = "PT"
+  const gymName = document.getElementById("gym-name");
+  let yearMonth = ["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dez"]
+  let payimage= [`<img src="../image/nopaid.png" width="35">`,`<img src="../image/paid.png" width="35">`,`<img src="../image/free.png" width="35">`]
+  let language = 0
   let gymid = 4
-    let plansarry = []
-    getplans()
+  let plansarry = []
+  const select_year = document.getElementById("select-year").value;//year selecte
+  var clients = {}
+  sessionGymName = 'kussano dojo'
+  if (sessionGymName) {
+  gymName.innerHTML = sessionGymName;
+  } else {
+    gymName.innerHTML = "GYM error";
+  }
 
-  //if (sessionGymName) {
-  //  gymName.innerHTML = sessionGymName;
-  //} else {
-  //  gymName.innerHTML = "GYM error";
-  //}
+//翻訳文------------------------------------------------>
+const stext1 = ["Controle de pagamento","Payment control","メンバー支払い管理"]
+const stext2 = ["Não existe dados da busca","No data was found under the specified conditions","指定の条件ではデータが見つかりませんでした"]
+const stext3 = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"]
+const stext4 = ["January","February","March","April","May","June","July","August","September","October","November","December"]
+const stext5 = ["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"]
+const stext6 = ["Mês","Month","月度"]
+const steXt7 = ["Nome do aluno","Menber name","メンバー名"]
+const stext8 = ["Pago","Paid","受領"]
+const stext9 = ["Não pago","Unpaid","未受領"]
+const stext10 = ["Free","Free","フリー"]
+const stext11 = ["Aluno","Member","メンバー名"]
+const stext12 = ["Plano","Plan","プラン名"]
+const stext13 = ["Ainda não existe dados desse aluno do mês selecionado","There is no data for this selected month student yet","選択月はまだデータ存在しません"]
+const stext14= ["Podemos criar?","Can we create?","追加してもよろしいですか？"]
+const stext15= ["Escolha o mês para criarmos os dados","Choose the month to create the data","データを作成する月を選択してください"]
+const stext16= ["Mensalidade","monthly fees","月謝費"]
+const filteroption1 = ["Todos","All","全て"]
+const filteroption2 = ["Atrasados","Unpaid","未受領"]
+const filteroption3 = ["Pagos","paid","受領済み"]
+let option = `<option value="0">${filteroption1[language]}</option>
+              <option value="1">${filteroption2[language]}</option>
+              <option value="2">${filteroption3[language]}</option>`
+document.getElementById("page-title").innerHTML = stext1[language]
+document.getElementById("filter1").innerHTML = option
 
-      const select_year = document.getElementById("select-year").value;//year selecte
-var clients = {}
 
-getpaymente_all()
-//Get Allpayment data------------------------------------->
-function getpaymente_all(){
-  //処理中ダイアログ
-  Swal.fire({
+  let select1 = document.querySelector(`#filter1`);
+  select1.addEventListener(`change`, function () {
+    clients1 =""
+    tbody.innerHTML = ""
+  	windowLoadGetdados()
+  });
+
+windowLoadGetdados()
+//メインファンクション,PLANGET=>支払いデータGET,メンバーリストGETテーブル作成----------------------------->
+async function windowLoadGetdados(){
+const swal =  Swal.fire({
     icon:"info",
-    title: 'Processing'
-  , html: 'Wait'
-  , allowOutsideClick : false
-  , showConfirmButton: false,
-    timer: 5000,
-    timerProgressBar: true
-  , onBeforeOpen: () => {
+    title: 'Processing',
+    html: 'Wait',
+    allowOutsideClick : false,
+    showConfirmButton: false,
+    timerProgressBar: true,
+    onBeforeOpen: () => {
       Swal.showLoading();
     }
-  });
-  let memberslist =[]
-  clients = {}
-  fetch("https://squid-app-ug7x6.ondigitalocean.app/getpaymentAll", {//pegar todos dados do table de pagamentos
+  })
+  const plansarray = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/gymplanget?id=${gymid}`)
+  const paymentdata = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/gymgetpaymentAll?year=${select_year}&id=${gymid}`)
+  const filterpaymentdata = await filterkubun(paymentdata)
+  const list = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/gymmemberlist?id=${gymid}`)
+  const memberlist = await orden(list)
+  await createTable(memberlist,filterpaymentdata,plansarray)
+  swal.close()
+}
+//APIアクセスファンクション
+async function makerequest(url){
+  const request = await fetch(url)  //esperar aqui
+ return request.json()
+}
+
+async function makerequest2(url,body){
+  const request = await fetch(url, {//pegar todos dados do table de pagamentos //n]
     method: 'POST',
-    body: JSON.stringify({ year: select_year ,gymid: gymid}),
+    body: JSON.stringify(body),
     headers: { "Content-type": "application/json; charset=UTF-8" }
   })
-    .then((x) => x.json())
-    .then((res) => {
-        clients = res //guardar na array os dados do table de pagamentos
-        const obj = { opt1: "", opt2: "" };
-        fetch("https://squid-app-ug7x6.ondigitalocean.app/list", {//pegar todos membros
-          method: "POST",
-          body: JSON.stringify(obj),
-          headers: { "Content-type": "application/json; charset=UTF-8" },
-        })
-          .then((x) => x.json())
-          .then((response) => {
+  return request.json()
+}  //Url?year=2023&îd=4
 
-            for (let i = 0;i<response.length;i++){
-              memberslist.push([response[i].id,response[i].nm_member,response[i].plans]) //fazer um array do membro
-            }
-                for (let i = 0;i<memberslist.length;i++){ //loop memberlist
-                  let answer = {id:0,name:0,plan:0,planvalue:0,jan:"-",feb:"-",mar:"-",apr:"-",may:"-",jun:"-",jul:"-",aug:"-",sep:"-",oct:"-",nov:"-",dez:"-"}
-                  answer.id = memberslist[i][0]
-                  answer.name = memberslist[i][1]
-                  for(let ii=0;ii<plansarry.length;ii++){
-                    //console.log(plansarry[ii][0])
-                    if(plansarry[ii][0]==memberslist[i][2]){
-                      console.log(plansarry[ii][1])
-                      console.log('in')
-                      answer.planvalue= plansarry[ii][1]
-                    }
-                  }
-                  answer.plan = memberslist[i][2];
-                  //answer.planvalue = res[ii].plan_value;
-                  for(let ii =0; ii<res.length;ii++){
-                    if(res[ii].nm_member_id==memberslist[i][0]){
-                      if(res[ii].month==1){
-                        if(res[ii].division==1&&res[ii].plan!="Plan free"){
-                          jan = `<img src="../image/nopaid.png" width="35">`
-                        }else if(res[ii].division==2&&res[ii].plan!="Plan free"){
-                          jan = `<img src="../image/paid.png" width="35">`
-                        }else{
-                          jan = `<img src="../image/free.png" width="35">`
-                        }
-                        answer.jan = jan
-                      }else if(res[ii].month==2){
-                        if(res[ii].division==1&&res[ii].plan!="Plan free"){
-                          feb = `<img src="../image/nopaid.png" width="35">`
-                        }else if(res[ii].division==2&&res[ii].plan!="Plan free"){
-                          feb = `<img src="../image/paid.png" width="35">`
-                        }else{
-                          feb = `<img src="../image/free.png" width="35">`
-                        }
-                          answer.feb = feb
-                      }else if(res[ii].month==3){
-                        if(res[ii].division==1&&res[ii].plan!="Plan free"){
-                          mar = `<img src="../image/nopaid.png" width="35">`
-                        }else if(res[ii].division==2&&res[ii].plan!="Plan free"){
-                          mar = `<img src="../image/paid.png" width="35">`
-                        }else{
-                          mar = `<img src="../image/free.png" width="35">`
-                        }
-                          answer.mar = mar
-                      }else if(res[ii].month==4){
-                        if(res[ii].division==1&&res[ii].plan!="Plan free"){
-                          apr = `<img src="../image/nopaid.png" width="35">`
-                        }else if(res[ii].division==2&&res[ii].plan!="Plan free"){
-                          apr = `<img src="../image/paid.png" width="35">`
-                        }else{
-                          apr = `<img src="../image/free.png" width="35">`
-                        }
-                          answer.apr = apr
-                      }else if(res[ii].month==5){
-                        if(res[ii].division==1&&res[ii].plan!="Plan free"){
-                          may = `<img src="../image/nopaid.png" width="35">`
-                        }else if(res[ii].division==2&&res[ii].plan!="Plan free"){
-                          may = `<img src="../image/paid.png" width="35">`
-                        }else{
-                          may = `<img src="../image/free.png" width="35">`
-                        }
-                          answer.may = may
-                      }else if(res[ii].month==6){
-                        if(res[ii].division==1&&res[ii].plan!="Plan free"){
-                          jun = `<img src="../image/nopaid.png" width="35">`
-                        }else if(res[ii].division==2&&res[ii].plan!="Plan free"){
-                          jun = `<img src="../image/paid.png" width="35">`
-                        }else{
-                          jun = `<img src="../image/free.png" width="35">`
-                        }
-                          answer.jun = jun
-                      }else if(res[ii].month==7){
-                        if(res[ii].division==1&&res[ii].plan!="Plan free"){
-                          jul = `<img src="../image/nopaid.png" width="35">`
-                        }else if(res[ii].division==2&&res[ii].plan!="Plan free"){
-                          jul = `<img src="../image/paid.png" width="35">`
-                        }else{
-                          jul = `<img src="../image/free.png" width="35">`
-                        }
-                          answer.jul = jul
-                      }else if(res[ii].month==8){
-                        if(res[ii].division==1&&res[ii].plan!="Plan free"){
-                          aug = `<img src="../image/nopaid.png" width="35">`
-                        }else if(res[ii].division==2&&res[ii].plan!="Plan free"){
-                          aug = `<img src="../image/paid.png" width="35">`
-                        }else{
-                          aug = `<img src="../image/free.png" width="35">`
-                        }
-                          answer.aug = aug
-                      }else if(res[ii].month==9){
-                        if(res[ii].division==1&&res[ii].plan!="Plan free"){
-                          sep = `<img src="../image/nopaid.png" width="35">`
-                        }else if(res[ii].division==2&&res[ii].plan!="Plan free"){
-                          sep = `<img src="../image/paid.png" width="35">`
-                        }else{
-                          sep = `<img src="../image/free.png" width="35">`
-                        }
-                          answer.sep = sep
-                      }else if(res[ii].month==10){
-                        if(res[ii].division==1&&res[ii].plan!="Plan free"){
-                          oct = `<img src="../image/nopaid.png" width="35">`
-                        }else if(res[ii].division==2&&res[ii].plan!="Plan free"){
-                          oct = `<img src="../image/paid.png" width="35">`
-                        }else{
-                          oct = `<img src="../image/free.png" width="35">`
-                        }
-                          answer.oct = oct
-                      }else if(res[ii].month==11){
-                        if(res[ii].division==1&&res[ii].plan!="Plan free"){
-                          nov = `<img src="../image/nopaid.png" width="35">`
-                        }else if(res[ii].division==2&&res[ii].plan!="Plan free"){
-                          nov = `<img src="../image/paid.png" width="35">`
-                        }else{
-                          nov = `<img src="../image/free.png" width="35">`
-                        }
-                          answer.nov = nov
-                      }else if(res[ii].month==12){
-                        if(res[ii].division==1&&res[ii].plan!="Plan free"){
-                          dez = `<img src="../image/nopaid.png" width="35">`
-                        }else if(res[ii].division==2&&res[ii].plan!="Plan free"){
-                          dez = `<img src="../image/paid.png" width="35">`
-                        }else{
-                          dez = `<img src="../image/free.png" width="35">`
-                        }
-                         answer.dez = dez
-                      }
-                    }
-                  }
-                  if(i==0){
-                    const row1 = createNewTableRow_first(answer);
-                        tbody.innerHTML += row1;
-                      const  row = createNewTableRow(answer);
-                            tbody.innerHTML += row;
-                  }else{
-                    const row = createNewTableRow(answer);
-                        tbody.innerHTML += row;
-                  }
+function filterkubun(clients){
+  myselect_kubun = document.getElementById("filter1").value
+  if(myselect_kubun==1){
+    for(let i=0;i<clients.length;i++){
+      if(clients[i].division!=1){
+        delete clients[i]
+      }
+    }
+  }
+  return clients
+}
 
-                }
-             })
-    }).then(function() {
-       swal.close()
+function orden(response){
+  let memberslist = []
+  response.sort( function(a, b) {//アルファベット順並び替え
+　　return a.nm_member < b.nm_member ? -1 : 1;
+  });
+  for (let i = 0;i<response.length;i++){
+    memberslist.push([response[i].id,response[i].nm_member,response[i].plans]) //fazer um array do membro
+  }
+  return memberslist
+}
 
-    });
+function createTable(memberslist,clients,plansarry){
+  janArray = 0
+  febArray = 0
+  marArray = 0
+  AprArray = 0
+  MayArray = 0
+  JunArray = 0
+  JulArray = 0
+  AugArray = 0
+  SepArray = 0
+  OctArray = 0
+  NovArray = 0
+  DezArray = 0
+  for(let i=0;i<clients.length;i++){
+   console.log(result)
+    if(clients[i].division==2){
+      var result = parseInt(removeComma(clients[i].plan_value),10)
+      if(clients[i].month==1){
+        janArray = janArray + result
+      }else if(clients[i].month==2){
+        febArray = febArray + result
+      }else if(clients[i].month==3){
+        marArray = marArray + result
+      }else if(clients[i].month==4){
+        AprArray = AprArray + result
+      }else if(clients[i].month==5){
+        MayArray = MayArray + result
+      }else if(clients[i].month==6){
+        JunArray = JunArray + result
+      }else if(clients[i].month==7){
+        JulArray = JulArray + result
+      }else if(clients[i].month==8){
+        AugArray = AugArray + result
+      }else if(clients[i].month==9){
+        SepArray = SepArray + result
+      }else if(clients[i].month==10){
+        OctArray = OctArray + result
+      }else if(clients[i].month==11){
+        NovArray = NovArray + result
+      }else if(clients[i].month==12){
+        DezArray = DezArray + result
+      }
+    }
+    }
 
 
+  for (let i = 0;i<memberslist.length;i++){ //既存メンバーArrayをループしそれぞれのメンバーのrowを作ってく
+    let answer = {id:0,name:0,plan:0,planvalue:0,jan:"-",feb:"-",mar:"-",apr:"-",may:"-",jun:"-",jul:"-",aug:"-",sep:"-",oct:"-",nov:"-",dez:"-"}
+    answer.id = memberslist[i][0]
+    answer.name = memberslist[i][1]
+    let plancheck = plansarry.map(function(item){if(item.CONTROL_NAME==memberslist[i][2]){return item.PLAN_VALOR}});
+    answer.planvalue = plancheck.filter(function(item){return typeof item != 'undefined'})
+    answer.plan = memberslist[i][2];
+    let array = clients.map(function(item){if(item.nm_member_id==memberslist[i][0]){return {month:item.month,answer:item.division,name:item.nm_member}}});
+    let array1 = array.filter(function(item){return typeof item != 'undefined'})
+    if(array1.length!=0){
+     for(let index=0;index<array1.length;index++){
+       myarrayKey = yearMonth[(array1[index].month-0)-1]
+       answer[myarrayKey] =  payimage[(array1[index].answer-0)-1]
+        }
+    if(i==0){
+      const row1 = createNewTableRow_first();
+      tbody.innerHTML += row1;
+        const  row = createNewTableRow(answer);
+              tbody.innerHTML += row;
+    }else{
+      const row = createNewTableRow(answer);
+          tbody.innerHTML += row;
+    }
+  }else{
+     swallerror()
+  }
+  }
+  let row = `
+    <tr>
 
+    <td  class="table-blue" colspan="3">Valor recebido</td>
+    <td>￥${janArray}</td>
+    <td>￥${febArray}</td>
+    <td>￥${AprArray}</td>
+    <td>￥${marArray}</td>
+    <td>￥${MayArray}</td>
+    <td>￥${JunArray}</td>
+    <td>￥${JulArray}</td>
+    <td>￥${AugArray}</td>
+    <td>￥${SepArray}</td>
+    <td>￥${OctArray}</td>
+    <td>￥${NovArray}</td>
+    <td>￥${DezArray}</td>
+    </tr>
+    `;
+    tbody.innerHTML += row;
+}
 
-
+function removeComma(number) {
+    var removed = number.replace(/,/g, '');
+    return parseInt(removed, 10);
 }
 
  function createNewTableRow(data) {
@@ -273,9 +275,9 @@ function getpaymente_all(){
 function createNewTableRow_first(data) {
  let row = `
    <tr>
-   <th class="_sticky z-02">Aluno</th>
-   <th class="_sticky">Plano</th>
-   <th class="_sticky">Mensalidade</th>
+   <th class="_sticky z-02">${stext11[language]}</th>
+   <th class="_sticky">${stext12[language]}</th>
+   <th class="_sticky">${stext16[language]}</th>
    <th class="_sticky">Jan</th>
    <th class="_sticky">Feb</th>
    <th class="_sticky">Mar</th>
@@ -290,7 +292,6 @@ function createNewTableRow_first(data) {
    <th class="_sticky">Dez</th>
    </tr>
    `;
-
  return row;
 }
 
@@ -299,46 +300,15 @@ function editpay(data){
   mymonth = data.split("_")[0]
   myid = data.split("_")[1]
   myname = data.split("_")[2]
-  let myworkmonth
-  switch(mymonth){
-    case "1":
-    myworkmonth = "Janeiro"
-    break;
-    case "2":
-    myworkmonth = "Fevereiro"
-    break;
-    case "3":
-    myworkmonth = "Março"
-    break;
-    myworkmonth = "Abril"
-    case "4":
-    break;
-    myworkmonth = "Maio"
-    case "5":
-    break;
-    myworkmonth = "Junho"
-    case "6":
-    break;
-    myworkmonth = "Julho"
-    case "7":
-    break;
-    myworkmonth = "Agosto"
-    case "8":
-    break;
-    myworkmonth = "Setembro"
-    case "9":
-    break;
-    myworkmonth = "Outubro"
-    case "10":
-    break;
-    case "11":
-    myworkmonth = "Novembro"
-    break;
-    case "12":
-    myworkmonth = "Dezembro"
-    break;
-    default:
+  let  myworkmonth
+  if(language==0){
+    myworkmonth = stext3[(mymonth-0)-1]
+  }else if(language==1){
+    myworkmonth = stext4[(mymonth-0)-1]
+  }else {
+  myworkmonth = stext5[(mymonth-0)-1]
   }
+
  Swal.fire({
     html: `
         <div id="swall-member-namae-div">
@@ -349,18 +319,18 @@ function editpay(data){
           <span>${myname}</span>
          </div>
         </div>
-        <div class="title-font"><span>Mês: ${myworkmonth}</span></div>
+        <div class="title-font"><span>${stext6[language]}: ${myworkmonth}</span></div>
         <div id="clientes">
           <div class="block-div" onClick="editbeforecheck('${data}_2')">
-            <div><span>pago</span></div>
+            <div><span>${stext8[language]}</span></div>
             <div><img src="../image/paid.png" width="60"></div>
           </div>
           <div class="block-div" onClick="editbeforecheck('${data}_1')">
-            <div><span>não pago</span></div>
+            <div><span>${stext9[language]}</span></div>
             <div><img src="../image/nopaid.png" width="60"></div>
           </div>
           <div class="block-div" onClick="editbeforecheck('${data}_3')">
-            <div><span>free</span></div>
+            <div><span>${stext10[language]}</span></div>
             <div><img src="../image/free.png" width="60"></div>
           </div>
         </div>
@@ -418,56 +388,54 @@ function editpay(data){
       `,
     showCancelButton: true,
     showConfirmButton:false,
-  confirmButtonText: "Salvar",
+  　confirmButtonText: "Salvar",
     cancelButtonText: "Cancelar",
+    allowOutsideClick : false,
   })
 }
 
-function editbeforecheck(data){
-  //処理中ダイアログ
-  Swal.fire({
-    icon:"info",
-    title: 'Processing'
-  , html: 'Wait'
-  , allowOutsideClick : false
-  , showConfirmButton: false,
-    timer: 4000,
-    timerProgressBar: true
-  , onBeforeOpen: () => {
-      Swal.showLoading();
-    }
-  });
-  fetch("https://squid-app-ug7x6.ondigitalocean.app/paymonthcheck", {
-    method: 'POST',
-    body: JSON.stringify({ year: select_year ,id: data.split("_")[1] ,month:data.split("_")[0]}),
- headers: { "Content-type": "application/json; charset=UTF-8" }
-  })
- .then((x) => x.json())
-   .then((res) => {
-   console.log(res.length)
-    if(res.length==0){
+
+
+
+async function editbeforecheck(data){
+  const swaleditbefore =  Swal.fire({
+      icon:"info",
+      title: 'Processing',
+      html: 'Wait',
+      allowOutsideClick : false,
+      showConfirmButton: false,
+      timerProgressBar: true,
+      onBeforeOpen: () => {
+        Swal.showLoading();
+      }
+    })
+    const paydatacheck = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/gympaymonthcheck?year=${select_year}&id=${data.split("_")[1]}&month=${data.split("_")[0]}`)
+    console.log(paydatacheck)
+    if(paydatacheck.length==0){
          Swal.fire({
        title: 'Ops',
        html: `
-           <div>Ainda não existe dados desse aluno do mês selecionado</div>
-           <div>Podemos criar?</div>
-         `,
+         <div>${stext13[language]}</div>
+           <div>${stext14[language]}</div>
+      `,
        icon : 'error',
        showCancelButton: true,
        showConfirmButton:true,
        confirmButtonText: "Sim",
        cancelButtonText: "Cancelar",
+       allowOutsideClick : false,
        }).then((result) => {
-        if (result.isConfirmed) {
-          swal.close()
+      if (result.isConfirmed) {
+         swal.close()
          creatpaydata_month(data)
        }
-       })
+      })
      }else{
        swal.close()
-       paydata_update(data)
-     }
-})
+    paydata_update(data)
+   }
+
+swaleditbefore.close()
 }
 
 function creatpaydata_month(data){
@@ -488,14 +456,11 @@ function creatpaydata_month(data){
   .then((res) => {
     restartTable()
   })
-
   }catch (error) {
-    console.log(error)
   }
 }
 
 function paydata_update(data){
-
   try{
   fetch("https://squid-app-ug7x6.ondigitalocean.app/paymentUpdate", {
     method: 'POST',
@@ -511,14 +476,9 @@ function paydata_update(data){
   .then((res) => {
     restartTable()
   })
-
   }catch (error) {
-    console.log(error)
   }
-
 }
-
-
 
 function swall_success(){
     if(maylanguage=="PT"){
@@ -546,30 +506,35 @@ async function restartTable() {
    while (removeTbody.hasChildNodes()) {
      removeTbody.removeChild(removeTbody.firstChild);
    }
-   getpaymente_all()
+   windowLoadGetdados()
+   //getpaymente_all()
  }
 
 document.getElementById("createdate").addEventListener("click", cretepayment_button)
-
 function cretepayment_button(){
-
+  let optionlanguage =[]
+  if(language==0){
+    for(let i=0;i<stext3.length;i++){
+      row=`<option value="${i+1}">${stext3[i]}</option>`
+      optionlanguage += row
+    }
+  }else if(language==1){
+    for(let i=0;i<=stext4.length;i++){
+      row=`<option value="${i+1}">${stext4[i]}</option>`
+      optionlanguage += row
+    }
+  }else{
+    for(let i=0;i<=stext5.length;i++){
+      row=`<option value="${i+1}">${stext5[i]}</option>`
+      optionlanguage += row
+    }
+  }
   Swal.fire({
     html: `
-        <div class="title-font"><span>Escolha o mês para criarmos os dados</span></div>
+        <div class="title-font"><span>${stext15[language]}</span></div>
             <div class="title-select">
              <select id="workselectmonth">
-               <option value="1">Janeiro</option>
-               <option value="2">Fevereiro</option>
-               <option value="3">Março</option>
-               <option value="4">Abril</option>
-               <option value="5">Maio</option>
-               <option value="6">Junho</option>
-               <option value="7">Julho</option>
-               <option value="8">Agosto</option>
-               <option value="9">Setembro</option>
-               <option value="10">Outubro</option>
-               <option value="11">Novembro</option>
-               <option value="12">Dezembro</option>
+              ${optionlanguage}
              </select>
             </div>
          <style>
@@ -602,147 +567,108 @@ function cretepayment_button(){
       `,
     showCancelButton: true,
     showConfirmButton:true,
-  confirmButtonText: "Criar",
+    confirmButtonText: "Criar",
     cancelButtonText: "Cancelar",
+    allowOutsideClick : false,
   }).then((result) => {
    if (result.isConfirmed) {
-     get_member(document.getElementById("workselectmonth").value)
+    get_member(document.getElementById("workselectmonth").value)
    }
  })
-
 }
 
-//plans get------------------------------->
- async function getplans(){
-
-  fetch('https://squid-app-ug7x6.ondigitalocean.app/planget')
-    .then((x) => x.json())
-    .then((res) => {
-      for (let i=0;i<res.length;i++){
-        if(res[i].GYM_ID==gymid){
-          plansarry.push([res[i].PLANS_NAME,res[i].PLAN_VALOR])
-        }
-      }
-     })
-}
-
-function get_member(month){
-  console.log(month)
+async function get_member(month){
+  const swalcreatedata =  Swal.fire({
+      icon:"info",
+      title: 'Processing',
+      html: 'Wait',
+      allowOutsideClick : false,
+      showConfirmButton: false,
+      timerProgressBar: true,
+    onBeforeOpen: () => {
+        Swal.showLoading();
+    }
+  })
+    let memberslist = []
+    const plantoget = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/gymplanget?id=${gymid}`)
+    const listtoget = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/gymmemberlist?id=${gymid}`)
+    const createTodata = await preparePlantocreateData(plantoget,listtoget)
+    await checkbeforeCreate(createTodata,month)
+   await restartTable()
+    swalcreatedata.close()
+         }
+async function preparePlantocreateData(plandata,response){
   let plansarry = []
   let memberslist = []
-  fetch('https://squid-app-ug7x6.ondigitalocean.app/planget')
-    .then((x) => x.json())
-    .then((res) => {
-      for (let i=0;i<res.length;i++){
-        if(res[i].GYM_ID==gymid){
-          plansarry.push([res[i].PLANS_NAME,res[i].PLAN_VALOR])
-        }
-      }
-     })
-     console.log(plansarry)
-       const obj = { opt1: "", opt2: "" };
-       fetch("https://squid-app-ug7x6.ondigitalocean.app/list", {//pegar todos membros
-         method: "POST",
-         body: JSON.stringify(obj),
-         headers: { "Content-type": "application/json; charset=UTF-8" },
-       })
-         .then((x) => x.json())
-         .then((response) => {
-           console.log(response)
-           for (let i = 0;i<response.length;i++){
-             for(let index = 0;index<plansarry.length;index++){
-                  if(response[i].plans==plansarry[index][0]){
-                    memberslist.push([response[i].id,response[i].nm_member,response[i].plans,plansarry[index][1]]) //fazer um array do membro
-                  }
-                }
-           }
-           console.log(memberslist)
-           for(let i =0;i<memberslist.length;i++){
-               fetch("https://squid-app-ug7x6.ondigitalocean.app/paymonthcheck", {
-                 method: 'POST',
-                 body: JSON.stringify({ year: select_year ,id: memberslist[i][0] ,month:month}),
-                 headers: { "Content-type": "application/json; charset=UTF-8" }
-                })
-                .then((x) => x.json())
-                .then((res) => {
-                 if(res.length==0){
-                   let division
-                   try{
-                     if(memberslist[i][2]=="PLAN free"){
-                       division = 3
-                     }else{
-                       division = 1
-                     }
-                fetch("https://squid-app-ug7x6.ondigitalocean.app/createpayment", {
-                  method: 'POST',
-                  body: JSON.stringify({
-                    id:memberslist[i][0],
-                    name:memberslist[i][1],
-                    plans:memberslist[i][2],
-                    gymid:gymid,
-                    year:select_year,
-                    division:division,
-                    month:month,
-                    valor:memberslist[i][3]}),
-                  headers: { "Content-type": "application/json; charset=UTF-8" }
-                }).then((x) => x.json())
-                .then((res) => {
-                  restartTable()
-
-                })
-
-                }catch (error) {
-                  console.log(error)
-                }
-
-                 }else{
-                   console.log("no")
-
-                 }
-               })
-             }
-             swall_success()
-         })
+ for (let i=0;i<plandata.length;i++){
+    if(plandata[i].GYM_ID==gymid){
+      plansarry.push([plandata[i].CONTROL_NAME,plandata[i].PLAN_VALOR])
     }
+  }
+  for (let i = 0;i<response.length;i++){
+    for(let index = 0;index<plansarry.length;index++){
+         if(response[i].plans==plansarry[index][0]){
+           memberslist.push([response[i].id,response[i].nm_member,response[i].plans,plansarry[index][1]]) //fazer um array do membro
+         }
+       }
+  }
+  return memberslist
+}
 
+ async function checkbeforeCreate(data,month){
+  for(let i =0;i<data.length;i++){
+    const datanumberid = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/gympaymonthcheck?year=${select_year}&id=${data[i][0]}&month=${month}`)
+     if(datanumberid.length==0){
+          let division
+          try{
+            if(data[i][2]=="Free"){
+              division = 3
+            }else{
+              division = 1
+            }
+          const aceses = await dataCreate(data[i][0],data[i][1],data[i][2],data[i][3],division,month)
+            console.log(aceses)
+              }catch (error) {
+                console.log(error)
+              }
+        }
+  }
+}
 
-  //let mypln
-//  const obj = { opt1: "", opt2: "" };
-//  fetch("https://squid-app-ug7x6.ondigitalocean.app/list", {//全メンバーのデータを取得
-//    method: "POST",
-//    body: JSON.stringify(obj),
-  //  headers: { "Content-type": "application/json; charset=UTF-8" },
-//  })
-  //  .then((x) => x.json())
-  //  .then((res) => {
-  //    for (let index = 0; index < res.length; index++) {
-    //     for(let i = 0; i< plans.length; i++){
-    //       if(res[index].plans==`Plan ${plans[i][0]}`){//プラン料金を取得
-    //                 myplan = plans[i][1]
-    //                 console.log(myplan)
-      //               break
-      //     }
-    //     }
-    //  fetch("https://squid-app-ug7x6.ondigitalocean.app/createpayment", {
-    //    method: 'POST',
-    //    body: JSON.stringify({
-    //      id:res[index].id,
-    //      name:res[index].nm_member,
-    //      plans:res[index].plans,
-    //      gymid:4,
-    //      year:select_year,
-    //      month:month,
-    //      division:1,
-    //      valor:myplan}),
-    //    headers: { "Content-type": "application/json; charset=UTF-8" }
-  //    })
-    //    .then((x) => x.json())
-  //      .then((res) => {
+function dataCreate(data1,data2,data3,data4,division,month){
+  console.log(data1,data2,data3,data4)
+  fetch("https://squid-app-ug7x6.ondigitalocean.app/createpayment", {
+        method: 'POST',
+        body: JSON.stringify({
+          id:data1,
+          name:data2,
+          plans:data3,
+          gymid:gymid,
+          year:select_year,
+          division:division,
+          month:month,
+          valor:data4}),
+        headers: { "Content-type": "application/json; charset=UTF-8" }
+      })
+      return 'ok'
+}
 
-  //      })
-  //      }
-  //  })
-  //  getpaymente_all()
-
+    function swallerror(){
+      Swal.fire({
+      title: 'error',
+      icon: 'warning',
+      showCancelButton: false,
+      showConfirmButton: true,
+      ConfirmButtonText: '戻る',
+      allowOutsideClick : false,
+      width: 300,
+      html:`<span>${stext1[language]}</span>`,
+      customClass: "sweet-alert",
+      }).then((result) => {
+       if (result.isConfirmed) {
+  swal.close()
+       }
+     })
+    }
   </script>
 </html>
