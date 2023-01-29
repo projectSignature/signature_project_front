@@ -33,7 +33,10 @@
     margin-right: 1%;
 }
 
-
+.table-blue{
+  background-color: #A4C6FF;
+  font-size:2vw;
+}
 
 .swal2-popup {
     width: 80% !important
