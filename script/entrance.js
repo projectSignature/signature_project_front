@@ -13,24 +13,11 @@ fetch('https://squid-app-ug7x6.ondigitalocean.app/calender/entrance')
     classesHandler_today(res);
     dadoCalender = res;
   })
-  //バックボタンクリック時にクリア
-  window.addEventListener("popstate", function (e) {
-    history.pushState(null, null, null);
-    return;
-});
 
-  // ブラウザの戻るボタンが押された場合の処理
-  window.addEventListener("popstate", function() {
-    Swal.fire({
-      title: 'エラー',
-      icon: 'warning',
-      showCancelButton: false,
-      showConfirmButton: true,
-      ConfirmButtonText: '戻る',
-      width: 300,
-      html: `<span>ng</span>`,
-    })
-  })
+  history.replaceState(null, null, null);
+    window.addEventListener('popstate', function(e) {
+        window.location = `https://squid-app-ug7x6.ondigitalocean.app/signature-project-front`;
+    });
 
 //カレンダーのcardを作成
 let clientes = []
