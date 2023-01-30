@@ -18,6 +18,20 @@ fetch('https://squid-app-ug7x6.ondigitalocean.app/calender/entrance')
     history.pushState(null, null, null);
     return;
 });
+
+  // ブラウザの戻るボタンが押された場合の処理
+  window.addEventListener("popstate", function() {
+    Swal.fire({
+      title: 'エラー',
+      icon: 'warning',
+      showCancelButton: false,
+      showConfirmButton: true,
+      ConfirmButtonText: '戻る',
+      width: 300,
+      html: `<span>ng</span>`,
+    })
+  })
+
 //カレンダーのcardを作成
 let clientes = []
 function classesHandler_today(classes) {
