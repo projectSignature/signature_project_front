@@ -15,7 +15,7 @@ var errormessage11 = ""
 var errormessage12 = ""
 var gymname = sessionStorage.getItem("gym");
 var gymid = sessionStorage.getItem("GYM_ID");
-const plans_div = document.getElementById('plans-div');
+const plans_div = document.getElementById('plans-div2');
 let plans_rows
 let plans_kubun
 let familyflug = false //ファミリープラン選択用のフラグ
@@ -25,17 +25,50 @@ var today = new Date();  //今日
 var selectlanguage
 let plan = ""
 let valor = ""
-
-
-
+language = 0
+//gymid = 4
+//gymname ="Kussano dojo"
 
 document.getElementById("birthday_year").addEventListener("change", birthday_date_get)
 document.getElementById("birthday_month").addEventListener("change", birthday_date_get)
 document.getElementById("birthday_day").addEventListener("change", birthday_date_get)
-document.getElementById("cheap").addEventListener("click", familyplan)
 
-
-
+//document.getElementById("cheap").addEventListener("click", familyplan)
+let stxt1 = ["Seja bem-vindo　\n",]
+let stxt2 = ["Seja bem-vindo\nInsira seus dados pessoais"]
+let stxt3 = ["Nome completo:"]
+let stext4 = ["Por favor, digite um nome"]
+let stext5 = ["Data de nascimento"]
+let stext6 = ["Por favor, digite a data de nascimento"]
+let stext7 = ["Sexo"]
+let stext8 = ["Homem"]
+let stext9 = ["Mulher"]
+let stext10 = ["Por favor, Escolha o sexo"]
+let stext11 = ["Enderço"]
+let stext12 = ["Por favor, digite o seu endereço"]
+let stext13 = ["Número de telefone"]
+let stext14 = ["Por favor, digite o seu número de telefone"]
+let stext15 = ["E-mail"]
+let stext16 = ["Por favor, digite o seu email"]
+let stext17 = ["Idioma"]
+let stext18 = ["Por favor, selecione o idioma"]
+let stext19 = ["Escolha um plano"]
+let stext20 = ["Verifique as politicas da academia e assine no campo a baixo"]
+let stext21 = ["politicas da academia"]
+let stext22 = ["Escolher"]
+let stext23 = ["Apagar"]
+let stext24 = ["Confirmar"]
+let stext25 = ["Registrar os dados do famliar"]
+let stext26 = ["Concordo","Agree","同意する"]
+let stext27 = ["Escolher","Select","選択"]
+let stext28 = ["Concluido","Completed","完了"]
+let stext29 = ["Seja bem vindo para o nosso dojo","Welcome to our dojo","登録が完了しました、道場へようこそ"]
+let stext30 = ["Registrando","Processing","登録中"]
+let stext31 = ["Aguarde","wait","そのままお待ちください"]
+let stext32 = ["Confirme","Confirmation","We will register in the system"]
+let stext33 = ["Iremos registrar no sistema","We will register in the system","システムに登録します"]
+let stext34 =["Digite a data de nascimento e selecione o sexo primeiro","Enter date of birth and select gender first","生年月日と性別を先に入力してください"]
+let stext35 = ["Termo de resonsabilidade e condições para matrícula","Resonsability term and conditions for registration","入会にあたっての注意事項及び同意書"]
 var past={
  pt:{
    buttons:{
@@ -62,8 +95,8 @@ var past={
      Text19:"Escolha um plano",
      Text20:"Verifique as politicas da academia e assine no campo a baixo",
      Text21:"politicas da academia",
-     Text22:"Escolher",
      Text23:"Apagar",
+     Text22:"Escolher",
      Text24:"Confirmar",
 		 Text25:"Registrar os dados do famliar"
    },
@@ -134,29 +167,6 @@ var past={
 
 language_change()
 let familyarray = []
-function familyplan(){
-	if(document.getElementById("cheap").checked){
-	plans_div.innerHTML = ""
-	plans_kubun = 4
-  Swal.fire({
-    icon:'info',
-    title: 'Processing'
-  , html: 'wait'
-  , allowOutsideClick : false     //枠外をクリックしても画面を閉じない
-  , showConfirmButton: false
-  ,timer:'2500'
-  , onBeforeOpen: () => {
-      Swal.showLoading();
-    }
-  });
-	planget(plans_kubun)
-	familyflug = true
-}else{
-			plans_div.innerHTML = ""
-	plans_kubun = member_kubun
-		planget(plans_kubun)
-}
-}
 
 window.onload = function open_page() {
 error_massege_portugues()
@@ -166,69 +176,47 @@ image_get(gymname)
 
 function image_get(){
   document.getElementById("image").src =  `/signature-project-front/image/${gymname}_add.png`
-
 }
 
-var member_kubun = 0
-inputs[5].addEventListener('click', () => {
-		member_kubun = 1
-	document.getElementById("man1").style.backgroundColor = '#6b1afa';
-	document.getElementById("man1").style.Color = '#FFFFFF';
-	document.getElementById("women1").style.Color = '#B6B6B4';
-	document.getElementById("women1").style.backgroundColor = '#B6B6B4';
-	inputs[6].checked.false;
-  inputs[5].checked.true;
-		member_kubun_chech()
+
+document.getElementById("man-checkbox").addEventListener('click', () => {
+plans_div.innerHTML=""
 })
-inputs[6].addEventListener('click', () => {
-	member_kubun = 2
-	document.getElementById("women1").style.backgroundColor = '#6b1afa';
-	document.getElementById("women1").style.Color = '#FFFFFF';
-	document.getElementById("man1").style.Color = '#B6B6B4';
-	document.getElementById("man1").style.backgroundColor = '#B6B6B4';
-	inputs[5].checked.false;
-  inputs[6].checked.true;
-	member_kubun_chech()
+document.getElementById("women-checkbox").addEventListener('click', () => {
+plans_div.innerHTML=""
 })
 
-function member_kubun_chech(){
-		if(document.getElementById("birthday_age").value!="" && member_kubun == 0){
-		}else if(document.getElementById("birthday_age").value>=16 && member_kubun==1){
-			plans_kubun = member_kubun
-			planget(plans_kubun)
-		}else if(document.getElementById("birthday_age").value>=16 && member_kubun==2){
-			plans_kubun = member_kubun
-			planget(plans_kubun)
-		}else{
-			member_kubun = 3
-			plans_kubun = member_kubun
-			planget(plans_kubun)
-		}
-}
+
 
 
 //tratamento da seleção de idioma
 var idioma = '';
   inputs[13].addEventListener('click', () => {
     idioma = "Portugues";
-  document.getElementById("language1").style.backgroundColor = '#5507FF';
+  document.getElementById("language1").style.backgroundColor = '#2C7CFF';
   document.getElementById("language1").style.color = 'white';
+  document.getElementById("language2").style.color = '#666666';
+  document.getElementById("language3").style.color = '#666666';
   document.getElementById("language1").style.fontWeight = "bold";
   document.getElementById("language2").style.backgroundColor = '#d3d3d3';
   document.getElementById("language3").style.backgroundColor = '#d3d3d3';
   });
   inputs[14].addEventListener('click', () => {
     idioma = "日本語";
-    document.getElementById("language2").style.backgroundColor = '#5507FF';
+    document.getElementById("language2").style.backgroundColor = '#2C7CFF';
     document.getElementById("language2").style.color = 'white';
+    document.getElementById("language1").style.color = '#666666';
+    document.getElementById("language3").style.color = '#666666';
     document.getElementById("language2").style.fontWeight = "bold";
     document.getElementById("language1").style.backgroundColor = '#d3d3d3';
     document.getElementById("language3").style.backgroundColor = '#d3d3d3';
   });
   inputs[15].addEventListener('click', () => {
     idioma = "Inglês";
-    document.getElementById("language3").style.backgroundColor = '#5507FF';
+    document.getElementById("language3").style.backgroundColor = '#2C7CFF';
     document.getElementById("language3").style.color = 'white';
+    document.getElementById("language2").style.color = '#666666';
+    document.getElementById("language1").style.color = '#666666';
     document.getElementById("language3").style.fontWeight = "bold";
     document.getElementById("language1").style.backgroundColor = '#d3d3d3';
     document.getElementById("language2").style.backgroundColor = '#d3d3d3';
@@ -280,16 +268,17 @@ function error_massege_japanese(){
 }
 
 
-function saveData() {
-	var activedate = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`
-  let gen = () => {       //tratamento da seleção de gênero
-    if(inputs[5].checked) {
-      return 'man'
+ async function saveData() {
+  try{
+	const activedate = await `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`
+    let gen = () => {       //tratamento da seleção de gênero
+      if(document.getElementById("man-checkbox").checked) {
+        return 'man'
+      }
+      else if(document.getElementById("man-checkbox").checked) {
+        return 'women'
+      }
     }
-    else if(inputs[6].checked) {
-      return 'women'
-    }
-  }
   var obj =
   {
     "nm_member": inputs[0].value,
@@ -310,29 +299,26 @@ function saveData() {
     "gymid" : gymid,
     "active_date" : activedate,
     "inactive_date": 0
-  };
-  fetch('https://squid-app-ug7x6.ondigitalocean.app/member',
-  {method: 'POST',
- body: JSON.stringify(obj),
-  headers: {"Content-type": "application/json; charset=UTF-8"}})
-  .then((x)=> x.json())
-  .then((response) => {
-        fetch(`https://squid-app-ug7x6.ondigitalocean.app/payment/${obj.nm_member}/${gymid}/${obj.plans}/${valor.split('￥')[1]}`);
+  }
+
+  const saveAnswer1 = await save1(obj)
+   if(saveAnswer1==1){
+  const payment = await fetch(`https://squid-app-ug7x6.ondigitalocean.app/payment/${obj.nm_member}/${gymid}/${obj.plans}/${valor}`);
+  const	pdfcreate = await ejspdf();
           if(familyarray.length!=0){
             for(let i = 0;i<familyarray.length;i++){
                  name=familyarray[i].split("_")[0]
                  birthday=familyarray[i].split("_")[1]
                  gender=familyarray[i].split("_")[2]
                  age=familyarray[i].split("_")[3]
-          fetch(`https://squid-app-ug7x6.ondigitalocean.app/parents/${name}/${birthday}/${gender}/${age}/${gymid}`)
+            const family = await fetch(`https://squid-app-ug7x6.ondigitalocean.app/parents/${name}/${birthday}/${gender}/${age}/${gymid}`)
+            	}
             }
-            }
-   }).then((y) => {
-					//input_clear()
-		 			ejspdf();
-          window.location.reload()
-			})
-
+    return 2
+}
+}catch (error) {
+  return 1
+}
 }
 
 function ejspdf() {
@@ -340,6 +326,17 @@ function ejspdf() {
   .then((x) => x.json())
   .then((response) => {
   })
+}
+
+async function save1(obj){
+await  fetch('https://squid-app-ug7x6.ondigitalocean.app/member',
+    {method: 'POST',
+     body: JSON.stringify(obj),
+    headers: {"Content-type": "application/json; charset=UTF-8"}})
+    .then((x)=> x.json())
+    .then((response) => {
+  })
+  return 1
 }
 
 function generatePDF() {
@@ -382,11 +379,8 @@ btnClear.addEventListener('click', function (event) {
   signaturePad.clear();
 });
 
-
-
-
 document.getElementById("confirm-button").addEventListener("click", confirm_check)
-function confirm_check(){
+async function confirm_check(){
 	if(familyflug){
      parentsdataCreate()
 	}else{
@@ -406,7 +400,7 @@ function confirm_check(){
   let email1 = document.getElementById("email1").value;
   let email2 = document.getElementById("email2").value;
   let kubun_check = 0;
-  if(document.getElementById("politic1").checked) {
+  if(document.getElementById("politc-checkbox").checked) {
   }else{
     errormessage = errormessage6
     swallerror(errormessage)
@@ -442,7 +436,7 @@ function confirm_check(){
   }else{
       birthday_year_error.style.display ="none";
   }
-  if(birthday_year=="YYYY" || birthday_month=="MM" || birthday_day=="DD"){
+  if(birthday_year=="" || birthday_month=="" || birthday_day==""){
     birthday_year_error.style.display ="block";
     location.href = "#birthdaytitle";
     kubun_check = 1
@@ -467,9 +461,7 @@ if(phone1=="" || phone2=="" || phone3==""){
     phone_error.style.display ="none";
     kubun_check = 0
 }
-if(inputs[5].checked) {
-}
-else if(inputs[6].checked) {
+if(document.getElementById("man-checkbox").checked||document.getElementById("women-checkbox").checked) {
 }else{
   errormessage = errormessage5
   swallerror(errormessage)
@@ -482,57 +474,43 @@ else if(inputs[6].checked) {
   }else if(kubun_check ==1){
   }else{
   email_error.style.display ="none";
-
   }
 if(kubun_check==0){
-  Swal.fire({
- title: 'Confirmation'
-, html: 'We will register in the system'
-, type: 'warning'
-, showCancelButton: true
-, confirmButtonText: 'OK'
-, cancelButtonText: 'Cancel'
-, reverseButtons: true
-}).then(function(result) {
-   if (!result.value) {
-       return;
-   }
-
-   Swal.fire({
-     title: 'Processing'
-   , html: 'wait'
-   , allowOutsideClick : false     //枠外をクリックしても画面を閉じない
-   , showConfirmButton: false
-   , onBeforeOpen: () => {
-       Swal.showLoading();
-     }
-   });
- saveData()
-  var sleep = function(sec) {
-       return new Promise(resolve => {
-         setTimeout(resolve, sec * 1000);
-       });
-   };
-   sleep(6).then(function() {
-
-     //完了ダイアログ
-     Swal.fire({
-       title: 'Completed'
-     , html : 'Welcome to our gym'
-     , type : 'info'
-     , onAfterClose : () => {
-         location.reload();
+    Swal.fire({
+   title: stext32[language]
+  , html: stext33[language]
+  , type: 'warning'
+  , showCancelButton: true
+  , confirmButtonText: 'OK'
+  , cancelButtonText: 'Cancel'
+  , reverseButtons: true
+  ,allowOutsideClick:false
+}).then(async(result) =>{
+    if(result.isConfirmed) {
+  const swalConfirm =  Swal.fire({
+       title: stext30[language]
+     , html: stext31[language]
+     , allowOutsideClick : false
+     , showConfirmButton: false
+     , onBeforeOpen: () => {
+         Swal.showLoading();
        }
      });
+      const saveAnswer = await saveData()
+      await Swal.fire({
+         title: stext28[language]
+       , html : stext29[language]
+       , type : 'success'
+       ,timer:1500
+       });
+       if(saveAnswer==2){
+         await location.reload()
+       }
 
- });
-
-
-});
-
+   };
+  });
+ }
 }
-
-	}
 }
 
 function parentsdataCreate(){
@@ -714,7 +692,7 @@ if(birthday_month>13){
   errormessage = errormessage2
   swallerror(errormessage)
 }
-  if(birthday_year != "YYYY" && birthday_month != "MM" && birthday_day != "DD"){
+  if(birthday_year != "" && birthday_month != "" && birthday_day != ""){
     if(birthday_year.length!=4){
    document.getElementById("birthday_age").value = ""
        errormessage =  errormessage7
@@ -728,6 +706,7 @@ if(birthday_month>13){
       errormessage = errormessage12
       swallerror(errormessage)
     }else{
+      plans_div.innerHTML = ""
     const birthday = {
     year: birthday_year,
     month: birthday_month,
@@ -754,18 +733,10 @@ if(birthday_month>13){
 function getAge(birthday){
     var thisYearsBirthday = new Date(today.getFullYear(), birthday.month-1, birthday.date);//今年の誕生
     var age = today.getFullYear() - birthday.year;  //年齢
-    if(age>=16&&inputs[5].checked){
-      member_kubun = 1
-    }else if(age>=16&&inputs[6].checked){
-      member_kubun = 2
-    }else{
-      member_kubun = 3
-    }
    if(today < thisYearsBirthday){        //今年まだ誕生日が来ていない
       age--;
     }
     document.getElementById("birthday_age").value = age
-	member_kubun_chech()
     return age;
 }
 
@@ -793,24 +764,27 @@ document.getElementById("selectlanguage").addEventListener("change",language_cha
 
 function language_change(){
    selectlanguage = document.getElementById( "selectlanguage" ).value
-	 if(document.getElementById("birthday_age").value!=""){
-		  planget(plans_kubun)
-	 }
-if (selectlanguage=="Português"){
+	// if(document.getElementById("birthday_age").value!=""){
+		//  planget(plans_kubun)
+//	 }
+if (selectlanguage=="0"){
    portugues()
    error_massege_portugues()
    estado_select_en()
 	 mylanguage = "pt"
-} else if(selectlanguage=="Inglês"){
+   language = 0
+} else if(selectlanguage=="1"){
  ingles()
  error_massege_ingles()
  estado_select_en()
  mylanguage = "en"
+  language = 1
 }else{
 japones()
 error_massege_japanese()
 estado_select_jp()
 mylanguage = "jp"
+language = 2
 }
 
 function portugues() {
@@ -837,8 +811,8 @@ document.getElementById("politic-title").innerText=past.pt.Text.Text20;
 document.getElementById("politiclink").innerText=past.pt.Text.Text21;
 document.getElementById("cancel-button").value=past.pt.Text.Text23;
 document.getElementById("confirm-button").value=past.pt.Text.Text24;
-
-
+document.getElementById("plan-one-select").value = "Planos particular";
+document.getElementById("plan-family-select").value = "Planos familiar";
 }
 function japones() {
   document.getElementById("welcomemessage").innerText=past.jp.Text.Text1;
@@ -864,6 +838,8 @@ function japones() {
   document.getElementById("politiclink").innerText=past.jp.Text.Text21;
   document.getElementById("cancel-button").value=past.jp.Text.Text23;
   document.getElementById("confirm-button").value=past.jp.Text.Text24;
+  document.getElementById("plan-one-select").value = "個人プラン";
+  document.getElementById("plan-family-select").value = "ファミリープラン";
 }
 function ingles() {
   document.getElementById("welcomemessage").innerText=past.en.Text.Text1;
@@ -889,6 +865,8 @@ function ingles() {
     document.getElementById("politiclink").innerText=past.en.Text.Text21;
     document.getElementById("cancel-button").value=past.en.Text.Text23;
     document.getElementById("confirm-button").value=past.en.Text.Text24;
+    document.getElementById("plan-one-select").value = "Private plans";
+    document.getElementById("plan-family-select").value = "Family plans";
 }
 }
 function ken_select_remove(){
@@ -963,9 +941,9 @@ ken_select_option_add(arr)
 
 function input_clear(){
 document.getElementById("name-input").value="";
-document.getElementById("birthday_year").value="YYYY";
-document.getElementById("birthday_month").value="MM";
-document.getElementById("birthday_day").value="DD";
+document.getElementById("birthday_year").value="";
+document.getElementById("birthday_month").value="";
+document.getElementById("birthday_day").value="";
 document.getElementById("adress-input").value="";
 document.getElementById("phone1").value="";
 document.getElementById("phone2").value="";
@@ -1046,49 +1024,33 @@ function swallerror(errormessage){
 
 document.getElementById("politiclink").addEventListener("click", swallpolitic)
 function swallpolitic(){
-  Swal.fire({
-  title: 'Termo de resonsabilidade e condições para matrícula.',
+const swalpolitc =  Swal.fire({
+  title: stext35[language],
   icon: 'warning',
   showCancelButton: true,
   showConfirmButton: true,
+  confirmButtonText: stext26[language],
+  allowOutsideClick:false,
   width: 710,
-  html:`<div id="politc-span"> <span>Por meio deste, eu concordo com as regras estabelecidas no Kussano Dojo.
-
-<br>Eu concordo em participar das aulas sabendo que há riscos de ocorrer lesões,
-sindrome pós-traumática ou morte, durante ou após o treino.
-<br>Eu também concordo em não processar os professores, os parceiros de treino e
-o proprietário da academia, em caso de acidentes, lesões, sindrome pós
-traumática ou morte que possam ocorrer durante ou após o treino.
-<br>Eu também concordo que seja permitido mostrar publicamente qualquer
-vídeo ou foto de treino através de panfletos, páginas na web, Youtube e
-redes sociais.
-<br>Eu li e estou ciente das declarações acima, e eu, com isso, concordo em
-participar das aulas por minha própria conta.
-E com isso declaro que todas as informações na ficha de incrição são
-verdadeirase corretas.
-<br>
-<br>
-PARA PAIS/RESPONSÁVEIS POR ALUNOS MENORES DE IDADE
-(ABAIXO DA IDADE DE 20 ANOS NO  ATO DA MATRÍCULA)
-<br>
-<br>
-Como pai/responsável, com responsabilidade legal por este aluno, eu certifico
-que tendo lido as declarações contidas acima, eu concordo com a matrícula
-dele/dela nesta academia.
+  html:`<div id="politc-span">
+  <OBJECT class="politc-area" DATA="../politc/${gymid}_${language}.txt"TYPE="text/plain" WIDTH="100%" HEIGHT="100%"   style="font-size:5vh;">
+</OBJECT>
 </div>
-</span>`,
+`,
   customClass: "sweet-alert",
   ConfirmButtonText: '戻る',
-	  }).then(function(result) {
-	  swall.close
-	  politic_check()
+}).then((result) =>{
+       if(result.isConfirmed) {
+         document.getElementById("politc-checkbox").checked = true
+
+       }else{
+         document.getElementById("politc-checkbox").checked = false
+
+       }
   })
 }
 
-function politic_check(){
-	document.getElementById("politic1").style.backgroundColor = '#6b1afa';
-	document.getElementById("politic2").style.Color = '#FFFFFF';
-}
+
 
 
 function swall_success(){
@@ -1102,72 +1064,129 @@ function swall_success(){
 //プランセレクト時の処理、ボタン色・div枠線、色の変更
 function select_plan_click(data){
 	plan=data.split("_")[2]
-	let mydiv = data.split("_")[3]
-	for(let i= 1; i<=plans_rows; i++){
-		var obj = document.getElementById(`'plan_div_${i}'`).style
-		var obj1 = document.getElementById(`'select_button_${i}'`).style
-		if(i==mydiv){
-			obj.borderColor = 'blue';
-			obj.borderWidth = '10px';
-			obj1.backgroundColor = '#9057FF';
-			obj1.color = '#EEEEEE'
-			valor=document.getElementById(`'planvalue_${i}'`).innerText
-		}else{
-			obj.borderColor = '#333333';
-			obj.borderWidth = '2px';
-			obj1.backgroundColor = '#87CEEB';
-			obj1.color = '#444444'
-		}
-	}
+  valor = data.split("_")[3]
+}
+
+
+async function makerequest(url){
+  const request = await fetch(url)  //esperar aqui
+ return request.json()
 }
 
 //年齢、性別選択時のプランdivの生成
-function planget(data){
-  if(inputs[6].checked||inputs[5].checked){
-  Swal.fire({
-    icon:'info',
-    title: 'Processing'
-  , html: 'wait'
-  , allowOutsideClick : false     //枠外をクリックしても画面を閉じない
-  , showConfirmButton: false
-  ,timer:'2500'
-  , onBeforeOpen: () => {
-      Swal.showLoading();
+async function Gymplanget(data){
+  answerAge = document.getElementById("birthday_age").value
+  womenSelect = document.getElementById("women-checkbox")
+  manSelect = document.getElementById("man-checkbox")
+  let plansAnswer = []
+if(answerAge==""){
+}
+if(womenSelect.checked==false){
+}
+if(manSelect.checked==false){
+}
+  if(answerAge=="" || womenSelect.checked==false && manSelect.checked==false){
+     swallerror(stext34[language])
+  }else{
+    const swal =  Swal.fire({
+            icon:"info",
+            title: 'Processing',
+            html: 'Wait',
+            allowOutsideClick : false,
+            showConfirmButton: false,
+            timerProgressBar: true,
+            onBeforeOpen: () => {
+            Swal.showLoading();
+        }
+      })
+    const plansArray = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/gymplanget?id=${gymid}`)
+     plans_rows = 0
+     if(data==1){
+       familyflug = false
+       for (let i=0;i<plansArray.length;i++){//年齢に対して制限のあるプラン
+          if(plansArray[i].PLAN_KUBUN!=5){
+            if((plansArray[i].AGE-0)>=(answerAge-0)){
+               plansAnswer.push(plansArray[i])
+               plans_rows ++
+            }
+         }
+       }
+       if(plansAnswer.length==0){
+         for(let i=0;i<plansArray.length;i++){
+           if(manSelect.checked==true&&plansArray[i].PLAN_KUBUN==1){
+             plansAnswer.push(plansArray[i])
+              plans_rows ++
+           }else if(womenSelect.checked==true&&plansArray[i].PLAN_KUBUN==2){
+             plansAnswer.push(plansArray[i])
+             plans_rows ++
+           }
+         }
+       }
+     }else{
+       familyflug = true
+       for(let i=0;i<plansArray.length;i++){
+        if(plansArray[i].PLAN_KUBUN==4){
+           plansAnswer.push(plansArray[i])
+           plans_rows ++
+        }
+       }
+     }
+      await creaetDivPlan(plansAnswer)
+      swal.close()
     }
-  });
-	if(selectlanguage=="Português"){
-		buttontext = "escolher"
-	}else if(selectlanguage=="Inglês"){
-			buttontext = "select"
-	}else{
-		buttontext = "選択"
-	}
+  //}
+  //if(inputs[6].checked||inputs[5].checked){
+	//if(selectlanguage=="Português"){
+//		buttontext = "escolher"
+	//}else if(selectlanguage=="Inglês"){
+	//		buttontext = "select"
+//	}else{
+	//	buttontext = "選択"
+//	}
 
-	plansarray = []
-	let row = ""
-	fetch('https://squid-app-ug7x6.ondigitalocean.app/planget')
-	  .then((x) => x.json())
-	  .then((res) => {
-      	plans_rows = 0
-        for(let i=0;i<res.length;i++){
-					if(res[i].PLAN_KUBUN==data){
-						plans_rows ++
-						row += `<div class="div-select-plan" id="'plan_div_${plans_rows}'">
-						  <div class="center-span"><span class="plan_name">${res[i].PLANS_NAME}</span></div>
-							<div class="center-span" id="planvalue-div"><span class="plan_value" id="'planvalue_${plans_rows}'">￥${res[i].PLAN_VALOR}</span></div>
-							<div class="div-discrition-span"><span class="discrition-span">${res[i].PLAN_DISCRITION1}</span></div>
-							<div class="div-discrition-span"><span class="discrition-span">${res[i].PLAN_DISCRITION2}</span></div>
-							<div class="div-discrition-span"><span class="discrition-span">${res[i].PLAN_DISCRITION3}</span></div>
-							<div class="div-discrition-span"><span class="discrition-span">${res[i].PLAN_DISCRITION4}</span></div>
-							<div class="div-discrition-span"><span class="discrition-span">${res[i].PLAN_DISCRITION5}</span></div>
-							<div class="center-span"><input class="plan-select-plan-input" type="button" id="'select_button_${plans_rows}'" value="${buttontext}" onclick="select_plan_click('plan_div_${res[i].CONTROL_NAME}_${plans_rows}')"></input></div>
-						 </div>`
+//	plansarray = []
+///	let row = ""
+//	fetch('https://squid-app-ug7x6.ondigitalocean.app/planget')
+//	  .then((x) => x.json())
+	//  .then((res) => {
+  //    	plans_rows = 0
+    //    for(let i=0;i<res.length;i++){
+		//			if(res[i].PLAN_KUBUN==data){
+		//				plans_rows ++
+				//
 
-					}
-				}
-			plans_div.innerHTML = row
-	  })
-    }
+			//		}
+		//		}
+		//	plans_div.innerHTML = row
+	 // })
+  //  }
+}
+
+function creaetDivPlan(res){
+  	plans_div.innerHTML =""
+    plan=""
+  for(let i=0;i<res.length;i++){
+    row = `
+    <div class="plan_main_new_div" id="plan_div_${i}">
+             <span class="plan_name_new">${res[i].PLANS_NAME}</span>
+             <span id="'planvalue_${i}'" class="plandisc_value">￥${res[i].PLAN_VALOR}</span>
+             <span class="plandisc">${res[i].PLAN_DISCRITION1}</span>
+             <span class="plandisc">${res[i].PLAN_DISCRITION2}</span>
+             <span class="plandisc" >${res[i].PLAN_DISCRITION3}</span>
+             <span class="plandisc">${res[i].PLAN_DISCRITION4}</span>
+             <span class="plandisc">${res[i].PLAN_DISCRITION5}</span>
+             <input class="plan-new-select-button" type="button" id="'select_button_${i}'" value="${stext27[language]}" onclick="select_plan_click('plan_div_${res[i].CONTROL_NAME}_${res[i].PLAN_VALOR}')"/>
+            </div>`
+           	plans_div.innerHTML += row
+  }
+}
+
+function genderCheck(data){
+  if(data==1){
+    document.getElementById('women-checkbox').checked = false
+  }else{
+    document.getElementById('man-checkbox').checked = false
+  }
 }
 
 
