@@ -1,17 +1,13 @@
 
 let accessmainserver = 'https://squid-app-ug7x6.ondigitalocean.app'　　//メインサーバーのチェックアクセス先
-let machines = []
 let user
 let password
 let errormessage
-document.getElementById("login-bottom").addEventListener("click", login_check)
-
-
+document.getElementById("login-bottom").addEventListener("click", login_check)//ログインボタンクリック時の操作
 //ログイン情報の確認をする処理、IDが空白かどうか、その後PASSがくうはくかどうか、TRUEの場合Swal処理
 function login_check(user, password) {
-  //verificar campos vazios
-  user = document.getElementById("user").value;
-  password = document.getElementById("pass").value;
+  user = document.getElementById("user").value;　　　　//ユーザー名
+  password = document.getElementById("pass").value;　 //パスワード
   if (user == "") {
     errormessage = "Enter your username"
     swallopen(errormessage)
@@ -23,7 +19,6 @@ function login_check(user, password) {
       login_request(user, password) //chamar função de login passando login e senha
     }
   }
-  console.log('mondai nasji')
 }
 //validar dados
 async function login_request(user, password) {
@@ -32,19 +27,14 @@ async function login_request(user, password) {
     password: password
   })
     .then((response) => {
-
+      console.log(response)
       if (response.data.token) {
         sessionStorage.setItem("token", response.data.token);
         sessionStorage.setItem("gym", response.data.gym);
         sessionStorage.setItem("GYM_ID", response.data.number.ID);
-
-        var loginName = response.data.number.NAME;
-        var authority = response.data.number.AUTHORITY;
-        let name = `${loginName}_${authority}`;
-
-        //window.location = `./pages/dashboard.html?login=${name}`;
-        window.location = `/signature-project-front/pages/dashboard.html?login=${name}`;
-
+        sessionStorage.setItem("Language", response.data.language);
+        window.location = `./pages/dashboard.html?login=${response.data.gym}`;
+        //window.location = `/signature-project-front/pages/dashboard.html?login=${name}`;
       } else if (response.data.message) {
         errormessage = "Check username and password";
         document.getElementById("pass").value = "";
@@ -53,17 +43,12 @@ async function login_request(user, password) {
       };
       console.log(response.data)
     })
-
     .catch((err) => {
       errormessage = "Check username and password";
       document.getElementById("pass").value = "";
       swallopen(errormessage);
     });
 };
-
-
-
-
 function router2() {
   axios.get(accessmainserver + '/clientes', {
     headers: {
@@ -72,9 +57,6 @@ function router2() {
   }
   )
 }
-
-
-
 function swallopen() {
   Swal.fire({
     title: 'Error',
@@ -95,7 +77,3 @@ function swallopen() {
     }
   });
 }
-
-
-
-    // manipula o sucesso da requisição
