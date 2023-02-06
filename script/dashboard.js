@@ -1087,8 +1087,8 @@ fetch('https://squid-app-ug7x6.ondigitalocean.app/planget')
                  <th class="_sticky">${stext18[language]}</th>
                  <th class="_sticky">${stext19[language]}</th>
                  <th class="_sticky">${stext13[language]}</th>
-                 <th class="_sticky">${stext21[language]}</th>
                  <th class="_sticky">${stext60[language]}</th>
+                 <th class="_sticky">${stext21[language]}</th>
                  </tr>`
                  plans += row
   for (let index = 0; index < res.length; index++) {
