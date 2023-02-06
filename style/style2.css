@@ -195,11 +195,107 @@ canvas{
   font-size:1.2vw;
 }
 
+.titlename{
+  font-size:2.5vw;
+}
+  .div-flex-swall-yet{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .div-name{
+    width:60%;
+    background-color:#333333;
+    color:#EEEEEE;
+    border:1px solid #EEEEEE;
+  }
+  .div-name-answer{
+    width:60%;
+    background-color:#EEEEEE;
+    color:#444444;
+    border:0.5px solid #444444;
+    height:2.5rem;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 0 -1px;
+  }
+  .div-year-month{
+    width:20%;
+    background-color:#333333;
+    color:#EEEEEE;
+    border:1px solid #EEEEEE;
+  }
+  .div-year-month-answer{
+    width:20%;
+    background-color:#EEEEEE;
+    color:#444444;
+    border:0.5px solid #444444;
+    height:2.5rem;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 0 -1px;
 
+  }
 
+  .yetmember-div-name{
+    width:60%;
+    background-color:#555555;
+    height:4rem;
+    display:flex;
+    justify-content: center;
+    align-items:center;
+    text-align:center;
 
+  }
+  .yetpayment-member-div{
+    border:0.5px solid #777777;
+    width:47%;
+    height:4rem;
+    display:flex;
+    margin-top:2rem;
+  }
+  .yetmember-span-name{
+      color:#EEEEEE;
+    font-size:1.2vw;
+  }
+  .year-month-yetpay-div{
+  border-right:0.2px solid #777777;
+  padding-left:5px;
+  }
+  .yetpayment-member-div img{
+    height:4rem;
+    width:4rem
+  }
+  .twrapper{
+    width:100%;
+    display:flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
 
+#graduation-member-div{
+  height:6rem;
+}
 
+#graduation-member-name{
+  height:6rem;
+}
+.year-month-yetpay-div p{
+  text-align: left;
+
+}
+
+#graduation-member-name{
+  width:40% !important;
+}
+#graduation-span-img{
+  width:15% !important;
+}
+#graduation-message-div{
+  width:55%;
+}
 
 @media screen and (min-width: 726px) and (max-width: 1200px) {
 #menubar{
@@ -246,21 +342,40 @@ width:32%;
   text-align: center;
   align-items: center;
 }
-.master-image{
 
-}
 .title-bottons{
   width: 100% !important;
     font-size: 1em;
 }
+.twrapper{
+
 }
+.yetpayment-member-div{
+  width:80%;
+}
+.yetmember-span-name{
+  font-size:2vw;
+}
+.twrapper{
+  justify-content: center !important;
+}
+
+}
+
+
+
 
 @media screen and (max-width: 725px) {
   html{
   overflow-y: scroll;
 
   }
-
+  ._sticky.z-02 {
+    width: 15px !important;
+  }
+  ._sticky {
+    width:80px !important;
+  }
 
   #maindiv{
     display:block;
@@ -404,6 +519,32 @@ width:32%;
     #right-second-right{
       margin-left:0;
     }
+
+    .yetpayment-member-div{
+      width:80%;
+    }
+    .yetmember-span-name{
+      font-size:2vw;
+    }
+    .twrapper{
+      justify-content: center !important;
+    }
+    .year-month-yetpay-div span{
+      font-size:1.5vw;
+    }
+#graduation-span-img img{
+  width:2.5rem !important;
+  height:2.5rem !important;
+}
+#graduation-message-div p{
+  font-size:2vw;
+}
+#graduation-member-div{
+  height:4.5rem;
+}
+#graduation-member-name{
+  height:4.5rem;
+}
 
 }
 
