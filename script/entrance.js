@@ -14,10 +14,11 @@ fetch('https://squid-app-ug7x6.ondigitalocean.app/calender/entrance')
     dadoCalender = res;
   })
 
-  history.replaceState(null, null, null);
-    window.addEventListener('popstate', function(e) {
-        window.location = `https://squid-app-ug7x6.ondigitalocean.app/signature-project-front`;
-    });
+  window.addEventListener('popstate', (event) => {
+    const pass = prompt("pass")
+      alert(`${pass}`)
+  });
+  history.pushState(null, null, null);
 
 //カレンダーのcardを作成
 let clientes = []
