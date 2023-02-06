@@ -19,8 +19,8 @@ input{
   border-radius: 15px;
   font-size: 3vh;
   height:50px;
+  cursor:pointer;
 }
-
 #titlemain{
   display: flex;
   font-size: 4vh;
@@ -34,7 +34,7 @@ header{
   width:92%;
 }
 body{
-  padding-left: 150px;
+  padding-left: 50px;
 }
 #gendercheck{
   display: flex;
@@ -101,7 +101,8 @@ body{
   transition: all .15s linear;
 }
 .ECM_CheckboxInput-LabelText {
-  margin-left: 12px;
+  margin-left: 2px;
+  margin-top:7px;
   display: block;
   font-size: 3vw;
   font-weight: bold;
@@ -114,8 +115,10 @@ body{
   width: 29%;
 }
 #politc-span{
+  margin-left:5%;
+  width:90%;
     border: 2px solid lightgray;
-    overflow-y: scroll;
+    overflow-y: hidden;
     height:300px;
     text-align:left;
 }
@@ -280,18 +283,7 @@ body{
 
   }
 
-#plans-div{
-  display: flex;
-  Width:100%;
-}
-.div-select-plan{
-  height:380px;
-  width: 14%;
-  margin-right: 5px;
-  background-color: #AAAAAA;
-  border: 2px solid #333333;
-  border-radius: 1px;
-}
+
 .plan_value{
   margin-top: 15px;
   font-size: 4vh;
@@ -377,11 +369,10 @@ label:before{
   top:2px;
   box-sizing:border-box;
   border:none;
-  color:black;
+  color:#5507FF;
   border-radius:100px;
 }
 #plan-family-div{
-  display: flex;
   width:100%;
 }
 #planselect-div{
@@ -393,11 +384,110 @@ label:before{
   color:#444444;
 }
 #family-div{
-  width:65%;
+  width:100%;
+  margin-top: 10px;
+  display: flex;
+}
+#family-div input{
+  width:20%;
+  margin-left: 50px;
+  cursor: pointer;
 }
 
+#family-div input:hover{
+background-color:#5507FF;
+color:white;
+}
+
+.checkbox-gender{
+  margin-top:15px;
+width:3rem;
+height:3rem;
+margin-left: 20px;
+cursor:pointer;
+}
+
+#politiccheck{
+  display: flex;
+}
+.selectplan-input{
+  color:	#333333;
+  cursor:pointer;
+  text-align: center;
+}
+
+#plans-div2{
+  padding: 0 !important;
+  width:98%;
+  height:22rem;
+  display:flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  overflow-x: scroll;
+  flex-wrap: nowrap;
+  padding-left: 3vw;
+  scroll-behavior: smooth;
+
+}
+.plan_main_new_div{
+   display: inline-block;
+  margin-top:15px;
+
+  height:95%;
+  border: 1px solid #333333;
+  display:flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  background-color: #D9E5FF;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  margin-right:15px;
+}
+.plandisc{
+  width:100%;
+  height:2rem;
+  font-size: 2.5vh;
+  color: #444444
+}
+.plan_name_new{
+  font-size: 4vh;
+  color: #EEEEEE;
+  font-weight: bold;
+  margin-bottom: 5px;
+  width:220px;
+  background-color: #222222;
+  border-radius:0 !important;
+  text-align: center;
+}
+.plandisc_value{
+  width:100%;
+  font-size: 3vh;
+  font-weight: bold;
+  color:#444444;
+  border-bottom: 2px solid #222222;
+  border-radius:0 !important;
+  text-align: center;
+}
+.plan-new-select-button{
+  width:80%;
+}
+.plan-new-select-button:hover{
+  background-color:#5507FF;
+  color:white;
+}
+
+.politc-area{
+  font-size:5vw;
+}
 @media screen and (max-width: 600px) {
 
+  #family-div input{
+    width:40%;
+    margin-left: 10px;
+    cursor: pointer;
+  }
 
   .plan_name{
     font-size: 1.5vh;
