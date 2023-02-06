@@ -14,9 +14,9 @@ const regex = /^(?=.*[A-Z])[a-zA-Z0-9.?/-]{8,24}/;
 //前ページからの情報を処理----------------------------------------------->
 var token = sessionStorage.getItem("token");//token
 let gymid = sessionStorage.getItem("GYM_ID")
-let language
 console.log(gymid)
 console.log(sessionStorage.getItem("Language"))
+let language
 if(sessionStorage.getItem("Language")=="PT"){
   language = 0
 }else if(sessionStorage.getItem("Language")=="EN"){
@@ -496,7 +496,7 @@ function weekArraycreate(date){
               weekCount.push(i)
         }
       }
-      return weekCount
+      return weekdayArray
 }
 //1W前からのアクセス回数のグラフ------------------------------------------->
 function weekaccessdataGet(weekdayArray,res){
