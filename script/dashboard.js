@@ -110,6 +110,7 @@ const stext56 = ["Tabela","List","リスト"]
 const stext57 = ["Próximas graduação","Next graduation","帯昇格者"]
 const stext58 = ["Não há alunos para graduar","There are no member to graduate","昇格対象者が現在いません"]
 const stext59 = ["Criar plano","Create Plan","新規プラン"]
+const stext60 = ["Idade","Age","年齢"]
 
 document.getElementById("inscricao").innerHTML = stext35[language]
 document.getElementById("member").innerHTML = stext36[language]
@@ -1087,11 +1088,12 @@ fetch('https://squid-app-ug7x6.ondigitalocean.app/planget')
                  <th class="_sticky">${stext19[language]}</th>
                  <th class="_sticky">${stext13[language]}</th>
                  <th class="_sticky">${stext21[language]}</th>
+                 <th class="_sticky">${stext60[language]}</th>
                  </tr>`
                  plans += row
   for (let index = 0; index < res.length; index++) {
     if(res[index].GYM_ID==gymid){
-
+　　　　　　　console.log(res[index])
       row =`<tr>
                     <th class="_sticky" name="_sticky_name">${res[index].CONTROL_NAME}</th>
                     <td>￥${res[index].PLAN_VALOR}</td>
@@ -1102,6 +1104,7 @@ fetch('https://squid-app-ug7x6.ondigitalocean.app/planget')
                     <td>${res[index].PLAN_DISCRITION4}</td>
                     <td>${res[index].PLAN_DISCRITION5}</td>
                     <td>${res[index].PLANS_NAME}</td>
+                    <td>${res[index].AGE}</td>
                     <td>
                         <img class="image-cursor"  src="../image/edit.svg" onClick="editPlan(${index})" alt="" width="25">
                         <img class="image-cursor"  src="../image/delete.svg" onClick="Plandelete_check(${index})" alt="" width="25">
