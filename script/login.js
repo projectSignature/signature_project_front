@@ -33,8 +33,8 @@ async function login_request(user, password) {
         sessionStorage.setItem("gym", response.data.gym);
         sessionStorage.setItem("GYM_ID", response.data.number.ID);
         sessionStorage.setItem("Language", response.data.language);
-        window.location = `./pages/dashboard.html?login=${response.data.gym}`;
-        //window.location = `/signature-project-front/pages/dashboard.html?login=${name}`;
+       // window.location = `./pages/dashboard.html?login=${response.data.gym}`;
+        window.location = `/signature-project-front/pages/dashboard.html?login=${name}`;
       } else if (response.data.message) {
         errormessage = "Check username and password";
         document.getElementById("pass").value = "";
