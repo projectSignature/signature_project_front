@@ -15,6 +15,8 @@ const regex = /^(?=.*[A-Z])[a-zA-Z0-9.?/-]{8,24}/;
 var token = sessionStorage.getItem("token");//token
 let gymid = sessionStorage.getItem("GYM_ID")
 let language
+console.log(gymid)
+console.log(sessionStorage.getItem("Language"))
 if(sessionStorage.getItem("Language")=="PT"){
   language = 0
 }else if(sessionStorage.getItem("Language")=="EN"){
