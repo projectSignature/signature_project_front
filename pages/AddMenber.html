@@ -11,23 +11,15 @@
       rel="stylesheet"
     />
     <title>CADASTRO</title>
-
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="../style/style.css"
-    />
-    <!--   <link rel="stylesheet" type="text/css" href="../style/style.css" />
-     <base href="/" /> -->
+    <link rel="stylesheet" type="text/css" href="../style/style.css"/>
   </head>
-
   <body id="body">
     <main id="principal">
       <header id="header">
         <select id="selectlanguage">
-          <option value="Português">Português</option>
-          <option value="Inglês">Inglês</option>
-          <option value="日本語">日本語</option>
+          <option value="0">Português</option>
+          <option value="1">English</option>
+          <option value="2">日本語</option>
         </select>
       </header>
 
@@ -54,21 +46,21 @@
             id="birthday_year"
             class="birthday"
             onclick="yearfunc()"
-            value="YYYY"
+            placeholder="YYYY"
           />
           <input
             maxlength="2"
             id="birthday_month"
             class="birthday"
             onclick="monthfunc()"
-            value="MM"
+            placeholder="MM"
           />
           <input
             maxlength="2"
             id="birthday_day"
             class="birthday"
             onclick="dayfunc()"
-            value="DD"
+            placeholder="DD"
           />
           <input
             type="number"
@@ -83,32 +75,19 @@
           Por favor, digite a data de nascimento
         </h1>
       </div>
-
       <div class="div-kirikae">
         <span id="gendertitle" class="block">Sexo</span>
         <div id="gendercheck" class="relative">
-          <label class="ECM_CheckboxInput" id="man-style">
-            <input id="man" class="ECM_CheckboxInput-Input" type="checkbox" />
-            <span id="man1"  class="ECM_CheckboxInput-DummyInput"></span>
-            <span id="gender-man" class="ECM_CheckboxInput-LabelText"
-              >Homem</span
-            >
-          </label>
-          <label class="ECM_CheckboxInput">
-            <input id="women" class="ECM_CheckboxInput-Input" type="checkbox" />
-            <span id="women1"  class="ECM_CheckboxInput-DummyInput"></span>
-            <span id="gender-women" class="ECM_CheckboxInput-LabelText"
-              >Mulher</span
-            >
-          </label>
+            <input class="checkbox-gender" type="checkbox" id="man-checkbox" name='typeselect' onclick="genderCheck(1)"><i class="fa fa-square-o fa-2x"></i><i class="fa fa-check-square-o fa-2x"></i>
+            <span id="gender-man" class="ECM_CheckboxInput-LabelText">Homem</span>
+            <input class="checkbox-gender" type="checkbox" id="women-checkbox" name='typeselect' onclick="genderCheck(2)"><i class="fa fa-square-o fa-2x"></i><i class="fa fa-check-square-o fa-2x"></i>
+            <span id="gender-women" class="ECM_CheckboxInput-LabelText">Mulher</span>
         </div>
         <h1 id="gender-error" class="error-message">
           Por favor, Escolha o sexo
         </h1>
       </div>
-
       <hr class="underbar" />
-
       <div class="div-kirikae">
         <span id="adress" class="block">Enderço</span>
         <div class="relative">
@@ -167,7 +146,6 @@
           Por favor, digite o seu endereço
         </h1>
       </div>
-
       <div class="div-kirikae">
         <span id="phonenumber" class="block">Número de telefone</span>
         <div class="relative">
@@ -181,7 +159,6 @@
           Por favor, digite o seu número de telefone
         </h1>
       </div>
-
       <div class="div-kirikae">
         <span id="email" class="block">E-mail</span>
         <div class="relative">
@@ -193,7 +170,6 @@
           Por favor, digite o seu email
         </h1>
       </div>
-
       <div class="div-kirikae">
         <span id="language" class="block">Idioma</span>
         <div id="languagediv" class="relative">
@@ -223,38 +199,28 @@
           Por favor, selecione o idioma
         </h1>
       </div>
-
       <hr class="underbar" />
-
       <div class="div-kirikae">
         <div id="plan-family-div">
             <div id="planselect-div"><span id="planselect">Escolha um plano</span></div>
-            <div id="family-div" class="family-block">
-              <span id="family-plan">Plano familiar</span>
-              <input data-index="0" id="cheap" type="checkbox" />
-              <label id="family-label" for="cheap"></label>
+            <div id="family-div" >
+                <input id="plan-one-select" onclick="Gymplanget(1)" class="selectplan-input" value ="Planos particular" readonly/>
+                <input id="plan-family-select" onclick="Gymplanget(2)" class="selectplan-input" value ="Planos familiar" readonly/>
             </div>
         </div>
-        <div  id="plans-div">
+        <div  id="plans-div2">
+
         </div>
       </div>
-
       <hr class="underbar" />
-
       <div class="div-kirikae">
         <div id="politic-div">
           <span id="politic-title"
-            >Verifique as politicas da academia e assine no campo a baixo</span
-          >
+            >Verifique as politicas da academia e assine no campo a baixo</span>
         </div>
         <div id="politiccheck" class="relative">
-          <label class="ECM_CheckboxInput">
-            <input id="politic1" class="ECM_CheckboxInput-Input" type="checkbox" />
-            <span id="politic2"  class="ECM_CheckboxInput-DummyInput"></span>
-            <span class="ECM_CheckboxInput-LabelText"
-              ><a id="politiclink" href="#">politicas da academia </a></span
-            >
-          </label>
+            <input class="checkbox-gender" type="checkbox" id="politc-checkbox" name='typeselect' onclick="swallpolitic()"><i class="fa fa-square-o fa-2x"></i><i class="fa fa-check-square-o fa-2x"></i>
+            <span class="ECM_CheckboxInput-LabelText"><a id="politiclink" href="#">politicas da academia </a></span>
         </div>
       </div>
 
