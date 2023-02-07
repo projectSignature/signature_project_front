@@ -1104,11 +1104,14 @@ if(manSelect.checked==false){
      if(data==1){
        familyflug = false
        for (let i=0;i<plansArray.length;i++){//年齢に対して制限のあるプラン
-          if(plansArray[i].PLAN_KUBUN!=5){
+          if(plansArray[i].PLAN_KUBUN!=6){
             if((plansArray[i].AGE-0)>=(answerAge-0)){
                plansAnswer.push(plansArray[i])
                plans_rows ++
             }
+         }else if(plansArray[i].PLAN_KUBUN==4){
+           plansAnswer.push(plansArray[i])
+           plans_rows ++
          }
        }
        if(plansAnswer.length==0){
@@ -1120,12 +1123,16 @@ if(manSelect.checked==false){
              plansAnswer.push(plansArray[i])
              plans_rows ++
            }
+           if(plansArray[i].PLAN_KUBUN==4){
+             plansAnswer.push(plansArray[i])
+             plans_rows ++
+           }
          }
        }
      }else{
        familyflug = true
        for(let i=0;i<plansArray.length;i++){
-        if(plansArray[i].PLAN_KUBUN==4){
+        if(plansArray[i].PLAN_KUBUN==3){
            plansAnswer.push(plansArray[i])
            plans_rows ++
         }
@@ -1134,32 +1141,6 @@ if(manSelect.checked==false){
       await creaetDivPlan(plansAnswer)
       swal.close()
     }
-  //}
-  //if(inputs[6].checked||inputs[5].checked){
-	//if(selectlanguage=="Português"){
-//		buttontext = "escolher"
-	//}else if(selectlanguage=="Inglês"){
-	//		buttontext = "select"
-//	}else{
-	//	buttontext = "選択"
-//	}
-
-//	plansarray = []
-///	let row = ""
-//	fetch('https://squid-app-ug7x6.ondigitalocean.app/planget')
-//	  .then((x) => x.json())
-	//  .then((res) => {
-  //    	plans_rows = 0
-    //    for(let i=0;i<res.length;i++){
-		//			if(res[i].PLAN_KUBUN==data){
-		//				plans_rows ++
-				//
-
-			//		}
-		//		}
-		//	plans_div.innerHTML = row
-	 // })
-  //  }
 }
 
 function creaetDivPlan(res){
