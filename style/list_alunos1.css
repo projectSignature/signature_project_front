@@ -6,12 +6,11 @@
 
 
 #titlediv{
-   height:7vh;
-   background-color: #222222;
-   display: flex;
-   align-items: center;
-   padding-right: 300px;
-   color:white;
+  width:100%;
+height:5%;
+background-color: #222222;
+display: flex;
+align-items: center;
 }
 #gym-name{
   color:white;
