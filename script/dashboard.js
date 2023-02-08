@@ -22,8 +22,8 @@ if(sessionStorage.getItem("Language")=="PT"){
 }else{
   language = 2
 }
-//language=0
-//gymid=4
+language=0
+gymid=4
 document.querySelector('#gym-name').innerHTML = sessionStorage.getItem("gym");//gymname
 if (token == 567) {
   addMemberDiv.style.display = 'none';
@@ -189,7 +189,7 @@ function navigator(ref) {
 }
 
 
-windowLoadGet()
+//windowLoadGet()
 async function windowLoadGet(){
   const swal =  Swal.fire({
           icon:"info",
@@ -794,28 +794,22 @@ async function config_main(){
          </div>
          <hr class="underbar" />
          <div class="edit-client-div-flex">
-          <div id="left-div" class="div-block">
-             <div><span>${stext1[language]}</span></div>
-             <div><span>${stext2[language]}</span></div>
-             <div><span>${stext4[language]}</span></div>
-             <div><span>${stext3[language]}</span></div>
-             <div><span>${stext5[language]}</span></div>
+             <span class="swall-50-wrap-padrao" >${stext1[language]}</span>
+             <input class="swall-50-item-wrap" type="text" id="representant" value="${response[0].REPRESENTATIVE}"/>
+             <span class="swall-50-wrap-padrao">${stext2[language]}</span>
+             <input  class="swall-50-item-wrap" type="text" id="gymname"  value="${response[0].GYM_NAME}"/>
+             <span class="swall-50-wrap-padrao">${stext4[language]}</span>
+             <input  class="swall-50-item-wrap" type="text" id="tel"  value="${response[0].TEL}"/>
+             <span class="swall-50-wrap-padrao">${stext3[language]}</span>
+             <input  class="swall-50-item-wrap" type="text" id="email"  value="${response[0].EMAIL}"/>
+             <span class="swall-50-wrap-padrao">${stext5[language]}</span>
+             <select  class="swall-50-item-wrap" id="selectlanguage">
+             <option value="PT">Português</option>
+             <option value="JP">日本語</option>
+             <option value="EN">English</option>
+             <option value="${response[0].LANGUAGE}" selected>${languageNow}</option>
+             </select>
           </div>
-          <div id="right-div" class="div-block">
-            <div class="div-text-input"><input class="text-input" type="text" id="representant" value="${response[0].REPRESENTATIVE}"/></div>
-            <div class="div-text-input"><input class="text-input" type="text" id="gymname"  value="${response[0].GYM_NAME}"/></div>
-            <div class="div-text-input"><input class="text-input" type="text" id="tel"  value="${response[0].TEL}"/></div>
-            <div class="div-text-input"><input class="text-input" type="text" id="email"  value="${response[0].EMAIL}"/></div>
-            <div class="div-text-input-language">
-              <select class="edit-client-text-input-language" id="selectlanguage">
-              <option value="PT">Português</option>
-              <option value="JP">日本語</option>
-              <option value="EN">English</option>
-              <option value="${response[0].LANGUAGE}" selected>${languageNow}</option>
-              </select>
-            </div>
-          </div>
-         </div>
          <style>
 
          .swal2-popup {
@@ -831,10 +825,6 @@ async function config_main(){
            .swal2-popup {
            width: 100% !important;
             height:700px !important;
-          }
-          .button-input{
-            width:30%;
-            font-size:3vw;
           }
          }
          </style>
@@ -962,10 +952,6 @@ function password_change() {
                             width: 100% !important;
                              height:700px !important;
                            }
-                            .button-input{
-                              width:28%;
-                              font-size:3vw;
-                            }
                             #client span {
                                 font-size:4vw;
                             }
@@ -1076,18 +1062,18 @@ fetch(`https://squid-app-ug7x6.ondigitalocean.app/gymplanget?id=${gymid}`)
   clients = res
   let plans = []
   row = `<tr>
-                 <th class="_sticky z-02">${stext25[language]}</th>
-                 <th class="_sticky">${stext14[language]}</th>
-                 <th class="_sticky">${stext20[language]}</th>
-                 <th class="_sticky">${stext15[language]}</th>
-                 <th class="_sticky">${stext16[language]}</th>
-                 <th class="_sticky">${stext17[language]}</th>
-                 <th class="_sticky">${stext18[language]}</th>
-                 <th class="_sticky">${stext19[language]}</th>
-                 <th class="_sticky">${stext13[language]}</th>
-                 <th class="_sticky">${stext60[language]}</th>
-                 <th class="_sticky">${stext21[language]}</th>
-                 </tr>`
+         <th class="_sticky z-02">${stext25[language]}</th>
+         <th class="_sticky">${stext14[language]}</th>
+         <th class="_sticky">${stext20[language]}</th>
+         <th class="_sticky">${stext15[language]}</th>
+         <th class="_sticky">${stext16[language]}</th>
+         <th class="_sticky">${stext17[language]}</th>
+         <th class="_sticky">${stext18[language]}</th>
+         <th class="_sticky">${stext19[language]}</th>
+         <th class="_sticky">${stext13[language]}</th>
+         <th class="_sticky">${stext60[language]}</th>
+         <th class="_sticky">${stext21[language]}</th>
+         </tr>`
                  plans += row
   for (let index = 0; index < res.length; index++) {
     if(res[index].GYM_ID==gymid){
@@ -1120,165 +1106,22 @@ Swal.fire({
           <input class="button-input" type="button" id="select-plans"  value="${stext8[language]}"/>
          </div>
          <hr class="underbar" />
-         <div  class="twrapper">
-          <table  id="#my-table1">
+        <div id="dash">
+         <div  class="twrapper-swall">
+          <table>
             <tbody>${plans}</tbody>
           </table>
+        </div>
         </div>
          <style>
          #select-dada ,#select-pass{
            background-color:#CCCCCC !important;
            color:#555555 !important;
          }
-         #table{
-         	overflow-y:auto;
-         }
          .swal2-popup {
              width: 100% !important;
              height:750px !important;
          }
-         select{
-             cursor: pointer
-         }
-         .email-tag{
-           width: 150px;
-         }
-         #btn-filter{
-           height:70%;
-           width:6%;
-           border:1px solid #888888;
-           background-color: #BBBBBB;
-           border-radius:5px;
-           font-size:2vh;
-           font-weight: bold;
-         }
-         #btn-filter:hover{
-             transform: scale(1.1);
-         }
-         #header-title{
-           font-size:5vh;
-         }
-         .twrapper{
-           overflow-y:scroll;
-           overflow-x:scroll;
-           height:85%;
-         }
-
-         table {
-           border-collapse: collapse;
-           border-spacing: 0;
-           width: 100%;
-           min-width: 1000px;
-         }
-         th, td {
-           vertical-align: middle;
-           padding: 20px 15px;
-           border: 1px solid #ccc;
-           font-size: 14px;
-           text-align: center;
-         }
-         th {
-           color: #fff;
-           background: #795548;
-         }
-         ._sticky {
-           position: sticky;
-           top: 0;
-           left: 0;
-           z-index: 1;
-           background: #333333;
-         }
-         ._sticky:before {
-           content: "";
-           position: absolute;
-           top: -1px;
-           left: -1px;
-           width: 100%;
-           height: 100%;
-           border: 1px solid #ccc;
-         }
-         ._sticky.z-02 {
-           z-index: 2;
-           width: 200px;
-         }
-
-         th[name="_sticky_name"]{
-           background: #795548;
-         }
-
-         #createdate{
-           width:10%;
-           height:70%;
-           font-size:5vh;
-         }
-
-         .image-cursor{
-           cursor: pointer
-         }
-
-         /* 500px以下の画面で適用 */
-         @media only screen and (max-width: 700px) {
-           .swal2-popup {
-           width: 100% !important;
-            height:700px !important;
-          }
-           .button-input{
-             width:28%;
-             font-size:3vw;
-           }
-           #client span {
-               font-size:4vw;
-           }
-           #client input {
-               width:70%;
-               font-size:3.0vw;
-           }
-           .mobile-scroll {
-             overflow-x: auto; /* 横スクロール */
-             -webkit-overflow-scrolling: touch; /* スマホでスムーズにスクロールできるように */
-           }
-           th, td {
-           padding: 5px 15px; /* 上下 左右 */
-         }
-
-         #dash #header{
-             width: 100%;
-             height: 15vh;
-             display: block;
-         }
-
-         #btn-filter{
-           width:15%;
-           font-size:1.5vh;
-         }
-         #header-title{
-           font-size:3vh;
-         }
-           th, td {
-           font-size: 8px;
-         }
-
-         ._sticky.z-02 {
-           z-index: 2;
-           width: 100px;
-         }
-
-         th[name="_sticky_name"]{
-           font-size: 20px;
-         }
-         #dash #header h3{
-             font-size: 5vw;
-             color: 	#777777;
-             margin-right: 1%;
-         }
-         #dash #header select{
-             width: 35%;
-             height: 45%;
-             margin-top: 5%;
-             font-size: 2.5vw;
-         }
-         }
-
         </style>
         `
 , allowOutsideClick : false     //枠外をクリックしても画面を閉じない
