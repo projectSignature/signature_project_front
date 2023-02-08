@@ -656,11 +656,8 @@ width:13%;
 #payment-yet{
 margin-top:5px;
 }
-#ex_chart{
-height:330px !important;
-}
-#graph-area{
-height:330px !important;
+#ex_chart, #graph-area ,#graph-area-entrance ,#graph-area-entrance2{
+height:290px !important;
 }
 .menu-div{
 width: 100%;
