@@ -14,8 +14,6 @@ const regex = /^(?=.*[A-Z])[a-zA-Z0-9.?/-]{8,24}/;
 //前ページからの情報を処理----------------------------------------------->
 var token = sessionStorage.getItem("token");//token
 let gymid = sessionStorage.getItem("GYM_ID")
-console.log(gymid)
-console.log(sessionStorage.getItem("Language"))
 let language
 if(sessionStorage.getItem("Language")=="PT"){
   language = 0
@@ -111,6 +109,26 @@ const stext57 = ["Próximas graduações","Next graduation","帯昇格者"]
 const stext58 = ["Não há alunos para graduar","There are no member to graduate","昇格対象者が現在いません"]
 const stext59 = ["Criar plano","Create Plan","新規プラン"]
 const stext60 = ["Idade","Age","年齢"]
+const stext61 = ["Editar o plano","Edit plan","プランを修正"]
+const stext62 = ["Nome do plano para controle","Plan name for control","管理用プラン名"]
+const stext63 = ["Discrição 1","Discretion 1","プラン説明 1"]
+const stext64 = ["Discrição 2","Discretion 2","プラン説明 2"]
+const stext65 = ["Discrição 3","Discretion 3","プラン説明 3"]
+const stext66 = ["Discrição 4","Discretion 4","プラン説明 4"]
+const stext67 = ["Discrição 5","Discretion 5","プラン説明 5"]
+const stext68 = ["Nome para mostrar na inscrição","Name to show in the inscription","入会者表示用プラン名"]
+const stext69 = ["Homem","Man","男性"]
+const stext70 = ["Mulher","Woman","女性"]
+const stext71 = ["Fámilia","Family","家族"]
+const stext72 = ["Não mostrar","Not show","表示を隠す"]
+const stext73 = ["Por idade","By age","年齢"]
+const stext74 = ["Todos","All","全て"]
+const stext75 = ["Insira o nome do plano","Enter plan name","プラン名を入力してください"]
+const stext76 = ["Insira o valor do plano","Enter the value of the plan","プランの金額を入力してください"]
+const stext77 = ["A discrição 1 deve estar preenchida","Discretion 1 must be filled in","プランの詳細説明1を入力してください"]
+const stext78 = ["Insira o nome para o cliente","Enter the name for the customer","入会者に表示するプラン名を入力してください"]
+const stext79 = ["Escolha uma opção","choose an option","プランの区分を選択してください"]
+const stext80 = ["Você selecionou por idade, digita a idade no campo","You selected by age, enter the age in the field","表示する年齢の上限を入力してください"]
 
 document.getElementById("inscricao").innerHTML = stext35[language]
 document.getElementById("member").innerHTML = stext36[language]
@@ -139,7 +157,6 @@ function hankaku2Zenkaku(str) {
   }
   let returnpass = checkChar(syuuseigo)
   resolve(returnpass)
-  //return returnpass;
 })
 }
 //英文字のみチェック------------------------------>
@@ -166,9 +183,11 @@ function kanmaChange(inputAns){
 };
 //função para navegar entre as páginas do sistema, o arquivo principal é passado por param pelo front
 function navigator(ref) {
+
   let path = `https://squid-app-ug7x6.ondigitalocean.app/signature-project-front/pages/${ref}.html`;
   location.href = path;
 }
+
 
 windowLoadGet()
 async function windowLoadGet(){
@@ -209,6 +228,19 @@ async function windowLoadGet(){
 async function makerequest(url){
   const request = await fetch(url)  //esperar aqui
  return request.json()
+}
+
+function memberCountArray(data){
+  console.log(data)
+  let answercount = 0
+  for( var i = 0; i < data.length; i++ ) {
+    console.log(data[i].status)
+    if(data[i].status=='active'){
+    answercount++
+    }
+
+}
+return answercount
 }
 
 function graduationCountloop(clients1){
@@ -724,10 +756,20 @@ function linechartAnswer(linevalue,month_name){
 //const mydata = await makerequest(`http://localhost:8099/OPCmasterGet?line=PPPP`)
 //設定ボタンクリック時の操作------------------------------------------->
 document.getElementById("configration").addEventListener("click",config_main)
-function config_main(){
-axios.get(`https://squid-app-ug7x6.ondigitalocean.app/clientesDados/${gymid}`)
-  .then(function (response) {
-    if(response.status==200){
+async function config_main(){
+    const swal =  Swal.fire({
+            icon:"info",
+            title: 'Processing',
+            html: 'Wait',
+            allowOutsideClick : false,
+            showConfirmButton: false,
+            timerProgressBar: true,
+            onBeforeOpen: () => {
+            Swal.showLoading();
+        }
+      })
+   const response = await  makerequest(`https://squid-app-ug7x6.ondigitalocean.app/clientesDados/${gymid}`)
+    await console.log(response)
         if(language==0){
           languageNow ="Português"
           division = ["Adulto-homem","Adulto-mulher", "Menores", "Plano familiar","Plan free"]
@@ -738,89 +780,47 @@ axios.get(`https://squid-app-ug7x6.ondigitalocean.app/clientesDados/${gymid}`)
           languageNow ="Inglês"
             division = ["Male-adult","Famale-adult", "underage", "Family plan","Free plan"]
         }
-        console.log(languageNow)
-Swal.fire({
- html: `  <div class="div-flex">
+        swal.close()
+      await  clientEditSwal(response,languageNow,division)
+}
+
+
+  function clientEditSwal(response,languageNow,division){
+     Swal.fire({
+ html: `  <div class="edit-client-div-flex">
             <input class="button-input" type="button" id="select-dada" value="${stext6[language]}"/>
             <input class="button-input" type="button" id="select-pass" value="${stext7[language]}" onclick="password_change()"/>
             <input class="button-input" type="button" id="select-plans" onclick="config_plan()" value="${stext8[language]}"/>
          </div>
          <hr class="underbar" />
-         <div class="div-flex">
+         <div class="edit-client-div-flex">
           <div id="left-div" class="div-block">
              <div><span>${stext1[language]}</span></div>
              <div><span>${stext2[language]}</span></div>
-             <div><span>${stext3[language]}</span></div>
              <div><span>${stext4[language]}</span></div>
+             <div><span>${stext3[language]}</span></div>
              <div><span>${stext5[language]}</span></div>
           </div>
           <div id="right-div" class="div-block">
-            <div class="div-text-input"><input class="text-input" type="text" id="representant" value="${response.data[0].REPRESENTATIVE}"/></div>
-            <div class="div-text-input"><input class="text-input" type="text" id="gymname"  value="${response.data[0].GYM_NAME}"/></div>
-            <div class="div-text-input"><input class="text-input" type="text" id="tel"  value="${response.data[0].TEL}"/></div>
-            <div class="div-text-input"><input class="text-input" type="text" id="email"  value="${response.data[0].EMAIL}"/></div>
+            <div class="div-text-input"><input class="text-input" type="text" id="representant" value="${response[0].REPRESENTATIVE}"/></div>
+            <div class="div-text-input"><input class="text-input" type="text" id="gymname"  value="${response[0].GYM_NAME}"/></div>
+            <div class="div-text-input"><input class="text-input" type="text" id="tel"  value="${response[0].TEL}"/></div>
+            <div class="div-text-input"><input class="text-input" type="text" id="email"  value="${response[0].EMAIL}"/></div>
             <div class="div-text-input-language">
-              <select class="text-input-language" id="selectlanguage">
+              <select class="edit-client-text-input-language" id="selectlanguage">
               <option value="PT">Português</option>
               <option value="JP">日本語</option>
               <option value="EN">English</option>
-              <option value="${response.data[0].LANGUAGE}" selected>${languageNow}</option>
+              <option value="${response[0].LANGUAGE}" selected>${languageNow}</option>
               </select>
             </div>
           </div>
          </div>
          <style>
-         .div-flex{
-           display:flex;
-           width:100%;
-         }
+
          .swal2-popup {
              width: 60% !important;
              height:700px !important;
-         }
-         .div-block{
-           display:block;
-         }
-         #left-div{
-           width:40%
-         }
-         #right-div{
-           width:60%;
-         }
-         .div-block div{
-           text-align: left;
-           height:50px;
-           margin-top:30px;
-         }
-         .div-block div span{
-           font-size:1.5vw;
-         }
-         .div-block div input{
-           height:100%;
-           margin-left:50px;
-           width:100%;
-           height:50px;
-           border-radius:5px;
-           font-size:1.2vw;
-           color:#555555 !important;
-         }
-         .div-text-input{
-           width:70%;
-         }
-         .div-text-input-language{
-           margin-left:50px;
-           display:flex;
-           width:70%;
-         }
-         .text-input-language{
-           width:40% !important;
-           margin-left:3px !important;
-           font-size:1.2vw;
-           color:#555555 !important;
-         }
-         #select-pass ,#select-plans{
-           background-color:#CCCCCC !important;
-           color:#555555 !important;
          }
          button{
            width:150px;
@@ -835,16 +835,6 @@ Swal.fire({
           .button-input{
             width:30%;
             font-size:3vw;
-          }
-          .div-block div span{
-            font-size:3vw;
-          }
-          .text-input-language{
-            width:75% !important;
-            font-size:2vw;
-          }
-          .div-block div input{
-            margin-left:10px;
           }
          }
          </style>
@@ -896,10 +886,8 @@ Swal.fire({
      swal.close()
  }
 })
-}else{
- swallerror(error[language],1)
-}
-})
+
+
 }
 //パスワード変更の処理-------------------------------------------------->
 function password_change() {
@@ -1071,11 +1059,21 @@ function pushHideButton(data) {
       }
 //Plan変更の処理-------------------------------------------------->
 function config_plan(){
-fetch('https://squid-app-ug7x6.ondigitalocean.app/planget')
+  const swal =  Swal.fire({
+          icon:"info",
+          title: 'Processing',
+          html: 'Wait',
+          allowOutsideClick : false,
+          showConfirmButton: false,
+          timerProgressBar: true,
+          onBeforeOpen: () => {
+          Swal.showLoading();
+      }
+    })
+fetch(`https://squid-app-ug7x6.ondigitalocean.app/gymplanget?id=${gymid}`)
   .then((x) => x.json())
   .then((res) => {
   clients = res
-  console.log(res)
   let plans = []
   row = `<tr>
                  <th class="_sticky z-02">${stext25[language]}</th>
@@ -1106,13 +1104,14 @@ fetch('https://squid-app-ug7x6.ondigitalocean.app/planget')
                     <td>${res[index].PLANS_NAME}</td>
                     <td>${res[index].AGE}</td>
                     <td>
-                        <img class="image-cursor"  src="../image/edit.svg" onClick="editPlan(${index})" alt="" width="25">
+                        <img class="image-cursor"  src="../image/edit.svg" onClick="editPlanSwal(${index})" alt="" width="25">
                         <img class="image-cursor"  src="../image/delete.svg" onClick="Plandelete_check(${index})" alt="" width="25">
                     </td>
                   </tr>`
                 plans += row
     }
     }
+    swal.close()
 Swal.fire({
  html: `
          <div class="div-flex">
@@ -1301,201 +1300,6 @@ Swal.fire({
 })
 }
 
-function editPlan(data){
-  Swal.fire({
-    title: stext22[language],
-    customClass: 'customizable',
-    html: `
-           <div id="clientes-div">
-              <div class="div-flex">
-               <div class="div-flex-span">
-                 <span>${stext13[language]}</span>
-               </div>
-               <div class="div-flex-input">
-                 <input id="planname" value="${clients[data].PLANS_NAME}"/>
-               </div>
-              </div>
-              <div class="div-flex">
-              <div class="div-flex-span">
-                 <span>${stext14[language]}</span>
-               </div>
-               <div class="div-flex-input">
-                  <span id="yenmark">￥</span>
-                  <input input type="text" onblur="kanmaChange(this);" pattern="\d*" id="palanvalue" value="${clients[data].PLAN_VALOR}"/>
-               </div>
-              </div>
-              <div class="div-flex">
-               <div class="div-flex-span">
-                 <span>${stext20[language]}</span>
-               </div>
-               <div class="div-flex-input">
-               <select class="text-input-language" id="division">
-               <option value="1">${division[0]}</option>
-               <option value="2">${division[1]}</option>
-               <option value="3">${division[2]}</option>
-               <option value="4">${division[3]}</option>
-               <option value="5">${division[4]}</option>
-               <option value="${clients[data].PLAN_KUBUN}" selected>${division[(clients[data].PLAN_KUBUN-0)-1]}</option>
-               </select>
-               </div>
-              </div>
-              <div class="div-flex">
-               <div class="div-flex-span">
-                 <span>${stext15[language]}</span>
-               </div>
-               <div class="div-flex-input">
-                 <input id="plandis1" value="${clients[data].PLAN_DISCRITION1}"/>
-               </div>
-              </div>
-              <div class="div-flex">
-               <div class="div-flex-span">
-                 <span>${stext16[language]}</span>
-               </div>
-               <div class="div-flex-input">
-                 <input id="plandis2" value="${clients[data].PLAN_DISCRITION2}"/>
-               </div>
-              </div>
-              <div class="div-flex">
-               <div class="div-flex-span">
-                 <span>${stext17[language]}</span>
-               </div>
-               <div class="div-flex-input">
-                 <input id="plandis3" value="${clients[data].PLAN_DISCRITION3}"/>
-               </div>
-              </div>
-              <div class="div-flex">
-               <div class="div-flex-span">
-                 <span>${stext18[language]}</span>
-               </div>
-               <div class="div-flex-input">
-                 <input id="plandis4" value="${clients[data].PLAN_DISCRITION4}"/>
-               </div>
-              </div>
-              <div class="div-flex">
-               <div class="div-flex-span">
-                 <span>${stext19[language]}</span>
-               </div>
-               <div class="div-flex-input">
-                 <input id="plandis5" value="${clients[data].PLAN_DISCRITION5}"/>
-               </div>
-              </div>
-              <div class="div-flex">
-               <div class="div-flex-span">
-                 <span>${stext25[language]}</span>
-               </div>
-               <div class="div-flex-input">
-                 <input id="controlname" value="${clients[data].CONTROL_NAME}"/>
-               </div>
-              </div>
-           </div>
-           <style>
-           .swal2-popup {
-               width: 50% !important;
-               border:2px solid gray;
-           }
-           #clientes-div{
-             display-block;
-             align-items:center;
-           }
-           .div-flex{
-             display:flex !important;
-             width:100%;
-              margin-top:10px;
-           }
-           input ,select{
-             font-size:1.5vw;
-             width:80% !important;
-             height:35px !important;
-             color:#555555 !important;
-
-             border-radius:10px;
-           }
-           span{
-             font-size:1.5vw;
-           }
-           .div-input{
-             width:70% !important;
-              background-color:blue;
-           }
-           .div-flex-span{
-             width:25%;
-           }
-           .div-flex-input{
-             items-align:left;
-             width:75%;
-           }
-           #yenmark{
-             width:10%;
-              font-size:1.5vw;
-         }
-         #palanvalue{
-           width:70% !important;
-         }
-         @media only screen and (max-width: 700px) {
-           .swal2-popup {
-           width: 100% !important;
-          }
-   }
-          </style>
-          `
-  , allowOutsideClick : true     //枠外をクリックしても画面を閉じない
-  , showConfirmButton: true
-  ,showCancelButton: true
-  ,confirmButtonText:stext9[language]
-  ,cancelButtonText:stext10[language]
-  ,denyButtonText: stext59[language]
-  }).then((result) => {
-   if (result.isConfirmed) {
-       name = document.getElementById("planname").value
-       pvalue = document.getElementById("palanvalue").value
-       divi = document.getElementById("division").value
-       dis1 = document.getElementById("plandis1").value
-       dis2 = document.getElementById("plandis2").value
-       dis3 = document.getElementById("plandis3").value
-       dis4 = document.getElementById("plandis4").value
-       dis5 = document.getElementById("plandis5").value
-       control_name = document.getElementById("controlname").value
-       if(name==""){
-         swallerror(error5[language],2,data)
-       }else if(pvalue==""){
-         swallerror(error6[language],2,data)
-       }else if(dis1==""){
-         swallerror(error7[language],2,data)
-       }else if(control_name==""){
-         swallerror(error8[language],2,data)
-       }else{
-         try{
-           fetch("https://squid-app-ug7x6.ondigitalocean.app/planUpdate", {
-           method: 'POST',
-           body: JSON.stringify({
-             name : name,
-             pvalue :pvalue,
-             divi :divi,
-             dis1 :dis1,
-             dis2 :dis2,
-             dis3 :dis3,
-             dis4 :dis4,
-             dis5 :dis5,
-             id:clients[data].ID,
-             controlname:control_name
-           }),
-           headers: { "Content-type": "application/json; charset=UTF-8" }
-         })
-         .then((x) => x.json())
-         .then((res) => {
-           swall_success()
-         })
-         }catch (error) {
-         }
-   }
-}else{
-  swal.close()
-  config_plan()
-}
-})
-}
-
-
 function Plandelete_check(data){
   Swal.fire({
   title: `${stext23[language]}:${clients[data].PLANS_NAME}`
@@ -1519,71 +1323,270 @@ cancelButtonText:　stext10[language]
 })
 }
 
-function createPlanSwal(){
+function editPlanSwal(data){
+let row1 =""
+let row = ""
+for(let i=1;i<=6;i++){
+  let title
+  if(i==1){
+    title = stext69[language]
+  }else if(i==2){
+    title = stext70[language]
+  }else if(i==3){
+    title = stext71[language]
+  }else if(i==4){
+    title = stext74[language]
+  }else if(i==5){
+    title = stext72[language]
+  }else if(i==6){
+    title = stext73[language]
+  }
+  if(i==clients[data].PLAN_KUBUN){
+    row = `
+    <div>
+       <span>${title}</span>
+       <input type="checkbox" id="plan${i}" name='typeselect' onclick="selectchek_kubun(${i})" checked=”checked”><i class="fa fa-square-o fa-2x"></i><i class="fa fa-check-square-o fa-2x"></i>
+     </div>
+    `
+  }else{
+    row = `
+    <div>
+       <span>${title}</span>
+       <input type="checkbox" id="plan${i}" name='typeselect' onclick="selectchek_kubun(${i})"><i class="fa fa-square-o fa-2x"></i><i class="fa fa-check-square-o fa-2x"></i>
+     </div>
+    `
+  }
+  row1 += row
+}
+
   Swal.fire({
-    title:'Criar plano',
+    title:stext59[language],
      html: `
      <div class="create-plan-div-top">
         <div>
-         <span>Nome do plano para controle</span>
-         <input id="plan-control-name"/>
+         <span>${stext62[language]}</span>
+         <input id="plan-control-name" value="${clients[data].CONTROL_NAME}"/>
         </div>
         <div>
-          <span>Valor</span>
-          <input id="plan-value" input type="text" onblur="kanmaChange(this);" pattern="\d*"/>
+          <span>${stext14[language]}</span>
+          <input id="plan-value" input type="text" onblur="kanmaChange(this);" pattern="\d*" value="￥ ${clients[data].PLAN_VALOR}"/>
         </div>
         <div>
-          <span>Discrição 1</span>
-          <input id="plan-discriton1"/>
+          <span>${stext63[language]}</span>
+          <input id="plan-discriton1" value="${clients[data].PLAN_DISCRITION1}"/>
         </div>
         <div>
-          <span>Discrição 2</span>
-          <input id="plan-discriton2"/>
+          <span>${stext64[language]}</span>
+          <input id="plan-discriton2" value="${clients[data].PLAN_DISCRITION2}"/>
         </div>
         <div>
-          <span>Discrição 3</span>
-          <input id="plan-discriton3"/>
+          <span>${stext65[language]}</span>
+          <input id="plan-discriton3" value="${clients[data].PLAN_DISCRITION3}"/>
         </div>
         <div>
-          <span>Discrição 4</span>
-          <input id="plan-discriton4"/>
+          <span>${stext66[language]}</span>
+          <input id="plan-discriton4" value="${clients[data].PLAN_DISCRITION4}"/>
         </div>
         <div>
-          <span>Discrição 5</span>
-          <input id="plan-discriton5"/>
+          <span>${stext67[language]}</span>
+          <input id="plan-discriton5" value="${clients[data].PLAN_DISCRITION5}"/>
        </div>
 
        <div>
-       <span>Nome para mostrar na inscrição</span>
+       <span>${stext68[language]}</span>
+       <input id="name-of-client" value="${clients[data].PLANS_NAME}"/>
+       </div>
+       <div class="btn-groupbtn-group-vertical1111">
+ ${row1}
+  <div>
+  <span>${stext60[language]}</span>
+   <input id="age" type="number" value="${clients[data].AGE}"/>
+  </div>
+     </div>
+     <style>
+      .create-plan-div-top{
+       width:100%;
+       display:flex;
+      flex-wrap: wrap;
+      }
+      .create-plan-div-top div{
+        margin-top:15px;
+        width:48%;
+        display: flex;
+       flex-direction:column;
+       align-items: center;
+      }
+      .swal2-popup {
+        width: 80% !important;
+        height: 750px;
+      }
+      .create-plan-div-top div div{
+        width:100%;
+      }
+      input{
+        width:70%;
+        height:60px;
+        border:1px solid gray;
+        font-size:1.5vw;
+      }
+      .btn-groupbtn-group-vertical1111{
+        width:100% !important;
+        display: flex !important;
+        flex-direction: row !important;
+        margin-top:0px !important;
+      }
+  .optionbutton-div{
+    width:10%;
+  }
+  span{
+    margin-bottom:10px;
+  }
+     </style>
+       `,
+     showCancelButton: true,
+     showConfirmButton:true,
+   　confirmButtonText: "Registrar",
+     cancelButtonText: "Cancelar",
+     allowOutsideClick : false,
+     //script: planselect(clients[data].PLAN_KUBUN),
+     preConfirm: (login) => {
+       controlName = document.getElementById("plan-control-name").value
+       planValue = document.getElementById("plan-value").value
+       planD1 = document.getElementById("plan-discriton1").value
+       planD2 = document.getElementById("plan-discriton2").value
+       planD3 = document.getElementById("plan-discriton3").value
+       planD4 = document.getElementById("plan-discriton4").value
+       planD5 = document.getElementById("plan-discriton5").value
+       mcheck = document.getElementById('plan1')
+       wcheck = document.getElementById('plan2')
+       fcheck = document.getElementById('plan3')
+       kcheck = document.getElementById('plan6')
+       acheck = document.getElementById('plan4')
+       ncheck = document.getElementById('plan5')
+       age = document.getElementById('age').value
+       clientOfName = document.getElementById("name-of-client").value
+       if(!controlName){
+         Swal.showValidationMessage(stext75[language])
+       }else if(!planValue){
+         Swal.showValidationMessage(stext76[language])
+       }else if(!planD1){
+         Swal.showValidationMessage(stext77[language])
+       }else if(!clientOfName){
+         Swal.showValidationMessage(stext78[language])
+       }
+       if(!mcheck.checked&&!wcheck.checked&&!fcheck.checked&&!kcheck.checked&&!acheck.checked&&!ncheck.checked){
+         Swal.showValidationMessage(stext79[language])
+       }
+       if(kcheck.checked&&age==""){
+         Swal.showValidationMessage(stext80[language])
+       }
+     },
+   }).then((result) => {
+  if (result.isConfirmed) {
+    if(mcheck.checked){
+      kubun = 1 //男
+    }else if(wcheck.checked){
+      kubun=2　//女性
+    }else if(fcheck.checked){
+      kubun =3　//ファミリー
+    }else if(kcheck.checked){
+      kubun =6　//子供
+    }else if(acheck.checked){
+      kubun = 4　//全員
+    }else if(ncheck.checked){
+      kubun =5　//見せない
+    }
+    fetch("https://squid-app-ug7x6.ondigitalocean.app/createplans", {
+      method: 'POST',
+      body: JSON.stringify({
+        id:gymid,
+        name:clientOfName,
+        valor:planValue,
+        kubun:kubun,
+        dis1:planD1,
+        dis2:planD2,
+        dis3:planD3,
+        dis4:planD4,
+        dis5:planD5,
+        controlname:controlName,
+        age:age}),
+      headers: { "Content-type": "application/json; charset=UTF-8" }
+     }).then((x) => x.json())
+       .then((res) => {
+       console.log(res)
+     })
+   }else{
+     config_plan()
+   }
+  })
+}
+
+
+
+function createPlanSwal(){
+  Swal.fire({
+    title:stext59[language],
+     html: `
+     <div class="create-plan-div-top">
+        <div>
+         <span>${stext62[language]}</span>
+         <input id="plan-control-name"/>
+        </div>
+        <div>
+          <span>${stext14[language]}</span>
+          <input id="plan-value" input type="text" onblur="kanmaChange(this);" pattern="\d*"/>
+        </div>
+        <div>
+          <span>${stext63[language]}</span>
+          <input id="plan-discriton1"/>
+        </div>
+        <div>
+          <span>${stext64[language]}</span>
+          <input id="plan-discriton2"/>
+        </div>
+        <div>
+          <span>${stext65[language]}</span>
+          <input id="plan-discriton3"/>
+        </div>
+        <div>
+          <span>${stext66[language]}</span>
+          <input id="plan-discriton4"/>
+        </div>
+        <div>
+          <span>${stext67[language]}</span>
+          <input id="plan-discriton5"/>
+       </div>
+       <div>
+       <span>${stext68[language]}</span>
        <input id="name-of-client"/>
        </div>
        <div class="btn-groupbtn-group-vertical1111">
        <div>
-          <span>Homem</span>
+          <span>${stext69[language]}</span>
           <input type="checkbox" id="plan1" name='typeselect' onclick="selectchek_kubun(1)"><i class="fa fa-square-o fa-2x"></i><i class="fa fa-check-square-o fa-2x"></i>
         </div>
         <div>
-          <span>Mulher</span>
+          <span>${stext70[language]}</span>
           <input type="checkbox" id="plan2"  name='typeselect' onclick="selectchek_kubun(2)"><i class="fa fa-square-o fa-2x"></i><i class="fa fa-check-square-o fa-2x"></i>
         </div>
         <div>
-          <span>Fámilia</span>
+          <span>${stext71[language]}</span>
           <input type="checkbox" id="plan3"  name='typeselect' onclick="selectchek_kubun(3)"><i class="fa fa-square-o fa-2x"></i><i class="fa fa-check-square-o fa-2x"></i>
       </div>
     <div>
-    <span>Todos</span>
+    <span>${stext74[language]}</span>
       <input type="checkbox" id="plan4" name='typeselect' onclick="selectchek_kubun(4)"><i class="fa fa-square-o fa-2x"></i><i class="fa fa-check-square-o fa-2x"></i>
   </div>
   <div>
-  <span>Não mostrar</span>
+  <span>${stext72[language]}</span>
     <input type="checkbox" id="plan5"  name='email3' onclick="selectchek_kubun(5)"><i class="fa fa-square-o fa-2x"></i><i class="fa fa-check-square-o fa-2x"></i>
   </div>
   <div>
-  <span>Idade</span>
+  <span>${stext73[language]}</span>
     <input type="checkbox" id="plan6"  name='typeselect' onclick="selectchek_kubun(6)"><i class="fa fa-square-o fa-2x"></i><i class="fa fa-check-square-o fa-2x"></i>
   </div>
   <div>
-  <span>Idade</span>
+  <span>${stext60[language]}</span>
    <input id="age" type="number"/>
   </div>
      </div>
@@ -1626,8 +1629,6 @@ function createPlanSwal(){
     margin-bottom:10px;
   }
      </style>
-
-
        `,
      showCancelButton: true,
      showConfirmButton:true,
@@ -1652,19 +1653,19 @@ function createPlanSwal(){
        age = document.getElementById('age').value
        clientOfName = document.getElementById("name-of-client").value
        if(!controlName){
-         Swal.showValidationMessage(`Insira o nome do plano`)
+         Swal.showValidationMessage(stext75[language])
        }else if(!planValue){
-         Swal.showValidationMessage(`Insira o valor do plano`)
+         Swal.showValidationMessage(stext76[language])
        }else if(!planD1){
-         Swal.showValidationMessage(`A discrição 1 deve estar preenchida`)
+         Swal.showValidationMessage(stext77[language])
        }else if(!clientOfName){
-         Swal.showValidationMessage(`Insira o nome para o cliente`)
+         Swal.showValidationMessage(stext78[language])
        }
        if(!mcheck.checked&&!wcheck.checked&&!fcheck.checked&&!kcheck.checked&&!acheck.checked&&!ncheck.checked){
-         Swal.showValidationMessage(`Escolha uma opção`)
+         Swal.showValidationMessage(stext79[language])
        }
-       if(!kcheck.checked&&age==""){
-         Swal.showValidationMessage(`Você selecionou por idade, digita a idade no campo`)
+       if(kcheck.checked&&age==""){
+         Swal.showValidationMessage(stext80[language])
        }
      },
    }).then((result) => {
@@ -1701,9 +1702,11 @@ function createPlanSwal(){
        .then((res) => {
        console.log(res)
      })
-  }
+   }else{
+     config_plan()
+   }
   })
-
+}
   function selectchek_kubun(data){
     if(data==1){
       document.getElementById('plan2').checked = false
@@ -1753,4 +1756,3 @@ function createPlanSwal(){
     return true;
    }
   };
-}
