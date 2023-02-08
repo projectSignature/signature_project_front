@@ -4,8 +4,8 @@ windowLoadGt()
 async function windowLoadGt(){
   var token = sessionStorage.getItem("token");//token
   let gymid = sessionStorage.getItem("GYM_ID")
-  console.log(token)
-  console.log(gymid)
+  //console.log(token)
+  //console.log(gymid)
   //gymid=4
   if (token==null||token=="") {
     window.location = `https://squid-app-ug7x6.ondigitalocean.app/signature-project-front`
