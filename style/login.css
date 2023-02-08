@@ -6,12 +6,11 @@
 }
 
 #title{
-
   text-align: center;
   font-size: 8vh;
   padding-bottom: 30px;
   color:white;
-  font-family:"Haettenschweiler";
+  font-family: 'Sacramento', cursive;
 }
 html{
   width: 100%;
@@ -129,26 +128,4 @@ margin: auto;
 width: 90%;
 height: 0.5rem;
 }
-@media screen and (min-width: 600px) and (max-width: 1024px) {
-  #title{
 
-  }
-}
-
-@media screen and (min-width: 415px) and (max-width: 599px) {
-  #title{
-
-
-  }
-
-}
-
-@media screen and (max-width: 414px) {
-  #title{
-
-  }
-
-
-
-
-}
