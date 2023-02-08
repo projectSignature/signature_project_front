@@ -22,15 +22,16 @@ if(sessionStorage.getItem("Language")=="PT"){
 }else{
   language = 2
 }
-language=0
-gymid=4
+//language=0
+//gymid=4
 document.querySelector('#gym-name').innerHTML = sessionStorage.getItem("gym");//gymname
+console.log(token)
 if (token == 567) {
   addMemberDiv.style.display = 'none';
   memberDiv.style.display = 'none';
   paymentDiv.style.display = 'none';
   graduacaoDiv.style.display = 'none';
-}else if(token==""){
+}else if(token==""||token==null){
   window.location = `https://squid-app-ug7x6.ondigitalocean.app/signature-project-front`
 }
 //翻訳テキスト----------------------------------------------------------->
