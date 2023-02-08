@@ -181,7 +181,7 @@ height:100%;
 margin-left:0.5%;
 }
 #graph-area{
-height:500px;
+height:450px;
 }
 canvas{
 height:500px;
@@ -353,7 +353,7 @@ margin-top:15px;
 font-size:1.5vw;
 }
 
-@media screen and (min-width: 726px) and (max-width: 1350px) {
+@media screen and (min-width: 726px) and (max-width: 1300px) {
 .div-block div span{
 font-size:3vw;
 }
@@ -639,7 +639,7 @@ height:3rem;
 
 }
 
-@media screen and (min-width: 1400px) and (max-width: 1450px) {
+@media screen and (min-width: 1300px) and (max-width: 1450px) {
 .title-bottons{
 font-size: 0.8em;
 }
@@ -661,5 +661,12 @@ height:330px !important;
 }
 #graph-area{
 height:330px !important;
+}
+.menu-div{
+width: 100%;
+display: block;
+margin-top: 2px;
+text-align: center;
+align-items: center;
 }
 }
