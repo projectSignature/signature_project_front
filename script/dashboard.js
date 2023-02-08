@@ -190,7 +190,7 @@ function navigator(ref) {
 }
 
 
-//windowLoadGet()
+windowLoadGet()
 async function windowLoadGet(){
   const swal =  Swal.fire({
           icon:"info",
