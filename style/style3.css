@@ -659,6 +659,10 @@ margin-top:5px;
 #ex_chart, #graph-area ,#graph-area-entrance ,#graph-area-entrance2{
 height:290px !important;
 }
+ #graph-area-entrance ,#graph-area-entrance2{
+  width:380px;
+} 
+  
 .menu-div{
 width: 100%;
 display: block;
