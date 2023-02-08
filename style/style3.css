@@ -1,0 +1,646 @@
+html{
+overflow-y: hidden;
+      height: 100%;
+}
+
+body {
+  height: 100%;
+  margin: 0;
+}
+#sotowaku {
+  height: 100%;
+}
+#titlediv{
+   height:5%;
+   background-color: #222222;
+   display: flex;
+   align-items: center;
+}
+#gym-name{
+  color:white;
+  position: absolute;
+  right: 0;
+  font-size: 3vh;
+}
+#titlemain{
+  text-align: left;
+  margin-left: 0;
+  font-size: 2.8Vh;
+  color:lightgray;
+  font-family: 'Sacramento', cursive;
+}
+#maindiv{
+  display: flex;
+  height:98%;
+}
+
+#right-board{
+  background-color:#EEEEEE;
+  width: 88%;
+  height: 100%;
+  display: flex;
+}
+#menubar{
+  background-color: #555555;
+  width:12%;
+  padding-top: 20px;
+  color:white;
+}
+#menubar-title{
+  font-weight: bold;
+  font-size: 4vh;
+}
+
+.servertitle{
+    font-size: 4vh;
+}
+.master{
+padding-top: 30px;
+  font-size: 2vh;
+}
+
+#inscricao{
+  padding-top: 5px;
+  padding-left: 6px;
+}
+.menu-div{
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+ cursor: pointer;
+ font-size: 3vh;
+ width: 100%;
+ transition: background 1s;
+}
+#add_member_div{
+padding-left: 13px;
+}
+#right-first{
+  height:15%;
+  width:100%;
+  display: flex;
+  align-items: center;
+
+}
+.right-first-div{
+  width: 32%;
+  height:90%;
+  background-color: #00BFFF;
+  margin-left:15px;
+  border-radius: 20px;
+  display: flex;
+  color:white;
+  cursor: pointer;
+}
+#try{
+  width: 100%;
+  height: 100%;
+
+}
+.result-input{
+  font-size: 10vh;
+}
+.atention-discrtion{
+  padding-left: 15px;
+  padding-top: 20px;
+    font-size: 3vh;
+}
+.boarde{
+  margin-left: 15px;
+  margin-top: 20px;
+  height:37%;
+  width:98%;
+  align-items: center;
+  display:flex;
+}
+
+.button-input{
+  margin-top:30px;
+  border-radius:50px;
+  background-color: #4169E1 !important;
+  color:white;
+  width:25%;
+  height:70px;
+  margin-left:15px;
+  cursor:pointer;
+  font-size:2vw;
+}
+.text-input-language:hover{
+  transform: scale(1.1);
+}
+.button-input:hover{
+  transform: scale(1.1);
+}
+.confirmbutton:hover{
+    text-decoration: none;
+    border: 2px solid gray;
+    background-color: #5507FF;
+    color:white;
+    display: inline-block;
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+  .menu-div:hover{
+      background: #5507FF;
+    }
+    .right-first-div:hover{
+      text-decoration: none;
+      border: 10px solid #5507FF;
+    }
+    .result-right{
+      display:flex;
+    }
+
+.half-div{
+  width:49%;
+  height:100%;
+  border:0.3px solid #222222;
+  background-color:white;
+}
+#right-second{
+  display:flex;
+}
+#right-second a{
+  font-size:1.5vw;
+}
+#right-second-left{
+  width:70%;
+}
+#right-second-right{
+  width:30%;
+  height:100%;
+  margin-left:0.5%;
+}
+#right-second-right-entrancd-2{
+    margin-left:0.5%;
+    width:50%
+}
+#right-second-right-entrnce{
+  width:40%;
+  height:100%;
+  margin-left:0.5%;
+}
+#graph-area{
+  height:500px;
+}
+canvas{
+  height:500px;
+}
+#entrance-list-div{
+  width:100%;
+  height:100%;
+  border:0.3px solid #222222;
+  background-color:white;
+}
+#configration{
+  font-size:1.2vw;
+}
+
+.titlename{
+  font-size:2.5vw;
+}
+  .div-flex-swall-yet{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .div-name{
+    width:60%;
+    background-color:#333333;
+    color:#EEEEEE;
+    border:1px solid #EEEEEE;
+  }
+  .div-name-answer{
+    width:60%;
+    background-color:#EEEEEE;
+    color:#444444;
+    border:0.5px solid #444444;
+    height:2.5rem;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 0 -1px;
+  }
+  .div-year-month{
+    width:20%;
+    background-color:#333333;
+    color:#EEEEEE;
+    border:1px solid #EEEEEE;
+  }
+  .div-year-month-answer{
+    width:20%;
+    background-color:#EEEEEE;
+    color:#444444;
+    border:0.5px solid #444444;
+    height:2.5rem;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 0 -1px;
+
+  }
+
+  .yetmember-div-name{
+    width:60%;
+    background-color:#555555;
+    height:4rem;
+    display:flex;
+    justify-content: center;
+    align-items:center;
+    text-align:center;
+
+  }
+  .yetpayment-member-div{
+    border:0.5px solid #777777;
+    width:47%;
+    height:4rem;
+    display:flex;
+    margin-top:2rem;
+  }
+  .yetmember-span-name{
+      color:#EEEEEE;
+    font-size:1.2vw;
+  }
+  .year-month-yetpay-div{
+  border-right:0.2px solid #777777;
+  padding-left:5px;
+  }
+  .yetpayment-member-div img{
+    height:4rem;
+    width:4rem
+  }
+  .twrapper{
+    width:100%;
+    display:flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+#graduation-member-div{
+  height:6rem;
+}
+
+#graduation-member-name{
+  height:6rem;
+}
+.year-month-yetpay-div p{
+  text-align: left;
+
+}
+
+#graduation-member-name{
+  width:40% !important;
+}
+#graduation-span-img{
+  width:15% !important;
+}
+#graduation-message-div{
+  width:55%;
+}
+.edit-client-div-flex{
+  display:flex !important;
+  width:100%;
+}
+.div-block{
+  display:block;
+}
+#left-div{
+  width:40%
+}
+#right-div{
+  width:60%;
+}
+.div-block div{
+  text-align: left;
+  height:50px;
+  margin-top:30px;
+}
+.div-block div span{
+  font-size:1.5vw;
+}
+.div-block div input{
+  height:100%;
+  margin-left:50px;
+  width:100%;
+  height:50px;
+  border-radius:5px;
+  font-size:1.2vw;
+  color:#555555 !important;
+}
+.div-text-input{
+  width:70%;
+}
+.div-text-input-language{
+  margin-left:50px;
+  display:flex;
+  width:70%;
+}
+.edit-client-text-input-language{
+  width:40% !important;
+  margin-left:3px !important;
+  font-size:1.2vw;
+  color:#555555 !important;
+}
+#select-pass ,#select-plans{
+  background-color:#CCCCCC !important;
+  color:#555555 !important;
+}
+
+
+
+
+
+
+@media screen and (min-width: 726px) and (max-width: 1350px) {
+  .div-block div span{
+    font-size:3vw;
+  }
+  .edit-client-text-input-language{
+    width:75% !important;
+    font-size:2vw;
+  }
+  .div-block div input{
+    margin-left:10px;
+  }
+
+#menubar{
+  width: 12%;
+  height:600px;
+}
+#add_member_div{
+  padding-left: 0;
+  margin-left: 0;
+
+}
+#menubar-title{
+  margin-left: 20%;
+  margin-bottom: 15%;
+}
+
+.right-first-div{
+width:32%;
+}
+.result-input{
+  font-size: 3em;
+  margin-left: 1px;
+    margin-top: 2%;
+}
+.atention-discrtion{
+  margin-left: 1px;
+  font-size: 1em;
+  margin-top: 3%;
+}
+#menbers-discrtion{
+  margin-left: 1px;
+  margin-top: 6%;
+}
+#member-total{
+    margin-top: 5%;
+}
+.master-image-menu{
+  width: 20%;
+}
+.menu-div{
+  width: 100%;
+  display: block;
+  margin-top: 2px;
+  text-align: center;
+  align-items: center;
+}
+
+.title-bottons{
+  width: 100% !important;
+    font-size: 1em;
+}
+.twrapper{
+
+}
+.yetpayment-member-div{
+  width:80%;
+}
+.yetmember-span-name{
+  font-size:2vw;
+}
+.twrapper{
+  justify-content: center !important;
+}
+#graph-area ,#graph-area-entrance ,#graph-area-entrance2 , #ex_chart{
+      height:220px !important;
+}
+
+
+}
+
+
+
+
+@media screen and (max-width: 725px) {
+  html{
+  overflow-y: scroll;
+
+  }
+  ._sticky.z-02 {
+    width: 15px !important;
+  }
+  ._sticky {
+    width:80px !important;
+  }
+
+  #maindiv{
+    display:block;
+  }
+  #image-title{
+    display:none;
+  }
+  #menubar{
+    width:100%;
+    height:50px;
+    display: block;
+    flex-wrap: nowrap;
+      padding-top: 0px;
+  }
+
+  #menubar-title{
+    padding-top: 0;
+    font-size: 2vh;
+    margin-bottom: 0;
+    display:none;
+    height:0;
+  }
+  .title-bottons{
+    display:none;
+  }
+
+
+  #menuber-bottons-title{
+    height:50px;
+    width:100%;
+    display: flex;
+    margin-top: 0px;
+
+  }
+
+  .menu-div{
+    margin-right: 1%;
+    margin-left: 0px;
+    margin-top: 0px;
+
+    height:100%;
+    width:12.5%;
+
+  }
+  .men-div div{
+
+    height:100%;
+    width:100%;
+  }
+.master-image{
+    margin-top: 15px;
+}
+  #config-img{
+
+    height:40px;
+  }
+
+
+  #right-board{
+    display: block;
+    width: 100%;
+    height:850px
+  }
+
+  #right-first{
+    height:200px;
+    width:100%;
+    display: block;
+    align-items: center;
+  }
+
+  .result-input{
+    font-size: 2em;
+    margin-left: 10px;
+    margin-top: 0px;
+    width:70px;
+  }
+  .result-right{
+    display: flex;
+  }
+  .atention-discrtion{
+    width:100%;
+    padding-top: 0px;
+    font-size: 1.2em;
+    padding-left: 0px;
+    height:100%;
+    overflow: hidden;
+
+  }
+  .right-first-div{
+    width: 95%;
+    height:55px;
+    margin-top: 10px;
+    padding-bottom: 3px;
+    margin-left: 10px;
+  }
+  .master-image-menu{
+    width: 15%;
+  }
+
+  .boarde{
+    margin-left: 10px;
+    margin-top: 3px;
+    height:200px;
+    width:95%;
+    align-items: center;
+
+  }
+    .right-first-div:hover{
+      text-decoration: none;
+      border: 4px solid #5507FF;
+    }
+
+    #right-second{
+      display:block;
+    }
+    #right-third{
+      display:block;
+    }
+    #right-third div{
+      width:100%;
+    }
+    #right-second-left{
+      width:100%;
+    }
+    #right-second-right{
+      margin-top:10px;
+      width:100%;
+    }
+    #right-third{
+      margin-top:225px;
+
+    }
+    #try{
+      height:850px;
+      display: block;
+    }
+    #ex_chart{
+  height:200px !important;
+}
+    #graph-area ,#graph-area-entrance ,#graph-area-entrance2{
+          height:200px !important;
+    }
+    #right-second-right{
+      margin-left:0;
+    }
+
+    .yetpayment-member-div{
+      width:80%;
+    }
+    .yetmember-span-name{
+      font-size:2vw;
+    }
+    .twrapper{
+      justify-content: center !important;
+    }
+    .year-month-yetpay-div span{
+      font-size:1.5vw;
+    }
+#graduation-span-img img{
+  width:2.5rem !important;
+  height:2.5rem !important;
+}
+#graduation-message-div p{
+  font-size:2vw;
+}
+#graduation-member-div{
+  height:4.5rem;
+}
+#graduation-member-name{
+  height:4.5rem;
+}
+
+}
+
+@media screen and (min-width: 1400px) and (max-width: 1450px) {
+ .title-bottons{
+      font-size: 0.8em;
+  }
+  .atention-discrtion{
+    margin-top:5px;
+    font-size: 2.5vh;
+  }
+  .result-input{
+    font-size: 8vh;
+  }
+  #menubar{
+    width:13%;
+  }
+  #payment-yet{
+    margin-top:5px;
+  }
+      #ex_chart{
+    height:330px !important;
+  }
+      #graph-area{
+            height:330px !important;
+      }
+}
