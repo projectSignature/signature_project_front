@@ -351,7 +351,7 @@ canvas{
 
 
 
-@media screen and (min-width: 726px) and (max-width: 1200px) {
+@media screen and (min-width: 726px) and (max-width: 1350px) {
   .div-block div span{
     font-size:3vw;
   }
@@ -424,6 +424,10 @@ width:32%;
 .twrapper{
   justify-content: center !important;
 }
+#graph-area ,#graph-area-entrance ,#graph-area-entrance2 , #ex_chart{
+      height:220px !important;
+}
+
 
 }
 
@@ -444,6 +448,9 @@ width:32%;
 
   #maindiv{
     display:block;
+  }
+  #image-title{
+    display:none;
   }
   #menubar{
     width:100%;
