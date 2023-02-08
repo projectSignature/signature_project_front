@@ -1,24 +1,40 @@
-const cards = document.getElementById('cards');
-//var imgTeste = "https://images.unsplash.com/photo-1481349518771-20055b2a7b24?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8cmFuZG9tfGVufDB8fDB8fA%3D%3D&w=1000&q=80"
-var dadoCalender;
-var cards_count = 0;
-const mountedClasses = []
-var entrancearry = []
-document.querySelector('#gym-name').innerHTML = sessionStorage.getItem("gym");
 
-//カレンダーのデータ取得
-fetch('https://squid-app-ug7x6.ondigitalocean.app/calender/entrance')
-  .then((x) => x.json())
-  .then((res) => {
-    classesHandler_today(res);
-    dadoCalender = res;
-  })
 
-  window.addEventListener('popstate', (event) => {
-    const pass = prompt("pass")
-      alert(`${pass}`)
-  });
-  history.pushState(null, null, null);
+windowLoadGt()
+async function windowLoadGt(){
+  var token = sessionStorage.getItem("token");//token
+  let gymid = sessionStorage.getItem("GYM_ID")
+  console.log(token)
+  console.log(gymid)
+  //gymid=4
+  if (token==null||token="") {
+    window.location = `https://squid-app-ug7x6.ondigitalocean.app/signature-project-front`
+  }else{
+    const swal =  Swal.fire({
+            icon:"info",
+            title: 'Processing',
+            html: 'Wait',
+            allowOutsideClick : false,
+            showConfirmButton: false,
+            timerProgressBar: true,
+            onBeforeOpen: () => {
+            Swal.showLoading();
+        }
+      })
+
+     document.querySelector('#gym-name').innerHTML = sessionStorage.getItem("gym");//gymname
+    const res =  await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/calender/gymentrance?id=${gymid}`)
+    await classesHandler_today(res)
+    await sessionStorage.removeItem("token")
+    swal.close()
+  }
+
+}
+
+async function makerequest(url){
+  const request = await fetch(url)  //esperar aqui
+ return request.json()
+}
 
 //カレンダーのcardを作成
 let clientes = []
@@ -308,6 +324,10 @@ function entrance_count(data){
     ;
     });
 }
+//const date = new Date(Date.now() + ((new Date().getTimezoneOffset() + (9 * 60)) * 60 * 1000));
+const date = new Date()
+const japanweekeday = date.getDay()
+var d1 = date.getFullYear() + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' +('0' + date.getDate()).slice(-2) + ' ' +  ('0' + date.getHours()).slice(-2) + ':' + ('0' + date.getMinutes()).slice(-2) + ':' + ('0' + date.getSeconds()).slice(-2) + '.' + date.getMilliseconds();
 
 function addEntrance(number) {
   var starttime = clientes[number].START_TIME
@@ -323,6 +343,7 @@ function addEntrance(number) {
     LESSON_DATE: d1,
     LESSON_DAY:japanweekeday
   }
+  console.log(obj)
   fetch('https://squid-app-ug7x6.ondigitalocean.app/registerentrance', {
     method: 'POST',
     body: JSON.stringify(obj),
