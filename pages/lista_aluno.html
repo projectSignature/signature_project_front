@@ -4,9 +4,10 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>List</title>
+    <title>MemberControl</title>
     <link rel="stylesheet" href="../style/list_alunos1.css" />
     <link rel="stylesheet" href="../style/list_alunos2.css" />
+    <link rel="stylesheet" href="../style/swalledit.css" />
   </head>
 
   <body>
@@ -18,13 +19,8 @@
 
     <div id="dash">
       <div id="header">
-        <h3>Tabela de alunos</h3>
+        <h3 id="title-h3"></h3>
         <select name="" id="filter1">
-          <option value="">Categoria</option>
-          <option value="All">Todos</option>
-          <option value="man">Homem</option>
-          <option value="women">Mulher</option>
-          <option value="teenagers">Menores</option>
         </select>
         <select name="" id="filter2">
         </select>
@@ -39,33 +35,112 @@
   </body>
   <script src="../script/swal.min.js"></script>
   <script>
- const tbody = document.getElementsByTagName("tbody")[0];
+    const tbody = document.getElementsByTagName("tbody")[0];
     const btnFilter = document.getElementById("btn-filter");
     const gymName = document.getElementById("gym-name");
     const sessionGymName = sessionStorage.getItem("gym");
     let filter1select = document.getElementById("filter1");
     let filter2select = document.getElementById("filter2");
-    let maylanguage = "PT"
     let myplan = []
     var today = new Date();  //今日
     var AgeChangeArray = []
+    let clients
+    let language
+    let plansArray = []
+    let clientsArray = []
+    let obj
     if (sessionGymName) {
       gymName.innerHTML = sessionGymName;
     } else {
       gymName.innerHTML = "GYM error";
     }
-    let gymid=4
-    let clients
+    var token = sessionStorage.getItem("token");//token
+    let gymid = sessionStorage.getItem("GYM_ID")
+    if(sessionStorage.getItem("Language")=="PT"){
+      language = 0
+    }else if(sessionStorage.getItem("Language")=="EN"){
+      language = 1
+    }else{
+      language = 2
+    }
+    const text0 = ["Buscando dados","Processing","データ取得中"]
+    const text1 = ["Sem resultado na busca","No search result","検索結果がありません"]
+    const text2 = ["Aguarde","Wait","そのままおまちください"]
+    const text3 = ["Planos","Plans","プラン"]
+    const text4 = ["Homem","Male","男性"]
+    const text5 = ["Mulher","Femele","女性"]
+    const text6 = ["Ativo","Active","在籍"]
+    const text7 = ["Inativo","Inactive","退会"]
+    const text8 = ["Todos","All","全て"]
+    const text9 = ["Tabela de alunos","Members table","メンバー管理"]
+    const text10 = ["Nome","Name","名前"]
+    const text11 = ["Idade","Age","年齢"]
+    const text12 = ["Endereço","Adress","住所"]
+    const text13 = ["Email","Email","メールアドレス"]
+    const text14 = ["Plano","Plan","プラン"]
+    const text15 = ["Status","Status","ステータス"]
+    const text16 = ["Data de nascimento","Date of birth","生年月日"]
+    const text17 = ["Gênero","Gender","性別"]
+    const text18 = ["Telefone","Phone","電話番号"]
+    const text19 = ["Idioma","Language","言語"]
+    const text20 = ["Senha","Password","パスワード"]
+    const text21 =["Editar dados do seguinte aluno", "Edit the following member's data", "メンバー情報の変更を行います"]
+    const text22= ["Salvar","Save","保存"]
+    const text23=["Cancelar","Cancel","キャンセル"]
+    const text24=["Dados familiares","Family data","ファミリー情報"]
+    const text25=["Ação","Action","変更・削除"]
+    const text26=["Alterção feita com sucesso","Change made successfully","処理が完了しました"]
+    const text27=["Pronto","Completed","完了"]
+    const text28=["Salvando alteração","Saving change","変更内容を登録中"]
+    const text29=["Sim","Yes","はい"]
+    const text30=["Dados dos familiares","Family data","ファミリーの情報"]
+    const text31=["Voltar","Back","戻る"]
+    const text32=["Podemos deletar os dados do","Delete data from","次のメンバーの情報を削除しますか？メンバー名:"]
+    const text33=["Deletar","Delete","削除"]
+    const text34=["Registrar familiar","Regist family","ファミリーの登録をします"]
+    const text35=["Confirme","Confirm","確認"]
+    const text36=["Iremos deletar todos os dados do aluno","We will delete all member data","選択メンバーのデータを全て削除します。メンバー名："]
+
+    const etext0=["O campo do nome do aluno está em branco","Enter member name","メンバーの名前を入力してください"]
+    const etext1=["O campo do endereço está em branco","Enter member adress","メンバーの住所を入力してください"]
+    const etext2=["O campo do telefone está em branco","Enter member phone","メンバーの電話番後を入力してください"]
+    const etext3=["O campo do email está em branco","Enter member email","メンバーのメールアドレスを入力してください"]
+    const etext4=["O campo da senha está em branco","Enter member password","メンバーのパスワードを入力してください"]
+    const etext5=["Não teve alteração","Nothing changed","何も変更されていません"]
+    const etext6=["Erro","Error","エラー"]
+    const etext7=["Erro na alteração, tente novamente","Change error, try again","変更の処理失敗しました。再度お試しください"]
+    const etext8=["Não há familiares registrado desse aluno.","There are no family members registered for this member","選択メンバーの家族情報はありません"]
+    const etext9=["Deseja registrar?","Do you want to register?","登録しますか?"]
+    const etext10=["O campo da idade está em branco","The age field is blank","年齢を入力してください"]
+    const etext11=["O campo da idade está em branco","Enter age","年齢を入力してください"]
+
+    genderM=["Homem","Male","男性"]
+    genderF=["Mulher","Femele","女性"]
+    statusA=["Ativo","Active","在籍"]
+    statusI=["Inativo","Inactive","退会"]
+    languageP=["Português","Portuguese","ポルトガル語"]
+    languageI=["Inglês","English","英語"]
+    languageJ=["Japonês","Japanese","日本語"]
+    //language = 0
+    //gymid= 5
+
+    let row = `<option value="0">${text8[language]}</option>
+    <option value="man">${text4[language]}</option>
+    <option value="women">${text5[language]}</option>
+    <option value="4">${text6[language]}</option>
+    <option value="3">${text7[language]}</option> `
+
+    document.getElementById("filter1").innerHTML = row
+    document.getElementById("title-h3").innerText = text9[language]
+
 
 processing_wait()
-//plan_option_create()
-//dadosget()
 
-async function processing_wait(){
+async function processing_wait(){//起動時のアクション
   const swal =  Swal.fire({
           icon:"info",
-          title: 'Processing',
-          html: 'Wait',
+          title: text0[language],
+          html: text2[language],
           allowOutsideClick : false,
           showConfirmButton: false,
           timerProgressBar: true,
@@ -73,22 +148,34 @@ async function processing_wait(){
           Swal.showLoading();
       }
     })
-  const plansArray = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/gymplanget?id=${gymid}`)
-  await console.log(plansArray)
-  const planOption = await  plan_option_create(plansArray)
+  restartTable_filter()
+  const plansArraybe = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/gymplanget?id=${gymid}`)
+  const planOption = await  plan_option_create(plansArraybe)
+  plansArray = await plansArraybe //プランArray
   const list = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/gymmemberlist?id=${gymid}`)
-  const tableCreate = await clientsHandler(list)
+  clientsArray = await list　//メンバーArray
+  const tableCreate = await clientsHandler(list)　//テーブル作成
   swal.close()
 }
 
 //APIアクセスファンクション
 async function makerequest(url){
-  const request = await fetch(url)  //esperar aqui
+  const request = await fetch(url)
  return request.json()
 }
 
-async function plan_option_create(res){
-      row = `<option value="">Planos</option>`
+//Post処理
+async function makerequest2(url,data){
+  const request = await fetch(url, {//pegar todos dados do table de pagamentos //n]
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: { "Content-type": "application/json; charset=UTF-8" }
+  })
+  return request.json()
+}
+
+async function plan_option_create(res){//プランフィルター生成
+      row = `<option value="0">${text3[language]}</option>`
       myplan.push(row)
       for(let i=0;i<res.length;i++){
         row = `<option value="${res[i].CONTROL_NAME}">${res[i].CONTROL_NAME}</option>`
@@ -97,198 +184,168 @@ async function plan_option_create(res){
       document.getElementById("filter2").innerHTML = myplan
 }
 
-filter1select.addEventListener('change', filteron)
+filter1select.addEventListener('change', filteron)　//セレクト変更時にＴＢＬ再生成　＊データの再取得は無し
 filter2select.addEventListener('change', filteron)
 async function filteron(){
-const resert = await restartTable_filter()
-const datacreate = await   processing_wait()
+let filter1Array = []
+let clientsCount = 0
+const resert = await restartTable_filter()　//ＴＢＬクリア
+const filter2 = document.getElementById("filter2").value　//プランフィルター
+const row1 = await createNewTableRow_first();　//名称カラム生成
+tbody.innerHTML += row1　//ＴＢＬ格納
+if(filter2!=0){
+  let clientsCount = 0
+  for(let i=0;i<clientsArray.length;i++){
+    if(clientsArray[i].plans==filter2){
+      filter1Array.push(clientsArray[i])
+      clientsCount ++
+    }
+  }
+}else{
+  filter1Array = clientsArray
+}
+filter1Array.sort( function(a, b) {//アルファベット順に並び替え
+return a.nm_member < b.nm_member ? -1 : 1;
+})
+const rowcreateFinel = await filteron1(filter1Array,clientsCount)　//左フィルターの処理
+if(rowcreateFinel==0){　//検索がヒットしない場合
+  Swal.fire({
+    title: text1[language],
+    showCancelButton: true,
+    showConfirmButton: false,
+    cancelButtonText: 'Voltar',
+    timer:1500,
+    width: 550,
+  })
+}
+}
+async function filteron1(data,clientsCount){
+  const filter1 = document.getElementById("filter1").value
+if(filter1==0){　//未選択
+ for(let i=0;i<data.length;i++){
+     const rowAnswer = await createNewTableRow(data[i])
+       tbody.innerHTML +=  await rowAnswer
+     clientsCount ++
+ }
+  return  clientsCount
+}else if(filter1==3){　//退会済み
+  for(let i=0;i<data.length;i++){
+    if(data[i].status=='inactive'){
+      const rowAnswer = await createNewTableRow(data[i])
+      tbody.innerHTML += rowAnswer
+      clientsCount ++
+    }
+  }
+  return  clientsCount
+}else if(filter1==4){　//在籍
+  for(let i=0;i<data.length;i++){
+    if(data[i].status=='active'){
+      const rowAnswer = await createNewTableRow(data[i])
+      tbody.innerHTML += rowAnswer
+      clientsCount ++
+    }
+  }
+  return  clientsCount
+}else{　//性別
+  for(let i=0;i<data.length;i++){
+    if(data[i].genero==filter1){
+      const rowAnswer = await createNewTableRow(data[i])
+      tbody.innerHTML += rowAnswer
+      clientsCount ++
+    }
+  }
+  return  clientsCount
+}
 }
 
+
  function clientsHandler(res) {
-   clients = res
-      filter1 = document.getElementById("filter1").value
-      filter2 = document.getElementById("filter2").value
-      filter1array = []
-      filter2array = []
-      for (let index = 0; index < clients.length; index++) {
-        if(filter2!=""){
-          if(clients[index].plans==filter2){
-            filter2array.push(clients[index])
-          }
-        }else{
-          filter2array.push(clients[index])
-        }
-      }
-        if(filter1=="All" || filter1==""){
-          for (let index = 0; index < filter2array.length; index++) {
-            filter1array.push(filter2array[index])
-          }
-      }else{
-        if(filter1=="teenagers"){
-          for (let index = 0; index < filter2array.length; index++) {
-            if(filter2array[index].birthday_age<=18){
-              filter1array.push(filter2array[index])
-            }
-           }
-        }else{
-          for (let index = 0; index < filter2array.length; index++) {
-            if(filter2array[index].genero==filter1){
-              filter1array.push(filter2array[index])
-            }
-          }
-        }
-
-      }
-
-      filter1array.sort( function(a, b) {
+      res.sort( function(a, b) {
     return a.nm_member < b.nm_member ? -1 : 1;
   })
-        for (let index = 0; index < filter1array.length; index++) {
-            if(index==0){
-                 const row1 = createNewTableRow_first();
-                        tbody.innerHTML += row1;
-                   const  row = createNewTableRow(filter1array[index]);
-                           tbody.innerHTML += row;
-              }else{
-                   const row = createNewTableRow(filter1array[index]);
+  const row1 = createNewTableRow_first();
+         tbody.innerHTML += row1;
+        for (let index = 0; index < res.length; index++) {
+                   const row = createNewTableRow(res[index]);
                        tbody.innerHTML += row;
-                 }
-              }
-              if(filter1array.length==0){
-                Swal.fire({
-                  icon:'info',
-                  title: 'Não há membros da categoria e plano selecionado'
-                , allowOutsideClick : false     //枠外をクリックしても画面を閉じない
-                , showConfirmButton: false
-                ,timer:'2500'
-                , onBeforeOpen: () => {
-                    Swal.showLoading();
-                  }
-                });
               }
     }
 
 
-   function createNewTableRow(data) {
-      let genero
-      let language
-      let status
-      if(data.genero=="man"){
-         if(maylanguage=="PT"){
-           genero = "Homem"
-         }else if (maylanguage=="EN"){
-           genero = data.genero
-         }else{
-            genero =　"男性"
-         }
-      }else{
-        if(maylanguage=="PT"){
-          genero = "Mulher"
-        }else if (maylanguage=="EN"){
-          genero = data.genero
-        }else{
-           genero =　"女性"
-        }
-      }
-      if(data.status=="active"){
-         if(maylanguage=="PT"){
-           status = "Ativo"
-         }else if (maylanguage=="EN"){
-           status = "Active"
-         }else{
-            status = "在籍"
-         }
-      }else{
-        if(maylanguage=="PT"){
-          status = "Inativo"
-        }else if (maylanguage=="EN"){
-          status = "Inactive"
-        }else{
-           status = "退会"
-        }
-      }
-      if(maylanguage=="PT"){
-         if(data.lang01=="Portugues"){
-           language = "Português"
-         }else if (data.lang01=="Inglês"){
-            language = "Inglês"
-         }else{
-             language = "Japonês"
-         }
-      }else if(maylanguage=="EN"){
-        if(data.lang01=="Portugues"){
-          language = "Portuguese"
-        }else if (data.lang01=="Inglês"){
-           language = "English"
-        }else{
-            language = "Japanese"
-        }
-      }else{
-        if(data.lang01=="Portugues"){
-          language = "ポルトガル語"
-        }else if (data.lang01=="Inglês"){
-           language = "英語"
-        }else{
-            language = "日本語"
-        }
-      }
+    function createNewTableRow(data) {
+     if(data.genero=="man"){
+       answerG=genderM[language]
+     }else{
+       answerG=genderF[language]
+     }
+     if(data.status=='active'){
+       answerS=statusA[language]
+     }else{
+          answerS=statusI[language]
+     }
+     if(data.lang01=="Portugues"){
+      AnswerL= languageP[language]
+    }else if(data.lang01=="English"){
+      AnswerL= languageI[language]
+    }else{
+      AnswerL= languageJ[language]
+    }
       birthdate = `${data.birthday_year}/${data.birthday_month}/${data.birthday_day}`
       targetdate = today
-     myTodayage = calcAge(birthdate, targetdate)
+    let myTodayage =  calcAge(birthdate, targetdate)
     if(myTodayage!=data.birthday_age){
-        fetch("https://squid-app-ug7x6.ondigitalocean.app/memberAgeUpdate", {
-          method: 'POST',
-          body: JSON.stringify({
-            id:data.id,
-            age:myTodayage,
-          }),
-          headers: { "Content-type": "application/json; charset=UTF-8" }
-        })
+      url = `https://squid-app-ug7x6.ondigitalocean.app/memberAgeUpdate`
+      body = {
+        id:data.id,
+        age:myTodayage,
+      }
+        makerequest2(url,body)
     }
-      let row = `
+      let row =  `
       <tr>
         <th class="_sticky" name="_sticky_name">${data.nm_member}</th>
        <td>${data.birthday_year}/${data.birthday_month}/${data.birthday_day}</td>
         <td>${myTodayage}</td>
-        <td>${genero}</td>
+        <td>${answerG}</td>
         <td class="email-tag">${data.adress_input}</td>
         <td class="email-tag">0${data.phone01}-${data.phone02}-${data.phone03}</td>
         <td class="email-tag">${data.email}</td>
-        <td>${language}</td>
+        <td>${AnswerL}</td>
         <td>${data.plans}</td>
-        <td>${status}</td>
+        <td>${answerS}</td>
         <td>${data.pass}</td>
         <td>
-            <img class="image-cursor"  src="../image/edit.svg" onClick="editClient(${data.id})" alt="" width="25">
+            <img class="image-cursor"  src="../image/edit.svg" onClick="NewEditClient(${data.id})" alt="" width="25">
             <img class="image-cursor"  src="../image/delete.svg" onClick="memberdelete_check('${data.id}_${data.nm_member}')" alt="" width="25">
         </td>
         </tr>
         `;
+
       return row;
     }
 
     function createNewTableRow_first() {
      let row = `
        <tr>
-       <th class="_sticky z-02">Aluno</th>
-       <th class="_sticky">Data de nascimento</th>
-       <th class="_sticky">Idade</th>
-       <th class="_sticky">Gênero</th>
-       <th class="_sticky">Endereço</th>
-       <th class="_sticky">Tel</th>
-       <th class="_sticky">Email</th>
-       <th class="_sticky">Idioma</th>
-       <th class="_sticky">Plano</th>
-       <th class="_sticky">Situação</th>
-       <th class="_sticky">Pass</th>
-       <th class="_sticky">Ações</th>
+       <th class="_sticky z-02">${text10[language]}</th>
+       <th class="_sticky">${text16[language]}</th>
+       <th class="_sticky">${text11[language]}</th>
+       <th class="_sticky">${text17[language]}</th>
+       <th class="_sticky">${text12[language]}</th>
+       <th class="_sticky">${text18[language]}</th>
+       <th class="_sticky">${text13[language]}</th>
+       <th class="_sticky">${text19[language]}</th>
+       <th class="_sticky">${text14[language]}</th>
+       <th class="_sticky">${text15[language]}</th>
+       <th class="_sticky">${text20[language]}</th>
+       <th class="_sticky">${text25[language]}</th>
        </tr>
        `;
      return row;
     }
 
 
-  function calcAge(birthdate, targetdate) {
+  function calcAge(birthdate, targetdate) {//年齢チェック
     MyBirthday = new Date(birthdate)
   	var age = targetdate.getFullYear() - MyBirthday.getFullYear();
   	var birthday = new Date(targetdate.getFullYear(), MyBirthday.getMonth(), MyBirthday.getDate());
@@ -298,601 +355,409 @@ const datacreate = await   processing_wait()
   	return age;
   }
 
-    function editClient(clientId) {
-      myplan =[]
-      let client = clients.find((client) => client.id == clientId);
-      if(client.genero=="man"){
-        genero = "Homem"
-      }else{
-        genero = "Mulher"
-      }
-        fetch('https://squid-app-ug7x6.ondigitalocean.app/planget')
-          .then((x) => x.json())
-          .then((res) => {
-            console.log(res)
-            for(let i=0;i<res.length;i++){
-              row = `<option value="${res[i].CONTROL_NAME}">${res[i].CONTROL_NAME}</option>`
-              myplan.push(row)
-            }
-
-            Swal.fire({
-              html: `
-                <div id="title">Faça a alteração no campo desejado</div>
-                <div id="client">
-                    <div class="div-block">
-                        <div class="div-span">
-                        <span>Nome: </span>
-                        </div>
-                        <div class="input-select">
-                        <input type="text" id="clientName" value="${client.nm_member}"/>
-                        </div>
-                    </div>
-                    <div class="div-block">
-                        <div class="div-span-r">
-                        <span>Aniversário: </span>
-                        </div>
-                        <div  id="birth-input" class="input-select">
-                        <input type="text" id="clientBirth" value="${client.birthday_year}-${client.birthday_month}-${client.birthday_day}"/>
-                     </div>
-                    </div>
-                    <div class="div-block">
-                        <div class="div-span">
-                        <span>Idade: </span>
-                        </div>
-                        <div class="input-select">
-                        <input type="number" maxlength="2" id="clientAge" value="${client.birthday_age}"/>
-                    </div>
-                    </div>
-                    <div class="div-block">
-                        <div class="div-span-r">
-                        <span>Gênero: </span>
-                        </div>
-                        <div  id="genero-input" class="input-select">
-                        <select type="text" id="clientGender">
-                        <option value="man">Male</option>/>
-                        <option value="women">Female</option>/>
-                        <option value="${client.genero}" selected>${genero}</option>
-                        </select>
-                        </div>
-                    </div>
-                    <div class="div-block">
-                        <div class="div-span">
-                        <span>Endereço: </span>
-                        </div>
-                        <div class="input-select">
-                        <input type="text" id="clientAddress" value="${client.adress_input}"/>
-                    </div>
-                    </div>
-                    <div class="div-block">
-                        <div class="div-span-r">
-                        <span>Telefone: </span>
-                        </div>
-                        <div  id="phone-input" class="input-select">
-                        <input type="text" id="clientTel" value="0${client.phone01}-${client.phone02}-${client.phone03}"/>
-                    </div>
-                    </div>
-                    <div class="div-block">
-                        <div class="div-span">
-                        <span>E-mail: </span>
-                        </div>
-                        <div class="input-select">
-                        <input type="text" id="clientEmail" value="${client.email}"/>
-                    </div>
-                    </div>
-                    <div class="div-block">
-                        <div class="div-span-r">
-                        <span>Idioma: </span>
-                        </div>
-                        <div  id="language-input" class="input-select">
-                        <select type="text" id="clientlanguage">
-                        <option value="japanese">japanese</option>/>
-                        <option value="portugues">portugues</option>/>
-                        <option value="english">english</option>/>
-                        <option value="${client.lang01}" selected>${client.lang01}</option>
-                        </select>
-                        </div>
-                    </div>
-                    <div class="div-block">
-                        <div class="div-span">
-                        <span>Plano: </span>
-                        </div>
-                        <div class="input-select">
-                        <select type="text" id="clientplan_edit">
-                        ${myplan}
-                        <option value="${client.plans}" selected>${client.plans}</option>
-                        </select>
-                        </div>
-                    </div>
-                    <div class="div-block">
-                        <div class="div-span-r">
-                        <span>Pass: </span>
-                        </div>
-                        <div id="pass-input" class="input-select">
-                        <input maxlength="4"  id="clientPass" value="${client.pass}"/>
-                     </div>
-                    </div>
-                    <div class="div-block">
-                        <div class="div-span">
-                         <span>Status: </span>
-                        </div>
-                        <div class="input-select">
-                          <select type="text" id="clientStatus">
-                          <option value="active">active</option>/>
-                          <option value="inactive">inactive</option>/>
-                          <option value="${client.status}" selected>${client.status}</option>
-                          </select>
-                        </div>
-                    </div>
-                    <div class="div-block_1">
-                         <input id="familyinput" type="button" value="Family" onclick="showfamily(${clientId})"/>
-                    </div>
-
-                </div>
-
-                <style>
-                #title{
-                  font-size:4vh;
-
-                }
-                    #client{
-                        width: 100%;
-                        display: flex;
-                        flex-wrap: wrap;
-                        justify-content: flex-start;
-                        background-color: #EEEEEE;
-                        padding-top: 3%;
-                    }
-
-                    #client div{
-                        width: 50%;
-                        display: flex;
-                        align-items: center;
-                        padding-bottom: 2%;
-                    }
-
-                    #client div input{
-                        border-radius: 10px;
-                        height: 5vh;
-                        border: 1px solid gray;
-                        text-indent: 10px;
-                        width: 50vh;
-                    }
-                    #client div select{
-                      border-radius: 10px;
-                      width: 50vh;
-                      height: 5vh;
-                      border: 1px solid gray;
-                      text-indent: 10px
-                      width: 50vh;
-                    }
-                    #clientBirth{
-                      border-radius: 10px;
-                      width: 50vh;
-                      height: 5vh;
-                      border: 1px solid gray;
-                      text-indent: 10px
-                    }
-                   .div-span{
-                     display:flex;
-                     justify-content: flex-end;
-                   }
-                   .div-span-r{
-                     display:flex;
-                     justify-content: flex-end;
-                     width:10%;
-
-                   }
-
-                   #pass-input{
-                     margin-right:100px;
-                   }
-                   #phone-input{
-                     margin-right:100px;
-                   }
-                   #graduacao-input{
-                     margin-right:100px;
-                   }
-                   #language-input{
-                     margin-right:100px;
-                   }
-                   #genero-input{
-                     margin-right:100px;
-                   }
-                   #birth-input{
-                     margin-right:100px;
-                   }
-                   .div-block_1{
-                      width:100%;
-                   }
-                   #familyinput{
-                     width:35% !important;
-                     background-color:#FFFFCC;
-                     margin-left:40%;
-                   }
-
-                  @media only screen and (max-width: 700px) {
-                     #title{
-                       font-size:1em;
-                     }
-                     #client{
-                       display:block;
-                     }
-                     .div-block{
-                        display:block;
-                        width:100%;
-                        height:100px;
-                     }
-                     #client div{
-                         width: 100%;
-                         display: block;
-                         padding-bottom: 1%;
-                         justify-content: start;
-                         padding-left: 1%;
-                       }
-                       #client div input{
-                           width: 25vh;
-                       }
-                       #client div select{
-                           width: 25vh;
-                       }
-                  }
-                </style>
-
-            `,
-        showCancelButton: true,
-        confirmButtonText: "Salvar",
-        cancelButtonText: "Cancelar",
-        width: 700,
-      }).then((result) => {
-       if (result.isConfirmed) {
-         console.log(document.getElementById("clientTel").value)
-         console.log(document.getElementById("clientTel").value.split("-")[0])
-         console.log(document.getElementById("clientTel").value.split("-")[1])
-         console.log(document.getElementById("clientTel").value.split("-")[2])
-         try{
-          let obj = {
-            id: clientId,
-            nm_member: document.getElementById("clientName").value,
-            birth1: document.getElementById("clientBirth").value.split("-")[0],
-            birth2: document.getElementById("clientBirth").value.split("-")[1],
-            birth3: document.getElementById("clientBirth").value.split("-")[2],
-            age: document.getElementById("clientAge").value,
-            gender: document.getElementById("clientGender").value,
-            address: document.getElementById("clientAddress").value,
-            tel1: document.getElementById("clientTel").value.split("-")[0],
-            tel2: document.getElementById("clientTel").value.split("-")[1],
-            tel3: document.getElementById("clientTel").value.split("-")[2],
-            email: document.getElementById("clientEmail").value,
-            language: document.getElementById("clientlanguage").value,
-            plan: document.getElementById("clientplan_edit").value,
-            status: document.getElementById("clientStatus").value,
-            pass: document.getElementById("clientPass").value,
-          };
-
-if(obj.nm_member==""){
-  swall_error(2,clientId)
-}else if(obj.birth==""){
-  swall_error(3,clientId)
-}else if(obj.age==""){
-  swall_error(4,clientId)
-}else if(obj.address==""){
-  swall_error(5,clientId)
-}else if(document.getElementById("clientTel").value==""){
-  swall_error(6,clientId)
-}else if(obj.email==""){
-swall_error(7,clientId)
-}else if(obj.pass==""){
-  swall_error(8,clientId)
-}else{
-          console.log(obj);
-          const attr = {
-            method: "POST",
-            body: JSON.stringify(obj),
-            headers: { "Content-type": "application/json; charset=UTF-8" },
-          };
-          fetch("https://squid-app-ug7x6.ondigitalocean.app/listUpdate", attr)
-            //.then((x) => x.json())
-          //  .then((response) => {
-          .then(response =>	{
-            if(!response.ok){
-              console.log(response)
-              swall_error(1)
-            }else{
-              processing_wait()
-              restartTable();
-            }
-            })
-            .then((res)=>{
-              console.log(obj.nm_member)
-              console.log(clientId)
-              console.log(obj.status)
-              fetch("https://squid-app-ug7x6.ondigitalocean.app/graduationmemberupdate", {//pegar todos dados do table de pagamentos
-                method: 'POST',
-                body: JSON.stringify({ id: clientId,name:obj.nm_member,status:obj.status}),
-                headers: { "Content-type": "application/json; charset=UTF-8" }
-              })
-                .then((x) => x.json())
-                .then((res) => {
-                  console.log(res)
-                  swall_success()
-                })
-            })
-          }
-        }catch (error) {
-          console.log(error)
-           swall_error(1)
-
-        }
-        }
-      });
-
-      //mascara para o campo de telefone
-      //let campoTel = document.getElementById("clientTel");
-      //campoTel.addEventListener("blur", () => {
-      //  var value = campoTel.value;
-        //var a = value.replace(/\D/g, ""); //Remove tudo o que não é dígito
-        //var b = a.replace(/^(\d{2})(\d)/g, "($1$2)"); //Coloca parênteses em volta dos dois primeiros dígitos
-        //var c = a.replace(/(\d)(\d{4})$/, "$1-$2"); //Coloca hífen entre o quarto e o quinto dígitos
-      //  campoTel.value = a;
-      //});
-    })
-    }
-
-function showfamily(data){
-  let row = ""
-  let yetmemberswall = []
-  fetch("https://squid-app-ug7x6.ondigitalocean.app/family", {//pegar todos dados do table de pagamentos
-    method: 'POST',
-    body: JSON.stringify({ id: data}),
-    headers: { "Content-type": "application/json; charset=UTF-8" }
-  })
-    .then((x) => x.json())
-    .then((res) => {
-        console.log(res)
-        let familymember = []
-        if(res.length==0){
-          Swal.fire({
-            title: 'Não há familhiar registrato',
-            showCancelButton: true,
-            showConfirmButton: false,
-            cancelButtonText: 'Voltar',
-            width: 550,
-          })
-        }else{
-          yetmemberswall.push(`<tr><th class="_sticky z-02">Nome</th><th class="_sticky">Data de nascimento</th><th  class="_sticky">Idade</th><th  class="_sticky">Sexo</th><th  class="_sticky">Action/th></tr>`)
-          for (let index = 0; index < res.length; index++) {
-            if(res[index].gender==1){
-              gender = "homem"
-            }else{
-              gender="mulher"
-            }
-           row = `<tr>
-           <th class="_sticky" name="_sticky_name">${res[index].family_name}</th>
-           <td class="_sticky_y">${res[index].birthday}
-           </td>
-           <td class="_sticky_y">${res[index].birthday_age}
-           </td>
-           <td class="_sticky_y">${gender}
-           </td>
-           <td>
-               <img class="image-cursor" src="../image/edit.svg" onClick="editfamilyClient('${res[index].id}_${res[index].family_name}_${res[index].birthday}_${res[index].birthday_age}_${gender}')" alt="" width="25">
-               <img class="image-cursor" src="../image/delete.svg" onClick="familydelete_check('${res[index].id}_${res[index].family_name}')" alt="" width="25">
-           </td></tr>`
-          yetmemberswall.push(row)
-            }
-          Swal.fire({
-            title: 'Familhiares do aluno',
-            showCancelButton: true,
-            showConfirmButton: true,
-            confirmButtonText: 'Tabela',
-            cancelButtonText: 'Voltar',
-            width: 550,
-            html: `<div class="twrapper">
-              <table>
-                <tbody>${yetmemberswall}</tbody>
-              </table>
-            </div>
-
-            <style>
-            .twrapper{
-              overflow-y:scroll;
-              height:500px !important;
-            }
-
-            table {
-              border-collapse: collapse;
-              border-spacing: 0;
-            }
-            th, td {
-              vertical-align: middle;
-              padding: 20px 15px;
-              font-size: 14px;
-              text-align: center;
-            }
-            th {
-              color: #EEEEEE;
-              background: #222222;
-            }
-            td{
-              border: 1px solid #ccc;
-            }
-            ._sticky {
-              position: sticky;
-              top: 0;
-              left: 0;
-              z-index: 1;
-              width:40px !important;
-              height:5px !important;
-            }
-
-            ._sticky:before {
-              content: "";
-              position: absolute;
-              top: -1px;
-              left: -1px;
-              width: 100%;
-              height: 100%;
-              border: 1px solid #ccc;
-            }
-            ._sticky.z-02 {
-              z-index: 2;
-              width: 200px !important;
-            }
-            th[name="_sticky_name"]{
-              background: #00BFFF;
-            }
-            .image-cursor{
-            cursor: pointer;
-            }
-
-            @media only screen and (max-width: 700px) {
-              ._sticky.z-02 {
-                width: 15px !important;
-              }
-              ._sticky {
-                width:80px !important;
-              }
-
-      }
-
-         </style>`,
-          }).then((result) => {
-           if (result.isConfirmed) {
-
-
-            }
-          });
-          }
-    })
-}
-
-function editfamilyClient(data){
-  console.log(data)
-  if(data.split("_")[5]=="homem"){
-    gender = 1
+function NewEditClient(clientId){
+  let client = clientsArray.find((client) => client.id == clientId);
+  let row=""
+  let genderArray
+  let languagArray
+  let statusArray
+  if(client.genero=="man"){
+    genero =genderM[language]
+    genderArray = `<option value="man" selected>${genderM[language]}</option><option value="woman">${genderF[language]}</option>`
   }else{
-    gender = 2
+    genero =genderF[language]
+    genderArray = `<option value="man">${genderM[language]}</option><option value="woman" selected>${genderF[language]}</option>`
   }
+    for(let i=0;i<plansArray.length;i++){
+      if(client.plans==plansArray[i].CONTROL_NAME){
+        row += `<option value="${plansArray[i].CONTROL_NAME}" selected>${plansArray[i].CONTROL_NAME}</option>`
+      }else{
+        row += `<option value="${plansArray[i].CONTROL_NAME}">${plansArray[i].CONTROL_NAME}</option>`
+      }
+    }
+    if(client.lang01=="Portugues"){
+      languagArray=`<option value="Portugues" selected>${languageP[language]}</option><option value="Ingles">${languageI[language]}</option><option value="日本語">${languageJ[language]}</option>`
+    }else if(client.lang01=="Ingles"){
+      languagArray=`<option value="Portugues">${languageP[language]}</option><option value="Ingles" selected>${languageI[language]}</option><option value="日本語">${languageJ[language]}</option>`
+    }else{
+      languagArray=`<option value="Portugues">${languageP[language]}</option><option value="Ingles">${languageI[language]}</option><option value="日本語" selected>${languageJ[language]}</option>`
+    }
+    if(client.status=="active"){
+      statusArray=`<option value="active" selected>${statusA[language]}</option><option value="inactive">${statusI[language]}</option>`
+    }else{
+      statusArray=`<option value="active">${statusA[language]}</option><option value="inactive" selected>${statusI[language]}</option>`
+    }
+  const editswal =  swal_editShow(client,genero,row,genderArray,languagArray,statusArray)
+
+
+}
+
+function swal_editShow(client,genero,row,genderArray,languagArray,statusArray){
+  let mm = ("0"+(client.birthday_month)).slice(-2);
+  let dd = ("0"+(client.birthday_day)).slice(-2);
   Swal.fire({
-  title: 'Alterar informações do familhiar'
-, html : `<div id="client">
-            <div class="group-div"><span>Nome</span></div>
-            <div class="group-div"><input id="name" value="${data.split("_")[1]}"/></div>
-            <div class="group-div"><span>Data de nascimento</span></div>
-            <div class="group-div"><input id="birth" value="${data.split("_")[2]}"/></div>
-            <div class="group-div"><span>Idade</span></div>
-            <div class="group-div"><input id="age" type="number" value="${data.split("_")[3]}"/></div>
-            <div class="group-div"><span>Nome</gender></div>
-            <div class="group-div"><select id="gender">
-                  <option value = "${gender}">${data.split("_")[4]}</option>
-                  <option value = "1">homem</option>
-                  <option value = "2">mulher</option>
-                 </select>
+  html: `<div class="swall-title-color-purple">${text21[language]}</div>
+        <div class="main-div-flex-swall">
+            <div class="sub-div-50">
+              <span>${text10[language]}</span>
+              <input type="text" id="clientName"  value="${client.nm_member}"/>
             </div>
-          </div>
-          <style>
-           #client{
-             width:100%;
-             height:400px;;
-           }
-           .group-div{
-             width:70%
-             height:100px;
-             display:flex;
-             justify-content: start;
-             margin-left:30%;
-           }
-           input ,select{
-             heiht:80px !important;
-             width:50%;
-             font-size:2.5vw;
-           }
-          </style>`
-, icon : 'info',
-  showCancelButton: true,
-  showConfirmButton: true,
-  confirmButtonText: 'Alterar',
-  cancelButtonText: 'Cancelar',
-}).then((result) => {
-  try{
-      familyname = document.getElementById("name").value
-      birth = document.getElementById("birth").value
-      age = document.getElementById("age").value
-      gender = document.getElementById("gender").value
-      console.log(familyname,birth,age,gender,data.split("_")[0])
-     if (result.isConfirmed) {
-       if(name=""){
-         fimilyerror("O campo do nome não pode está em banco")
-       }else if(birth==""){
-         fimilyerror("O campo da data de nascimento não pode está em banco ")
-       }else if(age==""){
-         fimilyerror("O campo da idade não pode está em banco ")
-       }else{
-       fetch("https://squid-app-ug7x6.ondigitalocean.app/familyupdate", {//pegar todos dados do table de pagamentos
-         method: 'POST',
-         body: JSON.stringify({ id: data.split("_")[0],name:familyname,birth:birth,age:age,gender:gender}),
-         headers: { "Content-type": "application/json; charset=UTF-8" }
-       })
-         .then((x) => x.json())
-         .then((res) => {
-           swall_success()
-         })
+            <div class="sub-div-50">
+              <span>${text17[language]}</span>
+              <select id="clientGender">${genderArray}</select>
+            </div>
+            <div class="sub-div-50">
+              <span>${text12[language]}</span>
+              <input type="text" id="clientAddress"  value="${client.adress_input}"/>
+            </div>
+            <div class="sub-div-50">
+              <span>${text14[language]}</span>
+              <select id="clientplan_edit">${row}</select>
+            </div>
+            <div class="sub-div-50">
+              <span>${text16[language]}</span>
+              <input type="date" id="clientBirth"  value="${client.birthday_year}-${mm}-${dd}"/>
+            </div>
+            <div class="sub-div-50">
+              <span>${text11[language]}</span>
+              <input type="text" id="clientAge" disabled="disabled" value="${client.birthday_age}"/>
+            </div>
+            <div class="sub-div-50">
+              <span>${text18[language]}</span>
+              <input type="text" id="clientTel" value="0${client.phone01}-${client.phone02}-${client.phone03}"/>
+            </div>
+            <div class="sub-div-50">
+              <span>${text20[language]}</span>
+              <input type="text" id="clientPass" value="${client.pass}"/>
+            </div>
+            <div class="sub-div-50">
+              <span>${text13[language]}</span>
+              <input type="text" id="clientEmail"  value="${client.email}"/>
+            </div>
+            <div class="sub-div-50">
+              <span>${text15[language]}</span>
+              <select id="clientStatus">${statusArray}</select>
+            </div>
+            <div class="sub-div-50">
+              <span>${text19[language]}</span>
+              <select id="clientlanguage">${languagArray}</select>
+            </div>
+            <div class="sub-div-50-family-plan">
+                 <input id="familyinput" type="button" value="${text24[language]}" onclick="newFamilyShow('${client.id}')"/>
+            </div>
+
+       <style>
+       .swal2-popup {
+           width: 80% !important;
+           height:700px !important;
        }
-     }
-  }catch (error) {
-    console.log(error)
-     fimilyerror('erro no registro, tente novamente')
-  }
+       @media only screen and (max-width: 700px) {
+         .swal2-popup {
+         width: 100% !important;
+          height:500px !important;
+        }
+       }
+       </style>
+      `
+  , allowOutsideClick : false
+  , showConfirmButton: true
+  ,showCancelButton: true
+  ,confirmButtonText: text22[language]
+  ,cancelButtonText: text23[language]
+  ,preConfirm: (login) => {
+     obj = {
+      id: client.id,
+      nm_member: document.getElementById("clientName").value,
+      birth1: document.getElementById("clientBirth").value.split("-")[0],
+      birth2: document.getElementById("clientBirth").value.split("-")[1],
+      birth3: document.getElementById("clientBirth").value.split("-")[2],
+      age: document.getElementById("clientAge").value,
+      gender: document.getElementById("clientGender").value,
+      address: document.getElementById("clientAddress").value,
+      tel1: document.getElementById("clientTel").value.split("-")[0],
+      tel2: document.getElementById("clientTel").value.split("-")[1],
+      tel3: document.getElementById("clientTel").value.split("-")[2],
+      email: document.getElementById("clientEmail").value,
+      language: document.getElementById("clientlanguage").value,
+      plan: document.getElementById("clientplan_edit").value,
+      status: document.getElementById("clientStatus").value,
+      pass: document.getElementById("clientPass").value,
+    };
+      if(obj.nm_member==""){
+        Swal.showValidationMessage(`${etext0[language]}`)
+      }
+      if(obj.address==""){
+        Swal.showValidationMessage(`${etext1[language]}`)
+      }
+      if(obj.tel1==""||obj.tel2==""||obj.tel3==""){
+        Swal.showValidationMessage(`${etext2[language]}`)
+      }
+      if(obj.email==""){
+        Swal.showValidationMessage(`${etext3[language]}`)
+      }
+      if(obj.pass==""){
+        Swal.showValidationMessage(`${etext4[language]}`)
+      }
+      if(obj.address==client.adress_input&&obj.age==client.birthday_age&&obj.birth1==client.birthday_year&&obj.birth2==client.birthday_month
+        &&obj.birth3==client.birthday_day&&obj.email==client.email&&obj.gender==client.genero&&obj.language==client.lang01&&obj.nm_member==client.nm_member&&
+        obj.pass==client.pass&&obj.plan==client.plans&&obj.status==client.status&&obj.tel2==client.phone02&&obj.tel3==client.phone03){
+           Swal.showValidationMessage(`${etext5[language]}`)
+         }
+}
+}).then(async (result) => {
+ if (result.isConfirmed) {
+   const swal =  Swal.fire({
+           icon:"info",
+           title: text28[language],
+           html: text2[language],
+           allowOutsideClick : false,
+           showConfirmButton: false,
+           timerProgressBar: true,
+           onBeforeOpen: () => {
+           Swal.showLoading();
+       }
+     })
+     url = `https://squid-app-ug7x6.ondigitalocean.app/listUpdate`
+    const updateMember = await makerequest2(url,obj)
+       if(updateMember.length!=1){
+          swall_error(etext7[language])
+        }else{
+          body={id: obj.id,name:obj.nm_member,status:obj.status}
+          url = `https://squid-app-ug7x6.ondigitalocean.app/graduationmemberupdate`
+         const updategraduation = await makerequest2(url,body)
+          swall_success(text26[language])
+          processing_wait()
+        }
+        swal.close()
+ }
 })
 }
 
-function familydelete_check(data){
+async function newFamilyShow(data){
+  console.log(data)
+  const swal =  Swal.fire({
+          icon:"info",
+          title: text0[language],
+          html: text2[language],
+          allowOutsideClick : false,
+          showConfirmButton: false,
+          timerProgressBar: true,
+          onBeforeOpen: () => {
+          Swal.showLoading();
+      }
+    })
+  const familydata = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/newfamily?id=${data}`)
+    await console.log(familydata)
+    if(familydata.length==0){
+          Swal.fire({
+        html : `<div>${etext8[language]}</div>
+                <div>${etext9[language]}</div>`,
+        showCancelButton:true,
+        showConfirmButton: true,
+        confirmButtonText:text29[language],
+        cancelButtonText:text23[language],
+        allowOutsideClick : false,
+        }).then((result) => {
+         if (result.isConfirmed) {
+           familyregisyt(data)
+         }
+       })
+    }else{
+      craetedataFamily(familydata)
+    }
+    swal.close()
+}
+
+async function craetedataFamily(familydata){
+console.log(familydata)
+  let row =""
+  for(let i=0;i<familydata.length;i++){
+    if(familydata[i].gender=="man"){
+      genero =genderM[language]
+      genderArray = `<option value="man" selected>${genderM[language]}</option><option value="woman">${genderF[language]}</option>`
+    }else{
+      genero =genderF[language]
+      genderArray = `<option value="man">${genderM[language]}</option><option value="woman" selected>${genderF[language]}</option>`
+    }
+    row += `
+          <div class="main-div-flex-swal-100">
+                <input class="only-family-input-40" type="text" id="familyName"  value="${familydata[i].family_name}"/>
+                <select class="only-family-input-20" id="familyGender">${genderArray}</select>
+                <input class="only-family-input-25" type="date" id="familybirth"  value="${familydata[i].birthday}"/>
+                <input class="only-family-input-20" type="text" id="familyage"  value="${familydata[i].birthday_age}"/>
+                <input type="button" class="only-family-buttun" onclick="savefamily('${familydata[i].id}_${familydata[i].nm_member_id}')" value="${text22[language]}"/>
+                <img class="image-cursor" src="../image/delete.svg" onClick="familydelete_check('${familydata[i].id}','${familydata[i].family_name}')" alt="" width="100">
+          </div>`
+  }
+  Swal.fire({
+html : `<div class="swall-title-color-purple">${text30[language]}</div>
+          ${row}`,
+showCancelButton:true,
+showConfirmButton: true,
+confirmButtonText:text31[language],
+cancelButtonText:text34[language],
+allowOutsideClick : false,
+}).then((result) => {
+ if (result.isConfirmed) {
+
+ }else{
+   familyregisyt(familydata[0].nm_member_id)
+ }
+})
+}
+
+async function familyregisyt(data){
   console.log(data)
   Swal.fire({
-  title: `Deletar os dados do ${data.split("_")[1]}`
+html : `<div class="swall-title-color-purple">${text34[language]}</div>
+        <div class="main-div-flex-swal-100">
+              <input class="only-family-input-40" type="text" id="familyName1"  placeholder="${text10[language]}"/>
+              <select class="only-family-input-20" id="familyGender1">
+               <option value="man" selected>${genderM[language]}</option><option value="woman">${genderF[language]}</option>
+              </select>
+              <input class="only-family-input-25" type="date" id="familybirth1"  value=""/>
+              <input class="only-family-input-20" type="text" id="familyage1"  placeholder="${text11[language]}"/>
+        </div>`,
+showCancelButton:false,
+showConfirmButton: true,
+confirmButtonText:text22[language],
+allowOutsideClick : false,
+preConfirm: (login) => {
+  obj={id:data,
+    　name:document.getElementById("familyName1").value,
+    　birthday:document.getElementById("familybirth1").value,
+      age:document.getElementById("familyage1").value,
+      gender:document.getElementById("familyGender1").value,
+      gymid:gymid
+  }
+  if(obj.name==""){Swal.showValidationMessage(`${etext0[language]}`)}
+  if(obj.age==""){Swal.showValidationMessage(`${etext11[language]}`)}
+}
+}).then(async (result) => {
+ if (result.isConfirmed) {
+   const swal =  Swal.fire({
+           icon:"info",
+           title: text28[language],
+           html: text2[language],
+           allowOutsideClick : false,
+           showConfirmButton: false,
+           timerProgressBar: true,
+           onBeforeOpen: () => {
+           Swal.showLoading();
+       }
+     })
+   url = `https://squid-app-ug7x6.ondigitalocean.app/ParentsCreate`
+   const createFamily = await makerequest2(url,obj)
+   console.log(createFamily)
+   if(createFamily==""){
+     swall_error(etext7[language])
+   }else{
+     swall_success(text26[language])
+     processing_wait()
+   }
+ }else{
+
+ }
+})
+}
+
+
+
+
+
+async function savefamily(data){
+  console.log(data.split("_")[0])
+  console.log(data.split("_")[1])
+  obj={id:data.split("_")[0],
+    　name:document.getElementById("familyName").value,
+    　birth:document.getElementById("familybirth").value,
+      age:document.getElementById("familyage").value,
+      gender:document.getElementById("familyGender").value
+  }
+  if(obj.name==""){
+    familymemberUpdateerror(etext0[language],data.split("_")[1])
+  }else if(obj.age==""){
+    familymemberUpdateerror(etext10[language],data.split("_")[1])
+  }else{
+    const swal =  Swal.fire({
+            icon:"info",
+            title: text28[language],
+            html: text2[language],
+            allowOutsideClick : false,
+            showConfirmButton: false,
+            timerProgressBar: true,
+            onBeforeOpen: () => {
+            Swal.showLoading();
+        }
+      })
+    url = `https://squid-app-ug7x6.ondigitalocean.app/familyupdate`
+    const updateFamily = await makerequest2(url,obj)
+    if(updateFamily.length==1){
+      swall_success(text26[language])
+    }else{
+      swall_error(etext7[language])
+    }
+  }
+}
+
+async function familymemberUpdateerror(error,id){
+  Swal.fire({
+  title: error
+, icon : 'error'
+,showConfirmButton: true,
+confirmButtonText:text31[language],
+allowOutsideClick : false
+}).then((result) => {
+   if (result.isConfirmed) {
+     newFamilyShow(id)
+   }
+})
+}
+
+async function familydelete_check(data,name){
+  Swal.fire({
+  title: `${text32[language]} ${name}`
 , icon : 'info',
 showConfirmButton: true,
-confirmButtonText: 'Deletar',
+confirmButtonText: text33[language],
 showCancelButton:true,
-cancelButtonText:'Cancelar'
-}).then((result) => {
+cancelButtonText: text23[language]
+}).then(async (result) => {
  if (result.isConfirmed) {
-    fetch("https://squid-app-ug7x6.ondigitalocean.app/familyDelete", {//pegar todos dados do table de pagamentos
-      method: 'POST',
-      body: JSON.stringify({ id: data.split("_")[0]}),
-      headers: { "Content-type": "application/json; charset=UTF-8" }
-    })
-      .then((x) => x.json())
-      .then((res) => {
-        swall_success()
-      })
+   const swal =  Swal.fire({
+           icon:"info",
+           title: text28[language],
+           html: text2[language],
+           allowOutsideClick : false,
+           showConfirmButton: false,
+           timerProgressBar: true,
+           onBeforeOpen: () => {
+           Swal.showLoading();
+       }
+     })
+   url = `https://squid-app-ug7x6.ondigitalocean.app/familyDelete`
+   body={id:data}
+    const deleteMember = await makerequest2(url,body)
+    if(deleteMember=="deletado"){
+      swall_success(text26[language])
+      processing_wait()
+    }else{
+      swall_error(etext7[language])
+    }
  }
 })
 }
 
-function fimilyerror(errormessage){
-  Swal.fire({
-  title: 'erro'
-, html : errormessage
-, icon : 'error',
-showConfirmButton: true,
-confirmButtonText: 'OK',
-}).then((result) => {
- if (result.isConfirmed) {
-
- }
-})
-}
 
 function memberdelete_check(data){
   Swal.fire({
-  title: 'Confirme'
-, html : `Iremos deletar todos os dados do aluno ${data.split("_")[1]}`
+  title: text35[language]
+, html : `${text36[language]} ${data.split("_")[1]}`
 , icon : 'info',
   showCancelButton: true,
   showConfirmButton: true,
-  confirmButtonText: 'Deletar',
-  cancelButtonText: 'Voltar',
+  confirmButtonText: text33[language],
+  cancelButtonText: text31[language],
 }).then((result) => {
  if (result.isConfirmed) {
     deleteClient(data.split("_")[0])
@@ -900,157 +765,62 @@ function memberdelete_check(data){
 })
 }
 
-    function deleteClient(clientId) {
-        Swal.fire({
-        icon:"info",
-        title: 'Processing'
-      , html: 'Wait'
-      , allowOutsideClick : false
-      , showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true
-      , onBeforeOpen: () => {
-          Swal.showLoading();
-        }
-      });
-      clients = clients.filter((client) => client.id != clientId);
-      const attr = {
-        method: "POST",
-        body: JSON.stringify({ id: clientId }),
-        headers: { "Content-type": "application/json; charset=UTF-8" },
-      };
-      fetch("https://squid-app-ug7x6.ondigitalocean.app/listDelete", attr)
-        .then((x) => x.json())
-        .then((response) => {
-          console.log(response);
-        });
-        processing_wait()
-      restartTable();
+  async  function deleteClient(clientId) {
+      console.log(clientId)
+      const swal =  Swal.fire({
+              icon:"info",
+              title: text28[language],
+              html: text2[language],
+              allowOutsideClick : false,
+              showConfirmButton: false,
+              timerProgressBar: true,
+              onBeforeOpen: () => {
+              Swal.showLoading();
+          }
+        })
+        url = `https://squid-app-ug7x6.ondigitalocean.app/listDelete`
+        body={id:clientId}
+         const deleteMemberList = await makerequest2(url,body)
+         console.log(deleteMemberList)
+         if(deleteMemberList=="deletado"){
+           swall_success(text26[language])
+           processing_wait()
+         }else{
+             swall_error(etext7[language])
+         }
     }
 
     async function restartTable_filter() {
-
        var removeTbody = document.querySelector("tbody");
        while (removeTbody.hasChildNodes()) {
          removeTbody.removeChild(removeTbody.firstChild);
        }
      }
 
-
-   async function restartTable() {
-
-      var removeTbody = document.querySelector("tbody");
-      while (removeTbody.hasChildNodes()) {
-        removeTbody.removeChild(removeTbody.firstChild);
-      }
-
-     setTimeout(() => {
-        fetch("https://squid-app-ug7x6.ondigitalocean.app/list", {
-          method: "POST",
-          body: JSON.stringify({ opt1: "", opt2: "" }),
-          headers: { "Content-type": "application/json; charset=UTF-8" },
-        })
-          .then((x) => x.json())
-          .then((res) => {
-            clients = res;
-            clientsHandler();
-          });
-      }, 3000);
-    }
-
- function swall_error(data,clientId){
-if(maylanguage=="PT"){
-  errortitle = "Erro"
-  if(data==1){
-    errormessage = "Erro no registro, tente novamente"
-  }else if(data==2){
-    errormessage = "O campo do nome não pode está em branco"
-  }else if(data==3){
-    errormessage = "O campo da data de nascimento não pode está em branco"
-  }else if(data==4){
-    errormessage = "O campo da idade não pode está em branco"
-  }else if(data==5){
-    errormessage = "O campo do endereço não pode está em branco"
-  }else if(data==6){
-    errormessage = "O campo do telefone não pode está em branco"
-  }else if(data==7){
-    errormessage = "O campo do email não pode está em branco"
-  }else if(data==8){
-    errormessage = "O campo da senha não pode está em branco"
-  }
-}else if(maylanguage=="EN"){
-  errortitle = "Error"
-  if(data==1){
-    errormessage = "Try again"
-  }else if(data==2){
-    errormessage = "Please enter full name"
-  }else if(data==3){
-    errormessage = "Please enter date of birth"
-  }else if(data==4){
-    errormessage = "Please enter age"
-  }else if(data==5){
-    errormessage = "Please enter adress"
-  }else if(data==6){
-    errormessage = "Please enter phone"
-  }else if(data==7){
-    errormessage = "Please enter email"
-  }else if(data==8){
-    errormessage = "Please enter password"
-  }
-}else{
-    errortitle = "エラー"
-    if(data==1){
-      errormessage = "登録に失敗しました、再度試してください"
-    }else if(data==2){
-      errormessage = "名前を入力してください"
-    }else if(data==3){
-      errormessage = "生年月日を入力してください"
-    }else if(data==4){
-      errormessage = "年齢を入力してください"
-    }else if(data==5){
-      errormessage = "住所を入力してください"
-    }else if(data==6){
-      errormessage = "電話番号を入力してください"
-    }else if(data==7){
-      errormessage = "メールアドレスを入力してください"
-    }else if(data==8){
-      errormessage = "パスワードを入力してください"
-    }
-}
+ function swall_error(data){
   Swal.fire({
-  title: errortitle
-, html : errormessage
+  title: etext6[language]
+, html : data
 , icon : 'error'
+,timer : '1500'
 }).then((result) => {
- if (result.isConfirmed) {
-    editClient(clientId)
- }
+
 })
 }
 
-    function swall_success(){
-        if(maylanguage=="PT"){
-          errormessage = "Alteração foi feita com sucesso"
-          errortitle = "Pronto"
-        }else if(maylanguage=="EN"){
-         errormessage = "Change was successfully made"
-         errortitle = "Success"
-       }else{
-         errormessage = "変更が完了しました"
-         errortitle = "完了"
-       }
-     Swal.fire({
-     title: errortitle
-   , html : errormessage
-   , icon : 'success'
-   , timer : '1500'
-   });
-       }
+function swall_success(data){
+ Swal.fire({
+ title: text27[language]
+, html : data
+, icon : 'success'
+, timer : '1500'
+});
+   }
 
-       function getAge(birthday){
-           var thisYearsBirthday = new Date(today.getFullYear(), birthday.month-1, birthday.date);//今年の誕生
-           var age = today.getFullYear() - birthday.year;  //年齢
-           return age;
-       }
+ function getAge(birthday){
+     var thisYearsBirthday = new Date(today.getFullYear(), birthday.month-1, birthday.date);//今年の誕生
+     var age = today.getFullYear() - birthday.year;  //年齢
+     return age;
+ }
   </script>
 </html>
