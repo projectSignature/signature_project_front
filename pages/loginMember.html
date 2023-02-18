@@ -2,9 +2,9 @@
 <html lang="en-US">
 <head>
   <meta charset="utf-8" name="viewport" content="width=device-width">
-    <title>Login</title>
+    <title>EntranceLogin</title>
     <!--<link rel="stylesheet" type="text/css" href="/signature-project-front/style/login.css" />-->
-    <link rel="stylesheet" type="text/css" href="./style/login.css" />
+    <!--<link rel="stylesheet" type="text/css" href="../style/login.css" />-->
 
 </head>
 
@@ -32,9 +32,231 @@
   </body>
            <!-- <script src="../js/CDN.js"></script> -->
       <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-      <script type="text/javascript" src="/signature-project-front/script/login.js"></script>
+    <!--  <script type="text/javascript" src="/signature-project-front/script/login.js"></script>-->
       <!--<script type="text/javascript" src="./script/login.js"></script>-->
      <script src="/signature-project-front/plugin/sweetalert2.all.min.js"></script>
      <!--<script src="./plugin/sweetalert2.all.min.js"></script>-->
   </body>
+
+<script>
+let accessmainserver = 'https://squid-app-ug7x6.ondigitalocean.app'　　//メインサーバーのチェックアクセス先
+let user
+let password
+let errormessage
+  document.getElementById("login-bottom").addEventListener("click", login_check)//ログインボタンクリック時の操作
+  //ログイン情報の確認をする処理、IDが空白かどうか、その後PASSがくうはくかどうか、TRUEの場合Swal処理
+  function login_check(user, password) {
+    user = document.getElementById("user").value;　　　　//ユーザー名
+    password = document.getElementById("pass").value;　 //パスワード
+    if (user == "") {
+      errormessage = "Enter your username"
+      swallopen(errormessage)
+    } else {
+      if (password == "") {
+        errormessage = "Enter your password"
+        swallopen(errormessage)
+      } else {
+        login_request(user, password) //chamar função de login passando login e senha
+      }
+    }
+  }
+  //validar dados
+  async function login_request(user, password) {
+    await axios.post(accessmainserver + '/auth', {
+      numbers: user,
+      password: password
+    })
+      .then((response) => {
+        if (response.data.token) {
+         sessionStorage.setItem("token", response.data.token);
+          sessionStorage.setItem("gym", response.data.gym);
+          sessionStorage.setItem("GYM_ID", response.data.number.ID);
+          sessionStorage.setItem("Language", response.data.language);
+         // window.location = `./pages/dashboard.html?login=${response.data.gym}`;
+          window.location = `https://squid-app-ug7x6.ondigitalocean.app/signature-project-front/pages/entrance.html?login=${name}`;
+        } else if (response.data.message) {
+          errormessage = "Check username and password";
+          document.getElementById("pass").value = "";
+          sessionStorage.clear();
+          swallopen(errormessage);
+        };
+      })
+      .catch((err) => {
+        errormessage = "Check username and password";
+        document.getElementById("pass").value = "";
+        swallopen(errormessage);
+      });
+  };
+  function router2() {
+    axios.get(accessmainserver + '/clientes', {
+      headers: {
+        token: localStorage.getItem('token')
+      }
+    }
+    )
+  }
+  function swallopen() {
+    Swal.fire({
+      title: 'Error',
+      icon: 'warning',
+      showCancelButton: true,
+      showConfirmButton: false,
+      cancelButtonText: 'back',
+      width: 500,
+      html: `<span>${errormessage}</span>`,
+      customClass: "sweet-alert",
+    }).then((result) => {
+      if (result.value) {
+        Swal.fire({
+          icon: "success",
+          title: 'concluido',
+        }
+        )
+      }
+    });
+  }
+</script>
+
+<style>
+@charset "utf-8";
+@import url(https://weloveiconfonts.com/api/?family=fontawesome);
+
+[class*="fontawesome-"]:before {
+  font-family: 'FontAwesome', sans-serif;
+}
+
+#title{
+  text-align: center;
+  font-size: 8vh;
+  padding-bottom: 30px;
+  color:#696969;
+  font-family: 'Sacramento', cursive;
+}
+html{
+  width: 100%;
+  height:100%;
+
+}
+body {
+  background: #ffffff;
+  color: #606468;
+  font: 87.5%/1.5em 'Open Sans', sans-serif;
+  margin: 0;
+  height:100%;
+  width: 100%;
+}
+
+input {
+  border: none;
+  font-family: 'Open Sans', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5em;
+  padding: 0;
+  -webkit-appearance: none;
+}
+
+p {
+  line-height: 1.5em;
+}
+
+after { clear: both; }
+
+
+
+
+#login {
+  width: 320px;
+}
+
+#login form {
+  padding: 2% 2% 2% 2%;
+  width: 100%;
+  border-radius: 5px;
+  background: #f5f5f5;
+  border: 1px solid #434a52;
+
+}
+
+#login form span {
+  background-color: #d3d3d3;
+  border-radius: 3px 0px 0px 3px;
+  border-right: 3px solid #434a52;
+  color: #696969;
+  display: block;
+  float: left;
+  line-height: 50px;
+  text-align: center;
+  width: 50px;
+  height: 50px;
+}
+
+#login form input[type="text"] {
+  background-color: #d3d3d3;
+  border-radius: 0px 3px 3px 0px;
+  color: #a9a9a9;
+  margin-bottom: 1em;
+  padding: 0 16px;
+  width: 235px;
+  height: 50px;
+}
+
+#login form input[type="password"] {
+  background-color: #d3d3d3;
+  border-radius: 0px 3px 3px 0px;
+  color: #a9a9a9;
+  margin-bottom: 1em;
+  padding: 0 16px;
+  width: 235px;
+  height: 50px;
+}
+
+#login-bottom {
+  background: #ffa500;
+  border: 0;
+  width: 100%;
+  height: 40px;
+  border-radius: 3px;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+    text-align: center;
+}
+#login-bottom:hover {
+  background: #16aa56;
+}
+.sweet-alert{
+  height: 400px;
+}
+
+#login-div{
+  width:100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#oosotowaku{
+  height:50%;
+position: relative;
+}
+#soto1{
+  position: absolute;
+top: 0;
+right: 0;
+bottom: 0;
+left: 0;
+margin: auto;
+width: 90%;
+height: 0.5rem;
+}
+
+@media screen and (max-width: 600px) {
+  #title{
+    font-size: 5vh;
+    font-weight: bold;
+  }
+}
+
+
+</style>
+
 </html>
