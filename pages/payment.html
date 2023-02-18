@@ -16,14 +16,13 @@
     </div>
     <div id="dash">
       <div id="header">
-        <h3 id="page-title">Controle de pagamento</h3>
-        <select name="" id="filter1">
-        </select>
+        <h3 id="page-title"></h3>
+
         <select name="" id="select-year">
           <option value="2023">2023</option>
           <option value="2024">2024</option>
         </select>
-          <input type="button" id="createdate" value="Add"></input>
+          <input type="button" id="createdate" class="adction-button"></input>
       </div>
       <div  class="twrapper">
         <table>
@@ -35,25 +34,39 @@
   <script src="../script/swal.min.js"></script>
   <script type="text/javascript" src="js/stickyfill.min.js"></script>
   <script>
-  //var gymname = sessionStorage.getItem("gym");
-  //var gymid = sessionStorage.getItem("GYM_ID");
+  var token = sessionStorage.getItem("token");//token
+  let gymid = sessionStorage.getItem("GYM_ID")
   var today = new Date();
   var month = today.getMonth()+1
   const tbody = document.getElementsByTagName("tbody")[0];
   const btnFilter = document.getElementById("btn-filter");
-  const gymName = document.getElementById("gym-name");
   let yearMonth = ["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dez"]
   let payimage= [`<img src="../image/nopaid.png" width="35">`,`<img src="../image/paid.png" width="35">`,`<img src="../image/free.png" width="35">`,"-"]
-  let language = 0
-  let gymid = 4
   let plansarry = []
+  let  plansarrybefore = ""
+  let memberList = ""
+  let paydataArray = ""
   const select_year = document.getElementById("select-year").value;//year selecte
   var clients = {}
-  sessionGymName = 'kussano dojo'
-  if (sessionGymName) {
-  gymName.innerHTML = sessionGymName;
-  } else {
-    gymName.innerHTML = "GYM error";
+  let language
+  if(sessionStorage.getItem("Language")=="PT"){
+    language = 0
+  }else if(sessionStorage.getItem("Language")=="EN"){
+    language = 1
+  }else{
+    language = 2
+  }
+//  language = 2
+//  gymid = 4
+
+  document.querySelector('#gym-name').innerHTML = sessionStorage.getItem("gym");//gymname
+  if (token == 567) {
+    addMemberDiv.style.display = 'none';
+    memberDiv.style.display = 'none';
+    paymentDiv.style.display = 'none';
+    graduacaoDiv.style.display = 'none';
+  }else if(token==""||token==null){
+    window.location = `https://squid-app-ug7x6.ondigitalocean.app/signature-project-front`
   }
 
 //翻訳文------------------------------------------------>
@@ -74,43 +87,46 @@ const stext14= ["Podemos criar?","Can we create?","追加してもよろしい�
 const stext15= ["Escolha o mês para criarmos os dados","Choose the month to create the data","データを作成する月を選択してください"]
 const stext16= ["Mensalidade","monthly fees","月謝費"]
 const stext17= ["Inativo","Inactive","退会済"]
+const stext18 = ["Buscando dados","Processing","データ取得中"]
+const stext19 = ["Aguarde","Wait","そのままおまちください"]
+const stext20 = ["Adicionar","add","追加"]
+const stext21=["Cancelar","Cancel","キャンセル"]
+const stext22= ["Salvar","Save","保存"]
+const stext23=["Sim","Yes","はい"]
+const text24=["Voltar","Back","戻る"]
 const filteroption1 = ["Todos","All","全て"]
 const filteroption2 = ["Atrasados","Unpaid","未受領"]
 const filteroption3 = ["Pagos","paid","受領済み"]
+const etext1=["Erro","Error","エラー"]
 let option = `<option value="0">${filteroption1[language]}</option>
               <option value="1">${filteroption2[language]}</option>
               <option value="2">${filteroption3[language]}</option>`
 document.getElementById("page-title").innerHTML = stext1[language]
-document.getElementById("filter1").innerHTML = option
-
-
-  let select1 = document.querySelector(`#filter1`);
-  select1.addEventListener(`change`, function () {
-    clients1 =""
-    tbody.innerHTML = ""
-  	windowLoadGetdados()
-  });
+document.getElementById("createdate").value = stext20[language]
 
 windowLoadGetdados()
 //メインファンクション,PLANGET=>支払いデータGET,メンバーリストGETテーブル作成----------------------------->
 async function windowLoadGetdados(){
-const swal =  Swal.fire({
-    icon:"info",
-    title: 'Processing',
-    html: 'Wait',
-    allowOutsideClick : false,
-    showConfirmButton: false,
-    timerProgressBar: true,
-    onBeforeOpen: () => {
-      Swal.showLoading();
-    }
-  })
+  const swal =  Swal.fire({
+          icon:"info",
+          title: stext18[language],
+          html: stext19[language],
+          allowOutsideClick : false,
+          showConfirmButton: false,
+          timerProgressBar: true,
+          onBeforeOpen: () => {
+          Swal.showLoading();
+      }
+    })
   const plansarray = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/gymplanget?id=${gymid}`)
   const paymentdata = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/gymgetpaymentAll?year=${select_year}&id=${gymid}`)
-  const filterpaymentdata = await filterkubun(paymentdata)
+//const filterpaymentdata = await filterkubun(paymentdata)
   const list = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/gymmemberlist?id=${gymid}`)
   const memberlist = await orden(list)
-  await createTable(memberlist,filterpaymentdata,plansarray)
+  await createTable(memberlist,paymentdata,plansarray)
+   plansarrybefore = await plansarray
+   memberList = await list
+   paydataArray = await paymentdata
   swal.close()
 }
 //APIアクセスファンクション
@@ -128,17 +144,6 @@ async function makerequest2(url,body){
   return request.json()
 }  //Url?year=2023&îd=4
 
-function filterkubun(clients){
-  myselect_kubun = document.getElementById("filter1").value
-  if(myselect_kubun==1){
-    for(let i=0;i<clients.length;i++){
-      if(clients[i].division!=1){
-        delete clients[i]
-      }
-    }
-  }
-  return clients
-}
 
 function orden(response){
   let memberslist = []
@@ -255,21 +260,20 @@ function removeComma(number) {
     <th class="_sticky" name="_sticky_name">${data.name}</th>
     <td>${data.plan}</td>
     <td>￥${data.planvalue}</td>
-    <td onClick="editpay('1_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.jan}</td>
-    <td onClick="editpay('2_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.feb}</td>
-    <td onClick="editpay('3_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.mar}</td>
-    <td onClick="editpay('4_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.apr}</td>
-    <td onClick="editpay('5_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.may}</td>
-    <td onClick="editpay('6_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.jun}</td>
-    <td onClick="editpay('7_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.jul}</td>
-    <td onClick="editpay('8_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.aug}</td>
-    <td onClick="editpay('9_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.sep}</td>
-    <td onClick="editpay('10_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.oct}</td>
-    <td onClick="editpay('11_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.nov}</td>
-    <td onClick="editpay('12_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.dez}</td>
+    <td class="cursor-pointer-table" onClick="editpay('1_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.jan}</td>
+    <td class="cursor-pointer-table"  onClick="editpay('2_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.feb}</td>
+    <td class="cursor-pointer-table"  onClick="editpay('3_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.mar}</td>
+    <td class="cursor-pointer-table"  onClick="editpay('4_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.apr}</td>
+    <td class="cursor-pointer-table"  onClick="editpay('5_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.may}</td>
+    <td class="cursor-pointer-table"  onClick="editpay('6_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.jun}</td>
+    <td class="cursor-pointer-table"  onClick="editpay('7_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.jul}</td>
+    <td class="cursor-pointer-table"  onClick="editpay('8_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.aug}</td>
+    <td  class="cursor-pointer-table" onClick="editpay('9_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.sep}</td>
+    <td class="cursor-pointer-table"  onClick="editpay('10_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.oct}</td>
+    <td class="cursor-pointer-table"  onClick="editpay('11_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.nov}</td>
+    <td class="cursor-pointer-table"  onClick="editpay('12_${data.id}_${data.name}_${data.plan}_${data.planvalue}')">${data.dez}</td>
     </tr>
     `;
-
   return row;
 }
 
@@ -313,7 +317,7 @@ function editpay(data){
     html: `
         <div id="swall-member-namae-div">
          <div class="title-font" id="name-div">
-          <span>Nome do aluno:</span>
+          <span>${steXt7[language]}:</span>
          </div>
          <div class="title-font"  id="name-div-title">
           <span>${myname}</span>
@@ -396,8 +400,8 @@ function editpay(data){
       `,
     showCancelButton: true,
     showConfirmButton:false,
-  　confirmButtonText: "Salvar",
-    cancelButtonText: "Cancelar",
+  　confirmButtonText: stext22[language],
+    cancelButtonText: stext21[language],
     allowOutsideClick : false,
   })
 }
@@ -428,8 +432,8 @@ async function editbeforecheck(data){
        icon : 'error',
        showCancelButton: true,
        showConfirmButton:true,
-       confirmButtonText: "Sim",
-       cancelButtonText: "Cancelar",
+       confirmButtonText: stext23[language],
+       cancelButtonText: stext21[language],
        allowOutsideClick : false,
        }).then((result) => {
       if (result.isConfirmed) {
@@ -574,8 +578,8 @@ function cretepayment_button(){
       `,
     showCancelButton: true,
     showConfirmButton:true,
-    confirmButtonText: "Criar",
-    cancelButtonText: "Cancelar",
+    confirmButtonText: stext20[language],
+    cancelButtonText: stext21[language],
     allowOutsideClick : false,
   }).then((result) => {
    if (result.isConfirmed) {
@@ -661,11 +665,11 @@ function dataCreate(data1,data2,data3,data4,division,month){
 
     function swallerror(){
       Swal.fire({
-      title: 'error',
+      title: etext1[language],
       icon: 'warning',
       showCancelButton: false,
       showConfirmButton: true,
-      ConfirmButtonText: '戻る',
+      ConfirmButtonText: text24[language],
       allowOutsideClick : false,
       width: 300,
       html:`<span>${stext1[language]}</span>`,
