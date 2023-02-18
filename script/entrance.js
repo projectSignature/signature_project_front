@@ -8,7 +8,7 @@ async function windowLoadGt(){
   //console.log(gymid)
   //gymid=4
   if (token==null||token=="") {
-    window.location = `https://squid-app-ug7x6.ondigitalocean.app/signature-project-front/pages/loginMember`
+    window.location = `https://squid-app-ug7x6.ondigitalocean.app/signature-project-front/pages/loginMember.html`
   }else{
     const swal =  Swal.fire({
             icon:"info",
