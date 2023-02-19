@@ -15,6 +15,7 @@ var errormessage11 = ""
 var errormessage12 = ""
 var gymname = sessionStorage.getItem("gym");
 var gymid = sessionStorage.getItem("GYM_ID");
+var token = sessionStorage.getItem("token");//token
 const plans_div = document.getElementById('plans-div2');
 let plans_rows
 let plans_kubun
@@ -26,13 +27,21 @@ var selectlanguage
 let plan = ""
 let valor = ""
 language = 0
-//gymid = 4
+//gymid = 5
 //gymname ="Kussano dojo"
 
 document.getElementById("birthday_year").addEventListener("change", birthday_date_get)
 document.getElementById("birthday_month").addEventListener("change", birthday_date_get)
 document.getElementById("birthday_day").addEventListener("change", birthday_date_get)
 
+if (token == 567) {
+  addMemberDiv.style.display = 'none';
+  memberDiv.style.display = 'none';
+  paymentDiv.style.display = 'none';
+  graduacaoDiv.style.display = 'none';
+}else if(token==""||token==null){
+  window.location = `https://squid-app-ug7x6.ondigitalocean.app/signature-project-front`
+}
 //document.getElementById("cheap").addEventListener("click", familyplan)
 let stxt1 = ["Seja bem-vindo　\n",]
 let stxt2 = ["Seja bem-vindo\nInsira seus dados pessoais"]
@@ -275,7 +284,7 @@ function error_massege_japanese(){
       if(document.getElementById("man-checkbox").checked) {
         return 'man'
       }
-      else if(document.getElementById("man-checkbox").checked) {
+      else if(document.getElementById("women-checkbox").checked) {
         return 'women'
       }
     }
@@ -300,18 +309,17 @@ function error_massege_japanese(){
     "active_date" : activedate,
     "inactive_date": 0
   }
-
   const saveAnswer1 = await save1(obj)
    if(saveAnswer1==1){
   const payment = await fetch(`https://squid-app-ug7x6.ondigitalocean.app/payment/${obj.nm_member}/${gymid}/${obj.plans}/${valor}`);
   const	pdfcreate = await ejspdf();
           if(familyarray.length!=0){
-            for(let i = 0;i<familyarray.length;i++){
-                 name=familyarray[i].split("_")[0]
-                 birthday=familyarray[i].split("_")[1]
-                 gender=familyarray[i].split("_")[2]
+           for(let i = 0;i<familyarray.length;i++){
+               name=familyarray[i].split("_")[0]
+                birthday=familyarray[i].split("_")[1]
+                gender=familyarray[i].split("_")[2]
                  age=familyarray[i].split("_")[3]
-            const family = await fetch(`https://squid-app-ug7x6.ondigitalocean.app/parents/${name}/${birthday}/${gender}/${age}/${gymid}`)
+          const family = await fetch(`https://squid-app-ug7x6.ondigitalocean.app/parents/${name}/${birthday}/${gender}/${age}/${gymid}`)
             	}
             }
     return 2
@@ -1065,11 +1073,25 @@ function swall_success(){
 function select_plan_click(data){
 	plan=data.split("_")[2]
   valor = data.split("_")[3]
+  planN = data.split("_")[4]
+  let buttonN
+  for(let i=0;i<plans_rows;i++){
+   if(i==planN){
+     buttonN = `select_button_${i}`
+     document.getElementById(`'${buttonN}'`).style.backgroundColor = '#7B3CFF'
+     document.getElementById(`'${buttonN}'`).style.color = "White"
+   }else {
+     buttonN = `select_button_${i}`
+       document.getElementById(`'${buttonN}'`).style.backgroundColor = '#EEEEEE'
+      document.getElementById(`'${buttonN}'`).style.color = "#333333"
+   }
+  }
+
 }
 
 
 async function makerequest(url){
-  const request = await fetch(url)  //esperar aqui
+const request = await fetch(url)  //esperar aqui
  return request.json()
 }
 
@@ -1156,7 +1178,7 @@ function creaetDivPlan(res){
              <span class="plandisc" >${res[i].PLAN_DISCRITION3}</span>
              <span class="plandisc">${res[i].PLAN_DISCRITION4}</span>
              <span class="plandisc">${res[i].PLAN_DISCRITION5}</span>
-             <input class="plan-new-select-button" type="button" id="'select_button_${i}'" value="${stext27[language]}" onclick="select_plan_click('plan_div_${res[i].CONTROL_NAME}_${res[i].PLAN_VALOR}')"/>
+             <input class="plan-new-select-button" type="button" id="'select_button_${i}'" value="${stext27[language]}" onclick="select_plan_click('plan_div_${res[i].CONTROL_NAME}_${res[i].PLAN_VALOR}_${i}')"/>
             </div>`
            	plans_div.innerHTML += row
   }
