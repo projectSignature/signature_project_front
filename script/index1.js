@@ -26,8 +26,8 @@ var today = new Date();  //今日
 var selectlanguage
 let plan = ""
 let valor = ""
-language = 0
-//gymid = 5
+//language = 0
+//gymid = 9
 //gymname ="Kussano dojo"
 
 document.getElementById("birthday_year").addEventListener("change", birthday_date_get)
@@ -1100,13 +1100,8 @@ async function Gymplanget(data){
   answerAge = document.getElementById("birthday_age").value
   womenSelect = document.getElementById("women-checkbox")
   manSelect = document.getElementById("man-checkbox")
-  let plansAnswer = []
-if(answerAge==""){
-}
-if(womenSelect.checked==false){
-}
-if(manSelect.checked==false){
-}
+        let plansAnswer = []
+
   if(answerAge=="" || womenSelect.checked==false && manSelect.checked==false){
      swallerror(stext34[language])
   }else{
@@ -1125,36 +1120,28 @@ if(manSelect.checked==false){
      plans_rows = 0
      if(data==1){
        familyflug = false
-       for (let i=0;i<plansArray.length;i++){//年齢に対して制限のあるプラン
-          if(plansArray[i].PLAN_KUBUN!=6){
-            if((plansArray[i].AGE-0)>=(answerAge-0)){
+
+         for (let i=0;i<plansArray.length;i++){
+             if(plansArray[i].PLAN_KUBUN==3&&(answerAge-0)<plansArray[i].AGE||plansArray[i].PLAN_KUBUN==6){
                plansAnswer.push(plansArray[i])
                plans_rows ++
-            }
-         }else if(plansArray[i].PLAN_KUBUN==4){
-           plansAnswer.push(plansArray[i])
-           plans_rows ++
+             }
          }
-       }
-       if(plansAnswer.length==0){
-         for(let i=0;i<plansArray.length;i++){
-           if(manSelect.checked==true&&plansArray[i].PLAN_KUBUN==1){
-             plansAnswer.push(plansArray[i])
-              plans_rows ++
-           }else if(womenSelect.checked==true&&plansArray[i].PLAN_KUBUN==2){
-             plansAnswer.push(plansArray[i])
-             plans_rows ++
-           }
-           if(plansArray[i].PLAN_KUBUN==4){
-             plansAnswer.push(plansArray[i])
-             plans_rows ++
+         if(plansAnswer.length==1){//年齢制限のあるプランが該当する場合n何もしない
+           for(let i=0;i<plansArray.length;i++){
+             if(manSelect.checked==true&&plansArray[i].PLAN_KUBUN==1){
+               plansAnswer.push(plansArray[i])
+                plans_rows ++
+             }else if(womenSelect.checked==true&&plansArray[i].PLAN_KUBUN==2){
+               plansAnswer.push(plansArray[i])
+               plans_rows ++
+             }
            }
          }
-       }
      }else{
        familyflug = true
        for(let i=0;i<plansArray.length;i++){
-        if(plansArray[i].PLAN_KUBUN==3){
+        if(plansArray[i].PLAN_KUBUN==4){
            plansAnswer.push(plansArray[i])
            plans_rows ++
         }
