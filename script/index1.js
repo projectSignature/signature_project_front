@@ -1127,7 +1127,7 @@ async function Gymplanget(data){
                plans_rows ++
              }
          }
-         if(plansAnswer.length==1){//年齢制限のあるプランが該当する場合n何もしない
+         if(plansAnswer.length<=1){//年齢制限のあるプランが該当する場合n何もしない
            for(let i=0;i<plansArray.length;i++){
              if(manSelect.checked==true&&plansArray[i].PLAN_KUBUN==1){
                plansAnswer.push(plansArray[i])
