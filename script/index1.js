@@ -30,6 +30,7 @@ let valor = ""
 //gymid = 5
 //gymname ="Paulo"
 
+
 console.log(gymid)
 
 document.getElementById("birthday_year").addEventListener("change", birthday_date_get)
