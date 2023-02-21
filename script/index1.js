@@ -27,8 +27,10 @@ var selectlanguage
 let plan = ""
 let valor = ""
 //language = 0
-//gymid = 9
-//gymname ="Kussano dojo"
+//gymid = 5
+//gymname ="Paulo"
+
+console.log(gymid)
 
 document.getElementById("birthday_year").addEventListener("change", birthday_date_get)
 document.getElementById("birthday_month").addEventListener("change", birthday_date_get)
@@ -40,7 +42,7 @@ if (token == 567) {
   paymentDiv.style.display = 'none';
   graduacaoDiv.style.display = 'none';
 }else if(token==""||token==null){
-  window.location = `https://squid-app-ug7x6.ondigitalocean.app/signature-project-front`
+//  window.location = `https://squid-app-ug7x6.ondigitalocean.app/signature-project-front`
 }
 //document.getElementById("cheap").addEventListener("click", familyplan)
 let stxt1 = ["Seja bem-vindo　\n",]
@@ -310,21 +312,27 @@ function error_massege_japanese(){
     "inactive_date": 0
   }
   const saveAnswer1 = await save1(obj)
+//saveAnswer1=1
    if(saveAnswer1==1){
-  const payment = await fetch(`https://squid-app-ug7x6.ondigitalocean.app/payment/${obj.nm_member}/${gymid}/${obj.plans}/${valor}`);
+ const payment = await fetch(`https://squid-app-ug7x6.ondigitalocean.app/payment/${obj.nm_member}/${gymid}/${obj.plans}/${valor}`);
   const	pdfcreate = await ejspdf();
           if(familyarray.length!=0){
-           for(let i = 0;i<familyarray.length;i++){
-               name=familyarray[i].split("_")[0]
-                birthday=familyarray[i].split("_")[1]
-                gender=familyarray[i].split("_")[2]
-                 age=familyarray[i].split("_")[3]
-          const family = await fetch(`https://squid-app-ug7x6.ondigitalocean.app/parents/${name}/${birthday}/${gender}/${age}/${gymid}`)
+        for(let i = 0;i<familyarray.length;i++){
+             url = `https://squid-app-ug7x6.ondigitalocean.app/newParentsCreate`
+             body = {
+               name:familyarray[i].split("_")[0],
+               birthday:familyarray[i].split("_")[1],
+               gender:familyarray[i].split("_")[2],
+               age:familyarray[i].split("_")[3],
+               gymid:gymid
+             }
+             await makerequest2(url,body)
             	}
             }
     return 2
 }
 }catch (error) {
+  console.log(error)
   return 1
 }
 }
@@ -336,6 +344,18 @@ function ejspdf() {
   })
 }
 
+//Post処理
+async function makerequest2(url,data){
+  const request = await fetch(url, {//pegar todos dados do table de pagamentos //n]
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: { "Content-type": "application/json; charset=UTF-8" }
+  })
+  console.log(request)
+  return request.json()
+}
+
+
 async function save1(obj){
 await  fetch('https://squid-app-ug7x6.ondigitalocean.app/member',
     {method: 'POST',
@@ -345,6 +365,10 @@ await  fetch('https://squid-app-ug7x6.ondigitalocean.app/member',
     .then((response) => {
   })
   return 1
+}
+
+async function save3(url){
+
 }
 
 function generatePDF() {
@@ -504,13 +528,16 @@ if(kubun_check==0){
          Swal.showLoading();
        }
      });
+     await console.log('beforesave')
       const saveAnswer = await saveData()
+      await console.log('afteresave')
       await Swal.fire({
          title: stext28[language]
        , html : stext29[language]
        , type : 'success'
        ,timer:1500
        });
+       console.log(saveAnswer)
        if(saveAnswer==2){
          await location.reload()
        }
@@ -1118,9 +1145,10 @@ async function Gymplanget(data){
       })
     const plansArray = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/gymplanget?id=${gymid}`)
      plans_rows = 0
+     console.log(plansArray)
      if(data==1){
-       familyflug = false
 
+       familyflug = false
          for (let i=0;i<plansArray.length;i++){
              if(plansArray[i].PLAN_KUBUN==3&&(answerAge-0)<plansArray[i].AGE||plansArray[i].PLAN_KUBUN==6){
                plansAnswer.push(plansArray[i])
