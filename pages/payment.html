@@ -313,12 +313,9 @@ function editpay(data){
   myworkmonth = stext5[(mymonth-0)-1]
   }
 
- Swal.fire({
+  Swal.fire({
     html: `
         <div id="swall-member-namae-div">
-         <div class="title-font" id="name-div">
-          <span>${steXt7[language]}:</span>
-         </div>
          <div class="title-font"  id="name-div-title">
           <span>${myname}</span>
          </div>
@@ -327,19 +324,19 @@ function editpay(data){
         </div>
         <div id="clientes">
           <div class="block-div" onClick="editbeforecheck('${data}_2')">
-            <div><span>${stext8[language]}</span></div>
+            <div class="paidnopaid-div"><span>${stext8[language]}</span></div>
             <div><img src="../image/paid.png" width="60"></div>
           </div>
           <div class="block-div" onClick="editbeforecheck('${data}_1')">
-            <div><span>${stext9[language]}</span></div>
+            <div class="paidnopaid-div"><span>${stext9[language]}</span></div>
             <div><img src="../image/nopaid.png" width="60"></div>
           </div>
           <div class="block-div" onClick="editbeforecheck('${data}_3')">
-            <div><span>${stext10[language]}</span></div>
+            <div class="paidnopaid-div"><span>${stext10[language]}</span></div>
             <div><img src="../image/free.png" width="60"></div>
           </div>
           <div class="block-div" onClick="editbeforecheck('${data}_4')">
-            <div><span>${stext17[language]}</span></div>
+            <div class="paidnopaid-div"><span>${stext17[language]}</span></div>
             <div class="inactive-">-</div>
           </div>
         </div>
@@ -372,7 +369,7 @@ function editpay(data){
            }
   @media only screen and (max-width: 700px) {
     .swal2-popup {
-        width: 90% !important;
+        width: 100% !important;
         height: 400px !important;
     }
     .title-font span{
@@ -387,13 +384,16 @@ function editpay(data){
     .block-div{
       margin-left:15px;
       width:30%;
-      height:100px;
+      height:8rem;
     }
     #name-div{
       margin-bottom:0px;
     }
     #name-div-title{
       margin-top:10px;
+    }
+    .paidnopaid-div{
+      height:50%;
     }
   }
          </style>
