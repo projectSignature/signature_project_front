@@ -88,3 +88,38 @@
   width:4rem !important;
   cursor:pointer;
 }
+
+ @media only screen and (max-width: 700px) {
+   .main-div-flex-swall{
+     display: block;
+   }
+   .swall-title-color-purple{
+     font-size:4vw;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+   }
+   .sub-div-50{
+     display:flex;
+     flex-wrap: wrap;
+     justify-content: flex-start;
+     width:100%;
+   }
+   .sub-div-50 span{
+     width:100% !important;
+   }
+   .sub-div-50 input, .sub-div-50 select, .sub-div-50-family-plan input{
+     width:90% !important;
+     height:3rem !important;
+     font-size: 4vw !important;
+     margin-left:3px !important;
+   }
+   .sub-div-50-family-plan{
+      width:100% !important;
+      margin-left:0px !important;
+      display: flex;
+      justify-content:flex-start;
+   }
+
+
+ }
