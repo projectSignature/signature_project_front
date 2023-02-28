@@ -414,7 +414,7 @@ cursor:pointer;
   color:	#333333;
   cursor:pointer;
   text-align: center;
-  font-size:2.5vw;
+  font-size:2vw;
 }
 
 #plans-div2{
@@ -483,6 +483,10 @@ cursor:pointer;
   font-size:5vw;
 }
 @media screen and (max-width: 600px) {
+    
+  .selectplan-input{
+  font-size:3vw;
+}
 
   #family-div input{
     width:40%;
