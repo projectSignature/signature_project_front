@@ -34,6 +34,7 @@
     font-size: 2vw;
     border: 1px solid gray;
     margin-right: 1%;
+    cursor: pointer;
 }
 #table{
 	overflow-y:auto;
@@ -45,9 +46,7 @@
     width: 80% !important
 }
 
-select{
-    cursor: pointer
-}
+
 .email-tag{
   width: 150px;
 }
@@ -127,7 +126,7 @@ th[name="_sticky_name"]{
 }
 
 /* 500px以下の画面で適用 */
-@media only screen and (max-width: 500px) {
+@media only screen and (max-width: 720px) {
   .mobile-scroll {
     overflow-x: auto; /* 横スクロール */
     -webkit-overflow-scrolling: touch; /* スマホでスムーズにスクロールできるように */
@@ -142,7 +141,6 @@ th[name="_sticky_name"]{
 }
 #header-title{
   font-size:3vh;
-
 }
 
 	th, td {
@@ -155,7 +153,22 @@ th[name="_sticky_name"]{
 }
 
 th[name="_sticky_name"]{
-  font-size: 20px;
+  font-size: 5px;
+}
+
+#header{
+  display: flex;
+  flex-wrap: wrap;
+}
+h3{
+  width:100%;
+  font-size: 5vw !important;
+}
+select{
+  width:8rem !important;
+  height:3rem !important;
+  font-size: 2.5vh !important;
+  margin-left:15px !important;
 }
 
 }
@@ -178,6 +191,7 @@ th[name="_sticky_name"]{
   #createdate{
     width:20%;
   }
+
 
   th, td {
     font-size: 10px;
