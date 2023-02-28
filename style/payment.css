@@ -28,7 +28,7 @@
     height: 70%;
     border-radius: 10px;
     text-align: center;
-    font-size: 3vw;
+    font-size: 2vw;
     border: 1px solid gray;
     margin-right: 1%;
 }
@@ -114,7 +114,18 @@ th[name="_sticky_name"]{
 #createdate{
   width:10%;
   height:70%;
-  font-size:5vh;
+  font-size:2.5vh;
+}
+.cursor-pointer-table{
+  cursor:pointer;
+}
+
+.adction-button{
+  cursor:pointer;
+  border:0.5px solid #BBBBBB;
+  border-radius:10px;
+  background-color: #7B3CFF;
+  color:white;
 }
 /* 500px以下の画面で適用 */
 @media only screen and (max-width: 500px) {
