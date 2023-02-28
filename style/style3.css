@@ -613,9 +613,14 @@ font-size:3vw;
 .twrapper{
 justify-content: center !important;
 }
-.year-month-yetpay-div span{
-font-size:1.5vw;
+.year-month-yetpay-div{
+  display: flex;
+  flex-wrap: wrap;
 }
+.year-month-yetpay-div span{
+font-size:2vw;
+}
+
 
 .year-month-yetpay-div img{
 width:1.5rem !important;
