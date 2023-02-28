@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CashFlow</title>
+    <link rel="stylesheet" href="../style/list_alunos1.css" />
+    <link rel="stylesheet" href="../style/finencer.css" />
+</head>
+
+<body>
+  <div id="titlediv">
+          <img id="image-title" src="../image/blackBelt.png"/>
+      <div id="titlemain">Dojo Control System</div>
+      <div id="gym-name">Erro</div>
+  </div>
+
+    <div id="dash">
+      <div id="header">
+        <div><h3 id="title-navi-main"></h3>
+          <span class="naviband-span-title" id="menubar1" onclick="navigator('finance')"></span>
+          <span class="naviband-span-title" id="menubar2" onclick="navigator('expenses')"></span>
+          <span class="naviband-span-title" id="menubar3" onclick="navigator('lace')"></span>
+        </div>
+        <div><span id="selectyear">ano:</span>
+          <select name="" id="filter1">
+            <option value="1">2023</option>
+            <option value="2">2024</option>
+          </select>
+        </div>
+      </div>
+　　　　　　<div class="after-insert-div" id="title-div">
+           </div>
+           <div class="after-insert-div" id="row1">
+           </div>
+           <div class="after-insert-div" id="row2">
+           </div>
+           <div class="after-insert-div" id="row3">
+           </div>
+           <div class="after-insert-div" id="row4">
+           </div>
+           <div class="after-insert-div" id="row5">
+           </div>
+           <div class="after-insert-div" id="row6">
+           </div>
+           <div class="after-insert-div" id="row7">
+           </div>
+           <div class="after-insert-div" id="row8">
+           </div>
+           <div class="after-insert-div" id="row9">
+           </div>
+    </div>
+</body>
+<script src="../script/swal.min.js"></script>
+<script>
+
+language = 0
+const ptArray = ["Fluxo da caixa","Jan","Fev","Mar","Abr",
+  "Mai","Jun","Jul","Ago","Set","Out","Nov","Dez","Total"]
+const enArray = ["Cash flow","Jan","Feb","Mar","Apr","May","Jun",
+  "Jul", "Aug", "Sep","Oct","Nov","Dec","Total"]
+const jpArray = ["キャッシュフロー","1月","2月","3月","4月","5月","6月","7月","8月",
+ "9月","10月","11月","12月","合計"]
+const text1 = ["Fluxo de caixa","Cash flow","キャッシュフー"]
+const text2 = ["Despesas","Expenses","支出"]
+const text3 = ["Controle financeiro",'Financial control',"経理管理"]
+const text4 = ["Ano","Year","年"]
+const text5 = ["Mensalidade","Tuition","月謝収入費"]
+const text6 = ["Outras rendas","Other income","その他収入"]
+const text7 = ["Receitas","Receitas","収入"]
+const text8 = ["Despesas","Expenses","支出"]
+const text9 = ["Lucro/Prejuízo","Lucro/Prejuízo","利益/損失"]
+const text10 = ["Lucratividade","Lucratividade","利益率"]
+const text11 = ["Contas a receber","Contas a receber","収入予定"]
+const text12 = ["Contas a pagar","Constas a pagar","支出予定"]
+const text13 = ["Possível lucro","Possível lucro","見込み利益"]
+const text14 = ["Rendas","Lace","収入"]
+
+gymid = 5
+document.getElementById("menubar1").textContent= text1[language]
+document.getElementById("menubar2").textContent= text2[language]
+document.getElementById("menubar3").textContent= text14[language]
+document.getElementById("title-navi-main").textContent = text3[language]
+document.querySelector('#gym-name').innerHTML = sessionStorage.getItem("gym");//gymname
+document.getElementById("selectyear").textContent = text4[language]
+document.getElementById("menubar1").style = "background-color:#FF8856"
+let inputArray = [`<div class="span-div-title"><span class="span-left-title">${ptArray[0]}</span></div>`]
+for (let i=1;i<=13;i++){
+  row = `<div class="span-div"><span class="span-title-language">${ptArray[i]}</span></div>`
+  inputArray += row
+  if(language==0){
+  }else if(language==2){
+    row = `<div class="span-div"><span class="span-title-language-expense">${enArray[i]}</span></div>`
+    inputArray += row
+  }else{
+    row = `<div class="span-div"><span class="span-title-language-expense">${jpArray[i]}</span></div>`
+    inputArray += row
+  }
+}
+document.getElementById("title-div").innerHTML = inputArray
+function navigator(ref) {
+  let path = `./${ref}.html`;
+  location.href = path;
+}
+let getdate = '2023/01'
+let select_year = '2023'
+let paysYetArray = [0,0,0,0,0,0,0,0,0,0,0,0]
+let expensesYetArray = [0,0,0,0,0,0,0,0,0,0,0,0]
+
+expensesGet()
+
+async function payGet(){
+    const paymentdata = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/gymgetpaymentAll?year=${select_year}&id=${gymid}`)
+    paysArray = [0,0,0,0,0,0,0,0,0,0,0,0]
+      for(let i=0;i<paymentdata.length;i++){
+        if(paymentdata[i].division==1){
+          paysYetArray[(paymentdata[i].month-0)-1] += ((paymentdata[i].plan_value).replace( /,/g , "" )-0)
+        }else{
+          paysArray[(paymentdata[i].month-0)-1] += ((paymentdata[i].plan_value).replace( /,/g , "" )-0)
+        }
+
+      }
+      const row1 = await createRow(paysArray,text5[language],"#7B3CFF")
+      document.getElementById("row1").innerHTML += row1
+      const row7 = await createRow(paysYetArray,text11[language],"#666666")
+      document.getElementById("row7").innerHTML += row7
+      return paysArray
+}
+
+async function expensesGet(){///支出の生成
+  const expenseHistorysss = await  makerequest(`https://squid-app-ug7x6.ondigitalocean.app/expensesHistoryGet?id=${gymid}&getdat='2023/01/01'&kubun=1`)
+  expensesArray = [0,0,0,0,0,0,0,0,0,0,0,0]
+  for(let i=0;i<expenseHistorysss.length;i++){
+     month = expenseHistorysss[i].Date.split("-")[1]
+     if(expenseHistorysss[i].STATUS==2){
+       expensesArray[(month-0)] += (expenseHistorysss[i].KAKAKU-0)
+     }else{
+       expensesYetArray[(month-0)] += (expenseHistorysss[i].KAKAKU-0)
+     }
+  }
+const row4 = await createRow(expensesArray,text2[language],"#7B3CFF")
+document.getElementById("row4").innerHTML += row4
+const row8 = await createRow(expensesYetArray,text12[language],"#666666")
+document.getElementById("row8").innerHTML += row8
+const payArray = await payGet()
+const anothervendas = await vendasanotherGet()
+for (let i=0;i<=11;i++){
+  payArray[i]= (payArray[i]-0) + (anothervendas[i]-0)
+}
+const totalVendas = await createRow(payArray,text7[language],"#7B3CFF")
+document.getElementById("row3").innerHTML += totalVendas
+let lucroArray = [0,0,0,0,0,0,0,0,0,0,0,0]
+let lucroave = [0,0,0,0,0,0,0,0,0,0,0,0]
+let lucroExpenses = [0,0,0,0,0,0,0,0,0,0,0,0]
+let lucroTotal = 0
+let expenseTotal = 0
+for (let i=0;i<=11;i++){
+  lucroTotal += (payArray[i]-0)
+  expenseTotal += (expensesArray[i]-0)
+lucroArray[i]= (payArray[i]-0) - (expensesArray[i]-0)
+lucroExpenses[i] = ((paysYetArray[i]-0)+(payArray[i]-0)) - ((expensesArray[i]-0)+expensesYetArray[i]-0)
+num = Math.floor(((lucroArray[i]-0) / (payArray[i]-0) *100) * 10)
+if((lucroArray[i]-0)==0&&(payArray[i]-0)==0){
+  lucroave[i]=0
+}else if(num<0){
+  lucroave[i]=0
+}else{
+  lucroave[i]=  num/10
+}
+}
+num = (lucroTotal-0) - (expenseTotal-0)
+num = Math.floor(((num) / (lucroTotal-0) *100) * 10)
+let abeTotal  = 0
+if(num<0){
+  abeTotal = 0
+}else{
+  abeTotal = num
+}
+const caisAnswer = await createRowTotal(lucroArray,text9[language],"#7B3CFF")
+document.getElementById("row5").innerHTML += caisAnswer
+const aveAnswer = await lucroAbe (lucroave,text10[language],"#7B3CFF", abeTotal )
+document.getElementById("row6").innerHTML += aveAnswer
+const row9 = await createRowTotal(lucroExpenses,text13[language],"#666666")
+document.getElementById("row9").innerHTML += row9
+
+}
+
+async function vendasanotherGet(){///支出の生成
+  const getVendas = await  makerequest(`https://squid-app-ug7x6.ondigitalocean.app/expensesHistoryGet?id=${gymid}&getdat='2023/01/01'&kubun=2`)
+  getVendasArray = [0,0,0,0,0,0,0,0,0,0,0,0]
+  for(let i=0;i<getVendas.length;i++){
+     month = getVendas[i].Date.split("-")[1]
+     getVendasArray[(month-0)] += (getVendas[i].KAKAKU-0)
+  }
+const row2 = await createRow(getVendasArray,text6[language],"#7B3CFF")
+document.getElementById("row2").innerHTML += row2
+return getVendasArray
+}
+
+async function createRow (expensesArray,title,color){
+    row=""
+  row = [`<div class="span-div-title-expense" id="expense-title" style="background-color:${color} !important; color:white !important;"><span class="span-left-title">${title}</span></div>`]
+let totalexpense = 0
+ for (let i=0;i<expensesArray.length;i++){
+   row += `<div class="span-div-expense"><span class="span-title-language">￥${expensesArray[i]}</span></div>`
+   totalexpense += expensesArray[i]
+  }
+  row += `<div class="span-div-expense"><span class="span-title-language">￥${totalexpense}</span></div>`
+  return row
+}
+
+async function createRowTotal (expensesArray,title,color){
+    row=""
+  row = [`<div class="span-div-title-expense" id="expense-title" style="background-color:${color} !important; color:white !important;"><span class="span-left-title">${title}</span></div>`]
+let totalexpense = 0
+ for (let i=0;i<expensesArray.length;i++){
+   if(expensesArray[i]<0){
+     row += `<div class="span-div-expense-total" style="background-color:#FF6666	 !important"><span class="span-title-language">-￥${Math.abs(expensesArray[i])}</span></div>`
+     totalexpense += expensesArray[i]
+   }else{
+     row += `<div class="span-div-expense-total" style="background-color:#00BB00 !important"><span class="span-title-language">￥${expensesArray[i]}</span></div>`
+     totalexpense += expensesArray[i]
+   }
+  }
+  if(totalexpense<0){
+      row += `<div class="span-div-expense-total" style="background-color:#FF6666!important"><span class="span-title-language">-￥${Math.abs(totalexpense)}</span></div>`
+  }else{
+      row += `<div class="span-div-expense-total" style="background-color:#00BB00!important"><span class="span-title-language">￥${totalexpense}</span></div>`
+  }
+  return row
+}
+
+async function lucroAbe (expensesArray,title,color, abeTotal ){
+    row=""
+  row = [`<div class="span-div-title-expense" id="expense-title" style="background-color:${color} !important; color:white !important;"><span class="span-left-title">${title}</span></div>`]
+let totalexpense = 0
+ for (let i=0;i<expensesArray.length;i++){
+   if(expensesArray[i]==0){
+     row += `<div class="span-div-expense-total" style="background-color:white !important; color:#333333"><span class="span-title-language">${expensesArray[i]}%</span></div>`
+     totalexpense += expensesArray[i]
+   }else{
+     row += `<div class="span-div-expense-total" style="background-color:#00BB00 !important"><span class="span-title-language">${expensesArray[i]}%</span></div>`
+     totalexpense += expensesArray[i]
+   }
+  }
+  if(abeTotal ==0){
+      row += `<div class="span-div-expense-total" style="background-color:white!important; color:#333333"><span class="span-title-language">0%</span></div>`
+  }else{
+      row += `<div class="span-div-expense-total" style="background-color:#00BB00!important"><span class="span-title-language">${abeTotal}%</span></div>`
+  }
+  return row
+}
+
+
+
+
+async function makerequest(url){
+  const request = await fetch(url)
+ return request.json()
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+//tbody.innerHTML += row;
+//body.innerHTML += row2;
+
+
+          //  const obj = {
+        //      gymname:"paulotest",
+          //    rep:"paulo",
+          //    pass:"12345678",
+          //    end:"handa",
+          //    tel:"080-12128217",
+          //    email:"paulo@gmail.com",
+          //    save: "2023-02-17",
+        //     language:"pt"};
+
+        //  const attr = {
+        //    method: "POST",
+        //    body: JSON.stringify(obj),
+        //    headers: { "Content-type": "application/json; charset=UTF-8" },
+        //  };
+        //  fetch("https://squid-app-ug7x6.ondigitalocean.app/clientTest", attr)
+      //    .then(response =>	{
+        //      console.log(response)
+      //    })
+
+
+
+
+
+
+
+</script>
