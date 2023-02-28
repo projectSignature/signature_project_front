@@ -130,6 +130,8 @@ const stext77 = ["A discrição 1 deve estar preenchida","Discretion 1 must be f
 const stext78 = ["Insira o nome para o cliente","Enter the name for the customer","入会者に表示するプラン名を入力してください"]
 const stext79 = ["Escolha uma opção","choose an option","プランの区分を選択してください"]
 const stext80 = ["Você selecionou por idade, digita a idade no campo","You selected by age, enter the age in the field","表示する年齢の上限を入力してください"]
+const stext81 = ["Buscando dados","Processing","データ取得中"]
+const stext82 = ["Aguarde","Wait","そのままおまちください"]
 
 document.getElementById("inscricao").innerHTML = stext35[language]
 document.getElementById("member").innerHTML = stext36[language]
@@ -194,8 +196,8 @@ windowLoadGet()
 async function windowLoadGet(){
   const swal =  Swal.fire({
           icon:"info",
-          title: 'Processing',
-          html: 'Wait',
+          title: stext81[language],
+          html: stext82[language],
           allowOutsideClick : false,
           showConfirmButton: false,
           timerProgressBar: true,
@@ -289,6 +291,15 @@ async function payswall(){
             .titlename{
               margin-bottom:20px;
             }
+
+            @media only screen and (max-width: 700px) {
+              .swal2-popup {
+              width: 100% !important;
+               height:500px !important;
+             }
+
+            }
+
             </style>`,
             scrollbarPadding:false,
     }).then((result) => {
@@ -354,7 +365,7 @@ function yetmemberRowCreate(paymentYetlist){
      <span>Mês</span>
      <span>${months[paymentYetlist[index].month]}</span>
      </div>
-     <div onclick="payment_update_dashbord('pay-img${index}')">
+     <div class="yetpay-img" onclick="payment_update_dashbord('pay-img${index}')">
      <img id="pay-img${index}" name="nopaid_${paymentYetlist[index].id}" src="../image/nopaid.png" width="35"/>
      </div>
   </div>`
@@ -649,6 +660,9 @@ function plansget(plans,res){
   create_chart(plansCount,plandiv,datacolor)
 }
 function create_chart(data,datacontents,datacolor){
+  console.log(data)
+  console.log(datacontents)
+  console.log(datacolor)
    var ctx = document.getElementById("graph-area")//.getContext("2d");
   var graph_area = new Chart(ctx,{
     type: 'pie',
