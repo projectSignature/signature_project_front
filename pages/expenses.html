@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>expenses</title>
+    <link rel="stylesheet" href="../style/list_alunos1.css" />
+    <link rel="stylesheet" href="../style/finencer.css" />
+    <link rel="stylesheet" href="../style/finencerHistory.css" />
+</head>
+
+<body>
+  <div id="titlediv">
+          <img id="image-title" src="../image/blackBelt.png"/>
+      <div id="titlemain">Dojo Control System</div>
+      <div id="gym-name"></div>
+  </div>
+
+    <div id="dash">
+      <div id="header">
+        <div><h3 id="title-navi-main">Controle financeiro</h3>
+          <span class="naviband-span-title" id="menubar1" onclick="navigator('finance')"></span>
+          <span class="naviband-span-title" id="menubar2" onclick="navigator('expenses')"></span>
+          <span class="naviband-span-title" id="menubar3" onclick="navigator('lace')"></span>
+        </div>
+      </div>
+      <span id="expensesregisttitle"></span>
+      <div class="top-div-despesas">
+      <div id="regist1" class="category-div">
+      </div>
+      <img class="cursor-pointer-img" id="image-title" src="../image/configration.png" onclick="registrarDespesas()"/>
+      </div>
+　　　　　　<div id="title-div">
+             <div class="left-main-div">
+               <div class="history-title-month-select">
+                 <span id="historico-de-despesas"></span>
+                 <input class="calender-month" type="month" id="expenseSelectMonth"/>
+            </div>
+               <div class="answer-paid" id="history-expense-html">
+               </div>
+             </div>
+             <div class="right-main-div">
+               <canvas id="graph-area" width="400" height="200"></canvas>
+               <div class="sum-expenses-rifght-flex-div">
+                 <div>
+                 <span id="totalexpense-span"></span>
+                 <input id="totalexpense-input" value="" readonly></input>
+               </div>
+               <div><span id="totalexpense-span-paid"></span>
+                 <input id="totalexpense-input-paid" value="" readonly></input>
+               </div>
+               <div>
+               <span id="totalexpense-span-nopaid"></span>
+                 <input id="totalexpense-input-nopaid" value="" readonly></input>
+              </div>
+             </div>
+           </div>
+    </div>
+</body>
+<script src="../script/swal.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+<script type="text/javascript" src="../script/Chart.PieceLabel.min.js"></script>
+<script type="text/javascript" src="../script/Chart.min.js"></script>
+<script>
+
+
+ const text1 = ["Fluxo de caixa","Cash flow","キャッシュフー"]
+const text2 = ["Despesas","Expenses","支出"]
+const text3 = ["Controle financeiro",'Financial control',"経理管理"]
+const text4 = ["Nome da despesa","Expense name","項目名"]
+const text5 = ["Valor(campo livre)","Amount(free field)","金額(入力フリー)"]
+const text6 = ["Dia de pagamento(campo livre)","Payday (free field)","支払い日(入力フリー)"]
+const text7 = ["Nome da categoria","Category name","カテゴリー名"]
+const text8 = ["Salvar","Save","保存"]
+const text9 = ["Cancelar","Cancel","キャンセル"]
+const text10 =["Alteração foi feita com sucesso","Change was successfully made","変更が完了しました"]
+const text11 = ["Pronto","Success","完了"]
+const text12 = ["Registrar categoria","Register category","新カテゴリー追加"]
+const text13 = ["Editar categoria","Edit category","カテゴリー修正"]
+const text14 = ["Cor atual", "Current color", "現状の設定カラー"]
+const text15 = ["Selecione uma cor caso queira trocar","Select a color if you want to change","設定カラー変更する際は下記から選択してください"]
+const text16 = ["Tem certeza de que deseja excluir a categoria selecionada? Despesas já registradas nessa categoria serão tratadas como desconhecidas",
+                "Are you sure you want to delete the selected category? Expenditures already registered in that category will be treated as unknown",
+                "選択したカテゴリーを削除しますか？該当カテゴリーで既に登録済みの支出は不明として扱われます!"]
+const text17 = ["Registrar despesa","Save expense","支出を登録します"]
+const text18 = ["Pago","Paid","支払い済み"]
+const text19 = ["Não pago","Unpaid","未払い"]
+const text20 = ["Anotações","Notes","メモ"]
+const text21 = ["Despesa","Expense","支出"]
+const text22 = ["Valor","Value","金額"]
+const text23 = ["Status","Status","支払い状況"]
+const text24 = ["Data","Date","日付"]
+const text25 = ["Buscando dados","Processing","データ取得中"]
+const text26 = ["Aguarde","Wait","そのままおまちください"]
+const text27 = ["despesas registradas","Recorded expenses","登録済み支出項目"]
+const text28 = ["Histórico de despesas","Expense history","選択月の支出一覧"]
+const text29 = ["Registrar nome de despesas","Creating Expenditure Items","支出項目の登録"]
+const text30 = ["Salvando alteração","Saving change","変更内容を登録中"]
+const text31 = ["Selecione uma categoria","Select a category","カテゴリーを選択してください"]
+const text32 = ["Despesas por categoria","Expenses by category","支出カテゴリー別割合グラフ"]
+const text33 = ["Não tem categoria registradas","No category registered","登録済みのカテゴリーがありません"]
+const text34 = ["Tem certeza de que deseja excluir a despesa selecionada? Despesas já registradas nessa com o nome serão tratadas como desconhecidas",
+                "Are you sure you want to delete the selected expense? Expenditures already registered in that expense will be treated as unknown",
+                "選択した支出項目名を削除しますか？該当項目で既に登録済みの支出は不明として扱われます!"]
+const text35 = ["Deletar","Delete","削除"]
+const text36 = ["Escolha a despesa qu deseja deletar","Choose the expense you want to delete","削除したい支出項目を選択してください"]
+const text37 = ["Deletar item de despesa", "Delete expenditure item","支出項目の削除"]
+const text38 = ["Alterar item de despesa", "Change expenditure item","支出項目の修正"]
+const text39 = ["Você ainda não tem dados registrados, comece adicionando pela categoria, depois o nome das despesas.","You don't have registered data yet, start by adding by category, then the name of the expenses.","まだ情報がありません、初めに支出のカテゴリーを登録し、次に支出項目名を登録してください"]
+const text40 = ["Voltar","Back","閉じる"]
+const text41 = ["Alterar dados da despesa","Change expense data","支出の修正をします"]
+const text42 = ["Podemos deletar a despesa selecionada?","Can we delete the selected expense?","選択した支出を削除します。よろしいですか？"]
+const text43 = ["desconhecido","undefined","不明"]
+const text44 = ["Total de despesas","Total expenses","総支出"]
+const text45 = ["Pagas","Paid","支払済み"]
+const text46 = ["Para pagar","To pay", "未払い"]
+const text47 = ["Não há dados registrados","No data recorded","選択月の登録データありません"]
+const text49 = ["Rendas","Lace","収入"]
+
+const eText1 = ["O campo do nome não pode está vazio","Enter payment item name","支出名を入力してください"]
+const eText2 = ["Selecione a categoria","Select the category","支出の区分を選択してください"]
+const eText3 = ["O campo do nome da categoria não pode está vazio","Enter category name","カテゴリー名を入力してください"]
+const eText4 = ["Selecione uma cor", "Select color", "カテゴリーのカラーを選択してください"]
+const eText5 = ["Coloque o valor","Please enter payment amount","支払い額を入力してください"]
+const eText6 = ["Selecion se pagou ou não","Select whether you paid or not","支払い状況を選択してください"]
+
+
+
+function monthSelect() {
+    var today = new Date();
+    today.setDate(today.getDate());
+    var yyyy = today.getFullYear();
+    var mm = ("0"+(today.getMonth()+1)).slice(-2);
+    document.getElementById("expenseSelectMonth").value=yyyy+'-'+mm;
+     if(mm==12){
+       aftermonth = `${(today.getFullYear()+1)}-1-01`
+     }else{
+       aftermonth = `${yyyy+'-'+("0"+(today.getMonth()+2)).slice(-2)}-01`
+     }
+    return [`${yyyy+'-'+mm}-01`,aftermonth]
+}
+
+let categoryNumber = ""
+let categoryColor = ""
+let category
+let updateColor = ""
+let expensesType = []
+let expenses_history = []
+let categoryArray = []
+
+var token = sessionStorage.getItem("token");//token
+let gymid = sessionStorage.getItem("GYM_ID")
+let language
+if(sessionStorage.getItem("Language")=="PT"){
+  language = 0
+}else if(sessionStorage.getItem("Language")=="EN"){
+  language = 1
+}else{
+  language = 2
+}
+language =0
+gymid = 5
+document.getElementById("menubar1").textContent= text1[language]
+document.getElementById("menubar2").textContent= text2[language]
+document.getElementById("title-navi-main").textContent = text3[language]
+document.querySelector('#gym-name').innerHTML = sessionStorage.getItem("gym");//gymname
+document.getElementById("expensesregisttitle").textContent=  text27[language]
+document.getElementById("historico-de-despesas").textContent=  text28[language]
+document.getElementById("totalexpense-span").textContent = text44[language]
+document.getElementById("totalexpense-span-paid").textContent = text45[language]
+document.getElementById("totalexpense-span-nopaid").textContent = text46[language]
+document.getElementById("menubar3").textContent= text49[language]
+document.getElementById("menubar2").style = "background-color:#FF8856"
+//if (token == 567) {
+//  addMemberDiv.style.display = 'none';
+//  memberDiv.style.display = 'none';
+//  paymentDiv.style.display = 'none';
+//  graduacaoDiv.style.display = 'none';
+//}else if(token==""||token==null){
+//  window.location = `https://squid-app-ug7x6.ondigitalocean.app/signature-project-front`
+//}
+
+
+function navigator(ref) {
+  let path = `./${ref}.html`;
+  location.href = path;
+}
+
+let filter1select = document.getElementById("expenseSelectMonth");
+filter1select.addEventListener('change', changeCalender)
+
+function changeCalender(){
+  var todaychange = new Date(document.getElementById("expenseSelectMonth").value)
+  todaychange.setDate(todaychange.getDate());
+  var yyyy = todaychange.getFullYear();
+  var mm = ("0"+(todaychange.getMonth()+1)).slice(-2);
+   if(mm==12){
+     aftermonth = `${(todaychange.getFullYear()+1)}-01-01`
+   }else{
+     aftermonth = `${yyyy+'-'+("0"+(todaychange.getMonth()+2)).slice(-2)}-01`
+   }
+   windowLoad([`${yyyy+'-'+mm}-01`,aftermonth])
+}
+
+const getdate =  monthSelect() //今月を取得
+windowLoad(getdate)
+
+
+
+async function windowLoad(getdate){
+  const swal =  Swal.fire({
+          icon:"info",
+          title: text25[language],
+          html: text26[language],
+          allowOutsideClick : false,
+          showConfirmButton: false,
+          timerProgressBar: true,
+          onBeforeOpen: () => {
+          Swal.showLoading();
+      }
+    })
+const payname =  await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/finenceGet?id=${gymid}&kubun=1`)　//支出の項目をGET
+  if(payname.length==0){
+    nodataSwall()
+  }
+expensesType = payname　//支出項目の配列
+const expenseHistorysss = await  makerequest(`https://squid-app-ug7x6.ondigitalocean.app/expensesHistoryGet?id=${gymid}&getdat=${getdate[0]}&kubun=1`)
+expenses_history = expenseHistorysss　//支出履歴の配列
+if(expenseHistorysss==0){
+  nohistorySwall()
+}
+const categoryb =  await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/finenceCategoryGet?id=${gymid}&kubun=1`)
+categoryArray = categoryb　//支出カテゴリーの配列
+await createDespesas(payname)　//支出項目の選択画面作成-->上部
+await createDichistory(expenseHistorysss,getdate[1])　//支出一覧の作成-->左下
+const pieChart = await piechartFinance(getdate)　//支出カテゴリア別パイチャート
+ swal.close()
+}
+
+async function test(){
+  const expenseHistoryss =  await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/expensesHistoryGet?id=${gymid}&getdat=${getdate}&kubun=1`)
+}
+
+
+async function makerequest(url){
+  const request = await fetch(url)
+ return request.json()
+}
+
+function nodataSwall(){
+  const swal =  Swal.fire({
+      icon:"info",
+      title: text39[language],
+      allowOutsideClick : false,
+      showConfirmButton: false,
+      showCancelButton:true,
+      cancelButtonText:text40[language],
+      timerProgressBar: true,
+      onBeforeOpen: () => {
+        Swal.showLoading();
+      }
+    })
+}
+
+function nohistorySwall(){
+  const swal =  Swal.fire({
+      icon:"info",
+      title: text47[language],
+      allowOutsideClick : false,
+      showConfirmButton: false,
+      showCancelButton:true,
+      cancelButtonText:text40[language],
+      timerProgressBar: true,
+      onBeforeOpen: () => {
+        Swal.showLoading();
+      }
+    })
+}
+
+
+function createDespesas(data){
+  let returnArray = []
+   for(let i=0;i<data.length;i++){
+     row=`<input class="contas-financio" id="i"value="${data[i].NAME}" style="background-color: ${data[i].COLOR}; color:#333333" onclick="saveExpensesnew(${i})">`
+     returnArray += row
+   }
+   document.getElementById("regist1").innerHTML = returnArray
+   return returnArray
+}
+
+async function createDichistory(data,afterdate){//支出履歴の表示
+  let row = ""
+  row=`<div class="title-div-expense-history"><input  class="expense-value-history-title" value="${text21[language]}" readonly/>
+       <input class="expense-value-history-value"  value="${text22[language]}" readonly/>
+       <input class="expense-value-history-title-data"  value="${text24[language]}" readonly/>
+       <input class="expense-value-history-title-status"  value="${text23[language]}" readonly/>
+       <input  class="expense-value-history-title" value="${text20[language]}"></div readonly/>`
+  for(let i=0;i<data.length;i++){
+   if(data[i].Date<afterdate){
+     (data[i].STATUS==2)?img='src="../image/paid.png"':img='src="../image/nopaid.png"'
+     row += `<div class="expense-div-row"><input class="expense-name-history" value="${data[i].NAME}" style="background-color:${data[i].COLOR}" onclick="edit_history_expense('${data[i].id}_${i}')" readonly/>
+          <input class="expense-value-history"  value="${await kanmaReplase(data[i].KAKAKU)}" readonly/>
+          <input class="expense-value-history" value="${data[i].Date}" readonly/>
+          <img class="expense-statu-img"${img} width="35"/>
+          <input class="expense-memo" value="${data[i].note}" readonly/></div>`
+   }
+
+  }
+  document.getElementById("history-expense-html").innerHTML = row
+  return row
+}
+
+
+async function edit_history_expense(data){
+  arrayNumber = data.split("_")[1]
+  if(expenses_history[arrayNumber].STATUS==2){
+  checkbox= ` <span class="save-new-expenses-span">${text18[language]}:</span><input type="checkbox" class="paid-checkbox" id="expense_paid" onclick="expense_paid_click(1)" checked/>
+    <span class="save-new-expenses-span">${text19[language]}:</span><input type="checkbox" class="paid-checkbox" id="expense_nopaid" onclick="expense_paid_click(2)"/>
+  ` }else{
+    checkbox= ` <span class="save-new-expenses-span">${text18[language]}:</span><input type="checkbox" class="paid-checkbox" id="expense_paid" onclick="expense_paid_click(1)"/>
+      <span class="save-new-expenses-span">${text19[language]}:</span><input type="checkbox" class="paid-checkbox" id="expense_nopaid" onclick="expense_paid_click(2)" checked/>
+    `
+  }
+  await  Swal.fire({
+    title:text41[language],
+  html: ` <div class="edit-expense-delete-img"> <input class="save-expenses-edit" value="${expenses_history[arrayNumber].NAME}" style="background-color: ${expenses_history[arrayNumber].COLOR}; color:#333333" readonly/>
+                 <img class="cursor-pointer-img" id="image-title" src="../image/delete.svg" onclick="delete_data_expense(${expenses_history[arrayNumber].id})"  width="45"/>
+          </div>
+        <div><input class="save-expenses-new" id="expense_value" input type="text" onblur="kanmaChange(this);" pattern="\d*" value="${await kanmaReplase(expenses_history[arrayNumber].KAKAKU)}"/></div>
+        <div><input class="save-expenses-new" id="expense_date" type="date" value="${expenses_history[arrayNumber].Date}"></div>
+        <div class="paid-div">${checkbox}</div>
+        <div><input class="save-expenses-new-note" id="expenseNote" placeholder="${expenses_history[arrayNumber].note}"/>
+       <style>
+       .swal2-popup {
+           width: 60% !important;
+           height:650px !important;
+       }
+       @media only screen and (max-width: 700px) {
+         .swal2-popup {
+         width: 100% !important;
+          height:500px !important;
+        }
+       }
+       </style>
+      `
+  , allowOutsideClick : false     //枠外をクリックしても画面を閉じない
+  , showConfirmButton: true
+  ,showCancelButton: true
+  ,confirmButtonText: text8[language]
+  ,cancelButtonText: text9[language]
+  ,preConfirm: (login) => {
+  value = document.getElementById("expense_value").value
+  expense_data = document.getElementById("expense_date").value
+  paidCheck = document.getElementById("expense_paid")
+  nopaidCheck = document.getElementById("expense_nopaid")
+  if(value==""){Swal.showValidationMessage(`${eText5[language]}`)}
+  　if(paidCheck.checked==false&&nopaidCheck.checked==false){Swal.showValidationMessage(`${eText6[language]}`)}
+  }
+  }).then(async(result) => {
+    valueAnswer =  value.split("￥")[1]
+    if (result.isConfirmed) {
+      (paidCheck.checked==false)?status='1':status='2'
+      url = `https://squid-app-ug7x6.ondigitalocean.app/expenseHistoryupdate`
+      body =
+     {  category:expenses_history[arrayNumber].category,
+        id:expenses_history[arrayNumber].id,
+        gymid:gymid,
+        name:expenses_history[arrayNumber].NAME,
+        value:valueAnswer.replace( /,/g , "" ),
+        color:expenses_history[arrayNumber].COLOR,
+        kubun:1,
+        status:status,
+        date:document.getElementById("expense_date").value,
+        note:document.getElementById("expenseNote").value,
+        upid:data.split("_")[0]
+       }
+    const swal =  Swal.fire({
+       icon:"info",
+       title: text30[language],
+       html: 'Wait',
+       allowOutsideClick : false,
+       showConfirmButton: false,
+       timerProgressBar: true,
+       onBeforeOpen: () => {
+         Swal.showLoading();
+       }
+     })
+     await makerequest2(url,body)
+     await windowLoad()
+    }
+  })
+}
+
+//支出項目の履歴から削除する
+async function delete_data_expense(data){
+Swal.fire({
+   icon:"info",
+   title: text42[language],
+   allowOutsideClick : false,
+   showConfirmButton: true,
+   showCancelButton:true,
+   confirmButtonText: text35[language],
+   cancelButtonText: text9[language],
+   timerProgressBar: true,
+   onBeforeOpen: () => {
+     Swal.showLoading();
+   }
+ }).then(async(result) => {
+   if (result.isConfirmed) {
+     url = `https://squid-app-ug7x6.ondigitalocean.app/expenseHistoryDelete`
+     body =
+     {id:data}
+  const swal =  Swal.fire({
+      icon:"info",
+      title: text30[language],
+      html: text26[language],
+      allowOutsideClick : false,
+      showConfirmButton: false,
+      timerProgressBar: true,
+      onBeforeOpen: () => {
+        Swal.showLoading();
+      }
+    })
+  await makerequest2(url,body)
+  windowLoad()
+   }
+ })
+}
+
+async function saveExpensesnew(data){
+  let todaySave = new Date().toDateInputValue();
+  if(expensesType[data].KAKAKU==null){
+    expenseValue =  `<div><input class="save-expenses-new" id="expense_value" input type="text" onblur="kanmaChange(this);" pattern="\d*" placeholder="Valor"/></div>`
+  }else{
+    expenseValue =  `<div><input class="save-expenses-new" id="expense_value" input type="text" onblur="kanmaChange(this);" pattern="\d*" value="￥${expensesType[data].KAKAKU}"/></div>`
+  }
+  await  Swal.fire({
+    title:text17[language],
+html: ` <div><input class="save-expenses-new" value="${expensesType[data].NAME}" style="background-color: ${expensesType[data].COLOR}; color:#333333" readonly/></div>
+     ${expenseValue}
+        <div><input class="save-expenses-new" id="expense_date" type="date" value="${todaySave}"></div>
+        <div class="paid-div">
+         <span class="save-new-expenses-span">${text18[language]}:</span><input type="checkbox" class="paid-checkbox" id="expense_paid" onclick="expense_paid_click(1)" />
+         <span class="save-new-expenses-span">${text19[language]}:</span><input type="checkbox" class="paid-checkbox" id="expense_nopaid" onclick="expense_paid_click(2)"/>
+        </div>
+        <div><input class="save-expenses-new-note" id="expenseNote" placeholder="${text20[language]}"/>
+       <style>
+       .swal2-popup {
+           width: 60% !important;
+           height:650px !important;
+       }
+       @media only screen and (max-width: 700px) {
+         .swal2-popup {
+         width: 100% !important;
+          height:500px !important;
+        }
+       }
+       </style>
+      `
+, allowOutsideClick : false     //枠外をクリックしても画面を閉じない
+, showConfirmButton: true
+,showCancelButton: true
+,confirmButtonText: text8[language]
+,cancelButtonText: text9[language]
+,preConfirm: (login) => {
+  value = document.getElementById("expense_value").value.split("￥")[1]
+  expense_data = document.getElementById("expense_date").value
+  paidCheck = document.getElementById("expense_paid")
+  nopaidCheck = document.getElementById("expense_nopaid")
+  if(value==""){Swal.showValidationMessage()}
+　if(paidCheck.checked==false&&nopaidCheck.checked==false){Swal.showValidationMessage(`${eText6[language]}`)}
+}
+}).then(async(result) => {
+  if (result.isConfirmed) {
+    (paidCheck.checked==false)?status='1':status='2'
+    url = `https://squid-app-ug7x6.ondigitalocean.app/expenseHistory`
+    body =
+   {  category:expensesType[data].CATEGORY,
+      id:expensesType[data].id,
+      gymid:gymid,
+      name:expensesType[data].NAME,
+      value:value.replace( /,/g , "" ),
+      color:expensesType[data].COLOR,
+      kubun:1,
+      status:status,
+      date:document.getElementById("expense_date").value,
+      note:document.getElementById("expenseNote").value,
+     }
+  const swal =  Swal.fire({
+     icon:"info",
+     title: text30[language],
+     html: text26[language],
+     allowOutsideClick : false,
+     showConfirmButton: false,
+     timerProgressBar: true,
+     onBeforeOpen: () => {
+       Swal.showLoading();
+     }
+   })
+   await makerequest2(url,body)
+   swal.close()
+   await swall_success()
+  }
+})
+}
+
+Date.prototype.toDateInputValue = (function() {
+    var local = new Date(this);
+    local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
+    return local.toJSON().slice(0,10);
+});
+
+function expense_paid_click(data){
+  if(data==1){
+    document.getElementById("expense_nopaid").checked = false
+  }else{
+    document.getElementById("expense_paid").checked = false
+  }
+}
+
+async function registrarDespesas(){
+const categoryRow = await categoryRowCreate(categoryArray)
+  swal.close()
+  await  Swal.fire({
+html: ` <div class="despesas-main-div">
+        <div id="color-selector">
+        <div class="regist-new-expenses-category-title">${text31[language]}</div>
+        <div>${categoryRow}</div>
+        </div>
+          <div class="create-conta-div">
+           <div class="regist-new-expenses">${text29[language]}</div>
+           <input id="dName" placeholder="${text4[language]}"/>
+           <input id="dValue" placeholder="${text5[language]}" input type="text" onblur="kanmaChange(this);" pattern="\d*"/>
+           <input id="dDate" placeholder="${text6[language]}"/>
+           <div class="edit-delete-button-category-div">
+            <input class="edit-delete-button-category"  value="${text37[language]}" onclick="delete_sisyutu_koumoku_check()" readonly/>
+
+          </div>
+        </div>
+       <style>
+       .swal2-popup {
+           width: 60% !important;
+
+       }
+       @media only screen and (max-width: 700px) {
+         .swal2-popup {
+         width: 100% !important;
+          height:500px !important;
+        }
+       }
+       </style>
+      `
+, allowOutsideClick : false     //枠外をクリックしても画面を閉じない
+, showConfirmButton: true
+,showCancelButton: true
+,confirmButtonText: text8[language]
+,cancelButtonText: text9[language]
+,preConfirm: (login) => {
+  dName = document.getElementById("dName").value
+  dValue = document.getElementById("dValue").value
+  dDate = document.getElementById("dDate").value
+  if(dName==""){
+　　　Swal.showValidationMessage(`${eText1[language]}`)
+  }
+  if(categoryNumber==""){
+    Swal.showValidationMessage(`${eText2[language]}`)
+  }
+}
+}).then(async(result) => {
+  if (result.isConfirmed) {
+    url = `https://squid-app-ug7x6.ondigitalocean.app/createexpenses`
+    body =
+   {id:gymid,
+     category:categoryNumber,
+     name:dName,
+     value:dValue.split("￥")[1],
+     color:updateColor,
+     kubun:1,
+     date:dDate
+     }
+  const swal =  Swal.fire({
+     icon:"info",
+     title: text30[language],
+     html: text26[language],
+     allowOutsideClick : false,
+     showConfirmButton: false,
+     timerProgressBar: true,
+     onBeforeOpen: () => {
+       Swal.showLoading();
+     }
+   })
+    await makerequest2(url,body)
+    swal.close()
+    await swall_success()
+    const categoryGetAgain = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/finenceCategoryGet?id=${gymid}`)
+    categoryArray = await categoryGetAgain　//支出カテゴリーの配列
+    await registrarDespesas()
+  }
+})
+
+
+}
+
+
+function categoryRowCreate(data){
+  row = `<input class="categoryRow" type="button" onclick="createCategory()" value="${text12[language]}"/>
+         <input class="categoryRow" type="button" onclick="editCategory()" value="${text13[language]}"/>`
+  for(let i =0;i<data.length;i++){
+  row += `
+  <input class="categoryRow" id="category${i+1}" onclick="mycategory('${data.length}_category${data[i].id}_${data[i].COLOR}_${i+1}')" style="background-color:${data[i].COLOR}" value="${data[i].CATEGORY}" readonly/>
+   `
+  }
+  return row
+}
+function mycategory(data){
+    let loopCount = data.split("_")[0]
+    let yousoId = data.split("_")[1]
+  for(let i=1;i<=loopCount;i++){
+    tagname = `category${i}`
+    if(i==data.split("_")[3]){
+     document.getElementById(tagname).style.border = "solid 5px blue"
+    }else{
+   document.getElementById(tagname).style.border = "solid 0.5px #DDDDDD"
+    }
+  }
+  idselectBe = data.split("category")[1]
+categoryNumber = idselectBe.split("_")[0] //カテゴリーid---------->書き込み用に格納
+updateColor = data.split("_")[2]
+}
+
+function createCategory(){
+    Swal.fire({
+html: `
+           <input class="class-category-input-swall" id="category-input-swall" placeholder="${text7[language]}" />
+           <div><span class="class-select-color-span">${eText4[language]}</span></div>
+        <div>
+
+           <input id="color1" class="discrition_color" type="button" style="background-color:#CBFFD3" onclick="color_definid('id_color1')" />
+           <input id="color2" class="discrition_color" type="button" style="background-color:#B1F9D0" onclick="color_definid('id_color2')" />
+           <input id="color3" class="discrition_color" type="button" style="background-color:#EDFFBE" onclick="color_definid('id_color3')" />
+           <input id="color4" class="discrition_color" type="button" style="background-color:#BAD3FF" onclick="color_definid('id_color4')" />
+           <input id="color5" class="discrition_color" type="button" style="background-color:#C2EEFF" onclick="color_definid('id_color5')" />
+           <input id="color6" class="discrition_color" type="button" style="background-color:#BAD3FF" onclick="color_definid('id_color6')" />
+           <input id="color7" class="discrition_color" type="button" style="background-color:#FFBEDA" onclick="color_definid('id_color7')" />
+           <input id="color8" class="discrition_color" type="button" style="background-color:#FF88FF" onclick="color_definid('id_color8')" />
+           <input id="color9" class="discrition_color" type="button" style="background-color:#FFC7AF" onclick="color_definid('id_color9')" />
+           <input id="color10" class="discrition_color" type="button" style="background-color:#999999" onclick="color_definid('id_color10')" />
+        </div>
+
+       <style>
+       .swal2-popup {
+           width: 50% !important;
+           height:500px !important;
+       }
+       @media only screen and (max-width: 700px) {
+         .swal2-popup {
+         width: 100% !important;
+          height:500px !important;
+        }
+       }
+       </style>
+      `
+, allowOutsideClick : false     //枠外をクリックしても画面を閉じない
+, showConfirmButton: true
+,showCancelButton: true
+,confirmButtonText: text8[language]
+,cancelButtonText: text9[language]
+,preConfirm: (login) => {
+  categoryame = document.getElementById("category-input-swall").value
+  if(categoryame==""){
+　　　Swal.showValidationMessage(`${eText3[language]}`)
+  }
+  if(categoryColor==""){
+    Swal.showValidationMessage(`${eText4[language]}`)
+  }
+}
+}).then(async( result) => {
+ if (result.isConfirmed) {
+     url = `https://squid-app-ug7x6.ondigitalocean.app/createCategory`
+     body =
+     {id:gymid,
+      category:categoryame,
+      kubun:1,
+      color:categoryColor}
+  const swal =  Swal.fire({
+      icon:"info",
+      title: 'Processing',
+      html: 'Wait',
+      allowOutsideClick : false,
+      showConfirmButton: false,
+      timerProgressBar: true,
+      onBeforeOpen: () => {
+        Swal.showLoading();
+      }
+    })
+      await makerequest2(url,body)
+      swal.close()
+      await swall_success()
+      const categoryGetAgain = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/finenceCategoryGet?id=${gymid}`)
+      categoryArray = await categoryGetAgain　//支出カテゴリーの配列
+      await registrarDespesas()
+}
+})
+}
+
+async function editCategory(){
+const rowcategory = await category_edit_row()
+if(rowcategory==""){
+answercategory = `<span style="color:red">${text33[language]}</span>`
+}else{
+answercategory =  rowcategory
+}
+ Swal.fire({
+html: `
+      <div id="category-span">
+      ${answercategory}
+      </div>
+       <style>
+       .swal2-popup {
+           width: 50% !important;
+           height:500px !important;
+       }
+       @media only screen and (max-width: 700px) {
+         .swal2-popup {
+         width: 100% !important;
+          height:500px !important;
+        }
+       }
+       </style>
+      `
+,title: eText2[language]
+, allowOutsideClick : false     //枠外をクリックしても画面を閉じない
+, showConfirmButton: true
+,showCancelButton: true
+,confirmButtonText: text8[language]
+,cancelButtonText: text9[language]
+,preConfirm: (login) => {
+  if(rowcategory==""){
+  }else{
+    categoryame = document.getElementById("category-input-swall").value
+    if(categoryame==""){
+  　　　Swal.showValidationMessage(`${eText3[language]}`)
+    }
+    if(categoryColor==""){
+      Swal.showValidationMessage(`${eText4[language]}`)
+    }
+  }
+}
+}).then(async( result) => {
+ if (result.isConfirmed) {
+   if(rowcategory==""){
+     swal.close()
+   }else{
+     url = `https://squid-app-ug7x6.ondigitalocean.app/createCategory`
+     body =
+     {id:gymid,
+      category:categoryame,
+      kubun:1,
+      color:categoryColor}
+  const swal =  Swal.fire({
+      icon:"info",
+      title: 'Processing',
+      html: 'Wait',
+      allowOutsideClick : false,
+      showConfirmButton: false,
+      timerProgressBar: true,
+      onBeforeOpen: () => {
+        Swal.showLoading();
+      }
+    })
+    await makerequest2(url,body)
+    swal.close()
+    await swall_success()
+    const categoryGetAgain = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/finenceCategoryGet?id=${gymid}`)
+    categoryArray = await categoryGetAgain　//支出カテゴリーの配列
+    await registrarDespesas()
+   }
+}
+})
+}
+
+function category_edit_row(){
+  let rowcategory = ""
+  for(let i=0;i<categoryArray.length;i++){
+    rowcategory += `<input class="edit-input-category" id="edit_${i}" onclick="edit_swall_Category('${i}_${categoryArray[i].id}')" value="${categoryArray[i].CATEGORY}" style="background-color:${categoryArray[i].COLOR}"/>`
+   }
+   return rowcategory
+}
+function color_definid(data){
+    for(let i=1;i<=10;i++){
+      tagname = `color${i}`
+      if(`id_color${i}`==`${data}`){
+        var elColored = document.getElementById(tagname);
+     elColored.style.border = "solid 5px blue"
+     categoryColor = elColored.style.backgroundColor
+      }else{
+   document.getElementById(tagname).style.border = "solid 0.5px #DDDDDD"
+      }
+    }
+}
+
+function edit_swall_Category(data){　////カテゴリーの修正SWALL
+categoryColor = categoryArray[data.split("_")[0]].COLOR
+    Swal.fire({
+html: `    <div><span class="class-select-color-span">${text13[language]}</span></div>
+           <input class="class-category-input-swall" id="category-input-swall-before"  value="${categoryArray[data.split("_")[0]].CATEGORY}"/>
+            <img id="image-title" src="../image/delete.svg" onclick="delete_category(${categoryArray[data.split("_")[0]].id})"/>
+           <div><span class="class-select-color-span">${text14[language]}</span></div>
+           <input id="colorbefore" class="discrition_color" style="background-color:${categoryArray[data.split("_")[0]].COLOR}"  readonly/>
+
+           <div class="class-select-color-span-edit"><span>${text15[language]}</span></div>
+        <div>
+           <input id="color1" class="discrition_color" type="button" style="background-color:#CBFFD3" onclick="color_definid('id_color1')" />
+           <input id="color2" class="discrition_color" type="button" style="background-color:#B1F9D0" onclick="color_definid('id_color2')" />
+           <input id="color3" class="discrition_color" type="button" style="background-color:#EDFFBE" onclick="color_definid('id_color3')" />
+           <input id="color4" class="discrition_color" type="button" style="background-color:#BAD3FF" onclick="color_definid('id_color4')" />
+           <input id="color5" class="discrition_color" type="button" style="background-color:#C2EEFF" onclick="color_definid('id_color5')" />
+           <input id="color6" class="discrition_color" type="button" style="background-color:#BAD3FF" onclick="color_definid('id_color6')" />
+           <input id="color7" class="discrition_color" type="button" style="background-color:#FFBEDA" onclick="color_definid('id_color7')" />
+           <input id="color8" class="discrition_color" type="button" style="background-color:#FF88FF" onclick="color_definid('id_color8')" />
+           <input id="color9" class="discrition_color" type="button" style="background-color:#FFC7AF" onclick="color_definid('id_color9')" />
+           <input id="color10" class="discrition_color" type="button" style="background-color:#999999" onclick="color_definid('id_color10')" />
+        </div>
+
+       <style>
+       .swal2-popup {
+           width: 50% !important;
+           height:500px !important;
+       }
+       @media only screen and (max-width: 700px) {
+         .swal2-popup {
+         width: 100% !important;
+          height:500px !important;
+        }
+       }
+       </style>
+      `
+, allowOutsideClick : false     //枠外をクリックしても画面を閉じない
+, showConfirmButton: true
+,showCancelButton: true
+,confirmButtonText: text8[language]
+,cancelButtonText: text9[language]
+,preConfirm: (login) => {
+  categoryame = document.getElementById("category-input-swall-before").value
+  if(categoryame==""){
+　　　Swal.showValidationMessage(`${eText3[language]}`)
+  }
+  if(categoryColor==""){
+    Swal.showValidationMessage(`${eText4[language]}`)
+  }
+}
+}).then(async( result) => {
+ if (result.isConfirmed) {
+
+   url = `https://squid-app-ug7x6.ondigitalocean.app/categoryupdate`
+   body =
+   {id:categoryArray[data.split("_")[0]].id,
+    category:categoryame,
+    kubun:1,
+    color:categoryColor}
+const swal =  Swal.fire({
+    icon:"info",
+    title: text30[language],
+    html: text26[language],
+    allowOutsideClick : false,
+    showConfirmButton: false,
+    timerProgressBar: true,
+    onBeforeOpen: () => {
+      Swal.showLoading();
+    }
+  })
+await makerequest2(url,body)
+await swall_success()
+const categoryGetAgain = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/finenceCategoryGet?id=${gymid}`)
+categoryArray = await categoryGetAgain　//支出カテゴリーの配列
+await registrarDespesas()
+swal.close()
+}
+})
+}
+async function delete_category(data){
+  Swal.fire({
+  title: text16[language],
+  showDenyButton: true,
+  showCancelButton: false,
+  confirmButtonText: text8[language],
+  denyButtonText: text9[language],
+  width:1000
+}).then( async (result) => {
+  /* Read more about isConfirmed, isDenied below */
+   if (result.isConfirmed) {
+    url = `https://squid-app-ug7x6.ondigitalocean.app/destroyCategory`
+    body =
+    {id:data}
+ const swal =  Swal.fire({
+     icon:"info",
+     title: 'Processing',
+     html: 'Wait',
+     allowOutsideClick : false,
+     showConfirmButton: false,
+     timerProgressBar: true,
+     onBeforeOpen: () => {
+       Swal.showLoading();
+     }
+   })
+ await makerequest2(url,body)
+ const categoryGetAgain = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/finenceCategoryGet?id=${gymid}`)
+ categoryArray = await categoryGetAgain　//支出カテゴリーの配列
+ await registrarDespesas()
+ } else if (result.isDenied) {
+  swal.close()
+  }
+ })
+
+}
+
+
+
+
+
+async function makerequest2(url,data){
+  const request = await fetch(url, {//pegar todos dados do table de pagamentos //n]
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: { "Content-type": "application/json; charset=UTF-8" }
+  })
+  return request.json()
+}
+
+function swall_success(){
+ Swal.fire({
+ title: text11[language]
+, html : text10[language]
+, icon : 'success'
+, timer : '1500'
+});
+windowLoad()
+   }
+
+
+   async function kanmaReplase(data){
+      let numberAns = data.replace(/[^0-9]/g, "");
+      kanmaAns = numberAns.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
+      return `￥${kanmaAns}`
+   };
+
+
+   async function kanmaChange(inputAns){
+    let inputAnsValue = await inputAns.value;
+    if(!isNaN(inputAns.value)){
+      let numberAns = inputAnsValue.replace(/[^0-9]/g, "");
+      kanmaAns = numberAns.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
+      if(kanmaAns.match(/[^0-9]/g)){
+       inputAns.value= `￥${kanmaAns}`;
+       return true;
+     }else{
+       inputAns.value= `￥${numberAns}`
+     }
+     }else{
+     inputAns.value=""
+     }
+
+   };
+
+   async function piechartFinance(gatdate){
+     const arraycreate = []
+     let answerCheck1 = 0
+     let answerCheck2 = 0
+     let labelArray = []
+     let dataArray = []
+     let colorArray = []
+     for(let i= 0;i<expenses_history.length;i++){
+       if(expenses_history[i].Date<gatdate[1]){
+        arraycreate.push(expenses_history[i])
+        if(expenses_history[i].STATUS==1){
+          answerCheck1+= (expenses_history[i].KAKAKU-0)
+        }else{
+          answerCheck2+= (expenses_history[i].KAKAKU-0)
+        }
+       }
+     }
+     document.getElementById("totalexpense-input").value = `${await kanmaReplase(((answerCheck1-0)+(answerCheck2-0)).toString())}`
+     document.getElementById("totalexpense-input-paid").value = `${await kanmaReplase((answerCheck2).toString())}`
+     document.getElementById("totalexpense-input-nopaid").value = `${await kanmaReplase((answerCheck1).toString())}`
+
+     const sum = []
+          await arraycreate.map(d => {
+        	const find = sum.findIndex(s =>  s['category'] == d['category'])
+        	if(find != -1){
+      	 sum[find]['KAKAKU'] = (d['KAKAKU']-0)+(sum[find]["KAKAKU"]-0)
+        	}else{
+        		sum.push(d)
+        	}
+      })
+      let expenseTotal = 0
+      let nopaidExpense = 0
+      let paidExpense = 0
+        for(let i=0;i<sum.length;i++){
+        dataArray.push(sum[i].KAKAKU)
+          colorArray.push(sum[i].COLOR)
+        for(let ii=0;ii<categoryArray.length;ii++){
+          if(categoryArray[ii].id==sum[i].category){
+            labelArray.push(categoryArray[ii].CATEGORY)
+          }
+          }
+        }
+      await  create_chart(labelArray,dataArray,colorArray)
+   }
+   function create_chart(datacontents,data,datacolor){
+      var ctx = document.getElementById("graph-area")//.getContext("2d");
+     var graph_area = new Chart(ctx,{
+       type: 'pie',
+       data:{
+         labels:datacontents,
+         datasets:[{
+           backgroundColor:datacolor,
+           data: data
+         }]
+       },
+       options:{
+         title:{
+           display:true,
+           text: text32[language]
+         },
+   legend:{
+     display:false ,
+   },
+   pieceLabel: {
+     render: "label",
+     fontSize: 10,
+     fontColor: "black",
+     },
+   }
+     });
+   }
+
+async function delete_sisyutu_koumoku_check(){
+  let row = ""
+for(let i=0;i<expensesType.length;i++){
+  row += `<input class="edit-expenses-input-div" value=${expensesType[i].NAME} style="background-color:${expensesType[i].COLOR}" onclick="delete_sisyutu_koumoku(${expensesType[i].id})"/>`
+}
+const swal =  Swal.fire({
+    html: `<div>${text36[language]}</div>
+           <div class="edit-expenses-input-div-wrap">
+            ${row}
+          </div>
+          <style>
+          .swal2-popup {
+              width: 50% !important;
+          }
+          @media only screen and (max-width: 700px) {
+            .swal2-popup {
+            width: 100% !important;
+             height:500px !important;
+           }
+          }
+          </style> `,
+    allowOutsideClick : false,
+    showConfirmButton: true,
+    confirmButtonText:text9[language],
+    timerProgressBar: true,
+    onBeforeOpen: () => {
+      Swal.showLoading();
+    }
+  })
+}
+
+function delete_sisyutu_koumoku(data){//支出項目を削除
+  Swal.fire({
+  title: text34[language],
+  showDenyButton: true,
+  showCancelButton: false,
+  confirmButtonText: text35[language],
+  denyButtonText: text9[language],
+  allowOutsideClick:false,
+  width:1000
+}).then( async (result) => {
+   if (result.isConfirmed) {
+    url = `https://squid-app-ug7x6.ondigitalocean.app/FinencepayCategory`
+    body =
+    {id:data}
+ const swal =  Swal.fire({
+     icon:"info",
+     title: 'Processing',
+     html: 'Wait',
+     allowOutsideClick : false,
+     showConfirmButton: false,
+     timerProgressBar: true,
+     onBeforeOpen: () => {
+       Swal.showLoading();
+     }
+   })
+ await makerequest2(url,body)
+windowLoad()
+ } else if (result.isDenied) {
+  swal.close()
+  }
+ })
+}
+
+
+
+</script>
