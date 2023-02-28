@@ -1,0 +1,167 @@
+
+#dash{
+    width: 99%;
+    margin: auto;
+    height: 80vh;
+    margin-top: 0.5%;
+}
+
+#dash #header{
+    width: 100%;
+    height: 8vh;
+    display: flex;
+    justify-content:space-between;
+    align-items: center;
+    background-color: #444444;
+}
+#header span{
+  font-size: 2vw;
+  color: 	#DDDDDD
+}
+#header div{
+  display: flex;
+  align-items:flex-end;
+}
+.naviband-span-title{
+  background-color: #444444;
+  width:14rem;
+  height: 8vh;
+  border:0px;
+  margin-left: 5px;
+  font-size: 1.5vw !important;
+  overflow-wrap: break-word;
+  display: flex;
+  padding-left: 5px;
+  align-items:flex-end;
+  text-align: center;
+  justify-content: center;
+}
+.naviband-span-title:hover{
+  background-color: #FF8856;
+}
+#title-navi-main{
+    font-size: 2vw;
+    color: 	#DDDDDD;
+    margin-right: 60px;
+}
+
+#dash #header select{
+    border-radius: 10px;
+    text-align: center;
+    font-size: 2vw;
+    border: 1px solid gray;
+    cursor:pointer
+}
+
+.after-insert-div{
+  display: flex;
+  width: 100%;
+}
+.after-insert-div div{
+  margin-left:3px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  background-color: #7B3CFF;
+  color: white;
+}
+.span-div{
+  border:0.2px solid 	#BBBBBB;
+  width:6.5%;
+  height:3rem;
+
+}
+.span-div-title{
+  width:12%;
+  height:3rem;
+  font-size: 1.4vw;
+  border:0.2px solid 	#BBBBBB;
+
+}
+#row1{
+  display: flex;
+  width: 100%;
+}
+
+.span-div-title-expense{
+  margin-top:2px;
+    width:12%;
+  height:3rem;
+  font-size: 1.4vw;
+  border:0.2px solid 	#BBBBBB;
+  color:#222222 !important;
+}
+
+.span-div-expense{
+    margin-top:2px;
+  border:0.2px solid 	#BBBBBB;
+  width:6.5%;
+  height:3rem;
+  background-color: white !important;
+  color:#222222 !important;
+}
+.span-div-expense-total{
+  margin-top:2px;
+  border:0.2px solid 	#BBBBBB;
+  width:6.5%;
+  height:3rem;
+  color:#EEEEEE;
+  font-weight: bold;
+}
+#row7{
+  margin-top:15px;
+}
+
+
+/* 500px以下の画面で適用 */
+@media only screen and (max-width: 600px) {
+  .mobile-scroll {
+    overflow-x: auto; /* 横スクロール */
+    -webkit-overflow-scrolling: touch; /* スマホでスムーズにスクロールできるように */
+  }
+
+
+#dash #header{
+    width: 100%;
+    height: 15vh;
+    display: block;
+}
+
+#btn-filter{
+  width:15%;
+  font-size:1.5vh;
+}
+#header-title{
+  font-size:3vh;
+}
+
+#dash #header h3{
+    font-size: 5vw;
+    color: 	#DDDDDD;
+    margin-right: 1%;
+}
+#dash #header select{
+    width: 35%;
+    height: 45%;
+    margin-top: 5%;
+    font-size: 2.5vw;
+}
+}
+
+/* 500px以下の画面で適用 */
+@media screen and (min-width: 501px) and (max-width: 0px) {
+
+  #btn-filter{
+    width:15%;
+  }
+  #header-title{
+    font-size:4vh;
+  }
+
+  #createdate{
+    width:20%;
+  }
+
+
+}
