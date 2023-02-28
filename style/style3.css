@@ -438,7 +438,7 @@ height:220px !important;
 html{
 overflow-y: scroll;
 }
- #finance{
+#finance{
   margin-top:5px;
 }
 ._sticky.z-02 {
@@ -595,10 +595,20 @@ margin-left:0;
 }
 
 .yetpayment-member-div{
-width:80%;
+width:100%;
+}
+.yetpayment-member-div img{
+  width:2rem !important;
+  height:2rem !important;
+}
+.yetpay-img{
+  display: flex;
+  align-items: center;
+  align-items: center;
+  justify-content: center;
 }
 .yetmember-span-name{
-font-size:2vw;
+font-size:3vw;
 }
 .twrapper{
 justify-content: center !important;
@@ -607,9 +617,9 @@ justify-content: center !important;
 font-size:1.5vw;
 }
 
-#graduation-span-img img{
-width:2.5rem !important;
-height:2.5rem !important;
+.year-month-yetpay-div img{
+width:1.5rem !important;
+height:1.5rem !important;
 }
 #graduation-message-div p{
 font-size:2vw;
@@ -638,14 +648,18 @@ font-size:3vw;
 margin-left:15px;
 height:3rem;
 }
- 
- .menu-div img{
+
+.menu-div img{
   width:2.5rem;
   height: 2.5rem
 }
 #add_member_div img{
   width:2rem !important;
   height: 2rem !important;
+}
+
+.titlename{
+font-size:3.5vw;
 }
 
 }
@@ -671,9 +685,8 @@ margin-top:5px;
 height:270px !important;
 }
  #graph-area-entrance ,#graph-area-entrance2{
-  width:580px !important;
-} 
-  
+  width:550px !important;
+}
 .menu-div{
 width: 100%;
 display: block;
