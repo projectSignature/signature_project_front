@@ -638,6 +638,15 @@ font-size:3vw;
 margin-left:15px;
 height:3rem;
 }
+ 
+ .menu-div img{
+  width:2.5rem;
+  height: 2.5rem
+}
+#add_member_div img{
+  width:2rem !important;
+  height: 2rem !important;
+}
 
 }
 
