@@ -388,7 +388,8 @@ function payment_update_dashbord(data){
 async function graduationswall(){
   let yetmemberswall = []
   const clients1 = await await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/gymgraduationlist?id=${gymid}`)
-    if(clients1.length<=1){
+  const graduationArray = await graduationArrayCreat(clients1)
+    if(graduationArray==0){
       Swal.fire({
         title: stext58[language],
         showCancelButton: true,
@@ -398,7 +399,7 @@ async function graduationswall(){
         width: 550,
       })
     }else{
-  const graduationArray = await graduationArrayCreat(clients1)
+  
   const graduationrow = await graduationRowCreate(graduationArray)
     Swal.fire({
       showCancelButton: true,
