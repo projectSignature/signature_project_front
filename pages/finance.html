@@ -19,7 +19,7 @@
 
     <div id="dash">
       <div id="header">
-        <div><h3 id="title-navi-main"></h3>
+        <div class="header-div"><h3 id="title-navi-main"></h3>
           <span class="naviband-span-title" id="menubar1" onclick="navigator('finance')"></span>
           <span class="naviband-span-title" id="menubar2" onclick="navigator('expenses')"></span>
           <span class="naviband-span-title" id="menubar3" onclick="navigator('lace')"></span>
@@ -31,6 +31,7 @@
           </select>
         </div>
       </div>
+         <div  class="twrapper">
 　　　　　　<div class="after-insert-div" id="title-div">
            </div>
            <div class="after-insert-div" id="row1">
@@ -51,12 +52,13 @@
            </div>
            <div class="after-insert-div" id="row9">
            </div>
+         </div>
     </div>
 </body>
 <script src="../script/swal.min.js"></script>
 <script>
 
-language = 0
+
 const ptArray = ["Fluxo da caixa","Jan","Fev","Mar","Abr",
   "Mai","Jun","Jul","Ago","Set","Out","Nov","Dez","Total"]
 const enArray = ["Cash flow","Jan","Feb","Mar","Apr","May","Jun",
@@ -77,8 +79,26 @@ const text11 = ["Contas a receber","Contas a receber","収入予定"]
 const text12 = ["Contas a pagar","Constas a pagar","支出予定"]
 const text13 = ["Possível lucro","Possível lucro","見込み利益"]
 const text14 = ["Rendas","Lace","収入"]
-
-gymid = 5
+var token = sessionStorage.getItem("token");//token
+let gymid = sessionStorage.getItem("GYM_ID")
+let language
+if(sessionStorage.getItem("Language")=="PT"){
+  language = 0
+}else if(sessionStorage.getItem("Language")=="EN"){
+  language = 1
+}else{
+  language = 2
+}
+if (token == 567) {
+  addMemberDiv.style.display = 'none';
+  memberDiv.style.display = 'none';
+  paymentDiv.style.display = 'none';
+  graduacaoDiv.style.display = 'none';
+}else if(token==""||token==null){
+  window.location = `https://squid-app-ug7x6.ondigitalocean.app/signature-project-front`
+}
+//language = 0
+//gymid = 5
 document.getElementById("menubar1").textContent= text1[language]
 document.getElementById("menubar2").textContent= text2[language]
 document.getElementById("menubar3").textContent= text14[language]
