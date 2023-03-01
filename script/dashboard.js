@@ -25,7 +25,6 @@ if(sessionStorage.getItem("Language")=="PT"){
 //language=0
 //gymid=4
 document.querySelector('#gym-name').innerHTML = sessionStorage.getItem("gym");//gymname
-console.log(token)
 if (token == 567) {
   addMemberDiv.style.display = 'none';
   memberDiv.style.display = 'none';
