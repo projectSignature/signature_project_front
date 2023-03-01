@@ -123,7 +123,7 @@
   }
 #dash #header{
     width: 100%;
-    height: 15rem;
+    height: 12rem;
     display: block;
 }
 
@@ -137,23 +137,24 @@
 .header-div span {
   margin-top:5px;
   width:100%;
-  height:3rem;
+  height:2rem;
   font-size:5vw !important;
 }
 #selectyear{
 font-size:5vw !important;
 margin-left: 25%;
+margin-right:5px;
 }
 #filter1{
   width:100%;
-  height:3rem;
+  height:2rem;
   font-size:5vw !important;
 }
 
 .twrapper{
   overflow-y:scroll;
   overflow-x:scroll;
-  height:85%;
+  height:60%;
 }
 
 .after-insert-div{
@@ -161,6 +162,9 @@ margin-left: 25%;
 }
 .span-title-language{
   font-size:3vw !important;
+}
+.span-left-title{
+  font-size:3.5vw !important;
 }
 
 #btn-filter{
@@ -179,7 +183,7 @@ margin-left: 25%;
 #dash #header select{
     width: 35%;
     height: 45%;
-    margin-top: 5%;
+    margin-top: 10px;
     font-size: 2.5vw;
 }
 }
