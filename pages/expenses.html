@@ -7,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>expenses</title>
     <link rel="stylesheet" href="../style/list_alunos1.css" />
-    <link rel="stylesheet" href="../style/finencer.css" />
     <link rel="stylesheet" href="../style/finencerHistory.css" />
 </head>
 
@@ -20,7 +19,7 @@
 
     <div id="dash">
       <div id="header">
-        <div><h3 id="title-navi-main">Controle financeiro</h3>
+        <div class="header-div"><h3 id="title-navi-main">Controle financeiro</h3>
           <span class="naviband-span-title" id="menubar1" onclick="navigator('finance')"></span>
           <span class="naviband-span-title" id="menubar2" onclick="navigator('expenses')"></span>
           <span class="naviband-span-title" id="menubar3" onclick="navigator('lace')"></span>
@@ -37,21 +36,22 @@
                <div class="history-title-month-select">
                  <span id="historico-de-despesas"></span>
                  <input class="calender-month" type="month" id="expenseSelectMonth"/>
-            </div>
+                </div>
                <div class="answer-paid" id="history-expense-html">
                </div>
              </div>
              <div class="right-main-div">
                <canvas id="graph-area" width="400" height="200"></canvas>
                <div class="sum-expenses-rifght-flex-div">
-                 <div>
+                 <div class="expense-title-div">
                  <span id="totalexpense-span"></span>
                  <input id="totalexpense-input" value="" readonly></input>
                </div>
-               <div><span id="totalexpense-span-paid"></span>
+               <div class="expense-title-div">
+                 <span id="totalexpense-span-paid"></span>
                  <input id="totalexpense-input-paid" value="" readonly></input>
                </div>
-               <div>
+               <div class="expense-title-div">
                <span id="totalexpense-span-nopaid"></span>
                  <input id="totalexpense-input-nopaid" value="" readonly></input>
               </div>
@@ -160,8 +160,8 @@ if(sessionStorage.getItem("Language")=="PT"){
 }else{
   language = 2
 }
-language =0
-gymid = 5
+//language =0
+//gymid = 5
 document.getElementById("menubar1").textContent= text1[language]
 document.getElementById("menubar2").textContent= text2[language]
 document.getElementById("title-navi-main").textContent = text3[language]
@@ -173,14 +173,14 @@ document.getElementById("totalexpense-span-paid").textContent = text45[language]
 document.getElementById("totalexpense-span-nopaid").textContent = text46[language]
 document.getElementById("menubar3").textContent= text49[language]
 document.getElementById("menubar2").style = "background-color:#FF8856"
-//if (token == 567) {
-//  addMemberDiv.style.display = 'none';
-//  memberDiv.style.display = 'none';
-//  paymentDiv.style.display = 'none';
-//  graduacaoDiv.style.display = 'none';
-//}else if(token==""||token==null){
-//  window.location = `https://squid-app-ug7x6.ondigitalocean.app/signature-project-front`
-//}
+if (token == 567) {
+  addMemberDiv.style.display = 'none';
+  memberDiv.style.display = 'none';
+  paymentDiv.style.display = 'none';
+  graduacaoDiv.style.display = 'none';
+}else if(token==""||token==null){
+  window.location = `https://squid-app-ug7x6.ondigitalocean.app/signature-project-front`
+}
 
 
 function navigator(ref) {
