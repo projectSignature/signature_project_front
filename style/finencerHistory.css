@@ -11,7 +11,29 @@
 .right-main-div{
   width:49%;
   height: 100%;
-
+}
+#dash #header{
+    width: 100%;
+    height: 8vh;
+    display: flex;
+    justify-content:space-between;
+    align-items: center;
+    background-color: #444444;
+}
+#header span{
+  font-size: 2vw;
+  color: 	#DDDDDD
+}
+#header div{
+  display: flex;
+  align-items:flex-end;
+}
+#dash #header select{
+    border-radius: 10px;
+    text-align: center;
+    font-size: 2vw;
+    border: 1px solid gray;
+    cursor:pointer
 }
 .category-div{
   height: 5rem;
@@ -306,4 +328,133 @@ cursor: pointer;
   color:#333333;
   font-style: italic;
       font-family: Times New Roman, "メイリオ";
+}
+.naviband-span-title{
+  background-color: #444444;
+  width:14rem;
+  height: 8vh;
+  border:0px;
+  margin-left: 5px;
+  font-size: 1.5vw !important;
+  overflow-wrap: break-word;
+  display: flex;
+  padding-left: 5px;
+  align-items:flex-end;
+  text-align: center;
+  justify-content: center;
+}
+.naviband-span-title:hover{
+  background-color: #FF8856;
+}
+
+/* 500px以下の画面で適用 */
+/* 500px以下の画面で適用 */
+@media only screen and (max-width: 600px) {
+  .mobile-scroll {
+    overflow-y: auto; /* 横スクロール */
+    -webkit-overflow-scrolling: touch; /* スマホでスムーズにスクロールできるように */
+  }
+#dash #header{
+    width: 100%;
+    height: 11rem;
+    display: block;
+}
+
+.header-div{
+  width:100%;
+  display:flex;
+  flex-wrap: wrap;
+  justify-content:  center;
+}
+.header-div span {
+  margin-top:5px;
+  width:100%;
+  height:2rem;
+  font-size:5vw !important;
+}
+#header-title{
+  font-size:3vh;
+}
+
+#dash #header h3{
+    font-size: 5vw;
+    color: 	#DDDDDD;
+    margin-right: 1%;
+}
+
+#selectyear{
+font-size:5vw !important;
+margin-left: 25%;
+margin-right:5px;
+}
+#filter1{
+  width:100%;
+  height:2rem;
+  font-size:5vw !important;
+}
+
+.twrapper{
+  overflow-y:scroll;
+  overflow-x:scroll;
+  height:60%;
+}
+
+.after-insert-div{
+  width:80rem !important;
+}
+.span-title-language{
+  font-size:3vw !important;
+}
+.span-left-title{
+  font-size:3.5vw !important;
+}
+
+#btn-filter{
+  width:15%;
+  font-size:1.5vh;
+}
+
+#title-div{
+  display: block;
+}
+.right-main-div{
+  width:100%;
+  overflow-x: hidden;
+}
+.answer-paid{
+  width:100%;
+  margin-top: 10px;
+  height:40vh;
+  overflow-y: auto
+}
+.left-main-div{
+    width:100%;
+}
+#historico-de-despesas{
+  font-size: 4vw;
+}
+.calender-month{
+  font-size:3vw !important;
+}
+.sum-expenses-rifght-flex-div{
+  width: 100%;
+  display: block;
+}
+.expense-title-div{
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+}
+.expense-title-div span, .expense-title-div input{
+  width:70% !important;
+  margin-left:5rem;
+}
+.sum-expenses-rifght-flex-div span{
+  font-size: 3vw;
+   transform: rotate(0deg)
+}
+.sum-expenses-rifght-flex-div input{
+  font-size: 5vw;
+  font-style: "Meiryou"
+}
 }
