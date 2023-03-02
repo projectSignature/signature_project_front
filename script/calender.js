@@ -1,8 +1,26 @@
 //document.getElementById("img2").addEventListener("click", swallopen1)
 //document.getElementById("img").addEventListener("click", swallopen2)
 document.querySelector('#gym-name').innerHTML = sessionStorage.getItem("gym");
+var token = sessionStorage.getItem("token");//token
+let gymid = sessionStorage.getItem("GYM_ID")
+let language
+if(sessionStorage.getItem("Language")=="PT"){
+  language = 0
+}else if(sessionStorage.getItem("Language")=="EN"){
+  language = 1
+}else{
+  language = 2
+}
+if (token == 567) {
+  addMemberDiv.style.display = 'none';
+  memberDiv.style.display = 'none';
+  paymentDiv.style.display = 'none';
+  graduacaoDiv.style.display = 'none';
+}else if(token==""||token==null){
+  window.location = `https://squid-app-ug7x6.ondigitalocean.app/signature-project-front`
+}
 
-let gymid = 4
+//let gymid = 4
 let monArray = []
 let tueArray = []
 let wedArray = []
@@ -28,7 +46,7 @@ const stext13 = ["Calendário atual","Current calender","現在のカレンダ�
 const stext14=["Alteração foi feita com sucesso","Change was successfully made","変更が完了しました"]
 const stext15=["Pronto","Success","完了"]
 const stext16=["Alterar calendário","Update calender","カレンダーの変更"]
-var my_language = 0
+//var my_language = 0
 document.getElementById('calendar-title').innerHTML = stext13[my_language]
 proccesing_swal()
 getDados();
