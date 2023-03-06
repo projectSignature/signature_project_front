@@ -64,13 +64,14 @@
 .answer-paid{
   margin-top: 10px;
   height:55vh;
-  overflow-y: auto
+  overflow-y: auto;
+  border:0.2px solid #222222;
 }
 .answer-paid-tilte{
   width:13rem;
 
   border-radius: 5px;
-  border: 0.5px solid #DDDDDD;
+  border: 0.5px solid #666666;
 }
 .answer-paid-other{
   width:10rem;
