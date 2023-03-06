@@ -347,6 +347,16 @@ cursor: pointer;
   background-color: #FF8856;
 }
 
+.header-div{
+  width:100%;
+}
+
+#dash #header h3{
+    font-size: 2.5vw;
+    color: 	#DDDDDD;
+    margin-right: 1%;
+}
+
 /* 500px以下の画面で適用 */
 /* 500px以下の画面で適用 */
 @media only screen and (max-width: 600px) {
@@ -456,5 +466,8 @@ margin-right:5px;
 .sum-expenses-rifght-flex-div input{
   font-size: 5vw;
   font-style: "Meiryou"
+}
+.contas-financio{
+font-size:3vw !important;
 }
 }
