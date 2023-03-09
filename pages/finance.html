@@ -31,39 +31,42 @@
           </select>
         </div>
       </div>
-         <div  class="twrapper">
-　　　　　　<div class="after-insert-div" id="title-div">
+
+          <div class="dash-twrapper">
+            <div class="twrapper-div-flex-right" id="left-twrapper">
+            </div>
+            <div  class="twrapper">
+               <div id="twrapper-div-new" class="twrapper-div">
+               </div>
+               <div class="twrapper-div" id="row1">
+               </div>
+               <div class="twrapper-div" id="row2">
+              </div>
+              <div  class="twrapper-div" id="row3">
+              </div>
+              <div class="twrapper-div" id="row4">
+              </div>
+              <div class="twrapper-div" id="row5">
+              </div>
+              <div class="twrapper-div" id="row6">
+              </div>
+              <div class="twrapper-div" id="row7">
+              </div>
+              <div class="twrapper-div" id="row8">
+              </div>
+              <div class="twrapper-div" id="row9">
+              </div>
            </div>
-           <div class="after-insert-div" id="row1">
-           </div>
-           <div class="after-insert-div" id="row2">
-           </div>
-           <div class="after-insert-div" id="row3">
-           </div>
-           <div class="after-insert-div" id="row4">
-           </div>
-           <div class="after-insert-div" id="row5">
-           </div>
-           <div class="after-insert-div" id="row6">
-           </div>
-           <div class="after-insert-div" id="row7">
-           </div>
-           <div class="after-insert-div" id="row8">
-           </div>
-           <div class="after-insert-div" id="row9">
-           </div>
-         </div>
+       </div>
     </div>
 </body>
 <script src="../script/swal.min.js"></script>
 <script>
-
-
-const ptArray = ["Fluxo da caixa","Jan","Fev","Mar","Abr",
+const ptArray = ["Jan","Fev","Mar","Abr",
   "Mai","Jun","Jul","Ago","Set","Out","Nov","Dez","Total"]
-const enArray = ["Cash flow","Jan","Feb","Mar","Apr","May","Jun",
+const enArray = ["Jan","Feb","Mar","Apr","May","Jun",
   "Jul", "Aug", "Sep","Oct","Nov","Dec","Total"]
-const jpArray = ["キャッシュフロー","1月","2月","3月","4月","5月","6月","7月","8月",
+const jpArray = ["1月","2月","3月","4月","5月","6月","7月","8月",
  "9月","10月","11月","12月","合計"]
 const text1 = ["Fluxo de caixa","Cash flow","キャッシュフー"]
 const text2 = ["Despesas","Expenses","支出"]
@@ -106,9 +109,11 @@ document.getElementById("title-navi-main").textContent = text3[language]
 document.querySelector('#gym-name').innerHTML = sessionStorage.getItem("gym");//gymname
 document.getElementById("selectyear").textContent = text4[language]
 document.getElementById("menubar1").style = "background-color:#FF8856"
-let inputArray = [`<div class="span-div-title"><span class="span-left-title">${ptArray[0]}</span></div>`]
-for (let i=1;i<=13;i++){
-  row = `<div class="span-div"><span class="span-title-language">${ptArray[i]}</span></div>`
+//let inputArray2 = [`<div class="span-div-title"><span class="span-left-title">${ptArray[0]}</span></div>`]
+//document.getElementById("twrapper-div-new").innerHTML = inputArray2
+let inputArray = ""
+for (let i=0;i<=12;i++){
+  row = `<div class="span-div"><span class="span-title-language-expense">${ptArray[i]}</span></div>`
   inputArray += row
   if(language==0){
   }else if(language==2){
@@ -119,7 +124,18 @@ for (let i=1;i<=13;i++){
     inputArray += row
   }
 }
-document.getElementById("title-div").innerHTML = inputArray
+document.getElementById("twrapper-div-new").innerHTML += inputArray
+row2 =[`<div class="span-div-top5"></div>`]
+row2 += [`<div class="span-div-title-width" id="expense-title" style="background-color:"#7B3CFF" !important; color:white !important;"><span class="span-left-title">${text5[language]}</span></div>`]
+row2 += [`<div class="span-div-title-width" id="expense-title" style="background-color:"#7B3CFF" !important; color:white !important;"><span class="span-left-title">${text6[language]}</span></div>`]
+row2 += [`<div class="span-div-title-width" id="expense-title" style="background-color:"#7B3CFF" !important; color:white !important;"><span class="span-left-title">${text7[language]}</span></div>`]
+row2 += [`<div class="span-div-title-width" id="expense-title" style="background-color:"#7B3CFF" !important; color:white !important;"><span class="span-left-title">${text8[language]}</span></div>`]
+row2 += [`<div class="span-div-title-width" id="expense-title" style="background-color:"#7B3CFF" !important; color:white !important;"><span class="span-left-title">${text9[language]}</span></div>`]
+row2 += [`<div class="span-div-title-width" id="expense-title" style="background-color:"#7B3CFF" !important; color:white !important;"><span class="span-left-title">${text10[language]}</span></div>`]
+row2 += [`<div class="span-div-title-width-gray" id="expense-title-gray" style="background-color:"#7B3CFF" !important; color:white !important;"><span class="span-left-title">${text11[language]}</span></div>`]
+row2 += [`<div class="span-div-title-width-gray" id="expense-title-2" style="background-color:"#7B3CFF" !important; color:white !important;"><span class="span-left-title">${text12[language]}</span></div>`]
+row2 += [`<div class="span-div-title-width-gray" id="expense-title-2" style="background-color:"#7B3CFF" !important; color:white !important;"><span class="span-left-title">${text13[language]}</span></div>`]
+document.getElementById("left-twrapper").innerHTML += row2
 function navigator(ref) {
   let path = `./${ref}.html`;
   location.href = path;
@@ -128,9 +144,7 @@ let getdate = '2023/01'
 let select_year = '2023'
 let paysYetArray = [0,0,0,0,0,0,0,0,0,0,0,0]
 let expensesYetArray = [0,0,0,0,0,0,0,0,0,0,0,0]
-
 expensesGet()
-
 async function payGet(){
     const paymentdata = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/gymgetpaymentAll?year=${select_year}&id=${gymid}`)
     paysArray = [0,0,0,0,0,0,0,0,0,0,0,0]
@@ -143,7 +157,7 @@ async function payGet(){
 
       }
       const row1 = await createRow(paysArray,text5[language],"#7B3CFF")
-      document.getElementById("row1").innerHTML += row1
+  document.getElementById("row1").innerHTML += row1
       const row7 = await createRow(paysYetArray,text11[language],"#666666")
       document.getElementById("row7").innerHTML += row7
       return paysArray
@@ -204,7 +218,6 @@ const aveAnswer = await lucroAbe (lucroave,text10[language],"#7B3CFF", abeTotal 
 document.getElementById("row6").innerHTML += aveAnswer
 const row9 = await createRowTotal(lucroExpenses,text13[language],"#666666")
 document.getElementById("row9").innerHTML += row9
-
 }
 
 async function vendasanotherGet(){///支出の生成
@@ -219,9 +232,8 @@ document.getElementById("row2").innerHTML += row2
 return getVendasArray
 }
 
-async function createRow (expensesArray,title,color){
+async function createRow(expensesArray,title,color){
     row=""
-  row = [`<div class="span-div-title-expense" id="expense-title" style="background-color:${color} !important; color:white !important;"><span class="span-left-title">${title}</span></div>`]
 let totalexpense = 0
  for (let i=0;i<expensesArray.length;i++){
    row += `<div class="span-div-expense"><span class="span-title-language">￥${expensesArray[i]}</span></div>`
@@ -230,10 +242,8 @@ let totalexpense = 0
   row += `<div class="span-div-expense"><span class="span-title-language">￥${totalexpense}</span></div>`
   return row
 }
-
 async function createRowTotal (expensesArray,title,color){
     row=""
-  row = [`<div class="span-div-title-expense" id="expense-title" style="background-color:${color} !important; color:white !important;"><span class="span-left-title">${title}</span></div>`]
 let totalexpense = 0
  for (let i=0;i<expensesArray.length;i++){
    if(expensesArray[i]<0){
@@ -251,10 +261,8 @@ let totalexpense = 0
   }
   return row
 }
-
 async function lucroAbe (expensesArray,title,color, abeTotal ){
     row=""
-  row = [`<div class="span-div-title-expense" id="expense-title" style="background-color:${color} !important; color:white !important;"><span class="span-left-title">${title}</span></div>`]
 let totalexpense = 0
  for (let i=0;i<expensesArray.length;i++){
    if(expensesArray[i]==0){
@@ -272,55 +280,8 @@ let totalexpense = 0
   }
   return row
 }
-
-
-
-
 async function makerequest(url){
   const request = await fetch(url)
  return request.json()
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-//tbody.innerHTML += row;
-//body.innerHTML += row2;
-
-
-          //  const obj = {
-        //      gymname:"paulotest",
-          //    rep:"paulo",
-          //    pass:"12345678",
-          //    end:"handa",
-          //    tel:"080-12128217",
-          //    email:"paulo@gmail.com",
-          //    save: "2023-02-17",
-        //     language:"pt"};
-
-        //  const attr = {
-        //    method: "POST",
-        //    body: JSON.stringify(obj),
-        //    headers: { "Content-type": "application/json; charset=UTF-8" },
-        //  };
-        //  fetch("https://squid-app-ug7x6.ondigitalocean.app/clientTest", attr)
-      //    .then(response =>	{
-        //      console.log(response)
-      //    })
-
-
-
-
-
-
-
 </script>
