@@ -125,6 +125,11 @@ header img{
     width:45%;
     height:10rem;
     font-size:6vh;
-
   }
+    #open-close-button ,#menu-add-button{
+          margin-left:20px;
+      }
+      .main-div-div div{
+  font-size: 4vh;
+}
 }
