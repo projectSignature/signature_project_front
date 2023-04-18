@@ -17,6 +17,7 @@ let mm = ("0"+(today.getMonth()+1)).slice(-2);
 let dd = ("00" + today.getDate()).slice(-2);
 
 document.getElementById('calender-input').value = `${yyyy}-${mm}-${dd}`
+document.getElementById('keihi-select').style = "background:#FF6928"
 
  function process1(data){
    if(data==1){
@@ -26,7 +27,8 @@ document.getElementById('calender-input').value = `${yyyy}-${mm}-${dd}`
    }else{
      document.getElementById('syunyu-select').style = "background:#FF6928"
      document.getElementById('keihi-select').style = "background:#FFFFFF"
-     proccessKubun = 2
+     swallErrorOpen('まだ準備できていません')
+     //proccessKubun = 2
    }
 }
 
@@ -45,22 +47,41 @@ async function savedata(data){//data is pay status 1:paid,2:yet
     swallErrorOpen('支払い金額を入力してください')
   }else{
     saveToSql(datainput,memo,slectPay,valuePay)
+    try{
+        const swal =  Swal.fire({
+                icon:"info",
+                title: '登録中',
+                html: 'しばらくお待ちください',
+                allowOutsideClick : false,
+                showConfirmButton: false,
+                timerProgressBar: true,
+                onBeforeOpen: () => {
+                Swal.showLoading();
+            }
+          })
+          let url = `https://squid-app-ug7x6.ondigitalocean.app/createCostRest`
+          body = {
+            d1:restid,
+            d2:workerid,
+            d3:paykubun,
+            d4:(valuePay.split('￥')[1]).replace(",",""),
+            d5:`'${datainput}'`,
+            d6:memo,
+            d7:slectPay,
+            d8:data
+          }
+          const reqInsert = await makerequestStatus(url,body)
+          await swal.close()
+          if(reqInsert!=200){
+            swallErrorOpen("Ops, houve erro")
+          }else{
+            swallSuccess()
+          }
+      }catch (error) {
+        swallErrorOpen("Ops, houve erro")
+      }
   }
-  let url = `https://squid-app-ug7x6.ondigitalocean.app/createCostRest`
 
-  body = {
-    d1:restid,
-    d2:workerid,
-    d3:paykubun,
-    d4:(valuePay.split('￥')[1]).replace(",",""),
-    d5:`'${datainput}'`,
-    d6:memo,
-    d7:slectPay,
-    d8:data
-  }
-  console.log(body)
-  const reqInsert = await makerequest2(url,body)
-  console.log(reqInsert)
 }
 
 async function makerequest2(url,data){
@@ -69,7 +90,16 @@ async function makerequest2(url,data){
     body: JSON.stringify(data),
     headers: { "Content-type": "application/json; charset=UTF-8" }
   })
-  return request.json()
+  return request.JSON()
+}
+
+async function makerequestStatus(url,data){
+  const request = await fetch(url, {//pegar todos dados do table de pagamentos //n]
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: { "Content-type": "application/json; charset=UTF-8" }
+  })
+  return request.status
 }
 
 function saveToSql(d1,d2,d3,d4){
@@ -82,7 +112,7 @@ function saveToSql(d1,d2,d3,d4){
 
 function selectType(data){
   console.log(data)
-  for(let i=1;i<10;i++){
+  for(let i=1;i<12;i++){
     if(data==i){
       document.getElementById(`type${i}`).style = "background:#FF6928"
       paykubun = i
@@ -106,6 +136,25 @@ function swallErrorOpen(data) {
   });
 }
 
+async function swallSuccess(){
+  const Toast = await Swal.mixin({
+  toast: true,
+  position: 'top-end',
+  showConfirmButton: false,
+  timer: 2000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.addEventListener('mouseenter', Swal.stopTimer)
+    toast.addEventListener('mouseleave', Swal.resumeTimer)
+  }
+})
+
+Toast.fire({
+  icon: 'success',
+    title: 'Feito'
+})
+}
+
 async function kanmaReplase(){
   let data = document.getElementById('value-input')
    let numberAns = (data.value.slice( 1 )).replace(/[^0-9]/g, "");
@@ -113,3 +162,19 @@ async function kanmaReplase(){
    data.value = `￥${kanmaAns}`
    //return `￥${kanmaAns}`
 };
+ function addkamoku(){
+   swallErrorOpen("追加の権限がありません")
+ }
+
+ function dayChange(data){
+   let dt = document.getElementById("calender-input")
+   let date = new Date(dt.value.split("-")[0], dt.value.split("-")[1]-1, dt.value.split("-")[2]);
+   if(data==2){
+     date.setDate(date.getDate() + 1)
+   }else{
+     date.setDate(date.getDate() - 1)
+   }
+   let dM = (("0" + (date.getMonth()+1)).slice(-2))
+   let dd = (("0" + date.getDate()).slice(-2))
+   dt.value = `${date.getFullYear()}-${dM}-${dd}`
+ }
