@@ -22,8 +22,8 @@
   </header>
   <div class="main-div">
     <div class="div-comon-division">
-      <input class="top-button" id="keihi-select" value="経費" onclick="process1(1)"/>
-      <input class="top-button" id="syunyu-select" value="収入" onclick="process1(2)"/>
+      <input type="button" class="top-button" id="keihi-select" value="経費" onclick="process1(1)"/>
+      <input type="button"  class="top-button" id="syunyu-select" value="収入" onclick="process1(2)"/>
     </div>
     <div class="div-comon-division-common">
       <div class="date-div-span">日付</div>
@@ -43,7 +43,7 @@
      <div class="center-colomn-div">
        <select id="pay-select">
          <option value="0">ゆうちょ銀行</option>
-         <option value="1">現金</option>
+         <option value="1" placeholder="￥">現金</option>
          <option value="2">クレジット</option>
        </select>
      </div>
@@ -94,6 +94,18 @@
       <div class="category-select-button" id="type9" onclick="selectType(9)">
         <img src="..\image\zappi.png" width="40"/>
         <div><span>雑費</span></div>
+      </div>
+      <div class="category-select-button" id="type10" onclick="selectType(10)">
+        <img src="..\image\hoken.png" width="40"/>
+        <div><span>損害保険</span></div>
+      </div>
+      <div class="category-select-button" id="type11" onclick="selectType(11)">
+        <img src="..\image\shoumou.png" width="40"/>
+        <div><span>消耗品費</span></div>
+      </div>
+      <div class="category-select-button" id="type12" onclick="selectType(12)">
+        <img src="..\image\plus.png" width="40"/>
+        <div><span>科目追加</span></div>
       </div>
     </div>
     <div class="regist-button">
