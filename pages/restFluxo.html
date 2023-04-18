@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+
+<head>
+    <meta charset="utf-8" >
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="../style/restFlux.css">
+    </script>
+</head>
+
+<body  class="bg-dark">
+  <header>
+    <div class="header-left-div">
+      <img src="..\image\rootsgrill_logo.png" width="50" class="setting-right-button"  />
+      <span>Roots Grill</span>
+    </div>
+    <div class="header-right-div">
+     <span id="name-span"></span>
+   </div>
+  </header>
+  <div class="main-div">
+    <div class="div-comon-division">
+       <div class="div-comon-division-title">
+         <div>先月繰り越し</div>
+         <div>収入</div>
+         <div>経費</div>
+         <div>合計</div>
+       </div>
+       <div class="div-comon-division-answer">
+         <div id="kirikoshi-div">￥2,000,000</div>
+         <div id="syunyu-div">￥0</div>
+         <div id="sisyutsu-div"></div>
+         <div id="goukei-div"></div>
+       </div>
+
+       <div class="keihi-show-history-title">直近の実績</div>
+       <div id="insert-inner-html1" class="keihi-show-history">
+
+
+       </div>
+    </div>
+
+  </div>
+     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+     <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js" type="text/javascript"></script>-->
+     <script src="../script/swal.js"></script>
+     <script type="text/javascript" src="../script/restFlux.js"></script>
+</body>
+
+
+</html>
