@@ -27,9 +27,9 @@
     </div>
     <div class="div-comon-division-common">
       <div class="date-div-span">日付</div>
-      <div class="right-div-add"><</div>
-      <div class="center-colomn-div"><input type="date" class="calender-input" id="calender-input"/></div>
-      <div class="right-div-add">></div>
+      <div class="right-div-add" onclick="dayChange(1)"><</div>
+      <div class="center-colomn-div"><input type="date" class="calender-input" id="calender-input" required/></div>
+      <div class="right-div-add" onclick="dayChange(2)">></div>
     </div>
     <div class="div-comon-division-common">
       <div class="date-div-span">メモ</div>
@@ -43,7 +43,7 @@
      <div class="center-colomn-div">
        <select id="pay-select">
          <option value="0">ゆうちょ銀行</option>
-         <option value="1" placeholder="￥">現金</option>
+         <option value="1">現金</option>
          <option value="2">クレジット</option>
        </select>
      </div>
@@ -53,7 +53,7 @@
  <div class="div-comon-division-common">
    <div class="date-div-span">金額</div>
    <div class="right-div-add"></div>
-   <div class="center-colomn-div"><input type="text" class="calender-input" id="value-input" oninput="kanmaReplase()"/></div>
+   <div class="center-colomn-div"><input placeholder="￥" type="text" class="calender-input" id="value-input" oninput="kanmaReplase()" required/></div>
    <div class="right-div-add"></div>
  </div>
 
@@ -103,7 +103,7 @@
         <img src="..\image\shoumou.png" width="40"/>
         <div><span>消耗品費</span></div>
       </div>
-      <div class="category-select-button" id="type12" onclick="selectType(12)">
+      <div class="category-select-button" id="type12" onclick="addkamoku(12)">
         <img src="..\image\plus.png" width="40"/>
         <div><span>科目追加</span></div>
       </div>
