@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+
+<head>
+    <meta charset="utf-8" >
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="../style/dashrest.css">
+    </script>
+    <title>dashboard</title>
+</head>
+
+<body  class="bg-dark">
+  <header>
+    <div class="header-left-div">
+      <img src="..\image\rootsgrill_logo.png" width="50" class="setting-right-button"  />
+      <span>Roots Grill</span>
+    </div>
+    <div class="header-right-div">
+     <span id="name-span"></span></div>
+  </header>
+
+  <div class="main-div">
+    <div id="time-button" class="main-div-div" onclick="time_regist_swall()">
+      <div><img id="img"src="..\image\dakoku.png" width="60" class="setting-right-button"  /></div>
+      <div><span>打刻</span></div>
+    </div>
+    <div id="open-close-button" class="main-div-div" onclick="swallErrorOpen('準備中、すまん')">
+      <div><img id="img"src="..\image\open.png" width="100" class="setting-right-button"  /></div>
+      <div><span>Open/Close</span></div>
+    </div>
+    <div id="expenxe-button" class="main-div-div" onclick="pagechange('kaikei')">
+      <div><img id="img"src="..\image\iene.png" width="100" class="setting-right-button"  /></div>
+      <div><span>支出登録</span></div>
+    </div>
+    <div id="menu-add-button" class="main-div-div"  onclick="swallErrorOpen('準備中、すまん')">
+      <div><img id="img"src="..\image\menu.png" width="100" class="setting-right-button"  /></div>
+      <div><span>メニュー</span></div>
+    </div>
+  </div>
+
+
+     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+     <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js" type="text/javascript"></script>-->
+     <script src="../script/swal.js"></script>
+     <script type="text/javascript" src="../script/loginrestClients.js"></script>
+</body>
+
+
+</html>
