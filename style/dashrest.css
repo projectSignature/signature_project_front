@@ -39,10 +39,11 @@ header img{
   width:100%;
   height:90%;
   display: flex;
-  align-items: center
+  align-items: center;
+  justify-content: space-around;
 }
 .main-div-div{
-  margin-left:2rem;
+
   width:35rem;
   height:15rem;
   border:2px solid #333333;
@@ -109,7 +110,10 @@ header img{
   }
   .main-div-div{
     margin-left:1rem;
-    width:10rem;
+    width:13rem;
+  }
+  .main-div-div div{
+    font-size: 4vh;
   }
   header span{
     font-size:3vh;
@@ -125,11 +129,6 @@ header img{
     width:45%;
     height:10rem;
     font-size:6vh;
+
   }
-    #open-close-button ,#menu-add-button{
-          margin-left:20px;
-      }
-      .main-div-div div{
-  font-size: 4vh;
-}
 }
