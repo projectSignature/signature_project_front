@@ -169,4 +169,13 @@ header img{
   header span{
     font-size:3vh;
   }
+  .date-div-span{
+    text-align: left;
+    width:10%;
+    margin-left: 2%;
+    font-size:2vh;
+  }
+  .regist-button{
+    height:4rem;
+  }
 }
