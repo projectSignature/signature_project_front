@@ -6,8 +6,8 @@ let errormessage
 let proccessKubun = 0
 let paykubun = 0
 let payStatus = 0
-let restid=0
-let workerid=0
+//let restid=0
+//let workerid=0
 let saiTotal = 2000000
 let saveArray1 = []
 let restid=sessionStorage.getItem("restid")
