@@ -75,6 +75,8 @@ async function savedata(data){//data is pay status 1:paid,2:yet
           if(reqInsert!=200){
             swallErrorOpen("Ops, houve erro")
           }else{
+            document.getElementById('memo-pay').value = ""
+            document.getElementById('value-input').value = ""
             swallSuccess()
           }
       }catch (error) {
