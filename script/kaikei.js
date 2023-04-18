@@ -6,10 +6,14 @@ let errormessage
 let proccessKubun = 0
 let paykubun = 0
 let payStatus = 0
-let restid=0
-let workerid=0
-//let menbername = sessionStorage.getItem("name")
-let menbername = "Paulo Shigaki"
+let restid=sessionStorage.getItem("restid")
+let workerid=sessionStorage.getItem("id")
+let menbername = sessionStorage.getItem("name")
+console.log(restid)
+if(restid==null||workerid==null||menbername==null){
+  pagechange('loginadminrst')
+}
+//let menbername = "Paulo Shigaki"
 document.getElementById('name-span').innerText = menbername
 var today = new Date();
 let yyyy = today.getFullYear();
@@ -33,6 +37,9 @@ document.getElementById('keihi-select').style = "background:#FF6928"
 }
 
 async function savedata(data){//data is pay status 1:paid,2:yet
+if(restid==null||workerid==null||menbername==null){
+    pagechange('loginadminrst')
+  }
   let datainput = document.getElementById('calender-input').value
   let memo = document.getElementById('memo-pay').value
   let slectPay = document.getElementById('pay-select').value
