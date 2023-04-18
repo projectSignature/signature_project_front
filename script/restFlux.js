@@ -10,8 +10,12 @@ let restid=0
 let workerid=0
 let saiTotal = 2000000
 let saveArray1 = []
-//let menbername = sessionStorage.getItem("name")
-let menbername = "Paulo Shigaki"
+let restid=sessionStorage.getItem("restid")
+let workerid=sessionStorage.getItem("id")
+let menbername = sessionStorage.getItem("name")
+if(restid==null||workerid==null||menbername==null){
+  pagechange('loginadminrst')
+}
 document.getElementById('name-span').innerText = menbername
 var today = new Date();
 let yyyy = today.getFullYear();
@@ -23,6 +27,9 @@ let id = '0'
 //document.getElementById('keihi-select').style = "background:#FF6928"
 getcosthistory()
 async function getcosthistory(){
+  if(restid==null||workerid==null||menbername==null){
+    pagechange('loginadminrst')
+  }
   let row = ""
   let sumTotal = 0
   const payname =  await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/costRestGet?id=${id}`)　//支出の項目をGET
