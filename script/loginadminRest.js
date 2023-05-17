@@ -29,11 +29,7 @@ async function login_request(user, password) {
     password: password
   })
     .then((response) => {
-       if(response.data.message = "internal error"){
-        errormessage = "Check username and password";
-        document.getElementById("pass").value = "";
-        swallopen(errormessage);
-      }else if (response.status==200) {
+       if (response.status==200) {
        sessionStorage.setItem("name",response.data[0].worker_name)
        sessionStorage.setItem("id",response.data[0].id)
        sessionStorage.setItem("restid",response.data[0].rest_id)
