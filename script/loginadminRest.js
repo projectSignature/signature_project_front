@@ -24,23 +24,24 @@ function login_check(user, password) {
 }
 //validar dados
 async function login_request(user, password) {
-  console.log('in')
-  console.log(user)
-  console.log(password)
   await axios.post(accessmainserver + '/authRestmember', {
     numbers: user,
     password: password
   })
     .then((response) => {
-      console.log(response)
-     if (response.status==200) {
-       console.log('in')
+       if(response.data.message = "internal error"){
+        errormessage = "Check username and password";
+        document.getElementById("pass").value = "";
+        swallopen(errormessage);
+      }else if (response.status==200) {
        sessionStorage.setItem("name",response.data[0].worker_name)
        sessionStorage.setItem("id",response.data[0].id)
        sessionStorage.setItem("restid",response.data[0].rest_id)
        window.location = `../pages/dashboardrest.html`;
      }else{
-       console.log('no')
+       errormessage = "Check username and password";
+       document.getElementById("pass").value = "";
+       swallopen(errormessage);
      }
     })
     .catch((err) => {
