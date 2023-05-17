@@ -45,8 +45,8 @@ async function login_request(user, password) {
     })
     .catch((err) => {
       errormessage = "Check username and password";
-      //document.getElementById("pass").value = "";
-    //  swallopen(errormessage);
+      document.getElementById("pass").value = "";
+      swallopen(errormessage);
     });
 };
 
