@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+
+<head>
+    <meta charset="utf-8" >
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="../style/restFlux.css">
+    </script>
+</head>
+
+<body  class="bg-dark">
+  <header>
+    <div class="header-left-div">
+      <img src="..\image\rootsgrill_logo.png" width="50" class="setting-right-button"  />
+      <span>Roots Grill</span>
+    </div>
+    <div class="divmain-date-input">
+      <input type="date" class="" id="todayInput"  onchange="getData()"/>
+    </div>
+    <div class="header-right-div">
+     <span id="name-span">志垣ﾊﾟｳﾛ</span>
+   </div>
+
+  </header>
+  <div class="main-div">
+    <div class="top-main-div">
+      <div class="second-title">
+        <div class="title-top-div">Pedidos</div>
+        <div class="answer-div" id="total-pedidos"></div>
+      </div>
+      <div class="second-title">
+        <div class="title-top-div">Venda total</div>
+        <div class="answer-div" id="total-vendas"></div>
+      </div>
+    </div>
+       <div id="insert-inner-html1" class="keihi-show-history">
+
+
+       </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+  <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js" type="text/javascript"></script>-->
+  <script src="../script/swal.js"></script>
+   <script>
+   let restid = 0
+   //APIアクセスファンクション
+   async function makerequest(url){
+     const request = await fetch(url)  //esperar aqui
+   //  await console.log(request.json())
+     return request.json()
+   }
+   let language = 0
+   const stext18 = ["Buscando dados","Processing","データ取得中"]
+   const stext19 = ["Aguarde","Wait","そのままおまちください"]
+
+   let today = new Date();  //今日
+   console.log(today)
+   console.log(`${today.getFullYear()}-${("0"+(today.getMonth()+1)).slice(-2)}-${("0"+today.getDate()).slice(-2)}`)
+   document.getElementById('todayInput').value =`${today.getFullYear()}-${("0"+(today.getMonth()+1)).slice(-2)}-${("0"+today.getDate()).slice(-2)}`
+    getData()
+
+    async function getData(){
+      document.getElementById('todayInput').value = '2023-06-11'
+      const swal =  Swal.fire({
+              icon:"info",
+              title: stext18[language],
+              html: stext19[language],
+              allowOutsideClick : false,
+              showConfirmButton: false,
+              timerProgressBar: true,
+              onBeforeOpen: () => {
+              Swal.showLoading();
+          }
+        })
+      let sumprofit = 0
+      let menuArray = []
+      let countOrders = 0
+      let row = await titledivCreate()
+      document.getElementById('insert-inner-html1').innerHTML = ""
+      let orderCount = 0
+      const orderGet =  await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/ordergetstatusconfirm?id=${restid}`)
+      const menulist = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/menuGet?id=${restid}`)//&&menuid=${data}
+        menuArray = menulist
+        await console.log(menuArray)
+        orderlistadd = orderGet.clients
+        await console.log(orderGet)
+        for(let i=0;i<orderlistadd.length;i++){
+          if(document.getElementById('todayInput').value==orderlistadd[i].pickUp_day.split("T")[0]){
+            var count = ( orderlistadd[i].menu_value.match( /,/g ) || [] ).length ;
+            for(let ii=0;ii<count;ii++){
+             sumprofit +=  (orderlistadd[i].menu_value.split(",")[ii]-0)
+             row += `<div class="syunyu-history-main-scroll">
+                   <div class="tandoku-div">
+                     <div class="numberid">${orderlistadd[i].id}</div>
+                     <div class="other-title">${orderlistadd[i].menu_id.split(",")[ii]}</div>
+                     <div class="other-title">${await menuTokutei(orderlistadd[i].quantity_menu.split(",")[ii],menuArray)}</div>
+                   <div class="other-title">￥${orderlistadd[i].menu_value.split(",")[ii]}</div>
+                     <div class="other-title">${await typepickway(orderlistadd[i].pickUp_way)}</div>
+                    </div>
+                   </div>
+                   `
+            }
+            countOrders ++
+          }
+        }
+        if(countOrders==0){
+            messageswal('No data')
+        }else{
+          console.log(row)
+          document.getElementById('total-vendas').innerText = `￥${sumprofit}`
+          document.getElementById('total-pedidos').innerText = `${countOrders}`
+          document.getElementById('insert-inner-html1').innerHTML = row
+          await console.log(sumprofit)
+        }
+
+      swal.close()
+      }
+
+      function titledivCreate(){
+      let row=`<div class="tandoku-div-title">
+              <div class="numberid">N.º</div>
+              <div class="other-title">Nome</div>
+              <div class="other-title">Quant.</div>
+              <div class="other-title">Valor</div>
+              <div class="other-title">Type</div>
+              </div>
+              `
+              return row
+      }
+
+      function typepickway(d){
+        if(d==0){
+          return "balcão"
+        }else{
+          return "Uber"
+        }
+      }
+
+      function messageswal(m){
+        Swal.fire({
+            icon:"info",
+            html: m,
+            allowOutsideClick : false,
+            showConfirmButton: false,
+            timer:1500
+        })
+      }
+
+    function menuTokutei(d,m){
+     console.log(d)
+     console.log(m)
+     for(let i=0;i<m.length;i++){
+       if(d==m[i].id){
+         return m[i].control_name
+
+       }
+     }
+    }
+
+   </script>
+
+
+</body>
+
+
+</html>
