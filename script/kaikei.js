@@ -29,10 +29,7 @@ document.getElementById('keihi-select').style = "background:#FF6928"
      document.getElementById('syunyu-select').style = "background:#FFFFFF"
      proccessKubun = 1
    }else{
-     //document.getElementById('syunyu-select').style = "background:#FF6928"
-     //document.getElementById('keihi-select').style = "background:#FFFFFF"
-     swallErrorOpen('まだ準備できていません')
-     //proccessKubun = 2
+     pagechange(`profitfluxo`)
    }
 }
 
