@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+
+<head>
+    <meta charset="utf-8" >
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="../style/cashcontrol.css">
+    </script>
+</head>
+
+<body  class="bg-dark">
+  <header>
+    <div class="header-left-div">
+      <img src="..\image\rootsgrill_logo.png" width="50" class="setting-right-button"  />
+      <span>Roots Grill</span>
+    </div>
+    <div class="divmain-date-input">
+
+    </div>
+    <div class="header-right-div">
+     <span id="name-span">志垣ﾊﾟｳﾛ</span>
+   </div>
+
+  </header>
+  <div class="main-div">
+    <div class="cash-main-div">
+     <div class="cash-title-div">Cash:</div>
+     <div class="cash-answer-div" id="cashDiv"></div>
+   </div>
+    <div class="cash-main-div">
+     <div class="cash-title-div">Bank:</div>
+     <div class="cash-answer-div" id="bankDiv"></div>
+   </div>
+    <div class="cash-main-div">
+     <div class="cash-title-div">Uber:</div>
+     <div class="cash-answer-div" id="uberDiv"></div>
+   </div>
+    <div class="cash-main-div">
+     <div class="cash-title-div">Squere:</div>
+     <div class="cash-answer-div" id="squereDiv"></div>
+   </div>
+   <div class="cash-main-div" style="background-color: orange">
+    <div class="cash-title-div">total:</div>
+    <div class="cash-answer-div" id="totalDiv"></div>
+  </div>
+  <div class="changetoMoney">
+    <div class="fifity-changemoney">
+      <div class="topchange">
+        <select id="befSelect" onchange="changeslect()">
+         <option value="0">Cash</option>
+         <option value="1">Bank</option>
+         <option value="2">Uber</option>
+         <option value="3">Squere</option>
+       </select>
+     </div>
+      <div><input  type="text"class="changetoMoney-left" placeholder="￥"id="value-input2" oninput="kanmaReplase2()"  inputmode="numeric" required onchange="saveData()"/></div>
+    </div>
+    <div class="lefttoright">⇒
+    </div>
+    <div class="fifity-changemoney">
+      <div class="topchange">
+        <select id="aftSelect">
+          <option value="1">Bank</option>
+        </select>
+      </div>
+    <div><input  type="text"class="changetoMoney-left" placeholder="￥"id="value-input" oninput="kanmaReplase()"  inputmode="numeric" readonly/></div>
+  </div>
+
+  </div>
+  <div class="resgmaindiv">
+    <input type="button" value="Registrar" onclick="tosaveData()"/>
+  </div>
+
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+  <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js" type="text/javascript"></script>-->
+  <script src="../script/swal.js"></script>
+   <script>
+   //let restid = 0
+   let restid=sessionStorage.getItem("restid")
+   let workerid=sessionStorage.getItem("id")
+   let menbername = sessionStorage.getItem("name")
+   let kakikomiflug = false
+   //if(restid==null||workerid==null||menbername==null){
+     //pagechange('loginadminrst')
+   //}
+
+   function tosaveData(){
+     kakikomiflug=true
+     saveData()
+   }
+  //restid=0
+   document.getElementById('name-span').innerText = menbername
+   //APIアクセスファンクション
+   async function makerequest(url){
+     const request = await fetch(url)  //esperar aqui
+     return request.json()
+   }
+   let language = 0
+   const stext18 = ["Buscando dados","Processing","データ取得中"]
+   const stext19 = ["Aguarde","Wait","そのままおまちください"]
+   let menuArray = []
+
+   let today = new Date();  //今日
+ //document.getElementById('todayInput').value =`${today.getFullYear()}-${("0"+(today.getMonth()+1)).slice(-2)}-${("0"+today.getDate()).slice(-2)}`
+ //document.getElementById('finishInput').value =`${today.getFullYear()}-${("0"+(today.getMonth()+1)).slice(-2)}-${("0"+today.getDate()).slice(-2)}`
+// creatData()
+createDta()
+async function createDta(){
+  const swal =  Swal.fire({
+          icon:"info",
+          title: stext18[language],
+          html: stext19[language],
+          allowOutsideClick : false,
+          showConfirmButton: false,
+          timerProgressBar: true,
+          onBeforeOpen: () => {
+          Swal.showLoading();
+      }
+    })
+  const getRestStatus = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/restmanegerTimeGet`)
+    await console.log(getRestStatus)
+    let total =0
+    document.getElementById('cashDiv').innerText = `${await kanmaReplaseto(getRestStatus[0].cach)}`
+    document.getElementById('bankDiv').innerText = `${await kanmaReplaseto(getRestStatus[0].bank)}`
+    document.getElementById('uberDiv').innerText = `${await kanmaReplaseto(getRestStatus[0].uber)}`
+    document.getElementById('squereDiv').innerText = `${await kanmaReplaseto(getRestStatus[0].squere)}`
+    total += getRestStatus[0].cach -0
+    total += getRestStatus[0].bank -0
+    total += getRestStatus[0].uber -0
+    total += getRestStatus[0].squere -0
+    console.log(total)
+    document.getElementById('totalDiv').innerText = await kanmaReplaseto((total).toString())
+
+swal.close()
+}
+
+async function saveData(){
+  console.log(document.getElementById('value-input2').value)
+  tagmoney = document.getElementById('value-input2').value
+  console.log(tagmoney)
+  if(tagmoney==""){
+   messageswal('Coloque o valor!')
+ }else if(document.getElementById('befSelect').value==document.getElementById('aftSelect').value){
+   messageswal('Você selecionou a mesma conta')
+ }else{
+    tagmoney = (tagmoney.split("￥")[1]).replace(/,/g, '')-0
+      console.log(tagmoney)
+    let bef = document.getElementById('befSelect').value
+    let aft = document.getElementById('aftSelect').value
+    console.log(bef)
+　if(bef==0){
+  befmoney = (document.getElementById('bankDiv').innerText.split("￥")[1]).replace(/,/g, '')-0
+  checkmoney=(document.getElementById('cashDiv').innerText.split("￥")[1]).replace(/,/g, '')-0
+  if(checkmoney<tagmoney){
+     messageswal('O valor tem que ser menor do que irá transferir')
+     document.getElementById('value-input2').value =""
+  }else{
+    document.getElementById('value-input').value = await kanmaReplaseto((tagmoney +befmoney).toString())
+    if(kakikomiflug){updatemoney(0,1,tagmoney +befmoney,checkmoney-tagmoney)}
+  }
+}else if(bef==1){
+  befmoney = (document.getElementById('cashDiv').innerText.split("￥")[1]).replace(/,/g, '')-0
+  checkmoney=(document.getElementById('bankDiv').innerText.split("￥")[1]).replace(/,/g, '')-0
+  if(checkmoney<tagmoney){
+     messageswal('O valor tem que ser menor do que irá transferir')
+     document.getElementById('value-input2').value =""
+  }else{
+  document.getElementById('value-input').value = await kanmaReplaseto((tagmoney +befmoney).toString())
+  if(kakikomiflug){updatemoney(1,0,tagmoney +befmoney,checkmoney-tagmoney)}
+}
+}else if(bef==2){
+  checkmoney=(document.getElementById('uberDiv').innerText.split("￥")[1]).replace(/,/g, '')-0
+  if(checkmoney<tagmoney){
+     messageswal('O valor tem que ser menor do que irá transferir')
+     document.getElementById('value-input2').value =""
+  }else{
+  if(aft==1){
+    befmoney = (document.getElementById('bankDiv').innerText.split("￥")[1]).replace(/,/g, '')-0
+      if(kakikomiflug){updatemoney(2,1,tagmoney +befmoney,checkmoney-tagmoney)}
+  }else{
+    befmoney = (document.getElementById('cashDiv').innerText.split("￥")[1]).replace(/,/g, '')-0
+      if(kakikomiflug){updatemoney(2,0,tagmoney +befmoney,checkmoney-tagmoney)}
+  }
+  document.getElementById('value-input').value = await kanmaReplaseto((tagmoney +befmoney).toString())
+}
+}else{
+  checkmoney=(document.getElementById('squereDiv').innerText.split("￥")[1]).replace(/,/g, '')-0
+  if(checkmoney<tagmoney){
+     messageswal('O valor tem que ser menor do que irá transferir')
+     document.getElementById('value-input2').value =""
+  }else{
+  if(aft==1){
+    befmoney = (document.getElementById('bankDiv').innerText.split("￥")[1]).replace(/,/g, '')-0
+      if(kakikomiflug){updatemoney(2,1,tagmoney +befmoney,checkmoney-tagmoney)}
+  }else{
+    befmoney = (document.getElementById('cashDiv').innerText.split("￥")[1]).replace(/,/g, '')-0
+      if(kakikomiflug){updatemoney(2,0,tagmoney +befmoney,checkmoney-tagmoney)}
+  }
+  document.getElementById('value-input').value = await kanmaReplaseto((tagmoney +befmoney).toString())
+}
+}
+  }
+
+}
+
+
+async function updatemoney(b,a,afmoney,befmoney){
+  let bef = document.getElementById('befSelect').value
+  let aft = document.getElementById('aftSelect').value
+   console.log(b)
+   console.log(a)
+   console.log(afmoney)
+   console.log(befmoney)
+  const url = 'https://squid-app-ug7x6.ondigitalocean.app/cachChange';
+  const body = {
+    d0: bef,
+    d1: aft,
+    d2: befmoney,
+    d3: afmoney
+  };
+  const request = await makerequest2(url, body);
+  await console.log(request)
+  if(kakikomiflug=true){
+    document.getElementById('value-input').value=""
+    document.getElementById('value-input2').value=""
+  }
+  kakikomiflug=false
+   await createDta()
+
+}
+
+async function makerequest2(url,data){
+  console.log('in')
+  const request = await fetch(url, {//pegar todos dados do table de pagamentos //n]
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: { "Content-type": "application/json; charset=UTF-8" }
+  })
+  return request.status
+}
+
+
+
+function changeslect(){
+  let row=``
+  let bef = document.getElementById('befSelect').value
+  let aft = document.getElementById('aftSelect').value
+  console.log(bef)
+  if(bef==0){
+     row=`<option value="1">Bank</option>`
+  }else if(bef==1){
+    row='<option value="0">Cash</option>'
+  }else{
+    row='<option value="0">Cash</option><option value="1">Bank</option>'
+  }
+  document.getElementById('aftSelect').innerHTML = ""
+  document.getElementById('aftSelect').innerHTML = row
+}
+
+
+
+
+
+
+
+
+async function creatData(){
+  const menulist = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/menuGet?id=${restid}`)//&&menuid=${data}
+  await createMenuselect(menulist)
+    menuArray = menulist
+    getData()
+}
+
+async function kanmaReplaseto(d){
+  let data = d
+  console.log(data)
+   //let numberAns = (data.slice( 1 )).replace(/[^0-9]/g, "");
+   kanmaAns = data.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
+   //data.value = `￥${kanmaAns}`
+   return `￥${kanmaAns}`
+};
+
+async function kanmaReplase(){
+  let data = document.getElementById('value-input')
+   let numberAns = (data.value.slice( 1 )).replace(/[^0-9]/g, "");
+   kanmaAns = numberAns.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
+   data.value = `￥${kanmaAns}`
+   //return `￥${kanmaAns}`
+};
+async function kanmaReplase2(){
+  let data = document.getElementById('value-input2')
+  console.log(data.value)
+  console.log(data.value.length)
+  if(data.value.length==1&&data.value!="￥"){
+    data.value = ("￥" + data.value)
+  }else{
+    let numberAns = (data.value.slice( 1 )).replace(/[^0-9]/g, "");
+    kanmaAns = numberAns.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
+    data.value = ("￥" + kanmaAns)
+  }
+
+   //return `￥${kanmaAns}`
+};
+
+
+    async function getData(){
+      //document.getElementById('todayInput').value = '2023-06-11'
+      const swal =  Swal.fire({
+              icon:"info",
+              title: stext18[language],
+              html: stext19[language],
+              allowOutsideClick : false,
+              showConfirmButton: false,
+              timerProgressBar: true,
+              onBeforeOpen: () => {
+              Swal.showLoading();
+          }
+        })
+      let sumprofit = 0
+      let countOrders = 0
+      let row = await titledivCreate()
+      document.getElementById('insert-inner-html1-title').innerHTML = ""
+      document.getElementById('insert-inner-html1-title').innerHTML = row
+      row=""
+      document.getElementById('insert-inner-html1').innerHTML = ""
+      let orderCount = 0
+      const orderGet =  await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/ordergetstatusconfirm?id=${restid}`)
+
+        let sD = document.getElementById('todayInput').value
+        let fD = document.getElementById('finishInput').value
+        orderlistadd = orderGet.clients
+        for(let i=0;i<orderlistadd.length;i++){
+          let tD = orderlistadd[i].pickUp_day.split("T")[0]
+          let tM =   document.getElementById('menutype').value
+          let existFlug = false
+          console.log(tM)
+          if(tD>=sD&&tD<=fD){
+            var count = ( orderlistadd[i].menu_value.match( /,/g ) || [] ).length ;
+            for(let ii=0;ii<count;ii++){
+              if(tM==0||tM==orderlistadd[i].menu_id.split(",")[ii]){
+                sumprofit +=  (orderlistadd[i].menu_value.split(",")[ii]-0)
+                row += `<div class="syunyu-history-main-scroll">
+                      <div class="tandoku-div">
+                        <div class="numberid">${orderlistadd[i].id}</div>
+                        <div class="other-title">${await menuTokutei(orderlistadd[i].menu_id.split(",")[ii],menuArray)}</div>
+                        <div class="other-title">￥${(orderlistadd[i].menu_value.split(",")[ii]).toLocaleString()}</div>
+                        <div class="other-title">${(orderlistadd[i].quantity_menu.split(",")[ii]).toLocaleString()}</div>
+                        <div class="other-title">${await typepickway(orderlistadd[i].pickUp_way)}</div>
+                       </div>
+                      </div>
+                      `
+                      existFlug = true
+              }
+
+            }
+            if(existFlug){
+              countOrders ++}
+          }
+        }
+        if(countOrders==0){
+            messageswal('No data')
+        }else{
+          console.log(row)
+          document.getElementById('total-vendas').innerText = `￥${(sumprofit).toLocaleString()}`
+          document.getElementById('total-pedidos').innerText = `${countOrders}`
+          document.getElementById('insert-inner-html1').innerHTML = row
+          await console.log(sumprofit)
+        }
+
+      swal.close()
+      }
+
+      async function createMenuselect(d){
+        await console.log(d)
+        let row=`<option value="0">menu</option>`
+        for(let i=0;i<d.length;i++){
+          row += `<option value="${d[i].id}">${d[i].control_name}</option>`
+        }
+        document.getElementById('menutype').innerHTML = row
+
+      }
+
+      function titledivCreate(){
+      let row=`<div class="tandoku-div-title">
+              <div class="numberid">N.º</div>
+              <div class="other-title">Nome</div>
+              <div class="other-title">Quant.</div>
+              <div class="other-title">Valor</div>
+              <div class="other-title">Type</div>
+              </div>
+              `
+              return row
+      }
+
+      function typepickway(d){
+        if(d==0){
+          return "balcão"
+        }else{
+          return "Uber"
+        }
+      }
+
+      function messageswal(m){
+        Swal.fire({
+            icon:"info",
+            html: m,
+            allowOutsideClick : false,
+            showConfirmButton: false,
+            timer:1500
+        })
+      }
+
+    function menuTokutei(d,m){
+     console.log(d)
+     console.log(m)
+     for(let i=0;i<m.length;i++){
+       if(d==m[i].id){
+         return m[i].control_name
+
+       }
+     }
+    }
+    function pagechange(data){
+      window.location = `./${data}.html`;
+    }
+
+
+   </script>
+
+
+</body>
+
+
+</html>
