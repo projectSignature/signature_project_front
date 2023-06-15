@@ -226,8 +226,8 @@ textarea{
   justify-content: space-around;
   background-color: #DDDDDD
 }
-.daymonthselect input{
-  width:8rem;
+.daymonthselect input, .daymonthselect select{
+  width:4rem;
   height:2rem;
   text-align: center;
   font-size: 1.8vh;
