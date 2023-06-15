@@ -42,14 +42,15 @@ header img{
   align-items: center;
   flex-wrap: wrap;
   justify-content: flex-start;
-  overflow-y: auto
+  overflow-y: auto;
+
 }
 .main-div-div{
-  width:30%;
+  width:10%;
   height:15rem;
   border:2px solid #333333;
   margin-top: 10px;
-  margin-left: 15px;
+  margin-left: 5px;
   border-radius: 15px;
   display:flex;
   flex-wrap: wrap;
@@ -63,9 +64,7 @@ header img{
   justify-content: center;
   align-items: center;
 }
-#time-button{
 
-}
 .main-div-div:hover{
   background-color: #FF6928 !important
 }
@@ -113,7 +112,10 @@ header img{
   }
   .main-div-div{
     margin-left:1rem;
-    width:13rem;
+    width:42%;
+  }
+  #open-close-button{
+    font-size: 1vh
   }
   .main-div-div div{
     font-size: 4vh;
@@ -122,12 +124,11 @@ header img{
     font-size:1.5vh;
   }
   #time-regist-point-day{
-
-    font-size:3vh;
+    font-size:1.5vh;
   }
-  #time-regist-point-time{
-    font-size:6vh;
-  }
+   #spanmin{
+     font-size: 3vh
+   }
   .button-input-regist{
     width:45%;
     height:10rem;
