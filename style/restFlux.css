@@ -185,13 +185,14 @@ textarea{
   margin-right: 5px;
 }
 .answer-div{
-  font-size: 4vh;
+  font-size: 2vh;
   width:60%;
   height:90%;
   background-color: #333333;
   color:white;
   display: flex;
   justify-content: center;
+  align-items:  center;
   margin-right:10px
 }
 .syunyu-history-main-scroll{
@@ -229,7 +230,7 @@ textarea{
   width:8rem;
   height:2rem;
   text-align: center;
-  font-size: 1.5vh;
+  font-size: 1.8vh;
   border-radius: 10px
 }
 @media only screen and (max-width: 800px) {
