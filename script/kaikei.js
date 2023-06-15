@@ -30,6 +30,10 @@ document.getElementById('keihi-select').style = "background:#FF6928"
      proccessKubun = 1
    }else{
      pagechange(`profitfluxo`)
+     //document.getElementById('syunyu-select').style = "background:#FF6928"
+     //document.getElementById('keihi-select').style = "background:#FFFFFF"
+     swallErrorOpen('まだ準備できていません')
+     //proccessKubun = 2
    }
 }
 
@@ -52,6 +56,7 @@ if(restid==null||workerid==null||menbername==null){
   }else{
     saveToSql(datainput,memo,slectPay,valuePay)
     try{
+      console.log((valuePay.split('￥')[1]).replace(",",""))
         const swal =  Swal.fire({
                 icon:"info",
                 title: '登録中',
@@ -74,20 +79,54 @@ if(restid==null||workerid==null||menbername==null){
             d7:slectPay,
             d8:data
           }
-          const reqInsert = await makerequestStatus(url,body)
-          await swal.close()
-          if(reqInsert!=200){
-            swallErrorOpen("Ops, houve erro")
-          }else{
+        const reqInsert = await makerequestStatus(url,body)
+
+        if(reqInsert!=200){
+          swallErrorOpen("Ops, houve erro")
+        }else{
             document.getElementById('memo-pay').value = ""
             document.getElementById('value-input').value = ""
+            const getRestStatus = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/restmanegerTimeGet`)
+              await console.log(getRestStatus)
+              let payinsert
+              let upvalue
+              if(slectPay==1){
+                payinsert = 0
+                upvalue = (getRestStatus[0].cach-0)-((valuePay.split('￥')[1]).replace(",","")-0)
+              }else{
+                payinsert = 1
+                upvalue = (getRestStatus[0].bank-0)-((valuePay.split('￥')[1]).replace(",","")-0)
+              }
+                const url = 'https://squid-app-ug7x6.ondigitalocean.app/cachChangeonly';
+                const body = {
+                  d0: payinsert,
+                  d1: upvalue,
+                };
+                const request = await makerequest3(url, body);
+                await console.log(request)
+                if(request!=200){
+                  swallErrorOpen("Ops, houve erro")
+                }else{
+                await swal.close()
             swallSuccess()
           }
+          }
       }catch (error) {
+        console.log(error)
         swallErrorOpen("Ops, houve erro")
       }
   }
 
+}
+
+async function makerequest3(url,data){
+  console.log('in')
+  const request = await fetch(url, {//pegar todos dados do table de pagamentos //n]
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: { "Content-type": "application/json; charset=UTF-8" }
+  })
+  return request.status
 }
 
 async function makerequest2(url,data){
@@ -107,7 +146,10 @@ async function makerequestStatus(url,data){
   })
   return request.status
 }
-
+async function makerequest(url){
+  const request = await fetch(url)  //esperar aqui
+  return request.json()
+}
 function saveToSql(d1,d2,d3,d4){
   console.log(d1)
   console.log(d2)
@@ -167,11 +209,21 @@ function pagechange(data){
 
 async function kanmaReplase(){
   let data = document.getElementById('value-input')
+  if(data.value.length==1&&data.value!="￥"){
+    data.value = ("￥" + data.value)
+  }else{
    let numberAns = (data.value.slice( 1 )).replace(/[^0-9]/g, "");
    kanmaAns = numberAns.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
    data.value = `￥${kanmaAns}`
+ }
    //return `￥${kanmaAns}`
 };
+
+
+
+
+
+
  function addkamoku(){
    swallErrorOpen("追加の権限がありません")
  }
