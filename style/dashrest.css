@@ -40,13 +40,16 @@ header img{
   height:90%;
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  overflow-y: auto
 }
 .main-div-div{
-
-  width:35rem;
+  width:30%;
   height:15rem;
   border:2px solid #333333;
+  margin-top: 10px;
+  margin-left: 25px;
   border-radius: 15px;
   display:flex;
   flex-wrap: wrap;
@@ -110,13 +113,13 @@ header img{
   }
   .main-div-div{
     margin-left:1rem;
-    width:11rem;
+    width:13rem;
   }
   .main-div-div div{
     font-size: 4vh;
   }
   header span{
-    font-size:2.5vh;
+    font-size:1.5vh;
   }
   #time-regist-point-day{
 
@@ -130,5 +133,8 @@ header img{
     height:10rem;
     font-size:6vh;
 
+  }
+  .header-right-div span{
+    font-size: 2vh;
   }
 }
