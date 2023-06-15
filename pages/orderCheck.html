@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+
+<head>
+    <meta charset="utf-8" >
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="../style/ordercheck.css">
+    </script>
+    <title>dashboard</title>
+</head>
+
+<body  class="bg-dark">
+  <header>
+    <div class="header-left-div">
+      <img src="..\image\rootsgrill_logo.png" width="50" class="setting-right-button"  />
+      <span>Roots Grill</span>
+    </div>
+    <div class="selectdate"><input type="date" id="todayInput" onchange="getData()"/></div>
+    <div class="language-swal">
+    <div id="portugueseButton" onclick="changeLanguage('0')"></div>
+    <div id="japaneseButton" onclick="changeLanguage('2')"></div>
+    </div>
+  </header>
+  <div class="order-count" id="orderCount"></div>
+
+  <div class="main-div" id="manuineer">
+  </div>
+
+
+
+
+
+     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+     <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js" type="text/javascript"></script>-->
+     <script src="../script/swal.js"></script>
+     <script>
+     let text1 = ["Dinheiro","cash","現金"]
+     let text2 = ["Cartão de crédito","Credit card","クレジット"]
+     let text3 = ["Paypay","Paypay","Paypay"]
+     let text4 = ["Retirar","","引き取り"]
+     let text5 = "Uber"
+     let text6 = ["Não há pedido no dia selecionado","","指定日の注文はありません"]
+     let text7 = ["pedidos","orders","つの注文"]
+     let text8 = ["pedido","order","つの注文"]
+     let text9 = ["Entregue","","完了"]
+     let tex10 = ["n.","n.","n."]
+     let text11 = ["Balcão","店頭引き取り",""]
+     const stext18 = ["Buscando dados","Processing","データ取得中"]
+     const stext19 = ["Aguarde","Wait","そのままおまちください"]
+     let restid=0
+     let language =0
+     let orderlistadd = ""
+     let menulistadd=""
+     let addOrderCount = 0
+     getData()
+     window.setInterval(getData, 60000);
+
+
+     //const timer1 =  setInterval(getData(), 10000);
+     function changeLanguage(data){
+       language = data
+       getData()
+
+     }
+
+
+
+     //APIアクセスファンクション
+     async function makerequest(url){
+       const request = await fetch(url)  //esperar aqui
+     //  await console.log(request.json())
+       return request.json()
+     }
+    let today = new Date();  //今日
+    console.log(today)
+    console.log(`${today.getFullYear()}-${("0"+(today.getMonth()+1)).slice(-2)}-${("0"+today.getDate()).slice(-2)}`)
+    document.getElementById('todayInput').value =`${today.getFullYear()}-${("0"+(today.getMonth()+1)).slice(-2)}-${("0"+today.getDate()).slice(-2)}`
+     //getData()
+
+     async function getData(){
+      document.getElementById('manuineer').innerHTML = ""
+       let orderCount = 0
+       const orderGet =  await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/orderget?id=${restid}`)
+         orderlistadd = orderGet
+         console.log(orderlistadd)
+         await console.log()
+       const menulist = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/menuGet?id=${restid}`)//&&menuid=${data}
+         menulistadd =menulist
+      await console.log(orderGet)
+
+      for(let i=0;i<orderGet.clients.length;i++){
+        orderGet.clients[i].pickUp_day = new Date(orderGet.clients[i].pickUp_day)
+        const newTime = new Date(orderGet.clients[i].pickUp_day)
+      }
+
+
+      const newArr = orderGet.clients.sort(function(a, b) {
+       return a.pickUp_day - b.pickUp_day;
+      });
+       let row = ""
+       console.log(newArr)
+       for(let i=0;i<newArr.length;i++){
+         if(newArr[i].status!=1){
+           target = document.getElementById('todayInput').value
+           const yyyy = newArr[i].pickUp_day.getFullYear()
+           const mm = ("0"+(newArr[i].pickUp_day.getMonth()+1)).slice(-2)
+           const dd = ("0"+newArr[i].pickUp_day.getDate()).slice(-2)
+           if(target==`${yyyy}-${mm}-${dd}`){
+             row += await creatRow(newArr[i],menulist,i)
+             orderCount ++
+           }else{
+           }
+         }
+
+        //
+         //if(target==orderGet.clients[i].pickUp_day.split(" ")[0]){
+            //
+            //
+        // }
+       }
+       console.log(orderCount)
+       if(orderCount==0){
+         //swallOpen(text6[language])
+         document.getElementById('orderCount').innerHTML = `0 pedidos`
+       }else{
+         console.log(row)
+          document.getElementById('manuineer').innerHTML += row
+
+          if(orderCount==1){
+            document.getElementById('orderCount').innerHTML = `${orderCount}${text8[language]}`
+          }else{
+            document.getElementById('orderCount').innerHTML = `${orderCount}${text7[language]}`
+          }
+
+       }
+
+return
+     }
+
+     function swallOpen(data) {
+       Swal.fire({
+         showCancelButton: true,
+         showConfirmButton: true,
+         allowOutsideClick : false,
+         html: `<div>${data}</div>`,
+         timer:2000
+       })
+     }
+
+
+    async function creatRow(data,menulist,number){
+    await console.log(data)
+    let count = ( data.menu_id.match( /,/g ) || [] ).length
+    let divs = ""
+    let valor = 0
+    let meetPostion = 0
+    let garikPostion = 1
+    let picktime = ("0" + data.pickUp_day.getHours()).slice(-2)
+    let pickminutes = ("0" + data.pickUp_day.getMinutes()).slice(-2)
+    let obs = "<div></div>"
+      for(let ii=0;ii<count;ii++){
+        for(let i=0;i<menulist.length;i++){
+         if(data.menu_id.split(",")[ii]==menulist[i].id){
+           if(menulist[i].menu_id==1&&menulist[i].menu_child_id==1||menulist[i].menu_id==1&&menulist[i].menu_child_id==2){
+             obs= await checkemeetPoint(data.obs,meetPostion,garikPostion)
+             meetPostion = meetPostion + 2
+             garikPostion = garikPostion + 2
+           }
+          divs += `<div class="main-menu-div"">
+          <div class="title-menu">${i+1}.${menulist[i].control_name}
+          </div>
+          <div class= "pont-meet">${obs}
+          </div>
+          <div class="menu-quantitity">${data.quantity_menu.split(",")[ii]}
+          </div>
+          <div class="price-div">￥${data.menu_value.split(",")[ii]}
+          </div>
+          </div>`
+          valor += data.menu_value.split(",")[ii]-0
+         }
+        }
+      }
+
+     let row = `
+     <div class="order-chek-scroll"  style="border:10px solid ${await getColor(data.status)};">
+       <div class="flexadd"><div class="order-number" id="menuNUmber${number}">${tex10[language]} ${data.id}</div><div class="plusASS" onclick="addmenu('${data.id}')">+</div></div>
+       <div class="text-order-div-menu" id="time-div">${picktime}:${pickminutes}</div>
+       <div class="menu-area">${divs}</div>
+       <div class="text-order-div" id="ammount-pay">￥${valor}</div>
+       <div class="text-order-div" id="paymentOption">${await parTarget(data.paykubun) }</div>
+       <div class="text-order-div" id="pickupOption">${await pickUpTarget(data.pickUp_way) }</div>
+       <div class="text-order-div-button"><input type="button" value="Preparado" onclick="prepare('menuNUmber${number}')"/ style="background-color:${await getColor(data.status)}"></div>
+       <div class="text-order-div-button"><input type="button" value="${text9[language]}" onclick="pickupConfirm('menuNUmber${number}',${data.paykubun},${data.pickUp_way},${valor})" style="background-color:#222222;color:white"/></div>
+       <div class="text-order-div-button"><input type="button" value="Cancelar" onclick="deletehistory('menuNUmber${number}')" style="background-color:#FF3333"/></div>
+
+       </div>`
+     return row
+    }
+
+function getColor(d){
+  console.log(d)
+  if(d==3){
+    return '#2C7CFF'
+  }
+}
+async function prepare(d){
+  const swal =  Swal.fire({
+          icon:"info",
+          title: stext18[language],
+          html: stext19[language],
+          allowOutsideClick : false,
+          showConfirmButton: false,
+          timerProgressBar: true,
+          onBeforeOpen: () => {
+          Swal.showLoading();
+      }
+    })
+  let url = `https://squid-app-ug7x6.ondigitalocean.app/updatehistoryStatus`
+  body = {
+    d1:(document.getElementById(d).innerText).split("n.")[1],
+    status:3
+  }
+  const reqInsert = await makerequestStatus(url,body)
+  await console.log(reqInsert.status)
+  if(reqInsert.status==200){
+    await   window.location.reload();
+  }
+  swal.close()
+}
+
+async function deletehistory(d){
+  const swal =  Swal.fire({
+          icon:"info",
+          title: stext18[language],
+          html: stext19[language],
+          allowOutsideClick : false,
+          showConfirmButton: false,
+          timerProgressBar: true,
+          onBeforeOpen: () => {
+          Swal.showLoading();
+      }
+    })
+  console.log('in')
+  let url = `https://squid-app-ug7x6.ondigitalocean.app/delehistoryorder`
+  body = {
+    id:(document.getElementById(d).innerText).split("n.")[1],
+  }
+  console.log(body)
+  const reqInsert = await makerequestStatus(url,body)
+  await console.log(reqInsert.status)
+  if(reqInsert.status==200){
+    //await   window.location.reload();
+  }
+  swal.close()
+}
+
+async function pickupConfirm(d,paytype,pickuptype,upvalueb){
+  console.log(paytype)
+  console.log(pickuptype)
+  const swal =  Swal.fire({
+          icon:"info",
+          title: stext18[language],
+          html: stext19[language],
+          allowOutsideClick : false,
+          showConfirmButton: false,
+          timerProgressBar: true,
+          onBeforeOpen: () => {
+          Swal.showLoading();
+      }
+    })
+console.log(d)
+let url = `https://squid-app-ug7x6.ondigitalocean.app/updatehistoryStatus`
+body = {
+  d1:(document.getElementById(d).innerText).split("n.")[1],
+  status:1
+}
+const reqInsert = await makerequestStatus(url,body)
+await console.log(reqInsert.status)
+if(reqInsert.status!=200){
+  swallErrorOpen("Ops, houve erro")
+}else{
+  const getRestStatus = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/restmanegerTimeGet`)
+    await console.log(getRestStatus)
+    console.log(getRestStatus[0].cach)
+    let payinsert
+    let upvalue
+  if(paytype==1&&pickuptype!=1){
+    payinsert = 0
+    upvalue = (getRestStatus[0].cach-0)+upvalueb
+  }else if(paytype==2&&pickuptype!=1||paytype==3&&pickuptype!=1){
+    payinsert = 1
+    upvalue = (getRestStatus[0].squere-0)+upvalueb
+  }else if(pickuptype==1){
+    payinsert = 2
+    upvalue = (getRestStatus[0].uber-0)+upvalueb
+  }
+    const url = 'https://squid-app-ug7x6.ondigitalocean.app/cachChangeonly';
+    const body = {
+      d0: payinsert,
+      d1: upvalue,
+    };
+    console.log(body)
+    const request = await makerequest3(url, body);
+    await console.log(request)
+    if(reqInsert.status!=200){
+  swallErrorOpen("Ops, houve erro")
+    }else{
+      swal.close()
+      console.log('insucc')
+    swallSuccess()
+     getData()
+    }
+}
+
+}
+
+async function makerequest3(url,data){
+  console.log('in')
+  const request = await fetch(url, {//pegar todos dados do table de pagamentos //n]
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: { "Content-type": "application/json; charset=UTF-8" }
+  })
+  return request.status
+}
+
+function pickUpTarget(d){
+  if(d==0){
+    return text11[language]
+  }else if(d==1){
+    return "Uber"
+  }
+}
+async function swallSuccess(){
+  const Toast = await Swal.mixin({
+  toast: true,
+  position: 'top-end',
+  showConfirmButton: false,
+  timer: 2000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.addEventListener('mouseenter', Swal.stopTimer)
+    toast.addEventListener('mouseleave', Swal.resumeTimer)
+  }
+})
+
+Toast.fire({
+  icon: 'success',
+    title: 'Feito'
+})
+}
+   function checkemeetPoint(data,m,g){
+
+     let answer = ""
+   if(data.split(",")[m]==0){
+     answer += `<div><img src="../image/malpassada.png" width="30" class="setting-right-button"/>`
+   }else if(data.split(",")[m]==1){
+     answer += `<div><img src="../image/aoponto.png" width="30" class="setting-right-button"/>`
+   }else{
+     answer += `<div><img src="../image/bempassada.png" width="30" class="setting-right-button"/>`
+   }
+   if(data.split(",")[g]==0){
+     answer +=`<img src="../image/ninniku.png" width="30" class="setting-right-button"/></div>`
+   }else{
+     answer +=`</div>`
+   }
+   return answer
+   }
+
+
+     function parTarget(data){
+       if(data==1){
+         return text1[language]
+       }else if(data==2){
+         return text2[language]
+       }else{
+         return text3[language]
+       }
+     }
+
+     async function makerequestStatus(url,data){
+       const request = await fetch(url, {//pegar todos dados do table de pagamentos //n]
+         method: 'POST',
+         body: JSON.stringify(data),
+         headers: { "Content-type": "application/json; charset=UTF-8" }
+       })
+       await console.log(request)
+       return request
+     }
+
+
+     async function addmenu(d){
+       console.log(orderlistadd)
+       console.log(d)
+       let target = ""
+       for(let i=0;i<orderlistadd.clients.length;i++){
+         if(d==orderlistadd.clients[i].id){
+           target = orderlistadd.clients[i]
+         }
+       }
+       let row=`<div>Alterar o pediodo n.${d}</div>`
+       await craeteRowTOadd(target)
+     }
+
+
+     async function craeteRowTOadd(d){
+       let row ="<div class='nowOrderdiv' id='nowOrderdivAdd'>"
+       console.log(d)
+       console.log(menulistadd)
+       const comonCOunt = (d.menu_id.match(/,/g) || []).length
+       console.log(comonCOunt)
+       for(let i=0;i<comonCOunt;i++){
+         console.log(d.menu_id.split(",")[i])
+         for(let ii=0;ii<menulistadd.length;ii++){
+           if(d.menu_id.split(",")[i]==menulistadd[ii].id){
+             console.log(menulistadd[ii].menu_name_0)
+             row += `<div class="mainaddDiv">
+                     <div class="titleAddDiv">${menulistadd[ii].control_name}</div>
+                     <div id="menuTopid${i}"style="display:none">${menulistadd[ii].id}</div>
+                       <div class="oneqtvalue"id="backValue${i}">￥${(d.menu_value.split(",")[i]-0)}</div>
+                      <div id="updateOrderQt${i}" class="titleAddDiv-quantitiy">${d.quantity_menu.split(",")[i]}</div>
+                      <div class="titleAddDiv-quantitiy-value" id="updateOrderVa${i}">￥${(d.menu_value.split(",")[i]-0)*(d.quantity_menu.split(",")[i]-0)}</div>
+                     <input value = "+" type="button" style="background-color:orange" onclick="plusmainmenu(1,${i})"/>
+                     <input value = "-" type="button" style="background-color:blue;color:white" onclick="plusmainmenu(2,${i})"/>
+                     </div>
+                    `
+           }
+         }
+         addOrderCount ++
+       }
+       row += `</div>
+
+
+       <div class="addmenuAlldiv">
+        `
+        let menuaddtoDIv = ""
+        let menuArray = []
+        for(let i=0;i<menulistadd.length;i++){
+          menuArray.push(menulistadd[i].id)
+          menuaddtoDIv += `<input id="menuNo${i}"value="${menulistadd[i].control_name}" type="button" onclick="selectToadd(${menulistadd[i].id})"/>`
+        }
+        row += menuaddtoDIv
+        row += `</div>
+        <div class='button-add-div'>
+        <input class='addmainbuton' value='Confirmar' type="button" onclick="updateToOrder('${d.id}')"/>
+        <input class='addmainbuton' value='Voltar' type="button" onclick="swalclose()"/>
+        </div>`
+       const swal =  Swal.fire({
+               html: `${row}
+               <style>
+               .swal2-popup {
+               width: 80% !important;
+                height:850px !important;
+                 overflow-y:hidden;
+               }
+               .mainaddDiv{
+                 display:flex;
+                 margin-top:5px
+               }
+               .mainaddDiv input{
+                 width:8rem;
+                 margin-left:20px;
+                 font-size:4vh;
+                 font-weight:bold
+               }
+               .titleAddDiv{
+                 font-size:4vh;
+                 width:20rem;
+                 display:flex;
+                justify-content: center;
+                align-items:center;
+                  text-align:center;
+
+               }
+               .titleAddDiv-quantitiy, .titleAddDiv-quantitiy-value{
+                 font-size:5vh;
+                 background-color:#333333;
+                 color:white;
+                  margin-left:20px;
+                  width:8rem;
+               }
+               .titleAddDiv-quantitiy-value{
+                 width:20rem !important
+               }
+               .addmainbuton{
+                 width:15rem;
+                 height:3rem;
+                 font-size:4vh;
+                 background-color:orange;
+                 border-radius:100px;
+                 display:flex;
+                justify-content: center;
+                text-align:center;
+
+               }
+               .button-add-div{
+                 width:100%;
+                 height:5%;
+                 margin-top:30px;
+                 display:flex;
+                justify-content: space-around;
+               }
+               .oneqtvalue{
+                 background-color:yellow;
+                 width:8rem;
+                 display:flex;
+                justify-content: center;
+                align-items:center;
+                  text-align:center;
+                  color:red
+               }
+               .addmenuAlldiv{
+                 background-color:	#333333;
+                 margin-top:10px;
+                 width:100%;
+                 height:30%;
+                 overflow-y:auto;
+
+               }
+                .addmenuAlldiv input{
+                  width:10rem;
+                  height:3rem;
+                  margin-left:15px;
+                  margin-top:5px
+                }
+               .nowOrderdiv{
+                 width:100%;
+                 height:58%;
+                 overflow-y:auto;
+               }
+               </style>`,
+               allowOutsideClick : false,
+               showConfirmButton: false,
+               showCancelButton: false,
+             })
+
+
+     }
+     async function plusmainmenu(k,d){
+      let target1 = document.getElementById(`updateOrderQt${d}`)
+      let target2 = document.getElementById(`updateOrderVa${d}`)
+      let target3 = document.getElementById(`backValue${d}`)
+       console.log(target1)
+       console.log(target2)
+       myvalue = (target3.innerText.split('￥')[1]-0)
+       if(k==1){
+        target1.innerText = target1.innerText-0 + 1
+        target2.innerText = "￥" + ((target2.innerText.split('￥')[1]-0)+myvalue)
+       }else{
+         if(target1.innerText!=0){
+           target1.innerText = target1.innerText-0 - 1
+           target2.innerText = "￥" + ((target2.innerText.split('￥')[1]-0)-myvalue)
+         }
+       }
+
+     }
+
+     async function selectToadd(d){
+       console.log(d)
+       console.log(menulistadd)
+       let targetName =""
+       let targetValue = ""
+
+       let row = ""
+       for(let i=0;i<menulistadd.length;i++){
+         if(menulistadd[i].id==d){
+            targetName =menulistadd[i].control_name
+            targetValue = menulistadd[i].menu_value
+            row += `<div class="mainaddDiv">
+                    <div class="titleAddDiv">${menulistadd[i].control_name}</div>
+                    <div id="menuTopid${addOrderCount}" style="display:none">${menulistadd[i].id}</div>
+                      <div class="oneqtvalue"id="backValue${addOrderCount}">￥${menulistadd[i].menu_value}</div>
+                     <div id="updateOrderQt${addOrderCount}" class="titleAddDiv-quantitiy">1</div>
+                     <div class="titleAddDiv-quantitiy-value" id="updateOrderVa${addOrderCount}">￥${menulistadd[i].menu_value}</div>
+                    <input value = "+" type="button" style="background-color:orange" onclick="plusmainmenu(1,${addOrderCount})"/>
+                    <input value = "-" type="button" style="background-color:blue;color:white" onclick="plusmainmenu(2,${addOrderCount})"/>
+                    </div>
+                   `
+            break
+         }
+       }
+       document.getElementById('nowOrderdivAdd').innerHTML +=row
+       addOrderCount ++
+       console.log(document.getElementById('nowOrderdivAdd').innerHTML)
+       console.log(addOrderCount)
+     }
+
+     function swalclose(){
+       swal.close()
+     }
+     const text63 = ["Registrando","Processing","登録中"]
+     const text64 = ["Aguarde","Wait","そのままおまちください"]
+
+     async function updateToOrder(d){
+       await console.log('in')
+      targetMenuid = ""
+      targetChild = ""
+      targetvalue = ""
+      targetQt = ""
+
+        console.log(addOrderCount)
+      for (let i=0;i<addOrderCount;i++){
+          targetMenuid +=  document.getElementById(`menuTopid${i}`).innerText + ","
+          targetChild += "0,"
+          targetvalue += document.getElementById(`updateOrderVa${i}`).innerText.split("￥")[1] + ","
+          targetQt += document.getElementById(`updateOrderQt${i}`).innerText + ","
+      }
+      const swal =  Swal.fire({
+              icon:"info",
+              title: text63[0],
+              html: text64[0],
+              allowOutsideClick : false,
+              showConfirmButton: false,
+              timerProgressBar: true,
+              onBeforeOpen: () => {
+              Swal.showLoading();
+          }
+        })
+      let url = `https://squid-app-ug7x6.ondigitalocean.app/updateorderHistory`
+      body = {
+        d1:targetMenuid,
+        d2:targetChild,
+        d3:targetvalue,
+        d4:targetQt,
+        d5:d
+      }
+
+      await console.log(body)
+      swal.close()
+    //
+      const reqInsert = await makerequestStatus(url,body)
+      await console.log(reqInsert)
+      await   window.location.reload();
+     }
+
+
+
+
+     </script>
+</body>
+
+
+</html>
