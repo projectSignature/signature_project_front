@@ -126,8 +126,9 @@ async function creatData(){
                       <div class="tandoku-div">
                         <div class="numberid">${orderlistadd[i].id}</div>
                         <div class="other-title">${await menuTokutei(orderlistadd[i].menu_id.split(",")[ii],menuArray)}</div>
-                        <div class="other-title">￥${(orderlistadd[i].menu_value.split(",")[ii]).toLocaleString()}</div>
                         <div class="other-title">${(orderlistadd[i].quantity_menu.split(",")[ii]).toLocaleString()}</div>
+                        <div class="other-title">￥${(orderlistadd[i].menu_value.split(",")[ii]).toLocaleString()}</div>
+
                         <div class="other-title">${await typepickway(orderlistadd[i].pickUp_way)}</div>
                        </div>
                       </div>
