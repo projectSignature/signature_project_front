@@ -1,0 +1,132 @@
+html{
+overflow-y: hidden;
+      height: 100%;
+}
+body {
+  height: 100%;
+  margin: 0;
+}
+header{
+  width:100%;
+  height:6%;
+  background-color: #FF6928;
+  display: flex;
+  justify-content:space-between;
+  align-items:  center;
+}
+header div{
+  height:100%;
+}
+.header-left-div,.header-right-div{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+header span{
+  font-size:4vh;
+  font-weight: bold;
+  align-items: center;
+  text-align: center;
+}
+header img{
+  height:100%;
+}
+.main-div{
+  width:100%;
+  height:90%;
+}
+.cash-main-div{
+  width:100%;
+  height:3rem;
+  margin-top: 2px;
+  background-color: #DDDDDD;
+    display: flex;
+}
+.cash-title-div,.cash-answer-div{
+  width:40%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  text-align: center;
+  padding-top: 5px;
+  font-size: 4vh;
+    font-weight: bold;
+    color:#333333
+}
+.cash-answer-div{
+  width:60% !important;
+  justify-content: flex-start !important;
+  padding-left: 15px
+}
+.changetoMoney{
+  margin-top: 5px;
+  background-color: #333333;
+  width: 100%;
+  height:40%;
+  display: flex;
+}
+.fifity-changemoney{
+  width:45%;
+
+  display: flex;
+  flex-wrap: wrap;
+
+
+}
+.fifity-changemoney div{
+  width:100%;
+    display: flex;
+    justify-content: center;
+
+}
+.lefttoright{
+  width: 10%;
+  font-size: 6vh;
+  color: white;
+  display: flex;
+  align-items: center;
+
+
+}
+.topchange{
+  margin-top: 20px
+}
+.fifity-changemoney select,.fifity-changemoney input{
+  width:90%;
+  height:4rem;
+  font-size:4vh
+}
+.resgmaindiv{
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+}
+.resgmaindiv input{
+  width:5rem;
+  height:2rem;
+
+  background-color: orange
+}
+
+@media only screen and (max-width: 800px) {
+  .main-div{
+    flex-wrap: wrap;
+  }
+  .main-div-div{
+    margin-left:1rem;
+    width:14rem;
+  }
+  header span{
+    font-size:3vh;
+  }
+  .date-div-span{
+    text-align: left;
+    width:10%;
+    margin-left: 2%;
+    font-size:2vh;
+  }
+  .regist-button{
+    height:4rem;
+  }
+}
