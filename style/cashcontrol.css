@@ -86,6 +86,7 @@ header img{
   color: white;
   display: flex;
   align-items: center;
+  margin-bottom: 20px
 
 
 }
@@ -103,9 +104,9 @@ header img{
   justify-content: space-around;
 }
 .resgmaindiv input{
-  width:5rem;
-  height:2rem;
-
+  width:10rem;
+  height:5rem;
+font-size: 4vh;
   background-color: orange
 }
 
