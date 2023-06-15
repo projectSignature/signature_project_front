@@ -27,6 +27,7 @@
     <div class="daymonthselect">
       <input type="date" class="" id="todayInput"  onchange="getData()"/>~
       <input type="date" class="" id="finishInput"  onchange="getData()"/>
+      <select id="menutype" onchange="getData()"></select>
     </div>
     <div class="top-main-div">
 
@@ -53,13 +54,14 @@
   <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js" type="text/javascript"></script>-->
   <script src="../script/swal.js"></script>
    <script>
-   let restid = 0
+   //let restid = 0
    let restid=sessionStorage.getItem("restid")
    let workerid=sessionStorage.getItem("id")
    let menbername = sessionStorage.getItem("name")
    if(restid==null||workerid==null||menbername==null){
      pagechange('loginadminrst')
    }
+  //restid=0
    document.getElementById('name-span').innerText = menbername
    //APIアクセスファンクション
    async function makerequest(url){
@@ -70,12 +72,20 @@
    let language = 0
    const stext18 = ["Buscando dados","Processing","データ取得中"]
    const stext19 = ["Aguarde","Wait","そのままおまちください"]
+   let menuArray = []
 
    let today = new Date();  //今日
  document.getElementById('todayInput').value =`${today.getFullYear()}-${("0"+(today.getMonth()+1)).slice(-2)}-${("0"+today.getDate()).slice(-2)}`
  document.getElementById('finishInput').value =`${today.getFullYear()}-${("0"+(today.getMonth()+1)).slice(-2)}-${("0"+today.getDate()).slice(-2)}`
-  getData()
+ creatData()
 
+
+async function creatData(){
+  const menulist = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/menuGet?id=${restid}`)//&&menuid=${data}
+  await createMenuselect(menulist)
+    menuArray = menulist
+    getData()
+}
     async function getData(){
       //document.getElementById('todayInput').value = '2023-06-11'
       const swal =  Swal.fire({
@@ -90,7 +100,6 @@
           }
         })
       let sumprofit = 0
-      let menuArray = []
       let countOrders = 0
       let row = await titledivCreate()
       document.getElementById('insert-inner-html1-title').innerHTML = ""
@@ -99,29 +108,36 @@
       document.getElementById('insert-inner-html1').innerHTML = ""
       let orderCount = 0
       const orderGet =  await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/ordergetstatusconfirm?id=${restid}`)
-      const menulist = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/menuGet?id=${restid}`)//&&menuid=${data}
-        menuArray = menulist
+
         let sD = document.getElementById('todayInput').value
         let fD = document.getElementById('finishInput').value
         orderlistadd = orderGet.clients
         for(let i=0;i<orderlistadd.length;i++){
           let tD = orderlistadd[i].pickUp_day.split("T")[0]
+          let tM =   document.getElementById('menutype').value
+          let existFlug = false
+          console.log(tM)
           if(tD>=sD&&tD<=fD){
             var count = ( orderlistadd[i].menu_value.match( /,/g ) || [] ).length ;
             for(let ii=0;ii<count;ii++){
-             sumprofit +=  (orderlistadd[i].menu_value.split(",")[ii]-0)
-             row += `<div class="syunyu-history-main-scroll">
-                   <div class="tandoku-div">
-                     <div class="numberid">${orderlistadd[i].id}</div>
-                     <div class="other-title">${await menuTokutei(orderlistadd[i].quantity_menu.split(",")[ii],menuArray)}</div>
-                     <div class="other-title">￥${(orderlistadd[i].menu_value.split(",")[ii]).toLocaleString()}</div>
-                     <div class="other-title">${(orderlistadd[i].quantity_menu.split(",")[ii]).toLocaleString()}</div>
-                     <div class="other-title">${await typepickway(orderlistadd[i].pickUp_way)}</div>
-                    </div>
-                   </div>
-                   `
+              if(tM==0||tM==orderlistadd[i].menu_id.split(",")[ii]){
+                sumprofit +=  (orderlistadd[i].menu_value.split(",")[ii]-0)
+                row += `<div class="syunyu-history-main-scroll">
+                      <div class="tandoku-div">
+                        <div class="numberid">${orderlistadd[i].id}</div>
+                        <div class="other-title">${await menuTokutei(orderlistadd[i].menu_id.split(",")[ii],menuArray)}</div>
+                        <div class="other-title">￥${(orderlistadd[i].menu_value.split(",")[ii]).toLocaleString()}</div>
+                        <div class="other-title">${(orderlistadd[i].quantity_menu.split(",")[ii]).toLocaleString()}</div>
+                        <div class="other-title">${await typepickway(orderlistadd[i].pickUp_way)}</div>
+                       </div>
+                      </div>
+                      `
+                      existFlug = true
+              }
+
             }
-            countOrders ++
+            if(existFlug){
+              countOrders ++}
           }
         }
         if(countOrders==0){
@@ -135,6 +151,16 @@
         }
 
       swal.close()
+      }
+
+      async function createMenuselect(d){
+        await console.log(d)
+        let row=`<option value="0">menu</option>`
+        for(let i=0;i<d.length;i++){
+          row += `<option value="${d[i].id}">${d[i].control_name}</option>`
+        }
+        document.getElementById('menutype').innerHTML = row
+
       }
 
       function titledivCreate(){
@@ -177,7 +203,9 @@
        }
      }
     }
-
+    function pagechange(data){
+      window.location = `./${data}.html`;
+    }
 
 
    </script>
