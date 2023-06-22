@@ -125,7 +125,7 @@
          //swallOpen(text6[language])
          document.getElementById('orderCount').innerHTML = `0 pedidos`
        }else{
-         console.log(row)
+         //console.log(row)
           document.getElementById('manuineer').innerHTML += row
 
           if(orderCount==1){
@@ -185,12 +185,12 @@ return
 
      let row = `
      <div class="order-chek-scroll"  style="border:10px solid ${await getColor(data.status)};">
-       <div class="flexadd"><div class="order-number" id="menuNUmber${number}">${tex10[language]} ${data.id}</div><div class="plusASS" onclick="addmenu('${data.id}')">+</div></div>
+       <div class="flexadd"><div class="order-number" id="menuNUmber${number}">${tex10[language]} ${data.id}(${data.client_name})</div><div class="plusASS" onclick="addmenu('${data.id}')">+</div></div>
        <div class="text-order-div-menu" id="time-div">${picktime}:${pickminutes}</div>
        <div class="menu-area">${divs}</div>
        <div class="text-order-div" id="ammount-pay">￥${valor}</div>
-       <div class="text-order-div" id="paymentOption">${await parTarget(data.paykubun) }</div>
-       <div class="text-order-div" id="pickupOption">${await pickUpTarget(data.pickUp_way) }</div>
+       <div class="text-order-div" id="paymentOption" onclick="changepayment(${data.id})">${await parTarget(data.paykubun) }</div>
+       <div class="text-order-div" id="pickupOption" onclick="changepickup(${data.id})">${await pickUpTarget(data.pickUp_way) }</div>
        <div class="text-order-div-button"><input type="button" value="Preparado" onclick="prepare('menuNUmber${number}')"/ style="background-color:${await getColor(data.status)}"></div>
        <div class="text-order-div-button"><input type="button" value="${text9[language]}" onclick="pickupConfirm('menuNUmber${number}',${data.paykubun},${data.pickUp_way},${valor})" style="background-color:#222222;color:white"/></div>
        <div class="text-order-div-button"><input type="button" value="Cancelar" onclick="deletehistory('menuNUmber${number}')" style="background-color:#FF3333"/></div>
@@ -205,6 +205,139 @@ function getColor(d){
     return '#2C7CFF'
   }
 }
+
+async function changepickup(d){
+  console.log(d)
+  let row = `<div class="title-meet-point">Alterar tipo de recibo</div>
+            <div class="save-meet-tipe-select-day">
+               <input class="selectrice-type-day" type="button" id="timepickup-now" value="Balcão" onclick="changePickUp(0,${d})" style="background-color:#5D99FF"/>
+               <input class="selectrice-type-day" type="button" id="timepickup-now" value="Uber" onclick="changePickUp(1,${d})" style="background-color:#ornge"/>
+             </div>
+
+             <style>
+             .swal2-popup {
+                 width: 80% !important;
+                 height: 600px !important
+             }
+             .selectTimeNOw{
+               width:
+             }
+             .selectrice-type-day{
+               margin-top:150px;
+               width:30%;
+               height:8rem;
+               font-size:8vh;
+               margin-left:30px
+             }
+             .title-meet-point{
+               font-size:8vh
+             }
+
+             </style>`
+
+  const swal =  Swal.fire({
+          html: row,
+          allowOutsideClick : false,
+          showConfirmButton: false,
+          showCancelButton: false,
+          background:'#EEEEEE'
+        })
+}
+
+async function changePickUp(d,id){
+  const swal =  Swal.fire({
+          icon:"info",
+          title: text63[language],
+          html: text64[language],
+          allowOutsideClick : false,
+          showConfirmButton: false,
+          timerProgressBar: true,
+          onBeforeOpen: () => {
+          Swal.showLoading();
+      }
+    })
+
+  let url = `https://squid-app-ug7x6.ondigitalocean.app/updatehistoryPicupStatus`
+  body = {
+    status:d,
+    id:id
+  }
+  const reqInsert = await makerequestStatus(url,body)
+  console.log(reqInsert)
+  await console.log(reqInsert.status)
+  if(reqInsert.status==200){
+    await   window.location.reload();
+  }
+  swal.close()
+}
+async function changepayment(d){
+  console.log(d)
+  let row = `<div class="title-meet-point">Alterar tipo de recibo</div>
+            <div class="save-meet-tipe-select-day">
+               <input class="selectrice-type-day" type="button" id="timepickup-now" value="Dinheiro" onclick="changePay(1,${d})" style="background-color:#5D99FF"/>
+               <input class="selectrice-type-day" type="button" id="timepickup-now" value="Cartão" onclick="changePay(2,${d})" style="background-color:#ornge"/>
+               <input class="selectrice-type-day" type="button" id="timepickup-now" value="Paypay" onclick="changePay(3,${d})" style="background-color:yellow"/>
+             </div>
+
+             <style>
+             .swal2-popup {
+                 width: 80% !important;
+                 height: 600px !important
+             }
+             .selectTimeNOw{
+               width:
+             }
+             .selectrice-type-day{
+               margin-top:150px;
+               width:30%;
+               height:8rem;
+               font-size:8vh;
+               margin-left:30px
+             }
+             .title-meet-point{
+               font-size:8vh
+             }
+
+             </style>`
+
+  const swal =  Swal.fire({
+          html: row,
+          allowOutsideClick : false,
+          showConfirmButton: false,
+          showCancelButton: false,
+          background:'#EEEEEE'
+        })
+}
+
+async function changePay(d,id){
+  const swal =  Swal.fire({
+          icon:"info",
+          title: text63[language],
+          html: text64[language],
+          allowOutsideClick : false,
+          showConfirmButton: false,
+          timerProgressBar: true,
+          onBeforeOpen: () => {
+          Swal.showLoading();
+      }
+    })
+  console.log(d)
+  console.log(id)
+  let url = `https://squid-app-ug7x6.ondigitalocean.app/updatehistoryPayStatus`
+  body = {
+    status:d,
+    id:id
+  }
+  const reqInsert = await makerequestStatus(url,body)
+  console.log(reqInsert)
+  await console.log(reqInsert.status)
+  if(reqInsert.status==200){
+    await   window.location.reload();
+  }
+  swal.close()
+
+}
+
 async function prepare(d){
   const swal =  Swal.fire({
           icon:"info",
@@ -244,14 +377,16 @@ async function deletehistory(d){
     })
   console.log('in')
   let url = `https://squid-app-ug7x6.ondigitalocean.app/delehistoryorder`
+  let dd = (document.getElementById(d).innerText).split("n.")[1]
+  dd = dd.split("(")[0]
   body = {
-    id:(document.getElementById(d).innerText).split("n.")[1],
+    id:dd,
   }
   console.log(body)
   const reqInsert = await makerequestStatus(url,body)
   await console.log(reqInsert.status)
   if(reqInsert.status==200){
-    //await   window.location.reload();
+    await   window.location.reload();
   }
   swal.close()
 }
@@ -272,8 +407,10 @@ async function pickupConfirm(d,paytype,pickuptype,upvalueb){
     })
 console.log(d)
 let url = `https://squid-app-ug7x6.ondigitalocean.app/updatehistoryStatus`
+let dd = (document.getElementById(d).innerText).split("n.")[1]
+dd = dd.split("(")[0]
 body = {
-  d1:(document.getElementById(d).innerText).split("n.")[1],
+  d1:dd,
   status:1
 }
 const reqInsert = await makerequestStatus(url,body)
@@ -318,11 +455,16 @@ if(reqInsert.status!=200){
 
 async function makerequest3(url,data){
   console.log('in')
-  const request = await fetch(url, {//pegar todos dados do table de pagamentos //n]
-    method: 'POST',
-    body: JSON.stringify(data),
-    headers: { "Content-type": "application/json; charset=UTF-8" }
-  })
+  try{
+    const request = await fetch(url, {//pegar todos dados do table de pagamentos //n]
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: { "Content-type": "application/json; charset=UTF-8" }
+    })
+  }catch(e){
+    console.log(e)
+  }
+
   return request.status
 }
 
@@ -536,7 +678,6 @@ Toast.fire({
                showCancelButton: false,
              })
 
-
      }
      async function plusmainmenu(k,d){
       let target1 = document.getElementById(`updateOrderQt${d}`)
@@ -583,7 +724,7 @@ Toast.fire({
        }
        document.getElementById('nowOrderdivAdd').innerHTML +=row
        addOrderCount ++
-       console.log(document.getElementById('nowOrderdivAdd').innerHTML)
+       //console.log(document.getElementById('nowOrderdivAdd').innerHTML)
        console.log(addOrderCount)
      }
 
