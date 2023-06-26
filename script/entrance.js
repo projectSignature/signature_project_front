@@ -1,15 +1,18 @@
 
-
+const stext18 = ["Registrando dados","Processing","データ取得中"]
+const stext19 = ["Aguarde","Wait","そのままおまちください"]
 windowLoadGt()
 async function windowLoadGt(){
   var token = sessionStorage.getItem("token");//token
   let gymid = sessionStorage.getItem("GYM_ID")
+
   //console.log(token)
   //console.log(gymid)
+  //gymid = 4
   //gymid=4
-  if (token==null||token=="") {
-    window.location = `https://squid-app-ug7x6.ondigitalocean.app/signature-project-front/pages/loginMember.html`
-  }else{
+  //if (token==null||token=="") {
+  //  window.location = `https://squid-app-ug7x6.ondigitalocean.app/signature-project-front/pages/loginMember.html`
+  //}else{
     const swal =  Swal.fire({
             icon:"info",
             title: 'Processing',
@@ -24,10 +27,11 @@ async function windowLoadGt(){
 
      document.querySelector('#gym-name').innerHTML = sessionStorage.getItem("gym");//gymname
     const res =  await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/calender/gymentrance?id=${gymid}`)
+    await console.log(res)
     await classesHandler_today(res)
     await sessionStorage.removeItem("token")
     swal.close()
-  }
+  //}
 
 }
 
@@ -43,7 +47,7 @@ function classesHandler_today(classes) {
   for(let index=0;index<classes.length;index++){
      if (classes[index].DESCRITION_1 != '') {
        row=`
-       <div class="content-finish" id="card${index}" onclick="entrance_regist(${index})">
+       <div class="content-finish" id="card${index}" onclick="entrance_regist('${index}','${classes[index].GRADUATION_FLUG}')">
            <span class="contentText-finished" name="desc1" id="discrition${index}" >${classes[index].DESCRITION_1}</span>
            <span class="contentText-finished" name="desc2" id="subdiscrition${index}" >${classes[index].DESCRITION_2}</span>
            <span class="contentTimeText-coming-next" disabled="disable" id="starttime${index}" >Start at ${classes[index].START_TIME}</span>
@@ -109,7 +113,7 @@ function swallerror(errormessage) {
 }
 
 //tratamento do registro de aula
-function entrance_regist(number) {
+function entrance_regist(number,graduationflug) {
   Swal.fire({
     showCancelButton: false,
     showConfirmButton: true,
@@ -222,7 +226,19 @@ function entrance_regist(number) {
     customClass: 'customizable',
   }).then((result) => {
     if (result.isConfirmed) {
+
       var password = document.querySelector('#keys_entrance').value;
+      const swal =  Swal.fire({
+              icon:"info",
+              title: stext18[1],
+              html: stext19[1],
+              allowOutsideClick : false,
+              showConfirmButton: false,
+              timerProgressBar: true,
+              onBeforeOpen: () => {
+              Swal.showLoading();
+          }
+        })
       fetch('https://squid-app-ug7x6.ondigitalocean.app/pass', {
         method: 'POST',
         body: JSON.stringify({ pass: password }),
@@ -231,14 +247,17 @@ function entrance_regist(number) {
         .then((x) => x.json())
         .then((res) => {
           if (res.length==1) {
-            Swal.fire({
-              title: 'Registrando!',
-              didOpen: () => { Swal.showLoading() }
-            })
             localStorage.setItem('id', res[0].id);
             localStorage.setItem('GYM_ID', res[0].gymid);
             addEntrance(number);
-            entrance_count(res[0].id);
+            if(graduationflug==1){
+              console.log('yesgradu')
+              entrance_count(res[0].id);
+            }else{
+                console.log('nogradu')
+            }
+            swal.close()
+            swallSuccess()
           }else if(res.length>1){
             localStorage.setItem('GYM_ID', res[0].gymid);
             selectmember(res,number)
@@ -254,6 +273,28 @@ function entrance_regist(number) {
     };
   });
 };
+
+
+async function swallSuccess(){
+  const Toast = await Swal.mixin({
+  toast: true,
+  position: 'top-end',
+  showConfirmButton: false,
+  timer: 2000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.addEventListener('mouseenter', Swal.stopTimer)
+    toast.addEventListener('mouseleave', Swal.resumeTimer)
+  }
+})
+
+Toast.fire({
+  icon: 'success',
+    title: 'Feito'
+})
+}
+
+
 function selectmember(res,number){
   swal.close()
   let namerow =[]
@@ -343,7 +384,6 @@ function addEntrance(number) {
     LESSON_DATE: d1,
     LESSON_DAY:japanweekeday
   }
-  console.log(obj)
   fetch('https://squid-app-ug7x6.ondigitalocean.app/registerentrance', {
     method: 'POST',
     body: JSON.stringify(obj),
@@ -351,11 +391,6 @@ function addEntrance(number) {
   })
     .then((x) => x.json())
     .then((res) => {
-      Swal.fire({
-        icon: "success",
-        title: 'concluido!',
-        timer: '1000',
-      }).then((result) => {
-      });
+      return 'ok'
     })
 };
