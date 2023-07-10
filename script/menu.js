@@ -28,17 +28,17 @@ async function menucrete(){
     await console.log(menulist)
     for(let i=0;i<menulist.length;i++){
       row += `<div class="mainDiv">
-              <div class="menuimgDiv"><img src="../img/menu${menulist[i].menu_id}-${menulist[i].menu_child_id}.jpg" width="30" class="setting-right-button"/></div>
+              <div class="menuimgDiv"><img src="../image/menu${menulist[i].menu_id}-${menulist[i].menu_child_id}.jpg" width="30" class="setting-right-button"/></div>
               <div class="discricionDiv">
                <div class="title-menu">${menulist[i].menu_name_0}</div>
                <div class="priceandEdit">
                <div>
-                <img class="image-cursor"  src="../img/${await getflug(menulist[i].status)}.png"  alt="" width="25" onclick="alterStatus('${menulist[i].id}','${menulist[i].status}')"/>
+                <img class="image-cursor"  src="../image/${await getflug(menulist[i].status)}.png"  alt="" width="25" onclick="alterStatus('${menulist[i].id}','${menulist[i].status}')"/>
                </div>
                  <div>￥${menulist[i].menu_value}
                  </div>
                  <div>
-                  <img class="image-cursor"  src="../img/edit.svg" onClick="editMenu(${menulist[i].id})" alt="" width="25"/>
+                  <img class="image-cursor"  src="../image/edit.svg" onClick="editMenu(${menulist[i].id})" alt="" width="25"/>
                  </div>
 
                 </div>
