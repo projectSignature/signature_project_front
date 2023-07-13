@@ -18,6 +18,9 @@
     </div>
     <div class="selectdate"><input type="date" id="todayInput" onchange="getData()"/></div>
     <div class="language-swal">
+    <div class="upload-div" onclick="pagereload()">
+      <img src="..\image\update.png" width="50" class="setting-right-button"  />
+    </div>
     <div id="portugueseButton" onclick="changeLanguage('0')"></div>
     <div id="japaneseButton" onclick="changeLanguage('2')"></div>
     </div>
@@ -66,16 +69,19 @@
      }
 
 
+function pagereload(){
+  window.location.reload ()
+}
 
      //APIアクセスファンクション
      async function makerequest(url){
        const request = await fetch(url)  //esperar aqui
-     //  await console.log(request.json())
        return request.json()
      }
+
     let today = new Date();  //今日
-    console.log(today)
-    console.log(`${today.getFullYear()}-${("0"+(today.getMonth()+1)).slice(-2)}-${("0"+today.getDate()).slice(-2)}`)
+    //console.log(today)
+    //console.log(`${today.getFullYear()}-${("0"+(today.getMonth()+1)).slice(-2)}-${("0"+today.getDate()).slice(-2)}`)
     document.getElementById('todayInput').value =`${today.getFullYear()}-${("0"+(today.getMonth()+1)).slice(-2)}-${("0"+today.getDate()).slice(-2)}`
      //getData()
 
@@ -107,8 +113,22 @@
            const yyyy = newArr[i].pickUp_day.getFullYear()
            const mm = ("0"+(newArr[i].pickUp_day.getMonth()+1)).slice(-2)
            const dd = ("0"+newArr[i].pickUp_day.getDate()).slice(-2)
+           console.log(newArr[i].pickUp_day)
+           let t1 = new Date(newArr[i].pickUp_day)
+           let t2 = new Date();
+
+           let diff =   t2.getTime() - t1.getTime();
+
+           //HH部分取得
+           let diffHour = diff / (1000 * 60 * 60);
+           //MM部分取得
+           let diffMinute = (diffHour - Math.floor(diffHour)) * 60;
+           //SS部分取得
+           let diffSecond = (diffMinute - Math.floor(diffMinute)) * 60;
+           let satimme = ('00' + Math.floor(diffHour)).slice(-2) + ':' + ('00' + Math.floor(diffMinute)).slice(-2) + ':' + ('00' + Math.round(diffSecond)).slice(-2)
+
            if(target==`${yyyy}-${mm}-${dd}`){
-             row += await creatRow(newArr[i],menulist,i)
+             row += await creatRow(newArr[i],menulist,i,satimme)
              orderCount ++
            }else{
            }
@@ -150,7 +170,7 @@ return
      }
 
 
-    async function creatRow(data,menulist,number){
+    async function creatRow(data,menulist,number,time){
     await console.log(data)
     let count = ( data.menu_id.match( /,/g ) || [] ).length
     let divs = ""
@@ -159,15 +179,21 @@ return
     let garikPostion = 1
     let picktime = ("0" + data.pickUp_day.getHours()).slice(-2)
     let pickminutes = ("0" + data.pickUp_day.getMinutes()).slice(-2)
-    let obs = "<div></div>"
+
+
+
       for(let ii=0;ii<count;ii++){
+let obs = "<div></div>"
         for(let i=0;i<menulist.length;i++){
          if(data.menu_id.split(",")[ii]==menulist[i].id){
            if(menulist[i].menu_id==1&&menulist[i].menu_child_id==1||menulist[i].menu_id==1&&menulist[i].menu_child_id==2){
+             console.log('inme')
              obs= await checkemeetPoint(data.obs,meetPostion,garikPostion)
              meetPostion = meetPostion + 2
              garikPostion = garikPostion + 2
            }
+
+
           divs += `<div class="main-menu-div"">
           <div class="title-menu">${i+1}.${menulist[i].control_name}
           </div>
@@ -187,6 +213,7 @@ return
      <div class="order-chek-scroll"  style="border:10px solid ${await getColor(data.status)};">
        <div class="flexadd"><div class="order-number" id="menuNUmber${number}">${tex10[language]} ${data.id}(${data.client_name})</div><div class="plusASS" onclick="addmenu('${data.id}')">+</div></div>
        <div class="text-order-div-menu" id="time-div">${picktime}:${pickminutes}</div>
+       <div style="${await gettimecolor(time)}">${time}</div>
        <div class="menu-area">${divs}</div>
        <div class="text-order-div" id="ammount-pay">￥${valor}</div>
        <div class="text-order-div" id="paymentOption" onclick="changepayment(${data.id})">${await parTarget(data.paykubun) }</div>
@@ -205,8 +232,17 @@ function getColor(d){
     return '#2C7CFF'
   }
 }
+async function gettimecolor(d){
+  if(d==0){
+    return "background-color:#2C7CFF; text-align:center;font-size:2.5vh;font-weight:bold"
+  }else{
+    return "background-color:red;color:white;text-align:center;font-size:2.5vh;font-weight:bold"
+  }
+}
+
 
 async function changepickup(d){
+
   console.log(d)
   let row = `<div class="title-meet-point">Alterar tipo de recibo</div>
             <div class="save-meet-tipe-select-day">
@@ -494,7 +530,9 @@ Toast.fire({
 })
 }
    function checkemeetPoint(data,m,g){
-
+     console.log(data)
+     console.log(m)
+     console.log(g)
      let answer = ""
    if(data.split(",")[m]==0){
      answer += `<div><img src="../image/malpassada.png" width="30" class="setting-right-button"/>`
@@ -561,9 +599,9 @@ Toast.fire({
              row += `<div class="mainaddDiv">
                      <div class="titleAddDiv">${menulistadd[ii].control_name}</div>
                      <div id="menuTopid${i}"style="display:none">${menulistadd[ii].id}</div>
-                       <div class="oneqtvalue"id="backValue${i}">￥${(d.menu_value.split(",")[i]-0)}</div>
+                       <div class="oneqtvalue"id="backValue${i}">￥${menulistadd[ii].menu_value}</div>
                       <div id="updateOrderQt${i}" class="titleAddDiv-quantitiy">${d.quantity_menu.split(",")[i]}</div>
-                      <div class="titleAddDiv-quantitiy-value" id="updateOrderVa${i}">￥${(d.menu_value.split(",")[i]-0)*(d.quantity_menu.split(",")[i]-0)}</div>
+                      <div class="titleAddDiv-quantitiy-value" id="updateOrderVa${i}">￥${(menulistadd[ii].menu_value)*(d.quantity_menu.split(",")[i]-0)}</div>
                      <input value = "+" type="button" style="background-color:orange" onclick="plusmainmenu(1,${i})"/>
                      <input value = "-" type="button" style="background-color:blue;color:white" onclick="plusmainmenu(2,${i})"/>
                      </div>
