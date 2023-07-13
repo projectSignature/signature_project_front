@@ -49,15 +49,12 @@ header img{
   overflow-x: scroll;
   flex-wrap: nowrap;
   scroll-behavior: smooth;
-
-
 }
 
 .order-chek-scroll{
   width:25rem !important;
-  height:90%;
+  height:99%;
   display: block;
-  margin-top: 15px;
   border: 2px solid gray;
   margin-left: 15px;
 }
@@ -130,7 +127,7 @@ header img{
 .order-count{
   position: absolute;
   top:90%;
-  left:80%;
+  left:85%;
   width:15rem;
   height:4rem;
   background: red;
@@ -237,6 +234,9 @@ header img{
 }
 .plusASS:hover{
   background-color: blue
+}
+.upload-div{
+  margin-right: 30px
 }
 @media only screen and (max-width: 800px) {
 
