@@ -218,9 +218,9 @@ let obs = "<div></div>"
        <div class="text-order-div" id="ammount-pay">￥${valor}</div>
        <div class="text-order-div" id="paymentOption" onclick="changepayment(${data.id})">${await parTarget(data.paykubun) }</div>
        <div class="text-order-div" id="pickupOption" onclick="changepickup(${data.id})">${await pickUpTarget(data.pickUp_way) }</div>
-       <div class="text-order-div-button"><input type="button" value="Preparado" onclick="prepare('menuNUmber${number}')"/ style="background-color:${await getColor(data.status)}"></div>
-       <div class="text-order-div-button"><input type="button" value="${text9[language]}" onclick="pickupConfirm('menuNUmber${number}',${data.paykubun},${data.pickUp_way},${valor})" style="background-color:#222222;color:white"/></div>
-       <div class="text-order-div-button"><input type="button" value="Cancelar" onclick="deletehistory('menuNUmber${number}')" style="background-color:#FF3333"/></div>
+       <div class="text-order-div-button"><input type="button" value="Preparado" onclick="prepare('${data.id}')" style="background-color:${await getColor(data.status)}" /></div>
+       <div class="text-order-div-button"><input type="button" value="${text9[language]}" onclick="pickupConfirm('${data.id}',${data.paykubun},${data.pickUp_way},${valor})" style="background-color:#222222;color:white"/></div>
+       <div class="text-order-div-button"><input type="button" value="Cancelar" onclick="deletehistory('${data.id}')" style="background-color:#FF3333"/></div>
 
        </div>`
      return row
@@ -375,6 +375,7 @@ async function changePay(d,id){
 }
 
 async function prepare(d){
+  console.log(d)
   const swal =  Swal.fire({
           icon:"info",
           title: stext18[language],
@@ -388,7 +389,7 @@ async function prepare(d){
     })
   let url = `https://squid-app-ug7x6.ondigitalocean.app/updatehistoryStatus`
   body = {
-    d1:(document.getElementById(d).innerText).split("n.")[1],
+    d1:d,
     status:3
   }
   const reqInsert = await makerequestStatus(url,body)
@@ -413,7 +414,7 @@ async function deletehistory(d){
     })
   console.log('in')
   let url = `https://squid-app-ug7x6.ondigitalocean.app/delehistoryorder`
-  let dd = (document.getElementById(d).innerText).split("n.")[1]
+  let dd = d
   dd = dd.split("(")[0]
   body = {
     id:dd,
@@ -443,7 +444,7 @@ async function pickupConfirm(d,paytype,pickuptype,upvalueb){
     })
 console.log(d)
 let url = `https://squid-app-ug7x6.ondigitalocean.app/updatehistoryStatus`
-let dd = (document.getElementById(d).innerText).split("n.")[1]
+let dd = d
 dd = dd.split("(")[0]
 body = {
   d1:dd,
@@ -496,12 +497,14 @@ async function makerequest3(url,data){
       method: 'POST',
       body: JSON.stringify(data),
       headers: { "Content-type": "application/json; charset=UTF-8" }
+
     })
+    return request.status
   }catch(e){
     console.log(e)
   }
 
-  return request.status
+
 }
 
 function pickUpTarget(d){
