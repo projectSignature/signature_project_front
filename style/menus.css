@@ -38,3 +38,18 @@
   display: flex;
   justify-content: space-around;
 }
+.button-div{
+  display: flex;
+  justify-content: space-around;
+  margin-top:10px
+}
+.buttons-top{
+  width:30%;
+  height:4rem;
+  border-radius: 15px;
+  background-color: orange
+}
+.title-menu{
+  width:100%;
+  height:3rem
+}
