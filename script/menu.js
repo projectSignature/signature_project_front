@@ -9,7 +9,7 @@ let payStatus = 0
 let restid=sessionStorage.getItem("restid")
 let workerid=sessionStorage.getItem("id")
 let menbername = sessionStorage.getItem("name")
-console.log(restid)
+let chArr = []
 restid =0
 let menulist = ""
 //if(restid==null||workerid==null||menbername==null){
@@ -26,15 +26,17 @@ async function menucrete(){
   let row = ``
   document.getElementById('insertMenuHtml').innerHTML=""
    menulist = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/menuGet?id=${restid}`)//&&menuid=${data}
-    await console.log(menulist)
     for(let i=0;i<menulist.length;i++){
+      let arr = {id:menulist[i].id,
+                 status:menulist[i].status}
+                 chArr.push(arr)
       row += `<div class="mainDiv">
               <div class="menuimgDiv"><img src="../image/menu${menulist[i].menu_id}-${menulist[i].menu_child_id}.jpg" width="30" class="setting-right-button"/></div>
               <div class="discricionDiv">
                <div class="title-menu">${menulist[i].menu_name_0}</div>
                <div class="priceandEdit">
                <div>
-                <img id="img${i}" class="image-cursor"  src="../image/${await getflug(menulist[i].status)}.png"  alt="" width="25" onclick="alterStatus('img${i}','${menulist[i].status}')"/>
+                <img id="img${i}" class="image-cursor"  src="../image/${await getflug(menulist[i].status)}.png"  alt="" width="25" onclick="alterStatus('img${i}','${menulist[i].id}',${i})"/>
                </div>
                  <div>￥${menulist[i].menu_value}
                  </div>
@@ -53,8 +55,8 @@ async function menucrete(){
 
              </style>`
     }
-    await console.log(row)
     document.getElementById('insertMenuHtml').innerHTML += row
+
   }
 
 function getflug(d){
@@ -67,15 +69,20 @@ function getflug(d){
 
 }
 
-async function alterStatus(id,flug){
-  var img = document.getElementById(id);
-  var src = img.getAttribute('src');
+async function alterStatus(contID,id,d){
+  let img = document.getElementById(contID);
+  let src = img.getAttribute('src');
+  let nStatus
   if(src=="../image/nopaid.png"){
     img.src="../image/paid.png"
+    nStatus = 1
   }else{
     img.src="../image/nopaid.png"
+    nStatus =0
 
   }
+  chArr[d].status = nStatus
+
 
 }
 
@@ -85,7 +92,7 @@ async function bbqstatus(d){
     d1:d
   }
 const reqInsert = await makerequestStatus(url,body)
-console.log(reqInsert.status)
+
 if(reqInsert.status==200){
   swallSuccess()
   menucrete()
@@ -157,11 +164,11 @@ function swallOpen(data) {
   }
 
 async function editMenu(d){
-  console.log(d)
+
   let row=``
   for(let i=0;i<menulist.length;i++){
     if(menulist[i].id==d){
-      console.log(menulist[i])
+
        row = `
        <div>
          <label>
@@ -208,4 +215,31 @@ async function editMenu(d){
 swal.close()
    }
  })
+}
+
+async function cahgeAllstatus(){
+  const swal =  Swal.fire({
+          icon:"info",
+          title: 'Registrando',
+          html: 'Aguarde',
+          allowOutsideClick : false,
+          showConfirmButton: false,
+          timerProgressBar: true,
+          onBeforeOpen: () => {
+          Swal.showLoading();
+      }
+    })
+  let url = `https://squid-app-ug7x6.ondigitalocean.app/updateAllmenus`
+const reqInsert = await makerequestStatus(url,chArr)
+
+if(reqInsert.status==200){
+  swallSuccess()
+  menucrete()
+}else{
+  swallErrorOpen("Ops, houve erro")
+}
+
+await swal.close()
+
+
 }
