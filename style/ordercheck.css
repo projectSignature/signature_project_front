@@ -1,13 +1,15 @@
 html{
       overflow-y: hidden;
+
       height: 100%;
       width:100%
 }
 
 body {
-width:100%;
+width:100% ;
   height: 100%;
   margin: 0;
+    overflow-y: hidden;
 }
 
 header{
@@ -22,7 +24,26 @@ header div{
   height:100%;
 
 }
-.header-left-div,.header-right-div{
+.example2-1{
+    overflow-x: auto;
+    border: 1px solid #999;
+    padding: 10px;
+    height:88%
+}
+.example2-1>div{
+    /*コレ*/width: 275%;
+    display: flex;
+    height:98%
+}
+.example2-1>div>div{
+    width: 10%;
+    border: 1px solid #999;
+    padding: 10px 20px;
+    margin: 10px;
+    background: #f2f2f2;
+}
+.header-left-div{
+  height:100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -35,39 +56,29 @@ header span{
   text-align: center;
 }
 header img{
-  height:100%;
+  width:8rem;
+  height:100% !important;
 }
 
 #manuineer{
-  overflow-x: scroll;
-  width:100%;
   height:95%;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  overflow-x: scroll;
-  flex-wrap: nowrap;
-  scroll-behavior: smooth;
 }
 
 .order-chek-scroll{
-  width:25rem !important;
-  height:99%;
-  display: block;
-  border: 2px solid gray;
+  width:500px !important;
+  height:100%;
   margin-left: 15px;
 }
 .order-chek-scroll input{
   border-radius:15px
 }
 .order-number{
-  width: 100%;
+  width: 62%;
   background: #333333;
   color:white;
-  height:10%;
+  height:100%;
   font-weight: bold;
-  font-size: 4vh;
+  font-size: 3vh;
   text-align: center;
   display: flex;
   align-items: center;
@@ -76,14 +87,18 @@ header img{
 .menu-area{
   width:100%;
   height:38%;
-  margin-top: 5px
+  margin-top: 5px;
+  font-size: 2vh
 }
 .text-order-div{
   font-size: 4vh
 }
 .text-order-div-menu{
-  font-size: 6vh;
+  padding:0;
+  font-size: 5vh;
   font-weight: bold;
+  height:7%;
+  text-align:center;
 }
 #ammount-pay{
   background: #7B3CFF;
@@ -126,7 +141,7 @@ header img{
 }
 .order-count{
   position: absolute;
-  top:90%;
+  top:88%;
   left:85%;
   width:15rem;
   height:4rem;
@@ -165,30 +180,32 @@ header img{
   height:2rem;
   display: flex;
   justify-content: center;
-    border-bottom: 0.5px solid gray;
-    background-color: red
+  border-bottom: 0.1px solid gray;
+
+
 }
 .selectdate{
-  width:15%;
+  width:20%;
   height:100%;
   display: flex;
   align-items: center;
 }
 .selectdate input{
-  width:35rem;
-  height: 2.5rem;
+  width:100%;
+  height: 80%;
   text-align: center;
   border-radius: 5px;
-  font-size:3vh
+  font-size:4vh
 }
 .language-swal{
-  width:10%;
+  width:20%;
   height: 100%;
   display: flex;
   align-items: center;
 
   justify-content:flex-end;
 }
+
 #pickupOption{
   display: flex;
   justify-content: center;
@@ -198,7 +215,7 @@ header img{
 #portugueseButton,
 #japaneseButton {
   width: 40%;
-  height: 60%;
+  height: 100%;
   cursor: pointer;
   background-repeat: no-repeat;
 
@@ -221,15 +238,17 @@ header img{
 }
 .flexadd{
   display: flex;
+  height:7%
 }
 .plusASS{
-  width:4rem;
+  width:10%;
   background-color: orange;
   display: flex;
   justify-content: center;
+  align-items: center;
   cursor:pointer;
   color:white;
-  font-size: 4vh;
+  font-size: 3vh;
 
 }
 .plusASS:hover{
@@ -237,6 +256,42 @@ header img{
 }
 .upload-div{
   margin-right: 30px
+}
+.lotnumber{
+  background-color: #8a2be2;
+  display: flex;
+  justify-items: center;
+  align-items: center;
+  text-align: center;
+  color:white;
+  font-weight: bold;
+    width:28%;
+    font-size:3vh
+}
+.flex-div{
+  flex-wrap: wrap;
+  justify-content:center;
+  align-items: center;
+  height:22%;
+  background-color: #dcdcdc;
+
+}
+.flex-div input{
+  width:49%;
+  height:40%;
+  margin-top:3%;
+  font-size:3vh
+}
+.flex-div input:hover{
+  background-color: gold
+}
+.hantoumei-button{
+  color:#666666
+}
+.top-one-div{
+  width:100%;
+  height:8%;
+  font-size: 4vh
 }
 @media only screen and (max-width: 800px) {
 
