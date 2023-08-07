@@ -80,74 +80,61 @@ function pagereload(){
      }
 
     let today = new Date();  //今日
-    //console.log(today)
-    //console.log(`${today.getFullYear()}-${("0"+(today.getMonth()+1)).slice(-2)}-${("0"+today.getDate()).slice(-2)}`)
-    document.getElementById('todayInput').value =`${today.getFullYear()}-${("0"+(today.getMonth()+1)).slice(-2)}-${("0"+today.getDate()).slice(-2)}`
-     //getData()
+document.getElementById('todayInput').value =`${today.getFullYear()}-${("0"+(today.getMonth()+1)).slice(-2)}-${("0"+today.getDate()).slice(-2)}`
 
      async function getData(){
       document.getElementById('manuineer').innerHTML = ""
        let orderCount = 0
-       const orderGet =  await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/orderget?id=${restid}`)
+       const orderGet =  await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/ordergetstatusyet?id=${restid}`)
          orderlistadd = orderGet
-         console.log(orderlistadd)
-         await console.log()
        const menulist = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/menuGet?id=${restid}`)//&&menuid=${data}
          menulistadd =menulist
-      await console.log(orderGet)
-
       for(let i=0;i<orderGet.clients.length;i++){
         orderGet.clients[i].pickUp_day = new Date(orderGet.clients[i].pickUp_day)
         const newTime = new Date(orderGet.clients[i].pickUp_day)
       }
-
-
       const newArr = orderGet.clients.sort(function(a, b) {
        return a.pickUp_day - b.pickUp_day;
       });
        let row = ""
-       console.log(newArr)
        for(let i=0;i<newArr.length;i++){
          if(newArr[i].status!=1){
            target = document.getElementById('todayInput').value
            const yyyy = newArr[i].pickUp_day.getFullYear()
            const mm = ("0"+(newArr[i].pickUp_day.getMonth()+1)).slice(-2)
            const dd = ("0"+newArr[i].pickUp_day.getDate()).slice(-2)
-           console.log(newArr[i].pickUp_day)
+           //console.log(newArr[i].pickUp_day)
            let t1 = new Date(newArr[i].pickUp_day)
            let t2 = new Date();
-
-           let diff =   t2.getTime() - t1.getTime();
-
-           //HH部分取得
+           console.log(t1)
+           console.log(t2)
+           let kubun = 0
+           let diff =""
+           if(t1>t2){
+             diff =t1.getTime() - t2.getTime();
+           }else{
+              diff =t2.getTime() - t1.getTime();
+              kubun = 1
+           }
+           //let diff =
+           //console.log(d)
            let diffHour = diff / (1000 * 60 * 60);
-           //MM部分取得
            let diffMinute = (diffHour - Math.floor(diffHour)) * 60;
-           //SS部分取得
            let diffSecond = (diffMinute - Math.floor(diffMinute)) * 60;
            let satimme = ('00' + Math.floor(diffHour)).slice(-2) + ':' + ('00' + Math.floor(diffMinute)).slice(-2) + ':' + ('00' + Math.round(diffSecond)).slice(-2)
-
            if(target==`${yyyy}-${mm}-${dd}`){
-             row += await creatRow(newArr[i],menulist,i,satimme)
+             row += await creatRow(newArr[i],menulist,i,satimme,kubun)
              orderCount ++
            }else{
            }
          }
 
-        //
-         //if(target==orderGet.clients[i].pickUp_day.split(" ")[0]){
-            //
-            //
-        // }
        }
-       console.log(orderCount)
        if(orderCount==0){
          //swallOpen(text6[language])
          document.getElementById('orderCount').innerHTML = `0 pedidos`
        }else{
-         //console.log(row)
           document.getElementById('manuineer').innerHTML += row
-
           if(orderCount==1){
             document.getElementById('orderCount').innerHTML = `${orderCount}${text8[language]}`
           }else{
@@ -170,7 +157,7 @@ return
      }
 
 
-    async function creatRow(data,menulist,number,time){
+    async function creatRow(data,menulist,number,time,kubun){
     await console.log(data)
     let count = ( data.menu_id.match( /,/g ) || [] ).length
     let divs = ""
@@ -180,20 +167,15 @@ return
     let picktime = ("0" + data.pickUp_day.getHours()).slice(-2)
     let pickminutes = ("0" + data.pickUp_day.getMinutes()).slice(-2)
 
-
-
       for(let ii=0;ii<count;ii++){
 let obs = "<div></div>"
         for(let i=0;i<menulist.length;i++){
          if(data.menu_id.split(",")[ii]==menulist[i].id){
            if(menulist[i].menu_id==1&&menulist[i].menu_child_id==1||menulist[i].menu_id==1&&menulist[i].menu_child_id==2){
-             console.log('inme')
              obs= await checkemeetPoint(data.obs,meetPostion,garikPostion)
              meetPostion = meetPostion + 2
              garikPostion = garikPostion + 2
            }
-
-
           divs += `<div class="main-menu-div"">
           <div class="title-menu">${i+1}.${menulist[i].control_name}
           </div>
@@ -208,32 +190,54 @@ let obs = "<div></div>"
          }
         }
       }
-
+     let kubuns
+     if(kubun==0){
+       kubuns = `faltam ${time}`
+     }else{
+       kubuns = `passou ${time}`
+     }
      let row = `
      <div class="order-chek-scroll"  style="border:10px solid ${await getColor(data.status)};">
-       <div class="flexadd"><div class="order-number" id="menuNUmber${number}">${tex10[language]} ${data.id}(${data.client_name})</div><div class="plusASS" onclick="addmenu('${data.id}')">+</div></div>
+       <div class="flexadd">
+        <div class="lotnumber">№${data.id}
+        </div>
+        <div class="order-number" id="menuNUmber${number}" style="${await getfontsize(data.client_name)}">${data.client_name}
+        </div>
+        <div class="plusASS" onclick="addmenu('${data.id}')">+
+        </div>
+       </div>
        <div class="text-order-div-menu" id="time-div">${picktime}:${pickminutes}</div>
-       <div style="${await gettimecolor(time)}">${time}</div>
+       <div style="${await gettimecolor(time,kubun)}">${kubuns}</div>
        <div class="menu-area">${divs}</div>
        <div class="text-order-div" id="ammount-pay">￥${valor}</div>
        <div class="text-order-div" id="paymentOption" onclick="changepayment(${data.id})">${await parTarget(data.paykubun) }</div>
        <div class="text-order-div" id="pickupOption" onclick="changepickup(${data.id})">${await pickUpTarget(data.pickUp_way) }</div>
-       <div class="text-order-div-button"><input type="button" value="Preparado" onclick="prepare('${data.id}')" style="background-color:${await getColor(data.status)}" /></div>
-       <div class="text-order-div-button"><input type="button" value="${text9[language]}" onclick="pickupConfirm('${data.id}',${data.paykubun},${data.pickUp_way},${valor})" style="background-color:#222222;color:white"/></div>
-       <div class="text-order-div-button"><input type="button" value="Cancelar" onclick="deletehistory('${data.id}')" style="background-color:#FF3333"/></div>
-
-       </div>`
+       <div class="flex-div">
+        <input class="hantoumei-button" type="button" value="Preparado" onclick="prepare('${data.id}')" style="${await getColorbutton(data.prepare_status)}" />
+        <input class="hantoumei-button" type="button" value="Pago" onclick="payed('${data.id}')" style="${await getColorbutton(data.pay_status)}" />
+        <input type="button" value="${text9[language]}" onclick="pickupConfirm('${data.id}',${data.paykubun},${data.pickUp_way},${valor})" style="background-color:#222222;color:white"/>
+        <input type="button" value="Cancelar" onclick="deletehistory('${data.id}')" style="background-color:#FF3333"/>
+       </div>
+      </div>`
      return row
     }
 
 function getColor(d){
-  console.log(d)
   if(d==3){
-    return '#2C7CFF'
+    return `background-color:#2C7CFF;color:black`
   }
 }
-async function gettimecolor(d){
-  if(d==0){
+
+function getColorbutton(d){
+  if(d==1){
+    return `background-color:#2C7CFF;color:black`
+  }
+}
+
+
+
+async function gettimecolor(d,kubun){
+  if(kubun==0){
     return "background-color:#2C7CFF; text-align:center;font-size:2.5vh;font-weight:bold"
   }else{
     return "background-color:red;color:white;text-align:center;font-size:2.5vh;font-weight:bold"
@@ -242,12 +246,11 @@ async function gettimecolor(d){
 
 
 async function changepickup(d){
-
-  console.log(d)
   let row = `<div class="title-meet-point">Alterar tipo de recibo</div>
             <div class="save-meet-tipe-select-day">
                <input class="selectrice-type-day" type="button" id="timepickup-now" value="Balcão" onclick="changePickUp(0,${d})" style="background-color:#5D99FF"/>
-               <input class="selectrice-type-day" type="button" id="timepickup-now" value="Uber" onclick="changePickUp(1,${d})" style="background-color:#ornge"/>
+               <input class="selectrice-type-day" type="button" id="timepickup-now" value="Uber" onclick="changePickUp(1,${d})" />
+               <input class="selectrice-type-day" type="button" id="timepickup-now" value="Demaekan" onclick="changePickUp(2,${d})" style="background-color:orange"/>
              </div>
 
              <style>
@@ -275,11 +278,19 @@ async function changepickup(d){
           html: row,
           allowOutsideClick : false,
           showConfirmButton: false,
-          showCancelButton: false,
+          showCancelButton: true,
           background:'#EEEEEE'
         })
 }
 
+async function getfontsize(d){
+  console.log(d.length)
+  if(d.length>=25){
+    return `font-size:2.5vh !important`
+  }else if(d.length>15&&d.length<25){
+    return `font-size:3vh !important`
+  }
+}
 async function changePickUp(d,id){
   const swal =  Swal.fire({
           icon:"info",
@@ -313,6 +324,7 @@ async function changepayment(d){
                <input class="selectrice-type-day" type="button" id="timepickup-now" value="Dinheiro" onclick="changePay(1,${d})" style="background-color:#5D99FF"/>
                <input class="selectrice-type-day" type="button" id="timepickup-now" value="Cartão" onclick="changePay(2,${d})" style="background-color:#ornge"/>
                <input class="selectrice-type-day" type="button" id="timepickup-now" value="Paypay" onclick="changePay(3,${d})" style="background-color:yellow"/>
+
              </div>
 
              <style>
@@ -333,6 +345,9 @@ async function changepayment(d){
              .title-meet-point{
                font-size:8vh
              }
+             .cancelButton{
+               width:20rem
+             }
 
              </style>`
 
@@ -340,7 +355,7 @@ async function changepayment(d){
           html: row,
           allowOutsideClick : false,
           showConfirmButton: false,
-          showCancelButton: false,
+          showCancelButton: true,
           background:'#EEEEEE'
         })
 }
@@ -357,16 +372,16 @@ async function changePay(d,id){
           Swal.showLoading();
       }
     })
-  console.log(d)
-  console.log(id)
+  //console.log(d)
+  //console.log(id)
   let url = `https://squid-app-ug7x6.ondigitalocean.app/updatehistoryPayStatus`
   body = {
     status:d,
     id:id
   }
   const reqInsert = await makerequestStatus(url,body)
-  console.log(reqInsert)
-  await console.log(reqInsert.status)
+  //console.log(reqInsert)
+  //await console.log(reqInsert.status)
   if(reqInsert.status==200){
     await   window.location.reload();
   }
@@ -375,7 +390,7 @@ async function changePay(d,id){
 }
 
 async function prepare(d){
-  console.log(d)
+  //console.log(d)
   const swal =  Swal.fire({
           icon:"info",
           title: stext18[language],
@@ -390,15 +405,43 @@ async function prepare(d){
   let url = `https://squid-app-ug7x6.ondigitalocean.app/updatehistoryStatus`
   body = {
     d1:d,
-    status:3
+    status:1
   }
   const reqInsert = await makerequestStatus(url,body)
-  await console.log(reqInsert.status)
+  //await console.log(reqInsert.status)
   if(reqInsert.status==200){
     await   window.location.reload();
   }
   swal.close()
 }
+
+async function payed(d){
+  //console.log(d)
+  const swal =  Swal.fire({
+          icon:"info",
+          title: stext18[language],
+          html: stext19[language],
+          allowOutsideClick : false,
+          showConfirmButton: false,
+          timerProgressBar: true,
+          onBeforeOpen: () => {
+          Swal.showLoading();
+      }
+    })
+  let url = `https://squid-app-ug7x6.ondigitalocean.app/updatehistorypayed`
+  body = {
+    d1:d,
+    status:1
+  }
+  const reqInsert = await makerequestStatus(url,body)
+  //await console.log(reqInsert.status)
+  if(reqInsert.status==200){
+    await   window.location.reload();
+  }
+  swal.close()
+}
+
+
 
 async function deletehistory(d){
   const swal =  Swal.fire({
@@ -412,16 +455,16 @@ async function deletehistory(d){
           Swal.showLoading();
       }
     })
-  console.log('in')
+  //console.log('in')
   let url = `https://squid-app-ug7x6.ondigitalocean.app/delehistoryorder`
   let dd = d
   dd = dd.split("(")[0]
   body = {
     id:dd,
   }
-  console.log(body)
+  //console.log(body)
   const reqInsert = await makerequestStatus(url,body)
-  await console.log(reqInsert.status)
+  //await console.log(reqInsert.status)
   if(reqInsert.status==200){
     await   window.location.reload();
   }
@@ -429,8 +472,8 @@ async function deletehistory(d){
 }
 
 async function pickupConfirm(d,paytype,pickuptype,upvalueb){
-  console.log(paytype)
-  console.log(pickuptype)
+  //console.log(paytype)
+  //console.log(pickuptype)
   const swal =  Swal.fire({
           icon:"info",
           title: stext18[language],
@@ -442,7 +485,7 @@ async function pickupConfirm(d,paytype,pickuptype,upvalueb){
           Swal.showLoading();
       }
     })
-console.log(d)
+//console.log(d)
 let url = `https://squid-app-ug7x6.ondigitalocean.app/updatehistoryStatus`
 let dd = d
 dd = dd.split("(")[0]
@@ -451,13 +494,13 @@ body = {
   status:1
 }
 const reqInsert = await makerequestStatus(url,body)
-await console.log(reqInsert.status)
+//await console.log(reqInsert.status)
 if(reqInsert.status!=200){
   swallErrorOpen("Ops, houve erro")
 }else{
   const getRestStatus = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/restmanegerTimeGet`)
-    await console.log(getRestStatus)
-    console.log(getRestStatus[0].cach)
+    //await console.log(getRestStatus)
+    //console.log(getRestStatus[0].cach)
     let payinsert
     let upvalue
   if(paytype==1&&pickuptype!=1){
@@ -482,7 +525,7 @@ if(reqInsert.status!=200){
   swallErrorOpen("Ops, houve erro")
     }else{
       swal.close()
-      console.log('insucc')
+      //console.log('insucc')
     swallSuccess()
      getData()
     }
@@ -491,7 +534,7 @@ if(reqInsert.status!=200){
 }
 
 async function makerequest3(url,data){
-  console.log('in')
+
   try{
     const request = await fetch(url, {//pegar todos dados do table de pagamentos //n]
       method: 'POST',
@@ -501,7 +544,7 @@ async function makerequest3(url,data){
     })
     return request.status
   }catch(e){
-    console.log(e)
+
   }
 
 
@@ -512,6 +555,8 @@ function pickUpTarget(d){
     return text11[language]
   }else if(d==1){
     return "Uber"
+  }else if(d==2){
+    return "Demaekan"
   }
 }
 async function swallSuccess(){
@@ -533,9 +578,7 @@ Toast.fire({
 })
 }
    function checkemeetPoint(data,m,g){
-     console.log(data)
-     console.log(m)
-     console.log(g)
+
      let answer = ""
    if(data.split(",")[m]==0){
      answer += `<div><img src="../image/malpassada.png" width="30" class="setting-right-button"/>`
@@ -569,14 +612,13 @@ Toast.fire({
          body: JSON.stringify(data),
          headers: { "Content-type": "application/json; charset=UTF-8" }
        })
-       await console.log(request)
+
        return request
      }
 
 
      async function addmenu(d){
-       console.log(orderlistadd)
-       console.log(d)
+
        let target = ""
        for(let i=0;i<orderlistadd.clients.length;i++){
          if(d==orderlistadd.clients[i].id){
@@ -590,15 +632,14 @@ Toast.fire({
 
      async function craeteRowTOadd(d){
        let row ="<div class='nowOrderdiv' id='nowOrderdivAdd'>"
-       console.log(d)
-       console.log(menulistadd)
+
        const comonCOunt = (d.menu_id.match(/,/g) || []).length
-       console.log(comonCOunt)
+
        for(let i=0;i<comonCOunt;i++){
-         console.log(d.menu_id.split(",")[i])
+
          for(let ii=0;ii<menulistadd.length;ii++){
            if(d.menu_id.split(",")[i]==menulistadd[ii].id){
-             console.log(menulistadd[ii].menu_name_0)
+
              row += `<div class="mainaddDiv">
                      <div class="titleAddDiv">${menulistadd[ii].control_name}</div>
                      <div id="menuTopid${i}"style="display:none">${menulistadd[ii].id}</div>
@@ -724,8 +765,7 @@ Toast.fire({
       let target1 = document.getElementById(`updateOrderQt${d}`)
       let target2 = document.getElementById(`updateOrderVa${d}`)
       let target3 = document.getElementById(`backValue${d}`)
-       console.log(target1)
-       console.log(target2)
+
        myvalue = (target3.innerText.split('￥')[1]-0)
        if(k==1){
         target1.innerText = target1.innerText-0 + 1
@@ -740,8 +780,7 @@ Toast.fire({
      }
 
      async function selectToadd(d){
-       console.log(d)
-       console.log(menulistadd)
+
        let targetName =""
        let targetValue = ""
 
@@ -766,7 +805,7 @@ Toast.fire({
        document.getElementById('nowOrderdivAdd').innerHTML +=row
        addOrderCount ++
        //console.log(document.getElementById('nowOrderdivAdd').innerHTML)
-       console.log(addOrderCount)
+
      }
 
      function swalclose(){
@@ -776,13 +815,10 @@ Toast.fire({
      const text64 = ["Aguarde","Wait","そのままおまちください"]
 
      async function updateToOrder(d){
-       await console.log('in')
       targetMenuid = ""
       targetChild = ""
       targetvalue = ""
       targetQt = ""
-
-        console.log(addOrderCount)
       for (let i=0;i<addOrderCount;i++){
           targetMenuid +=  document.getElementById(`menuTopid${i}`).innerText + ","
           targetChild += "0,"
@@ -808,18 +844,11 @@ Toast.fire({
         d4:targetQt,
         d5:d
       }
-
-      await console.log(body)
       swal.close()
     //
       const reqInsert = await makerequestStatus(url,body)
-      await console.log(reqInsert)
       await   window.location.reload();
      }
-
-
-
-
      </script>
 </body>
 
