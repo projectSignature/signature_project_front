@@ -46,6 +46,7 @@
 .buttons-top{
   width:30%;
   height:4rem;
+  font-size:2.5vh;
   border-radius: 15px;
   background-color: orange
 }
