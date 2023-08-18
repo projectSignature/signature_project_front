@@ -143,25 +143,25 @@ async function paystatusGet(d){
 }
 
 async function changedatas(pick,pay,id){
-  let pick_ub ="rgba(255,255,255,0.5)"
-  let pick_ba ="rgba(255,255,255,0.5)"
-  let pick_de ="rgba(255,255,255,0.5)"
-  let pay_ca ="rgba(255,255,255,0.5)"
-  let pay_cr="rgba(255,255,255,0.5)"
-  let pay_pa="rgba(255,255,255,0.5)"
+  let pick_ub ="#EEEEEE"
+  let pick_ba ="#EEEEEE"
+  let pick_de ="#EEEEEE"
+  let pay_ca ="#EEEEEE"
+  let pay_cr="#EEEEEE"
+  let pay_pa="#EEEEEE"
   if(pick==0){
-    pick_ba="gray"
+    pick_ba="#FF773E"
   }else if(pick==1){
-    pick_ub="gray"
+    pick_ub="#FF773E"
   }else if(pick==2){
-    pick_de="gray"
+    pick_de="#FF773E"
   }
   if(pay==1){
-    pay_ca="gray"
+    pay_ca="#FF773E"
   }else if(pay==2){
-    pay_cr="gray"
+    pay_cr="#FF773E"
   }else if(pay==3){
-    pay_pa="gray"
+    pay_pa="#FF773E"
   }
   let row=`
    <div class="mains-divs">
@@ -207,8 +207,9 @@ async function changedatas(pick,pay,id){
 
     }
     .tops-div-inputs input{
-      width:30%;
-      height:2.5rem
+      width:33%;
+      height:2.5rem;
+      font-size:2.5vh
     }
     </style>`
 
@@ -271,18 +272,18 @@ async function deletesOrder(id){
 async function changepick(d){
   pickkubuns=d
   if(d==0){
-    document.getElementById("pick_0").style="background-color:gray"
+    document.getElementById("pick_0").style="background-color:#FF773E"
     document.getElementById("pick_1").style="background-color:rgba(255,255,255,0.8)"
     document.getElementById("pick_2").style="background-color:rgba(255,255,255,0.8)"
     changepay(paykubuns)
   }else if(d==1){
     document.getElementById("pick_0").style="background-color:rgba(255,255,255,0.8)"
-    document.getElementById("pick_1").style="background-color:gray"
+    document.getElementById("pick_1").style="background-color:#FF773E"
     document.getElementById("pick_2").style="background-color:rgba(255,255,255,0.8)"
   }else{
     document.getElementById("pick_0").style="background-color:rgba(255,255,255,0.8)"
     document.getElementById("pick_1").style="background-color:rgba(255,255,255,0.8)"
-    document.getElementById("pick_2").style="background-color:gray"
+    document.getElementById("pick_2").style="background-color:#FF773E"
   }
   if(d==1||d==2){
     document.getElementById("pay_1").style="background-color:rgba(255,255,255,0.8)"
@@ -295,17 +296,17 @@ async function changepick(d){
 async function changepay(d){
     paykubuns=d
   if(d==1){
-    document.getElementById("pay_1").style="background-color:gray"
+    document.getElementById("pay_1").style="background-color:#FF773E"
     document.getElementById("pay_2").style="background-color:rgba(255,255,255,0.8)"
     document.getElementById("pay_3").style="background-color:rgba(255,255,255,0.8)"
   }else if(d==2){
     document.getElementById("pay_1").style="background-color:rgba(255,255,255,0.8)"
-    document.getElementById("pay_2").style="background-color:gray"
+    document.getElementById("pay_2").style="background-color:#FF773E"
     document.getElementById("pay_3").style="background-color:rgba(255,255,255,0.8)"
   }else{
     document.getElementById("pay_1").style="background-color:rgba(255,255,255,0.8)"
     document.getElementById("pay_2").style="background-color:rgba(255,255,255,0.8)"
-    document.getElementById("pay_3").style="background-color:gray"
+    document.getElementById("pay_3").style="background-color:#FF773E"
   }
 }
 
@@ -391,7 +392,7 @@ async function resertdata(){
       .second-div-swall div input{
         width:90%;
         height:3rem;
-        border:0.2px solid gray;
+        border:0.2px solid #FF773E;
         border-radius: 10px;
         text-align: center;
         font-size: 4vh
