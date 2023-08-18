@@ -4,8 +4,28 @@ let user
 let password
 let errormessage
 let menbername = sessionStorage.getItem("name")
+let language = sessionStorage.getItem("language")
+
+language=1
+
+/////////////////////////////////////テキスト翻訳///////////////////////////////////////
+let txt0 = ["打刻","Bater ponto"]
+let txt1 = ["収支管理","Controle financeiro"]
+let txt2 = ["メニュー","Menu"]
+let txt3 = ["財布管理","Carteira"]
+let txt4 = ["レジ","Caixa"]
+
+document.getElementById("txt0").innerText = txt0[language]
+document.getElementById("txt1").innerText = txt1[language]
+document.getElementById("txt2").innerText = txt2[language]
+document.getElementById("txt3").innerText = txt3[language]
+document.getElementById("txt4").innerText = txt4[language]
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+
 console.log(menbername)
-//let menbername = "Paulo Shigaki"
+console.log(language)
 document.getElementById('name-span').innerText = menbername
 
 console.log('in')
@@ -29,7 +49,6 @@ function swallErrorOpen(data) {
 
 //time_regist_swall()
 function time_regist_swall(){
-   console.log('in')
    let row = `
    <div id="time-regist-point-day"></div>
    <div id="time-regist-point-time"></div>
