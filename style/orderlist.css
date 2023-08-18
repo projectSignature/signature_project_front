@@ -1,0 +1,134 @@
+html{
+overflow-y: hidden;
+      height: 100%;
+}
+body {
+  height: 100%;
+  margin: 0;
+}
+header{
+  width:100%;
+  height:6%;
+  background-color: #FF6928;
+  display: flex;
+  justify-content:space-between;
+  align-items:  center;
+}
+header div{
+  height:100%;
+}
+.header-left-div,.header-right-div{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+header span{
+  font-size:4vh;
+  font-weight: bold;
+  align-items: center;
+  text-align: center;
+}
+header img{
+  height:100%;
+}
+.main-div{
+  width:100%;
+  height:90%;
+}
+.topone-div{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  height: 3rem;
+  padding-top: 15px;
+  padding-bottom: 15px
+}
+.topone-div input{
+  width:48%;
+  height:100%;
+  text-align: center;
+  font-size: 3vh
+}
+.second-div{
+  width:100%;
+  height:65%;
+  overflow-y: auto;
+}
+
+.main-order-div{
+  margin-left: 10%;
+  width:80%;
+  height:5rem;
+  background-color: silver;
+  margin-top: 10px;
+  padding-left: 0px !important;
+  border:0.8px solid darkgray;
+  border-radius: 5px;
+  overflow: hidden;
+}
+.idnumbers{
+  width:100%;
+  height:30%;
+  background-color: #333333;
+  text-align: center;
+  color:white
+}
+.names{
+  width:100%;
+  height:30%;
+  background-color: #DDDDDD;
+  text-align: left;
+}
+.sub-divs{
+  width: 100%;
+  height:40%;
+  text-align: center;
+  align-items: center;
+  display:flex !important;
+  flex-wrap: nowrap;
+  justify-content:space-between;
+  background-color: white;
+}
+.sub-divs div{
+  width:48%;
+  display:  flex;
+  justify-content: flex-start;
+
+}
+.typepays-div{
+  width: 100%;
+  display: flex;
+  justify-content: flex-end !important;
+  padding-right: 15px
+}
+.typepixkup-text{
+  font-weight: bold;
+  color:#333333;
+  border:0.8px solid gray;
+  width:7rem;
+  margin-right: 2px;
+  border-radius: 10px
+}
+@media only screen and (max-width: 800px) {
+  .main-div{
+    flex-wrap: wrap;
+  }
+  .main-div-div{
+    margin-left:1rem;
+    width:14rem;
+  }
+  header span{
+    font-size:3vh;
+  }
+  .date-div-span{
+    text-align: left;
+    width:10%;
+    margin-left: 2%;
+    font-size:2vh;
+  }
+  .regist-button{
+    height:4rem;
+  }
+}
