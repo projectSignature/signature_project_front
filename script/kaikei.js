@@ -30,6 +30,7 @@ let text15 = ["selecione a forma de pagamento",'決済手段を選択してく�
 let text16 = ["digite o valor",'支払い金額を入力してください']
 let text17 = ["salvando",'登録中']
 let text18= ["Aguarde",'しばらくお待ちください']
+let text19=["número da notinha","レシート番号"]
 
 
 createSelectepaykuun()
@@ -132,7 +133,15 @@ if(restid==null||workerid==null||menbername==null){
                 Swal.showLoading();
             }
           })
-      let seqs = 0
+
+           let seq = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/costRestGet?id=0`)
+           let seqs = 0
+           if(seq.length!=0){
+             seqs = seq[seq.length-1].seq+1
+           }
+
+
+
           let url = `https://squid-app-ug7x6.ondigitalocean.app/createCostRest`
           body = {
             d1:restid,
@@ -172,7 +181,8 @@ if(restid==null||workerid==null||menbername==null){
                   swallErrorOpen("Ops, houve erro")
                 }else{
                 await swal.close()
-            swallSuccess()
+            //await swallSuccess()
+            await swalreshitenumber(seqs)
           }
           }
       }catch (error) {
@@ -227,6 +237,26 @@ function selectType(data,id){
       document.getElementById(`type${i}`).style = "background:#FFFFFF"
     }
   }
+}
+
+function swalreshitenumber(data) {
+  Swal.fire({
+    showConfirmButton: true,
+    cancelButtonText: 'ok',
+    width: 500,
+    html: `<div>${text19[language]}</div>
+           <div class="number-reshite">${data}</div>
+           <style>
+            .number-reshite{
+              background-color:orange;
+              font-size:3vh;
+              font-weight:bold
+            }
+            `,
+    customClass: "sweet-alert",
+  }).then((result) => {
+
+  });
 }
 
 function swallErrorOpen(data) {
