@@ -45,8 +45,9 @@ header img{
   align-items:  center;
 }
 .top-button{
-  width:6rem;
+  width:30%;
   height:80%;
+  margin-left: 1%;
   border-radius: 5px;
   text-align: center;
   font-size: 3vh;
@@ -138,7 +139,7 @@ header img{
   font-size: 3vh;
 }
 .category-select-button{
-  width:25%;
+  width:30%;
   height:4rem;
   border:0.5px solid #888888;
   border-radius: 5px;
@@ -146,7 +147,7 @@ header img{
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  margin-left: 1rem;
+  margin-left: 1%;
   cursor: pointer;
 }
 .category-select-button:hover{
@@ -158,7 +159,9 @@ header img{
   justify-content: center;
 }
 
-
+#pay-select{
+  margin-left: 0px !important
+}
 
 @media only screen and (max-width: 800px) {
   .main-div{
