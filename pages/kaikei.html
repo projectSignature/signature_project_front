@@ -21,99 +21,47 @@
   </header>
   <div class="main-div">
     <div class="div-comon-division">
-      <input type="button" class="top-button" value="履歴" onclick="pagechange('restFluxo')"/>
+      <input type="button" class="top-button" id="historybutton" value="履歴" onclick="pagechange('restFluxo')"/>
       <input type="button" class="top-button" id="keihi-select" value="経費" onclick="process1(1)"/>
       <input type="button"  class="top-button" id="syunyu-select" value="収入" onclick="process1(2)"/>
     </div>
     <div class="div-comon-division-common">
-      <div class="date-div-span">日付</div>
+      <div class="date-div-span" id="div0">日付</div>
       <div class="right-div-add" onclick="dayChange(1)"><</div>
       <div class="center-colomn-div"><input type="date" class="calender-input" id="calender-input" required/></div>
       <div class="right-div-add" onclick="dayChange(2)">></div>
     </div>
     <div class="div-comon-division-common">
-      <div class="date-div-span">メモ</div>
+      <div class="date-div-span"  id="div1">メモ</div>
       <div class="right-div-add"></div>
-      <div class="center-colomn-div"><textarea placeholder="内容入力" type="text" id="memo-pay"　rowa="8" cols="40"　required class="calender-input-text"></textarea></div>
+      <div class="center-colomn-div"><textarea placeholder="" type="text" id="memo-pay"　rowa="8" cols="40"　required class="calender-input-text"></textarea></div>
       <div class="right-div-add"></div>
     </div>
     <div class="div-comon-division-common">
-     <div class="date-div-span">方法</div>
+     <div class="date-div-span" id="div2">方法</div>
      <div class="right-div-add"></div>
      <div class="center-colomn-div">
        <select id="pay-select">
-         <option value="0">ゆうちょ銀行</option>
-         <option value="1">現金</option>
-         <option value="2">クレジット</option>
+
        </select>
      </div>
     <div class="right-div-add"></div>
    </div>
 
  <div class="div-comon-division-common">
-   <div class="date-div-span">金額</div>
+   <div class="date-div-span" id="div3">金額</div>
    <div class="right-div-add"></div>
    <div class="center-colomn-div"><input placeholder="￥" type="text" class="calender-input" id="value-input" oninput="kanmaReplase()"  inputmode="numeric" required/></div>
    <div class="right-div-add"></div>
  </div>
 
 
-    <div class="category-main-div">
-      <div class="category-select-button" id="type1" onclick="selectType(1)">
-        <img src="..\image\k1.png" width="40"/>
-        <div><span>仕入れ</span></div>
-      </div>
-      <div class="category-select-button" id="type2" onclick="selectType(2)">
-        <img src="..\image\k2.png" width="40"/>
-        <div><span>給与</span></div>
-      </div>
-      <div class="category-select-button" id="type3" onclick="selectType(3)">
-        <img src="..\image\k3.png" width="40"/>
-        <div><span>通信</span></div>
-      </div>
-      <div class="category-select-button" id="type4" onclick="selectType(4)">
-        <img src="..\image\k4.png" width="40"/>
-        <div><span>水道光熱費</span></div>
-      </div>
-      <div class="category-select-button" id="type5" onclick="selectType(5)">
-        <img src="..\image\k5.png" width="40"/>
-        <div><span>荷造運賃</span></div>
-      </div>
-      <div class="category-select-button" id="type6" onclick="selectType(6)">
-        <img src="..\image\k6.png" width="40"/>
-        <div><span>広告宣伝費</span></div>
-      </div>
-      <div class="category-select-button" id="type7" onclick="selectType(7)">
-        <img src="..\image\k7.png" width="40"/>
-        <div><span>地代家賃</span></div>
-      </div>
-      <div class="category-select-button" id="type8" onclick="selectType(8)">
-        <img src="..\image\k8.png" width="40"/>
-        <div><span>修繕費</span></div>
-      </div>
-      <div class="category-select-button" id="type9" onclick="selectType(9)">
-        <img src="..\image\k9.png" width="40"/>
-        <div><span>雑費</span></div>
-      </div>
-      <div class="category-select-button" id="type10" onclick="selectType(10)">
-        <img src="..\image\k10.png" width="40"/>
-        <div><span>損害保険</span></div>
-      </div>
-      <div class="category-select-button" id="type11" onclick="selectType(11)">
-        <img src="..\image\k11.png" width="40"/>
-        <div><span>消耗品費</span></div>
-      </div>
-      <div class="category-select-button" id="type12" onclick="addkamoku(12)">
-        <img src="..\image\k12.png" width="40"/>
-        <div><span>科目追加</span></div>
-      </div>
+    <div class="category-main-div" id="categorysdiv">
     </div>
     <div class="regist-button">
-     <input value="支払済" type="button" onclick="savedata(1)"/>
-     <input value="未払い" type="button" onclick="savedata(2)" style="background: #FF3333"/>
+     <input id="input1" value="支払済" type="button" onclick="savedata(1)"/>
+     <input id="input2" value="未払い" type="button" onclick="savedata(2)" style="background: #FF3333"/>
     </div>
-
-
   </div>
 
 
