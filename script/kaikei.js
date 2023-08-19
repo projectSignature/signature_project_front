@@ -9,9 +9,72 @@ let payStatus = 0
 let restid=sessionStorage.getItem("restid")
 let workerid=sessionStorage.getItem("id")
 let menbername = sessionStorage.getItem("name")
-console.log(restid)
+let language = sessionStorage.getItem("language")
+let catelength = 0
+
+text1 = ["histórico","履歴"]
+text2 = ["gastos","経費"]
+text3 = ["rendas","収入"]
+text4 = ["data","日付"]
+text5 = ["memo","メモ"]
+text6 = ["forma pag.","方法"]
+text7 = ["valor","金額"]
+text8 = ["banco","銀行"]
+text9 = ["cash","現金"]
+text10 = ["crédito","クレジット"]
+text11 = ["pago","支払済"]
+text12 = ["pendente","未払い"]
+text13 = ["selecione a categoria",'科目を選択してください']
+text14 = ["selecione a data",'支払日を選択してください']
+text15 = ["selecione a forma de pagamento",'決済手段を選択してください']
+text16 = ["digite o valor",'支払い金額を入力してください']
+text17 = ["salvando",'登録中']
+text18= ["Aguarde",'しばらくお待ちください']
+
+////////////////翻訳////////////////////////
+document.getElementById("historybutton").value=text1[language]
+document.getElementById("keihi-select").value=text2[language]
+document.getElementById("syunyu-select").value=text3[language]
+document.getElementById("div0").innerText=text4[language]
+document.getElementById("div1").innerText=text5[language]
+document.getElementById("div2").innerText=text6[language]
+document.getElementById("div3").innerText=text7[language]
+document.getElementById("input1").value=text11[language]
+document.getElementById("input2").value=text12[language]
+createSelectepaykuun()
+
+async function createSelectepaykuun(){
+  let row = ""
+    row = await `
+    <option value="1">${text9[language]}</option>
+    <option value="0">${text8[language]}</option>
+    <option value="2">${text10[language]}</option>
+    `
+ document.getElementById('pay-select').innerHTML = await row
+}
 if(restid==null||workerid==null||menbername==null){
   pagechange('loginadminrst')
+}
+
+createcategorys()
+async function createcategorys(){
+    const category = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/gategorycostGet`)
+      catelength = category.clients.length
+      let name = ""
+      let row = ``
+      for(let i=0;i<category.clients.length;i++){
+         if(language==0){
+           name = category.clients[i].name_pt
+         }else{
+           name = category.clients[i].name_jp
+         }
+         row += `
+        <div class="category-select-button" id="type${i}" onclick="selectType(${i},'${category.clients[i].control_id}')">
+          <img src="../image/ic${category.clients[i].icon_id}.png" width="40"/>
+          <div><span>${name}</span></div>
+        </div>`
+      }
+      document.getElementById('categorysdiv').innerHTML = row
 }
 //let menbername = "Paulo Shigaki"
 document.getElementById('name-span').innerText = menbername
@@ -46,21 +109,21 @@ if(restid==null||workerid==null||menbername==null){
   let slectPay = document.getElementById('pay-select').value
   let valuePay = document.getElementById('value-input').value
   if(paykubun==0){
-    swallErrorOpen('科目を選択してください')
+    swallErrorOpen(text13[language])
   }else if(datainput==""){
-    swallErrorOpen('支払日を選択してください')
+    swallErrorOpen(text14[language])
   }else if(slectPay==""){
-    swallErrorOpen('決済手段を選択してください')
+    swallErrorOpen(text15[language])
   }else if(valuePay==""){
-    swallErrorOpen('支払い金額を入力してください')
+    swallErrorOpen(text16[language])
   }else{
     saveToSql(datainput,memo,slectPay,valuePay)
     try{
-      console.log((valuePay.split('￥')[1]).replace(",",""))
+
         const swal =  Swal.fire({
                 icon:"info",
-                title: '登録中',
-                html: 'しばらくお待ちください',
+                title: text17[language],
+                html: ,
                 allowOutsideClick : false,
                 showConfirmButton: false,
                 timerProgressBar: true,
@@ -87,7 +150,6 @@ if(restid==null||workerid==null||menbername==null){
             document.getElementById('memo-pay').value = ""
             document.getElementById('value-input').value = ""
             const getRestStatus = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/restmanegerTimeGet`)
-              await console.log(getRestStatus)
               let payinsert
               let upvalue
               if(slectPay==1){
@@ -103,7 +165,6 @@ if(restid==null||workerid==null||menbername==null){
                   d1: upvalue,
                 };
                 const request = await makerequest3(url, body);
-                await console.log(request)
                 if(request!=200){
                   swallErrorOpen("Ops, houve erro")
                 }else{
@@ -112,7 +173,6 @@ if(restid==null||workerid==null||menbername==null){
           }
           }
       }catch (error) {
-        console.log(error)
         swallErrorOpen("Ops, houve erro")
       }
   }
@@ -120,7 +180,6 @@ if(restid==null||workerid==null||menbername==null){
 }
 
 async function makerequest3(url,data){
-  console.log('in')
   const request = await fetch(url, {//pegar todos dados do table de pagamentos //n]
     method: 'POST',
     body: JSON.stringify(data),
@@ -151,19 +210,16 @@ async function makerequest(url){
   return request.json()
 }
 function saveToSql(d1,d2,d3,d4){
-  console.log(d1)
-  console.log(d2)
-  console.log(d3)
-  console.log(d4)
+
 }
 
 
-function selectType(data){
-  console.log(data)
-  for(let i=1;i<12;i++){
+function selectType(data,id){
+
+  for(let i=0;i<catelength;i++){
     if(data==i){
       document.getElementById(`type${i}`).style = "background:#FF6928"
-      paykubun = i
+      paykubun = id
     }else{
       document.getElementById(`type${i}`).style = "background:#FFFFFF"
     }
