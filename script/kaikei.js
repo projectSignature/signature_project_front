@@ -47,7 +47,7 @@ async function createSelectepaykuun(){
  document.getElementById("historybutton").value=text1[language]
  document.getElementById("keihi-select").value=text2[language]
  document.getElementById("syunyu-select").value=text3[language]
- document.getElementById("div0").innerText=text4[language]
+ document.getElementById("div0").innerText='PAULOOOOOOO'//text4[language]
  document.getElementById("div1").innerText=text5[language]
  document.getElementById("div2").innerText=text6[language]
  document.getElementById("div3").innerText=text7[language]
