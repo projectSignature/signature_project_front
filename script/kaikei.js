@@ -35,6 +35,7 @@ let text18= ["Aguarde",'しばらくお待ちください']
 createSelectepaykuun()
 
 async function createSelectepaykuun(){
+    console.log(language)
   let row = ""
     row = await `
     <option value="1">${text9[language]}</option>
