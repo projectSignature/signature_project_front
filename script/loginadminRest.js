@@ -33,6 +33,7 @@ async function login_request(user, password) {
        sessionStorage.setItem("name",response.data[0].worker_name)
        sessionStorage.setItem("id",response.data[0].id)
        sessionStorage.setItem("restid",response.data[0].rest_id)
+       sessionStorage.setItem("language",response.data[0].language)
        window.location = `../pages/dashboardrest.html`;
      }else{
        errormessage = "Check username and password";
