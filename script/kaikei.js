@@ -35,7 +35,6 @@ let text18= ["Aguarde",'しばらくお待ちください']
 createSelectepaykuun()
 
 async function createSelectepaykuun(){
-    console.log(language)
   let row = ""
     row = await `
     <option value="1">${text9[language]}</option>
@@ -44,15 +43,15 @@ async function createSelectepaykuun(){
     `
  document.getElementById('pay-select').innerHTML = await row
  ////////////////翻訳////////////////////////
- document.getElementById("historybutton").value= await text1[language]
- document.getElementById("keihi-select").value=await text2[language]
- document.getElementById("syunyu-select").value=await text3[language]
- document.getElementById("div0").innerText='PAULOOOOOOO'//text4[language]
- document.getElementById("div1").innerText=await text5[language]
- document.getElementById("div2").innerText=await text6[language]
- document.getElementById("div3").innerText=await text7[language]
- document.getElementById("input1").value=await text11[language]
- document.getElementById("input2").value=await text12[language]
+ document.getElementById("historybutton").value=text1[language]
+ document.getElementById("keihi-select").value=text2[language]
+ document.getElementById("syunyu-select").value=text3[language]
+ document.getElementById("div0").innerText=text4[language]
+ document.getElementById("div1").innerText=text5[language]
+ document.getElementById("div2").innerText=text6[language]
+ document.getElementById("div3").innerText=text7[language]
+ document.getElementById("input1").value=text11[language]
+ document.getElementById("input2").value=text12[language]
 }
 if(restid==null||workerid==null||menbername==null){
   pagechange('loginadminrst')
