@@ -132,6 +132,7 @@ if(restid==null||workerid==null||menbername==null){
                 Swal.showLoading();
             }
           })
+      let seqs = 0
           let url = `https://squid-app-ug7x6.ondigitalocean.app/createCostRest`
           body = {
             d1:restid,
@@ -141,7 +142,8 @@ if(restid==null||workerid==null||menbername==null){
             d5:`'${datainput}'`,
             d6:memo,
             d7:slectPay,
-            d8:data
+            d8:data,
+            d9:seqs
           }
         const reqInsert = await makerequestStatus(url,body)
 
