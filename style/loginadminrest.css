@@ -129,6 +129,7 @@ width: 90%;
 height: 0.5rem;
 }
 
+
 @media screen and (max-width: 600px) {
   #title{
     font-size: 5vh;
