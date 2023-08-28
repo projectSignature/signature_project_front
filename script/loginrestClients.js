@@ -5,8 +5,8 @@ let password
 let errormessage
 let menbername = sessionStorage.getItem("name")
 let language = sessionStorage.getItem("language")
+let workerid =sessionStorage.getItem("id")
 
-language=1
 
 /////////////////////////////////////テキスト翻訳///////////////////////////////////////
 let txt0 = ["打刻","Bater ponto"]
@@ -14,6 +14,11 @@ let txt1 = ["収支管理","Controle financeiro"]
 let txt2 = ["メニュー","Menu"]
 let txt3 = ["財布管理","Carteira"]
 let txt4 = ["レジ","Caixa"]
+let txt5 = ["出勤","Entrar"]
+let txt6 = ["退勤","Sair"]
+let txt7 = ["本日の入場で打刻データあります、更新しますか？","Você já registrou a entrada de hoje,deseja alterar?"]
+let txt8 = ["本日の入場打刻データがありません、退勤のみ登録を行います。","Você não registrou a entrada de hoje, deseja registrar somente a saida?"]
+let txt9 = ["登録に失敗しました","Erro no registro"]
 
 document.getElementById("txt0").innerText = txt0[language]
 document.getElementById("txt1").innerText = txt1[language]
@@ -23,14 +28,11 @@ document.getElementById("txt4").innerText = txt4[language]
 
 //////////////////////////////////////////////////////////////////////////////////////
 
-
-console.log(menbername)
-console.log(language)
 document.getElementById('name-span').innerText = menbername
 
-console.log('in')
+
  function kubun1(data){
-  console.log(data)
+
 }
 
 function swallErrorOpen(data) {
@@ -50,20 +52,29 @@ function swallErrorOpen(data) {
 //time_regist_swall()
 function time_regist_swall(){
    let row = `
-   <div id="time-regist-point-day"></div>
-   <div id="time-regist-point-time"></div>
+   <div id="time-regist-point-day" class="day-divs"></div>
+   <div id="time-regist-point-time" class="times-divs"></div>
    <div class="button-input-regist-div">
-    <div class="button-input-regist" style="background-color:#D0FF43" onclick="swallErrorOpen('準備中、すまん')">出勤</div>
-    <div class="button-input-regist" style="background-color:#9057FF" onclick="swallErrorOpen('準備中、すまん')">退勤</div>
+    <div class="button-input-regist" style="background-color:#D0FF43" onclick="registTime(1)">${txt5[language]}</div>
+    <div class="button-input-regist" style="background-color:#9057FF" onclick="registTime(2)">${txt6[language]}</div>
    </div>
    <style>
    .swal2-popup {
        width: 90% !important;
        height: 600px !important;
    }
+   .day-divs{
+     font-size:2vh !important
+   }
+   .times-divs{
+     font-size:4.5vh !important
+   }
+   .button-input-regist{
+     font-size: 4vh !important
+   }
    @media only screen and (max-width: 800px) {
      .swal2-popup {
-       height: 480px !important;
+       height: 450px !important;
      }
    </style>`
    swallopen(row)
@@ -74,7 +85,6 @@ function pagechange(data){
 }
 
 function swallopen(row) {
-console.log(row)
   Swal.fire({
     showCancelButton: true,
     showConfirmButton: false,
@@ -82,10 +92,6 @@ console.log(row)
     width: 500,
     html: row
   }).then((result) => {
-    if (result.isConfirmed) {
-    }else{
-      clearInterval()
-    }
   });
   timeandday()
   //registSwall()
@@ -100,16 +106,13 @@ function registSwall(){
 function timeandday(){
   // ゼロ埋めして2桁の数値にする
             const zero = n => (n < 10 ) ? "0" + n.toString() : n.toString();
-
             // 日付の文字列化
-            const youbi = ["日","月","火","水","木","金","土"];
+            const youbi = ["dom","seg","ter","qua","qui","sex","sáb"];
             const getDateString = date =>
-                `${ date.getFullYear() }年 ${ zero(date.getMonth() + 1) }月  ${ zero(date.getDate()) }日 ${ youbi[date.getDay()] }曜日`;
-
+                `${ date.getFullYear() }/${ zero(date.getMonth() + 1) }/${ zero(date.getDate()) } ${ youbi[date.getDay()] }`;
             // 時間の文字列化
             const getHourString = date =>
-                `${ zero(date.getHours()) }: ${ zero(date.getMinutes()) }: ${ zero(date.getSeconds()) }`;
-
+                `${ zero(date.getHours()) }:${ zero(date.getMinutes()) }:${ zero(date.getSeconds())}`;
             // DOMの構築を待つ
             //window.addEventListener('DOMContentLoaded',()=> {
                 const dateDiv = document.getElementById("time-regist-point-day");
@@ -124,4 +127,152 @@ function timeandday(){
                     clockDiv.innerText = getHourString(now);
                 },1000);
             //});
+}
+
+async function registTime(d){
+  var today = new Date();
+  let yyyy = today.getFullYear();
+  let mm = ("0"+(today.getMonth()+1)).slice(-2);
+  let dd = ("00" + today.getDate()).slice(-2);
+  let hh = ("00"+ today.getHours()).slice(-2);
+  let mmm = ("00"+ today.getMinutes()).slice(-2);
+  let sss = ("00"+today.getSeconds()).slice(-2)
+  let setdt = `${yyyy}-${mm}-${dd}`
+  let upsetdt = `${yyyy}-${mm}-${dd} ${hh}:${mmm}:${sss}`
+   const dakokudt = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/dakokusget?id=${workerid}&&dt=${setdt}`)
+  if(d==1){
+    //  const getdakokus =  await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/dakokusget?id=${workerid}`)　
+        if(dakokudt.length==1){
+          swallError2(txt7[language],dakokudt[0].id,upsetdt)
+        }else{
+          let url =`https://squid-app-ug7x6.ondigitalocean.app/dakokuistdata`
+          body = {
+            d1:workerid,
+            d2:upsetdt,
+            d3:setdt
+          }
+          const reqInsert = await makerequestStatus(url,body)
+            if(reqInsert.status==200){
+                successsmal()
+            }else{
+                swallError(txt9[language])
+            }
+        }
+  }else{
+    if(dakokudt.length==0){
+       swallErrorNOentrance(txt8[language],workerid,upsetdt,setdt)
+    }else{
+      let url =`https://squid-app-ug7x6.ondigitalocean.app/updatefinaldakoku`
+      body = {
+        d1:dakokudt[0].id,
+        d2:upsetdt
+      }
+      const reqInsert = await makerequestStatus(url,body)
+        if(reqInsert.status==200){
+            successsmal()
+        }else{
+            swallError(txt9[language])
+        }
+    }
+  }
+
+                  //  = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/menuGet?id=${restid}`)//&&menuid=${data}
+}
+
+async function successsmal(){
+  const Toast = await Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 2000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener('mouseenter', Swal.stopTimer);
+      toast.addEventListener('mouseleave', Swal.resumeTimer);
+    },
+  });
+
+  await Toast.fire({
+    icon: 'success',
+    title: text48[language],
+  });
+await Toast.close()
+}
+
+
+function swallErrorNOentrance(message,wid,updt,wdt){
+  const swal =  Swal.fire({
+          html: message,
+          icon:'error',
+          allowOutsideClick : false,
+          showConfirmButton: true,
+          timerProgressBar: true,
+        }).then(async(result) => {
+            if(result.isConfirmed) {
+              let url =`https://squid-app-ug7x6.ondigitalocean.app/dakokuistfinaldata`
+              body = {
+                d1:wid,
+                d2:updt,
+                d3:wdt
+              }
+              const reqInsert = await makerequestStatus(url,body)
+              if(reqInsert.status==200){
+                successsmal()
+              }else{
+                swallError(txt9[language])
+              }
+            }
+          })
+}
+
+function swallError2(message,id,updt){
+  const swal =  Swal.fire({
+          html: message,
+          icon:'error',
+          allowOutsideClick : false,
+          showConfirmButton: true,
+          timerProgressBar: true,
+        }).then(async(result) => {
+            if(result.isConfirmed) {
+              let url =`https://squid-app-ug7x6.ondigitalocean.app/dakokuupdt`
+              body = {
+                d1:id,
+                d2:updt
+              }
+              const reqInsert = await makerequestStatus(url,body)
+              if(reqInsert.status==200){
+                successsmal()
+              }else{
+                swallError(txt9[language])
+              }
+            }
+          })
+}
+
+async function makerequestStatus(url,data){
+  const request = await fetch(url, {//pegar todos dados do table de pagamentos //n]
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: { "Content-type": "application/json; charset=UTF-8" }
+  })
+
+  return request
+}
+
+function swallError(message){
+  const swal =  Swal.fire({
+          html: message,
+          icon:'error',
+          allowOutsideClick : false,
+          showConfirmButton: true,
+        }).then(async(result) => {
+            if(result.isConfirmed) {
+              swal.close()
+            }
+          })
+}
+
+async function makerequest(url){
+  const request = await fetch(url)
+ return request.json()
 }
