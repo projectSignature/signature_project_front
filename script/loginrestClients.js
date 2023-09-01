@@ -9,16 +9,17 @@ let workerid =sessionStorage.getItem("id")
 
 
 /////////////////////////////////////テキスト翻訳///////////////////////////////////////
-let txt0 = ["打刻","Bater ponto"]
-let txt1 = ["収支管理","Controle financeiro"]
-let txt2 = ["メニュー","Menu"]
-let txt3 = ["財布管理","Carteira"]
-let txt4 = ["レジ","Caixa"]
-let txt5 = ["出勤","Entrar"]
-let txt6 = ["退勤","Sair"]
-let txt7 = ["本日の入場で打刻データあります、更新しますか？","Você já registrou a entrada de hoje,deseja alterar?"]
-let txt8 = ["本日の入場打刻データがありません、退勤のみ登録を行います。","Você não registrou a entrada de hoje, deseja registrar somente a saida?"]
-let txt9 = ["登録に失敗しました","Erro no registro"]
+let txt0 = ["Bater ponto","打刻"]
+let txt1 = ["Controle financeiro","収支管理"]
+let txt2 = ["Menu","メニュー"]
+let txt3 = ["Carteira","財布管理"]
+let txt4 = ["Caixa","レジ"]
+let txt5 = ["Entrar","出勤"]
+let txt6 = ["Sair","退勤"]
+let txt7 = ["Você já registrou a entrada de hoje,deseja alterar?","本日の入場で打刻データあります、更新しますか？"]
+let txt8 = ["Você não registrou a entrada de hoje, deseja registrar somente a saida?","本日の入場打刻データがありません、退勤のみ登録を行います。"]
+let txt9 = ["Erro no registro","登録に失敗しました"]
+let text48 = ["Registrado","完了"]
 
 document.getElementById("txt0").innerText = txt0[language]
 document.getElementById("txt1").innerText = txt1[language]
@@ -139,6 +140,17 @@ async function registTime(d){
   let sss = ("00"+today.getSeconds()).slice(-2)
   let setdt = `${yyyy}-${mm}-${dd}`
   let upsetdt = `${yyyy}-${mm}-${dd} ${hh}:${mmm}:${sss}`
+  const swal =  Swal.fire({
+          icon:"info",
+          title: text17[language],
+          html: text18[language],
+          allowOutsideClick : false,
+          showConfirmButton: false,
+          timerProgressBar: true,
+          onBeforeOpen: () => {
+          Swal.showLoading();
+      }
+    })
    const dakokudt = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/dakokusget?id=${workerid}&&dt=${setdt}`)
   if(d==1){
     //  const getdakokus =  await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/dakokusget?id=${workerid}`)　
@@ -169,13 +181,14 @@ async function registTime(d){
       }
       const reqInsert = await makerequestStatus(url,body)
         if(reqInsert.status==200){
-            successsmal()
+            await successsmal()
+
         }else{
             swallError(txt9[language])
         }
     }
   }
-
+  await swal.close()
                   //  = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/menuGet?id=${restid}`)//&&menuid=${data}
 }
 
