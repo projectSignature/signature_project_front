@@ -31,7 +31,7 @@ async function menucrete(){
                  status:menulist[i].status}
                  chArr.push(arr)
       row += `<div class="mainDiv">
-              <div class="menuimgDiv"><img src="../image/menu${menulist[i].menu_id}-${menulist[i].menu_child_id}.jpg" width="30" class="setting-right-button"/></div>
+              <div class="menuimgDiv"><img src="../image/menu${menulist[i].menu_id}-${menulist[i].menu_child_id}.png" width="30" class="setting-right-button"/></div>
               <div class="discricionDiv">
                <div class="title-menu">${menulist[i].menu_name_0}</div>
                <div class="priceandEdit">
