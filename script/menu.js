@@ -35,16 +35,22 @@ async function menucrete(){
               <div class="discricionDiv">
                <div class="title-menu">${menulist[i].menu_name_0}</div>
                <div class="priceandEdit">
-               <div>
-                <img id="img${i}" class="image-cursor"  src="../image/${await getflug(menulist[i].status)}.png"  alt="" width="25" onclick="alterStatus('img${i}','${menulist[i].id}',${i})"/>
-               </div>
+                 <div>
+                   <img id="img${i}" class="image-cursor"  src="../image/${await getflug(menulist[i].status)}.png"  alt="" width="25" onclick="alterStatus('img${i}','${menulist[i].id}',${i})"/>
+                 </div>
                  <div>￥${menulist[i].menu_value}
                  </div>
                  <div>
-                  <img class="image-cursor"  src="../image/edit.svg" onClick="editMenu(${menulist[i].id})" alt="" width="25"/>
+                   <img class="image-cursor"  src="../image/list.jpg" onClick="" alt="" width="35"/>
+                 </div>
+                 <div>
+                   <img class="image-cursor"  src="../image/ic8.png" onClick="custoshow('${menulist[i].menu_id}-${menulist[i].menu_child_id}')" alt="" width="35"/>
+                 </div>
+                 <div>
+                   <img class="image-cursor"  src="../image/edit.svg" onClick="editMenu(${menulist[i].id})" alt="" width="25"/>
                  </div>
 
-                </div>
+              </div>
               </div>
              </div>
              <style>
@@ -58,6 +64,40 @@ async function menucrete(){
     document.getElementById('insertMenuHtml').innerHTML += row
 
   }
+
+
+async function custoshow(d){
+    Swal.fire({
+      showCancelButton: false,
+      showConfirmButton: false,
+      cancelButtonText: 'back',
+      width: 500,
+      html: `<div>
+      　　<img class="image-cursor"  src="../image/menupd${d}.png" alt=""/>
+      </div>
+      <style>
+      .swal2-popup {
+          width: 100% !important;
+          height: 600px !important
+      }
+      </style>`,
+    }).then((result) => {
+
+    });
+
+}
+
+async function getbbqkubun(d){
+  let row = ""
+  if(d==1){
+    row = `<option value="1" selected>sim</option>
+           <option value="2">não</option>`
+  }else{
+    row = `<option value="1">sim</option>
+           <option value="2" selected>não</option>`
+  }
+  return row
+}
 
 function getflug(d){
   if(d==0){
@@ -164,57 +204,163 @@ function swallOpen(data) {
   }
 
 async function editMenu(d){
-
+  console.log(d)
   let row=``
   for(let i=0;i<menulist.length;i++){
     if(menulist[i].id==d){
 
        row = `
-       <div>
-         <label>
-             discrição PT<input type="text" name="attend" value="${menulist[i].menu_name_0}" class="menu-disc">
-          </label>
-       <div>
-       <div>
-         <label>
-             discrição EN<input type="text" name="attend" value="${menulist[i].menu_name_1}">
-          </label>
-       <div>
-       <div>
-         <label>
-             discrição EN<input type="text" name="attend" value="${menulist[i].menu_name_2}">
-          </label>
-       <div>
-       <div>
-         <label>
-             Valor ￥<input type="text" name="attend" value="${menulist[i].menu_value}">
-          </label>
-       <div>
-       <div>
-         <label>
-             Nome de controle<input type="text" name="attend" value="${menulist[i].menu_value}">
-          </label>
-       <div>
+       <div class="editmenu-div">descrição PT
+       </div>
+       <div class="inputs-divs">
+        <input id="menu-edit1" type="text" name="attend" value="${menulist[i].menu_name_0}" class="menu-disc">
+       </div>
+       <div class="editmenu-div">descrição EN
+       </div>
+       <div class="inputs-divs">
+            <input id="menu-edit2" type="text" name="attend" value="${menulist[i].menu_name_1}">
+       </div>
+       <div class="editmenu-div">descrição JP
+       </div>
+       <div class="inputs-divs">
+           <input id="menu-edit3" type="text" name="attend" value="${menulist[i].menu_name_2}">
+       </div class="editmenu-div">
+       <div class="editmenu-div">Valor
+       </div>
+       <div class="inputs-divs">
+        <input id="menu-edit4" type="text" name="attend" value="${menulist[i].menu_value}">
+       </div>
+       <div class="editmenu-div">Nome de controle
+       </div>
+       <div class="inputs-divs">
+        <input id="menu-edit5" type="text" name="attend" value="${menulist[i].control_name}">
+       </div>
+       <div class="editmenu-div">Menu churrasco
+       </div>
+       <div  class="inputs-divs">
+        <select id="menu-edit6" >
+         ${await getbbqkubun(menulist[i].bbq_kubun)}
+        </select>
+       </div>
        <style>
+       .swal2-popup {
+           width: 100% !important;
+           height: 600px !important
+       }
        .menu-disc{
          height:8rem
-       }</style>`
+       }
+       </style>`
       break
     }
   }
   Swal.fire({
-  showCancelButton: false,
+  showCancelButton: true,
   showConfirmButton: true,
-  ConfirmButtonText: 'Cancelar',
+  showDenyButton: true,
+  confirmButtonText: 'salvar',
+  cancelButtonText:'cancelar',
+  denyButtonText:'deletar',
   allowOutsideClick : false,
   width: 300,
   html:row,
-
+  preConfirm: (login) => {
+    if(isNaN(document.getElementById('menu-edit4').value)){
+      Swal.showValidationMessage(`Coloque somente número no campo do valor`)
+    }
+  }
   }).then((result) => {
    if (result.isConfirmed) {
-swal.close()
+     body = {
+       d0:document.getElementById('menu-edit1').value,
+       d1:document.getElementById('menu-edit2').value,
+       d2:document.getElementById('menu-edit3').value,
+       d3:document.getElementById('menu-edit4').value,
+       d4:document.getElementById('menu-edit5').value,
+       d5:document.getElementById('menu-edit6').value,
+       d6:d
+     }
+     changemenus(body)
+     console.log(body)
+   }else if(result.isDenied){
+     deletesmenus(d)
+   }else{
+     swal.close()
    }
  })
+}
+
+async function deletesmenus(d){
+  const swal =  Swal.fire({
+          icon:"info",
+          title: 'Deseja deletar o menu?',
+          allowOutsideClick : false,
+          showConfirmButton: true,
+          timerProgressBar: true
+    }).then((result) => {
+     if (result.isConfirmed) {
+         deleteconfirm(d)
+     }
+   })
+}
+
+async function deleteconfirm(d){
+  console.log(d)
+  const swal =  Swal.fire({
+          icon:"info",
+          title: 'Deletando',
+          html: 'Aguarde',
+          allowOutsideClick : false,
+          showConfirmButton: false,
+          timerProgressBar: true,
+          onBeforeOpen: () => {
+          Swal.showLoading();
+      }
+    })
+    let body = {
+      id:d
+    }
+  let url = `https://squid-app-ug7x6.ondigitalocean.app/deletesmenus`
+  const reqInsert = await makerequestStatus(url,body)
+
+if(reqInsert.status==200){
+  swallSuccess()
+  menucrete()
+}else{
+  swallErrorOpen("Ops, houve erro")
+}
+await swal.close()
+
+}
+
+
+
+
+
+
+async function changemenus(d){
+  const swal =  Swal.fire({
+          icon:"info",
+          title: 'Registrando',
+          html: 'Aguarde',
+          allowOutsideClick : false,
+          showConfirmButton: false,
+          timerProgressBar: true,
+          onBeforeOpen: () => {
+          Swal.showLoading();
+      }
+    })
+  let url = `https://squid-app-ug7x6.ondigitalocean.app/editsmenus`
+  const reqInsert = await makerequestStatus(url,d)
+
+if(reqInsert.status==200){
+  swallSuccess()
+  menucrete()
+}else{
+  swallErrorOpen("Ops, houve erro")
+}
+await swal.close()
+
 }
 
 async function cahgeAllstatus(){
