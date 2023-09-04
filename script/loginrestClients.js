@@ -32,10 +32,78 @@ document.getElementById("txt4").innerText = txt4[language]
 //////////////////////////////////////////////////////////////////////////////////////
 
 document.getElementById('name-span').innerText = menbername
-
+if(menbername==""){
+  pagechange('loginadminrst')
+}
 
  function kubun1(data){
+}
 
+async function openstores(){
+  let opens = await makerequest(`${accessmainserver}/restmanegerTimeGet`)
+    let row = `
+      <div>
+       <div class="divs-mains-opens"> Status do restaurante
+         <select id="opens-select">
+          ${await getopens(opens[0].work_status)}
+         </select>
+       </div>
+       <div class="divs-mains-opens">Tempo de espera
+        <input id="picktimes" type="number" value="${opens[0].pickup_time}"/>
+      </div>
+     </div>`
+     await swallopenClose(row)
+}
+
+function getopens(d){
+  if(d==0){
+    return `<option value='0' selected>aberto</opton>
+            <option value='1'>fechado</opton>`
+  }else{
+    return `<option value='0'>aberto</opton>
+            <option value='1' selected>fechado</opton>`
+  }
+}
+
+function swallopenClose(data) {
+  Swal.fire({
+    showCancelButton: true,
+    showConfirmButton: true,
+    cancelButtonText: 'Voltar',
+    confirmButtonText:'Salvar',
+    width: 500,
+    html: `${data}
+          <style>
+           .divs-mains-opens{
+             width:100%;
+             margin-top:15px
+           }
+           .divs-mains-opens input, .divs-mains-opens select{
+             width:50%;
+             height:3rem;
+             text-align:center
+           }
+           </style>`
+
+  }).then(async (result) => {
+    if(result.isConfirmed) {
+      let d0 = document.getElementById('picktimes').value
+      let d1 = document.getElementById('opens-select').value
+
+      let url =`https://squid-app-ug7x6.ondigitalocean.app/openclosescahnge`
+      body = {
+        d0:d0,
+        d1:d1
+      }
+      const reqInsert = await makerequestStatus(url,body)
+        if(reqInsert.status==200){
+            successsmal()
+        }else{
+            swallError(txt9[language])
+        }
+
+    }
+  });
 }
 
 function swallErrorOpen(data) {
