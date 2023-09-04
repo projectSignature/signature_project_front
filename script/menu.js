@@ -70,21 +70,48 @@ async function recipeshows(d){
   console.log(d)
   let row=""
   menulist = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/menuGet?id=${restid}`)//&&menuid=${data}
+
    for(let i=0;i<menulist.length;i++){
      if(menulist[i].id==d){
-       let count = ( menulist[i].zairyo.match( /,/g ) || [] ).length
-       row += `<div class="title-recipe">
-                 ${menulist[i].menu_name_0}
-               </div>`
-       for(let ii=0;ii<count;ii++){
-         row += `
-                 <div class="divsinputs-recip">
-                   <span class="recipt-value-first">${menulist[i].zairyo.split(",")[ii]}</span>
-                   <span class="recipt-value">${menulist[i].zairyoqt.split(",")[ii]}</span>
-                   <span class="recipt-value">${menulist[i].zairyotp.split(",")[ii]}</span>
-                  </div>`
+       if(menulist[i].zairyo==null){
+         Swal.fire({
+           icon:'error',
+           showCancelButton: false,
+           showConfirmButton: true,
+           allowOutsideClick:false,
+           cancelButtonText: 'back',
+           html: `<div class="divsopen">Não temos registro sobre o menu ainda</div>
+                    <style>
+                      .divsopen{
+                        color:red
+                      }
+                      .swal2-popup {
+                          width: 100% !important;
+                          height: 300px !important
+                      }
+                    </style>`,
+           timer:4000
+         })
+         breakS
+          console.log('innnn2')
+       }else{
+         console.log('innnn99')
+         let count = ( menulist[i].zairyo.match( /,/g ) || [] ).length
+         row += `<div class="title-recipe">
+                   ${menulist[i].menu_name_0}
+                 </div>`
+         for(let ii=0;ii<count;ii++){
+           row += `
+                   <div class="divsinputs-recip">
+                     <span class="recipt-value-first">${menulist[i].zairyo.split(",")[ii]}</span>
+                     <span class="recipt-value">${menulist[i].zairyoqt.split(",")[ii]}</span>
+                     <span class="recipt-value">${menulist[i].zairyotp.split(",")[ii]}</span>
+                    </div>`
+         }
        }
+
      }
+
    }
    Swal.fire({
      showCancelButton: false,
@@ -198,18 +225,20 @@ if(reqInsert.status==200){
 }
 
 
-function swallErrorOpen(data) {
+function swallErrorOpenrecip(data) {
+  console.log(data)
   Swal.fire({
-    icon: 'warning',
     showCancelButton: true,
-    showConfirmButton: false,
-    cancelButtonText: 'back',
-    width: 500,
-    html: `<span>${data}</span>`,
-    customClass: "sweet-alert",
-  }).then((result) => {
-
-  });
+    showConfirmButton: true,
+    allowOutsideClick : false,
+    html: `<div class="divsopen">${data}</div>
+             <style>
+               .divsopen{
+                 color:red
+               }
+             </style>`,
+    timer:4000
+  })
 }
 
 async function swallSuccess(){
