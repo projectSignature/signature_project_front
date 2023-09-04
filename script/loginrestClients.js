@@ -20,6 +20,8 @@ let txt7 = ["Você já registrou a entrada de hoje,deseja alterar?","本日の�
 let txt8 = ["Você não registrou a entrada de hoje, deseja registrar somente a saida?","本日の入場打刻データがありません、退勤のみ登録を行います。"]
 let txt9 = ["Erro no registro","登録に失敗しました"]
 let text48 = ["Registrado","完了"]
+let text17 = ["salvando",'登録中']
+let text18= ["Aguarde",'しばらくお待ちください']
 
 document.getElementById("txt0").innerText = txt0[language]
 document.getElementById("txt1").innerText = txt1[language]
