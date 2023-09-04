@@ -41,13 +41,13 @@ async function menucrete(){
                  <div>￥${menulist[i].menu_value}
                  </div>
                  <div>
-                   <img class="image-cursor"  src="../image/list.jpg" onClick="" alt="" width="35"/>
+                   <img class="image-cursor"  src="../image/list.jpg" onClick="recipeshows(${menulist[i].id})" alt="" width="35"/>
                  </div>
                  <div>
                    <img class="image-cursor"  src="../image/ic8.png" onClick="custoshow('${menulist[i].menu_id}-${menulist[i].menu_child_id}')" alt="" width="35"/>
                  </div>
+                 <img class="image-cursor"  src="../image/edit.svg" onClick="editMenu(${menulist[i].id})" alt="" width="25"/>
                  <div>
-                   <img class="image-cursor"  src="../image/edit.svg" onClick="editMenu(${menulist[i].id})" alt="" width="25"/>
                  </div>
 
               </div>
@@ -66,6 +66,62 @@ async function menucrete(){
   }
 
 
+async function recipeshows(d){
+  console.log(d)
+  let row=""
+  menulist = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/menuGet?id=${restid}`)//&&menuid=${data}
+   for(let i=0;i<menulist.length;i++){
+     if(menulist[i].id==d){
+       let count = ( menulist[i].zairyo.match( /,/g ) || [] ).length
+       row += `<div class="title-recipe">
+                 ${menulist[i].menu_name_0}
+               </div>`
+       for(let ii=0;ii<count;ii++){
+         row += `
+                 <div class="divsinputs-recip">
+                   <span class="recipt-value-first">${menulist[i].zairyo.split(",")[ii]}</span>
+                   <span class="recipt-value">${menulist[i].zairyoqt.split(",")[ii]}</span>
+                   <span class="recipt-value">${menulist[i].zairyotp.split(",")[ii]}</span>
+                  </div>`
+       }
+     }
+   }
+   Swal.fire({
+     showCancelButton: false,
+     showConfirmButton: true,
+     allowOutsideClick:false,
+     cancelButtonText: 'back',
+     html: `<div>
+             ${row}
+            </div>
+     <style>
+     .swal2-popup {
+         width: 100% !important;
+         height: 400px !important
+     }
+     .divsinputs-recip{
+       display:flex
+     }
+     .divsinputs-recip span{
+       border-bottom:0.5px solid gray
+     }
+     .title-recipe{
+       width:100%;
+       text-align: center;
+       background-color:	#222222;
+       color:white;
+       font-weight: bold;
+     }
+     .recipt-value{
+       width:25%
+     }
+     .recipt-value-first{
+       width:50%
+     }
+     </style>`,
+   })
+}
+
 async function custoshow(d){
     Swal.fire({
       showCancelButton: false,
@@ -78,7 +134,7 @@ async function custoshow(d){
       <style>
       .swal2-popup {
           width: 100% !important;
-          height: 600px !important
+          height: 800px !important
       }
       </style>`,
     }).then((result) => {
