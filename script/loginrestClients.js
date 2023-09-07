@@ -76,7 +76,8 @@ function swallopenClose(data) {
           <style>
            .divs-mains-opens{
              width:100%;
-             margin-top:15px
+             margin-top:15px;
+              background-color:orange
            }
            .divs-mains-opens input, .divs-mains-opens select{
              width:50%;
