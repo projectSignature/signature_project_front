@@ -601,7 +601,7 @@ if(reqInsert.status!=200){
     let upvalue
   if(paytype==1&&pickuptype!=1){
     payinsert = 0
-    upvalue = (getRestStatus[0].cach-0)+upvalueb
+    upvalue = (getRestStatus[0].caixa-0)+upvalueb
   }else if(paytype==2&&pickuptype!=1||paytype==3&&pickuptype!=1){
     payinsert = 1
     upvalue = (getRestStatus[0].squere-0)+upvalueb
