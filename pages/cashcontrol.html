@@ -25,23 +25,27 @@
   </header>
   <div class="main-div">
     <div class="cash-main-div">
-     <div class="cash-title-div">Cash1:</div>
+     <div class="cash-title-div">bolsa1:</div>
      <div class="cash-answer-div" id="cashDiv"></div>
    </div>
    <div class="cash-main-div">
-    <div class="cash-title-div">Cash2:</div>
+    <div class="cash-title-div">bolsa2:</div>
     <div class="cash-answer-div" id="cashDiv2"></div>
   </div>
+  <div class="cash-main-div">
+   <div class="cash-title-div">caixa:</div>
+   <div class="cash-answer-div" id="cashDiv3"></div>
+ </div>
     <div class="cash-main-div">
-     <div class="cash-title-div">Bank:</div>
+     <div class="cash-title-div">banco:</div>
      <div class="cash-answer-div" id="bankDiv"></div>
    </div>
     <div class="cash-main-div">
-     <div class="cash-title-div">Uber:</div>
+     <div class="cash-title-div">uber:</div>
      <div class="cash-answer-div" id="uberDiv"></div>
    </div>
     <div class="cash-main-div">
-     <div class="cash-title-div">Squere:</div>
+     <div class="cash-title-div">squere:</div>
      <div class="cash-answer-div" id="squereDiv"></div>
    </div>
    <div class="cash-main-div" style="background-color: orange">
@@ -52,13 +56,16 @@
     <div class="fifity-changemoney">
       <div class="topchange">
         <select id="befSelect" onchange="changeslect()">
-         <option value="0">Cash</option>
-         <option value="1">Bank</option>
-         <option value="2">Uber</option>
-         <option value="3">Squere</option>
+         <option value="0">bolsa1</option>
+         <option value="4">bolsa2</option>
+         <option value="1">bank</option>
+         <option value="2">uber</option>
+         <option value="3">squere</option>
        </select>
      </div>
-      <div><input  type="text"class="changetoMoney-left" placeholder="￥"id="value-input2" oninput="kanmaReplase2()"  inputmode="numeric" required onchange="saveData()"/></div>
+      <div>
+        <input  type="text"class="changetoMoney-left" placeholder="￥"id="value-input2" oninput="kanmaReplase2()"  inputmode="numeric" required onchange="saveData()"/>
+      </div>
     </div>
     <div class="lefttoright">⇒
     </div>
@@ -68,7 +75,9 @@
           <option value="1">Bank</option>
         </select>
       </div>
-    <div><input  type="text"class="changetoMoney-left" placeholder="￥"id="value-input" oninput="kanmaReplase()"  inputmode="numeric" readonly/></div>
+    <div>
+      <input  type="text"class="changetoMoney-left" placeholder="￥"id="value-input" oninput="kanmaReplase()"  inputmode="numeric" readonly/>
+    </div>
   </div>
 
   </div>
@@ -125,21 +134,29 @@ async function createDta(){
       }
     })
   const getRestStatus = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/restmanegerTimeGet`)
-    await console.log(getRestStatus)
     let total =0
     document.getElementById('cashDiv').innerText = `${await kanmaReplaseto(getRestStatus[0].cach)}`
     document.getElementById('bankDiv').innerText = `${await kanmaReplaseto(getRestStatus[0].bank)}`
     document.getElementById('uberDiv').innerText = `${await kanmaReplaseto(getRestStatus[0].uber)}`
     document.getElementById('squereDiv').innerText = `${await kanmaReplaseto(getRestStatus[0].squere)}`
+    document.getElementById('cashDiv2').innerText = `${await kanmaReplaseto(getRestStatus[0].cach2)}`
+    document.getElementById('cashDiv3').innerText = `${await kanmaReplaseto(getRestStatus[0].caixa)}`
     total += getRestStatus[0].cach -0
     total += getRestStatus[0].bank -0
     total += getRestStatus[0].uber -0
     total += getRestStatus[0].squere -0
-    console.log(total)
+    total += getRestStatus[0].cach2 -0
+    total += getRestStatus[0].caixa -0
     document.getElementById('totalDiv').innerText = await kanmaReplaseto((total).toString())
-
 swal.close()
 }
+
+
+async function newsavedata(){
+  tagmoney = document.getElementById('value-input2').value
+}
+
+
 
 async function saveData(){
   console.log(document.getElementById('value-input2').value)
@@ -159,7 +176,7 @@ async function saveData(){
   befmoney = (document.getElementById('bankDiv').innerText.split("￥")[1]).replace(/,/g, '')-0
   checkmoney=(document.getElementById('cashDiv').innerText.split("￥")[1]).replace(/,/g, '')-0
   if(checkmoney<tagmoney){
-     messageswal('O valor tem que ser menor do que irá transferir')
+     messageswal('Verifique o valor')
      document.getElementById('value-input2').value =""
   }else{
     document.getElementById('value-input').value = await kanmaReplaseto((tagmoney +befmoney).toString())
@@ -169,7 +186,7 @@ async function saveData(){
   befmoney = (document.getElementById('cashDiv').innerText.split("￥")[1]).replace(/,/g, '')-0
   checkmoney=(document.getElementById('bankDiv').innerText.split("￥")[1]).replace(/,/g, '')-0
   if(checkmoney<tagmoney){
-     messageswal('O valor tem que ser menor do que irá transferir')
+     messageswal('Verifique o valor')
      document.getElementById('value-input2').value =""
   }else{
   document.getElementById('value-input').value = await kanmaReplaseto((tagmoney +befmoney).toString())
@@ -178,7 +195,7 @@ async function saveData(){
 }else if(bef==2){
   checkmoney=(document.getElementById('uberDiv').innerText.split("￥")[1]).replace(/,/g, '')-0
   if(checkmoney<tagmoney){
-     messageswal('O valor tem que ser menor do que irá transferir')
+     messageswal('Verifique o valor')
      document.getElementById('value-input2').value =""
   }else{
   if(aft==1){
@@ -190,10 +207,10 @@ async function saveData(){
   }
   document.getElementById('value-input').value = await kanmaReplaseto((tagmoney +befmoney).toString())
 }
-}else{
+}else if(bef==3){
   checkmoney=(document.getElementById('squereDiv').innerText.split("￥")[1]).replace(/,/g, '')-0
   if(checkmoney<tagmoney){
-     messageswal('O valor tem que ser menor do que irá transferir')
+     messageswal('Verifique o valor')
      document.getElementById('value-input2').value =""
   }else{
   if(aft==1){
@@ -205,6 +222,26 @@ async function saveData(){
   }
   document.getElementById('value-input').value = await kanmaReplaseto((tagmoney +befmoney).toString())
 }
+}else if(bef==4){
+  befmoney = (document.getElementById('bankDiv').innerText.split("￥")[1]).replace(/,/g, '')-0
+  checkmoney=(document.getElementById('cashDiv2').innerText.split("￥")[1]).replace(/,/g, '')-0
+  if(checkmoney<tagmoney){
+     messageswal('Verifique o valor')
+     document.getElementById('value-input2').value =""
+  }else{
+    document.getElementById('value-input').value = await kanmaReplaseto((tagmoney +befmoney).toString())
+    if(kakikomiflug){updatemoney(4,1,tagmoney +befmoney,checkmoney-tagmoney)}
+  }
+}else if(bef==5){
+  befmoney = (document.getElementById('bankDiv').innerText.split("￥")[1]).replace(/,/g, '')-0
+  checkmoney=(document.getElementById('cashDiv3').innerText.split("￥")[1]).replace(/,/g, '')-0
+  if(checkmoney<tagmoney){
+     messageswal('Verifique o valor')
+     document.getElementById('value-input2').value =""
+  }else{
+    document.getElementById('value-input').value = await kanmaReplaseto((tagmoney +befmoney).toString())
+    if(kakikomiflug){updatemoney(5,1,tagmoney +befmoney,checkmoney-tagmoney)}
+  }
 }
   }
 
@@ -252,13 +289,12 @@ function changeslect(){
   let row=``
   let bef = document.getElementById('befSelect').value
   let aft = document.getElementById('aftSelect').value
-  console.log(bef)
-  if(bef==0){
+  if(bef==0||bef==4){
      row=`<option value="1">Bank</option>`
-  }else if(bef==1){
-    row='<option value="0">Cash</option>'
+  }else if(bef==5||bef==1){
+     row=`<option value="0">Bolsa1</option><option value="4">bolsa2</option>`
   }else{
-    row='<option value="0">Cash</option><option value="1">Bank</option>'
+    row='<option value="1">Bank</option>'
   }
   document.getElementById('aftSelect').innerHTML = ""
   document.getElementById('aftSelect').innerHTML = row
