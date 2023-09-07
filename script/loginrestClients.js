@@ -44,12 +44,18 @@ async function openstores(){
     let row = `
       <div>
        <div class="divs-mains-opens"> Status do restaurante
-         <select id="opens-select">
-          ${await getopens(opens[0].work_status)}
-         </select>
+      </div>
+      <div>
+          <select id="opens-select" class="openclosedivs">
+           ${await getopens(opens[0].work_status)}
+          </select>
+        </div>
        </div>
-       <div class="divs-mains-opens">Tempo de espera
-        <input id="picktimes" type="number" value="${opens[0].pickup_time}"/>
+        <div class="divs-mains-opens">Tempo de espera
+        </div>
+        <div>
+         <input id="picktimes"  class="openclosedivs" type="number" value="${opens[0].pickup_time}"/>
+        </div>
       </div>
      </div>`
      await swallopenClose(row)
@@ -57,11 +63,11 @@ async function openstores(){
 
 function getopens(d){
   if(d==0){
-    return `<option value='0' selected>aberto</opton>
-            <option value='1'>fechado</opton>`
+    return `<option value='1'>aberto</opton>
+            <option value='0' selected>fechado</opton>`
   }else{
-    return `<option value='0'>aberto</opton>
-            <option value='1' selected>fechado</opton>`
+    return `<option value='1' selected>aberto</opton>
+            <option value='0'>fechado</opton>`
   }
 }
 
@@ -77,13 +83,14 @@ function swallopenClose(data) {
            .divs-mains-opens{
              width:100%;
              margin-top:15px;
-              background-color:orange
+             background-color:orange
            }
-           .divs-mains-opens input, .divs-mains-opens select{
+           .openclosedivs{
              width:50%;
              height:3rem;
              text-align:center
            }
+
            </style>`
 
   }).then(async (result) => {
