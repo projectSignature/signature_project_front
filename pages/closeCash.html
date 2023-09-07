@@ -69,6 +69,7 @@
   let existflug = false
    let language = 0
    restid = 0
+   let closeid=""
   //if(restid==null||workerid==null||menbername==null){
      //pagechange('loginadminrst')
    //}
@@ -110,7 +111,7 @@
         let demae =0
         let cash =0
         let subTotal=0
-
+        closeid = getcaixa[0].id
         for(let i=0;i<orderGet.clients.length;i++){
           if(d==(orderGet.clients[i].pickUp_day).split("T")[0]){
             var count = ( orderGet.clients[i].menu_value.match( /,/g ) || [] ).length ;
@@ -188,17 +189,18 @@ async function resertdata(){
 
  async function newcomand() {
    if (existflug){
-     console.log('exist')
      let d0 = document.getElementById('totalvendas').value
      let d1 = document.getElementById('ubervendas').value
      let d2 = document.getElementById('demaekan').value
      let d3 = document.getElementById('vendascredito').value
      let d4 = document.getElementById('caixacontado').value
-     if(d4==""||d4=="￥"){
-       console.log('no')
+
+     console.log(d4)
+     if(d4==""){
+       messageswal(`digite o valor final`)
      }else{
-       console.log('yes')
-       caixaupdates
+      tagmoney = (d4.split("￥")[1]).replace(/,/g, '')-0
+      selectbolsas(tagmoney)
      }
 
    }else{
@@ -211,7 +213,11 @@ async function resertdata(){
       <div>caixa
         <input placeholder="￥" type="text" class="inputs-caixa" id="newcaixas" oninput="kanmaReplase('newcaixas')" inputmode="numeric" required />
       </div>
-
+      <div>
+       <select id="selectbolsa">
+        <option value=0>bolsa1</option>
+        <option value=1>bolsa2</option>
+       </select>
       </div>
       <style>
       .swal2-popup {
@@ -225,7 +231,7 @@ async function resertdata(){
         margin-top:15px
       }
 
-      .second-div-swall div input{
+      .second-div-swall div input ,.second-div-swall div select{
         width:90%;
         height:3rem;
         border:0.2px solid gray;
@@ -233,6 +239,9 @@ async function resertdata(){
         text-align: center;
         font-size: 4vh
 
+      }
+      #newdata{
+        font-size:2.5vh
       }
 
       </style>
@@ -248,6 +257,7 @@ async function resertdata(){
         preConfirm: () => {
           let d1 = document.getElementById('newdata').value
           let d2 = document.getElementById('newcaixas').value
+
           if(d1==""){
             Swal.showValidationMessage(`selecione a data`)
           }else if(d2==""){
@@ -256,9 +266,13 @@ async function resertdata(){
         }
       }).then((result) => {
        if (result.isConfirmed) {
+
          let d2 = document.getElementById('newdata').value
          let d3 =(document.getElementById('newcaixas').value).split("￥")[1]
-         sadenewDatas(d2,d3)
+         let d4 = document.getElementById('selectbolsa').value
+          sadenewDatas(d2,d3)
+          changecaixas(d4,d3)
+
        }else{
 
        }
@@ -266,24 +280,115 @@ async function resertdata(){
    }
  }
 
+
+function selectbolsas(d){
+  Swal.fire({
+    showCancelButton: false,
+    showConfirmButton: true,
+    allowOutsideClick:false,
+    cancelButtonText: 'back',
+    html: `<div class="divs-swal" style="background-color:orange">Selecione a bolsa
+           </div>
+           <div class="divs-swal">
+            <select id="select-bolsa" class="selectsdivs-bolsas">
+             <option value="0">bolsa1</option>
+             <option value="1">bolsa2</option>
+            </select>
+           </div class="divs-swal">
+           <div class="divs-swal" style="background-color:orange">Valor que será registrado
+                  </div>
+           <div class="divs-swal">￥${d}</div>
+    <style>
+    .swal2-popup {
+        width: 100% !important;
+        height: 400px !important
+    }
+    .divsinputs-recip{
+      display:flex
+    }
+    .divsinputs-recip span{
+      border-bottom:0.5px solid gray
+    }
+    .title-recipe{
+      width:100%;
+      text-align: center;
+      background-color:	#222222;
+      color:white;
+      font-weight: bold;
+    }
+    .recipt-value{
+      width:25%
+    }
+    .recipt-value-first{
+      width:50%
+    }
+    .selectsdivs-bolsas{
+      width:70%;
+      height:4rem;
+      text-align:center;
+      border-radius:10px;
+
+    }
+    .divs-swal{
+      margin-top:30px
+    }
+    </style>`,
+  }).then(async (result) => {
+   if (result.isConfirmed) {
+     console.log('innn')
+
+
+     let d0 = document.getElementById('totalvendas').value
+     let d1 = document.getElementById('ubervendas').value
+     let d2 = document.getElementById('demaekan').value
+     let d3 = document.getElementById('vendascredito').value
+     let d4 = document.getElementById('caixacontado').value
+     let d5 = document.getElementById('select-bolsa').value
+     let d7 = document.getElementById('caixaobs').value
+     const url = 'https://squid-app-ug7x6.ondigitalocean.app/confirmclosecaixa';
+     const body = {
+       d0: (d0.split("￥")[1]).replace(/,/g, ''),
+       d1: (d1.split("￥")[1]).replace(/,/g, ''),
+       d2: (d2.split("￥")[1]).replace(/,/g, ''),
+       d3: (d3.split("￥")[1]).replace(/,/g, ''),
+       d4: (d4.split("￥")[1]).replace(/,/g, '')-0,
+       d5: closeid,
+       d6: d5,
+       d7:d7
+     };
+     const swal =  Swal.fire({
+             icon:"info",
+             title: stext18[language],
+             html: stext19[language],
+             allowOutsideClick : false,
+             showConfirmButton: false,
+             timerProgressBar: true,
+             onBeforeOpen: () => {
+             Swal.showLoading();
+         }
+       })
+     const request = await makerequestStatus(url,body);
+       swal.close()
+   }
+ })
+}
+
+
  async function updatestuts(){
 
  }
 
+ async function changecaixas(d4,d3){
+   const url = 'https://squid-app-ug7x6.ondigitalocean.app/caixaopen';
+   const body = {
+     d0: d4,
+     d1: d3,
+   };
+   const request = await makerequestStatus(url,body);
+ }
+
 async function sadenewDatas(d2,d3){
-console.log(d2)
-console.log(d3)
-const swal =  Swal.fire({
-        icon:"info",
-        title: stext18[language],
-        html: stext19[language],
-        allowOutsideClick : false,
-        showConfirmButton: false,
-        timerProgressBar: true,
-        onBeforeOpen: () => {
-        Swal.showLoading();
-    }
-  })
+
 
 let url = `https://squid-app-ug7x6.ondigitalocean.app/createcaixadata`
 body = {
@@ -293,8 +398,7 @@ body = {
   d4:0
 }
 const reqInsert = await makerequestStatus(url,body)
-console.log(reqInsert)
-await console.log(reqInsert.status)
+
 if(reqInsert.status==200){
   await   window.location.reload();
 }
@@ -331,6 +435,18 @@ async function makerequestStatus(url,data){
   }
     //return `￥${kanmaAns}`
  };
+
+ function messageswal(m){
+   Swal.fire({
+       icon:"info",
+       html: m,
+       allowOutsideClick : false,
+       showConfirmButton: false,
+       timer:1500
+   })
+ }
+
+
 
    </script>
 
