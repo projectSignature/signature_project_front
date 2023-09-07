@@ -159,19 +159,15 @@ async function newsavedata(){
 
 
 async function saveData(){
-  console.log(document.getElementById('value-input2').value)
   tagmoney = document.getElementById('value-input2').value
-  console.log(tagmoney)
   if(tagmoney==""){
    messageswal('Coloque o valor!')
  }else if(document.getElementById('befSelect').value==document.getElementById('aftSelect').value){
    messageswal('Você selecionou a mesma conta')
  }else{
     tagmoney = (tagmoney.split("￥")[1]).replace(/,/g, '')-0
-      console.log(tagmoney)
     let bef = document.getElementById('befSelect').value
     let aft = document.getElementById('aftSelect').value
-    console.log(bef)
 　if(bef==0){
   befmoney = (document.getElementById('bankDiv').innerText.split("￥")[1]).replace(/,/g, '')-0
   checkmoney=(document.getElementById('cashDiv').innerText.split("￥")[1]).replace(/,/g, '')-0
@@ -251,10 +247,6 @@ async function saveData(){
 async function updatemoney(b,a,afmoney,befmoney){
   let bef = document.getElementById('befSelect').value
   let aft = document.getElementById('aftSelect').value
-   console.log(b)
-   console.log(a)
-   console.log(afmoney)
-   console.log(befmoney)
   const url = 'https://squid-app-ug7x6.ondigitalocean.app/cachChange';
   const body = {
     d0: bef,
@@ -263,7 +255,6 @@ async function updatemoney(b,a,afmoney,befmoney){
     d3: afmoney
   };
   const request = await makerequest2(url, body);
-  await console.log(request)
   if(kakikomiflug=true){
     document.getElementById('value-input').value=""
     document.getElementById('value-input2').value=""
@@ -274,7 +265,6 @@ async function updatemoney(b,a,afmoney,befmoney){
 }
 
 async function makerequest2(url,data){
-  console.log('in')
   const request = await fetch(url, {//pegar todos dados do table de pagamentos //n]
     method: 'POST',
     body: JSON.stringify(data),
@@ -316,7 +306,6 @@ async function creatData(){
 
 async function kanmaReplaseto(d){
   let data = d
-  console.log(data)
    //let numberAns = (data.slice( 1 )).replace(/[^0-9]/g, "");
    kanmaAns = data.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
    //data.value = `￥${kanmaAns}`
@@ -332,8 +321,6 @@ async function kanmaReplase(){
 };
 async function kanmaReplase2(){
   let data = document.getElementById('value-input2')
-  console.log(data.value)
-  console.log(data.value.length)
   if(data.value.length==1&&data.value!="￥"){
     data.value = ("￥" + data.value)
   }else{
@@ -376,7 +363,6 @@ async function kanmaReplase2(){
           let tD = orderlistadd[i].pickUp_day.split("T")[0]
           let tM =   document.getElementById('menutype').value
           let existFlug = false
-          console.log(tM)
           if(tD>=sD&&tD<=fD){
             var count = ( orderlistadd[i].menu_value.match( /,/g ) || [] ).length ;
             for(let ii=0;ii<count;ii++){
@@ -403,18 +389,15 @@ async function kanmaReplase2(){
         if(countOrders==0){
             messageswal('No data')
         }else{
-          console.log(row)
           document.getElementById('total-vendas').innerText = `￥${(sumprofit).toLocaleString()}`
           document.getElementById('total-pedidos').innerText = `${countOrders}`
           document.getElementById('insert-inner-html1').innerHTML = row
-          await console.log(sumprofit)
         }
 
       swal.close()
       }
 
       async function createMenuselect(d){
-        await console.log(d)
         let row=`<option value="0">menu</option>`
         for(let i=0;i<d.length;i++){
           row += `<option value="${d[i].id}">${d[i].control_name}</option>`
@@ -454,8 +437,6 @@ async function kanmaReplase2(){
       }
 
     function menuTokutei(d,m){
-     console.log(d)
-     console.log(m)
      for(let i=0;i<m.length;i++){
        if(d==m[i].id){
          return m[i].control_name
