@@ -11,6 +11,7 @@ let workerid=sessionStorage.getItem("id")
 let menbername = sessionStorage.getItem("name")
 let language = sessionStorage.getItem("language")
 let catelength = 0
+//language=0
 
 let text1 = ["histórico","履歴"]
 let text2 = ["gastos","経費"]
@@ -20,7 +21,7 @@ let text5 = ["memo","メモ"]
 let text6 = ["forma pag.","方法"]
 let text7 = ["valor","金額"]
 let text8 = ["banco","銀行"]
-let text9 = ["cash","現金"]
+let text9 = ["bolsa1","バッグ1"]
 let text10 = ["crédito","クレジット"]
 let text11 = ["pago","支払済"]
 let text12 = ["pendente","未払い"]
@@ -31,6 +32,7 @@ let text16 = ["digite o valor",'支払い金額を入力してください']
 let text17 = ["salvando",'登録中']
 let text18= ["Aguarde",'しばらくお待ちください']
 let text19=["número da notinha","レシート番号"]
+let text20=["bolsa2","バッグ2"]
 
 
 createSelectepaykuun()
@@ -39,6 +41,7 @@ async function createSelectepaykuun(){
   let row = ""
     row = await `
     <option value="1">${text9[language]}</option>
+    <option value="4">${text20[language]}</option>
     <option value="0">${text8[language]}</option>
     <option value="2">${text10[language]}</option>
     `
@@ -105,89 +108,94 @@ document.getElementById('keihi-select').style = "background:#FF6928"
 async function savedata(data){//data is pay status 1:paid,2:yet
 if(restid==null||workerid==null||menbername==null){
     pagechange('loginadminrst')
-  }
-  let datainput = document.getElementById('calender-input').value
-  let memo = document.getElementById('memo-pay').value
-  let slectPay = document.getElementById('pay-select').value
-  let valuePay = document.getElementById('value-input').value
-  if(paykubun==0){
-    swallErrorOpen(text13[language])
-  }else if(datainput==""){
-    swallErrorOpen(text14[language])
-  }else if(slectPay==""){
-    swallErrorOpen(text15[language])
-  }else if(valuePay==""){
-    swallErrorOpen(text16[language])
   }else{
-    saveToSql(datainput,memo,slectPay,valuePay)
-    try{
+    let datainput = document.getElementById('calender-input').value
+    let memo = document.getElementById('memo-pay').value
+    let slectPay = document.getElementById('pay-select').value
+    let valuePay = document.getElementById('value-input').value
+    if(paykubun==0){
+      swallErrorOpen(text13[language])
+    }else if(datainput==""){
+      swallErrorOpen(text14[language])
+    }else if(slectPay==""){
+      swallErrorOpen(text15[language])
+    }else if(valuePay==""){
+      swallErrorOpen(text16[language])
+    }else{
+      saveToSql(datainput,memo,slectPay,valuePay)
+      try{
 
-        const swal =  Swal.fire({
-                icon:"info",
-                title: text17[language],
-                html: text18[language],
-                allowOutsideClick : false,
-                showConfirmButton: false,
-                timerProgressBar: true,
-                onBeforeOpen: () => {
-                Swal.showLoading();
-            }
-          })
-
-           let seq = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/costRestGet?id=0`)
-           let seqs = 0
-           if(seq.length!=0){
-             seqs = seq[seq.length-1].seq+1
-           }
-
-
-
-          let url = `https://squid-app-ug7x6.ondigitalocean.app/createCostRest`
-          body = {
-            d1:restid,
-            d2:workerid,
-            d3:paykubun,
-            d4:(valuePay.split('￥')[1]).replace(",",""),
-            d5:`'${datainput}'`,
-            d6:memo,
-            d7:slectPay,
-            d8:data,
-            d9:seqs
-          }
-        const reqInsert = await makerequestStatus(url,body)
-
-        if(reqInsert!=200){
-          swallErrorOpen("Ops, houve erro")
-        }else{
-            document.getElementById('memo-pay').value = ""
-            document.getElementById('value-input').value = ""
-            const getRestStatus = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/restmanegerTimeGet`)
-              let payinsert
-              let upvalue
-              if(slectPay==1){
-                payinsert = 0
-                upvalue = (getRestStatus[0].cach-0)-((valuePay.split('￥')[1]).replace(",","")-0)
-              }else{
-                payinsert = 1
-                upvalue = (getRestStatus[0].bank-0)-((valuePay.split('￥')[1]).replace(",","")-0)
+          const swal =  Swal.fire({
+                  icon:"info",
+                  title: text17[language],
+                  html: text18[language],
+                  allowOutsideClick : false,
+                  showConfirmButton: false,
+                  timerProgressBar: true,
+                  onBeforeOpen: () => {
+                  Swal.showLoading();
               }
-                const url = 'https://squid-app-ug7x6.ondigitalocean.app/cachChangeonly';
-                const body = {
-                  d0: payinsert,
-                  d1: upvalue,
-                };
-                const request = await makerequest3(url, body);
-                if(request!=200){
-                  swallErrorOpen("Ops, houve erro")
+            })
+
+             let seq = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/costRestGet?id=0`)
+             let seqs = 0
+             if(seq.length!=0){
+               seqs = seq[seq.length-1].seq+1
+             }
+
+
+
+            let url = `https://squid-app-ug7x6.ondigitalocean.app/createCostRest`
+            body = {
+              d1:restid,
+              d2:workerid,
+              d3:paykubun,
+              d4:(valuePay.split('￥')[1]).replace(",",""),
+              d5:`'${datainput}'`,
+              d6:memo,
+              d7:slectPay,
+              d8:data,
+              d9:seqs
+            }
+          const reqInsert = await makerequestStatus(url,body)
+
+          if(reqInsert!=200){
+            swallErrorOpen("Ops, houve erro")
+          }else{
+              document.getElementById('memo-pay').value = ""
+              document.getElementById('value-input').value = ""
+              const getRestStatus = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/restmanegerTimeGet`)
+                let payinsert
+                let upvalue
+                if(slectPay==1){
+                  payinsert = 0
+                  upvalue = (getRestStatus[0].cach-0)-((valuePay.split('￥')[1]).replace(",","")-0)
+                }else if(slectPay==4){
+                  payinsert = 4
+                  upvalue = (getRestStatus[0].cach2-0)-((valuePay.split('￥')[1]).replace(",","")-0)
                 }else{
-                await swal.close()
-            //await swallSuccess()
-            await swalreshitenumber(seqs)
-          }
-          }
-      }catch (error) {
-        swallErrorOpen("Ops, houve erro")
-      }
+                  payinsert = 1
+                  upvalue = (getRestStatus[0].bank-0)-((valuePay.split('￥')[1]).replace(",","")-0)
+                }
+                  const url = 'https://squid-app-ug7x6.ondigitalocean.app/cachChangeonlykaikei';
+                  const body = {
+                    d0: payinsert,
+                    d1: upvalue,
+                  };
+                  const request = await makerequest3(url, body);
+                  if(request!=200){
+                    swallErrorOpen("Ops, houve erro")
+                  }else{
+                  await swal.close()
+              //await swallSuccess()
+              await swalreshitenumber(seqs)
+            }
+            }
+        }catch (error) {
+          swallErrorOpen("Ops, houve erro")
+        }
+    }
+
   }
 
 }
