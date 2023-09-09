@@ -190,7 +190,7 @@ if(restid==null||workerid==null||menbername==null){
               //await swallSuccess()
               await swalreshitenumber(seqs)
             }
-            }
+            //}
         }catch (error) {
           swallErrorOpen("Ops, houve erro")
         }
