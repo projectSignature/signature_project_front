@@ -164,28 +164,28 @@ if(restid==null||workerid==null||menbername==null){
           }else{
               document.getElementById('memo-pay').value = ""
               document.getElementById('value-input').value = ""
-              const getRestStatus = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/restmanegerTimeGet`)
-                let payinsert
-                let upvalue
-                if(slectPay==1){
-                  payinsert = 0
-                  upvalue = (getRestStatus[0].cach-0)-((valuePay.split('￥')[1]).replace(",","")-0)
-                }else if(slectPay==4){
-                  payinsert = 4
-                  upvalue = (getRestStatus[0].cach2-0)-((valuePay.split('￥')[1]).replace(",","")-0)
-                }else{
-                  payinsert = 1
-                  upvalue = (getRestStatus[0].bank-0)-((valuePay.split('￥')[1]).replace(",","")-0)
-                }
-                  const url = 'https://squid-app-ug7x6.ondigitalocean.app/cachChangeonlykaikei';
-                  const body = {
-                    d0: payinsert,
-                    d1: upvalue,
-                  };
-                  const request = await makerequest3(url, body);
-                  if(request!=200){
-                    swallErrorOpen("Ops, houve erro")
-                  }else{
+              //const getRestStatus = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/restmanegerTimeGet`)
+              //  let payinsert
+              //  let upvalue
+                //if(slectPay==1){
+                  //payinsert = 0
+                  //upvalue = (getRestStatus[0].cach-0)-((valuePay.split('￥')[1]).replace(",","")-0)
+                //}else if(slectPay==4){
+                  //payinsert = 4
+                  //upvalue = (getRestStatus[0].cach2-0)-((valuePay.split('￥')[1]).replace(",","")-0)
+                //}else{
+                //  payinsert = 1
+                //  upvalue = (getRestStatus[0].bank-0)-((valuePay.split('￥')[1]).replace(",","")-0)
+                //}
+                //  const url = 'https://squid-app-ug7x6.ondigitalocean.app/cachChangeonlykaikei';
+                //  const body = {
+                  //  d0: payinsert,
+                  //  d1: upvalue,
+                //  };
+                //  const request = await makerequest3(url, body);
+                //  if(request!=200){
+                //    swallErrorOpen("Ops, houve erro")
+                //  }else{
                   await swal.close()
               //await swallSuccess()
               await swalreshitenumber(seqs)
