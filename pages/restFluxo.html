@@ -120,7 +120,7 @@
       async function payinfGet(data){
         if(data==0){
           return　ltxt84[language]
-        }else if(data==1){
+        }else if(data==1||data==4){
           return　ltxt85[language]
         }else if(data==2){
           return　ltxt86[language]
@@ -134,6 +134,7 @@
       }
 
       async function swalldeatalShow(d){
+        prcessnoswall()
         let shdt = await makerequest(`${accessmainserver}/serchcostsidselects?id=${d}`)
         let ifdata = await getname(shdt[0].cost_id)
         let getpays = await getstatuspay(shdt[0].status)
