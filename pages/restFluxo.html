@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ja-JP">
-
 <head>
     <meta charset="utf-8" >
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,7 +7,6 @@
     <link rel="stylesheet" href="../style/restFlux.css">
     </script>
 </head>
-
 <body  class="bg-dark">
   <header>
     <div class="header-left-div">
@@ -21,32 +19,161 @@
   </header>
   <div class="main-div">
     <div class="div-comon-division">
-       <div class="div-comon-division-title">
-         <div>先月繰り越し</div>
-         <div>収入</div>
-         <div>経費</div>
-         <div>合計</div>
-       </div>
-       <div class="div-comon-division-answer">
-         <div id="kirikoshi-div">￥2,000,000</div>
-         <div id="syunyu-div">￥0</div>
-         <div id="sisyutsu-div"></div>
-         <div id="goukei-div"></div>
-       </div>
-
-       <div class="keihi-show-history-title">直近の実績</div>
-       <div id="insert-inner-html1" class="keihi-show-history">
-
-
-       </div>
+      <input type="date" class="datas-input-selects" id="startdt"  onchange=""/>~
+      <input type="date" class="datas-input-selects" id="finisdt"  onchange=""/>
+      <select id="categorytype"></select>
+      <input type="button" class="inputs-kensaku" id="serchbutton"value="検索"onclick="getdts()"/>
     </div>
-
+    <div class="totalcostsdiv">
+      <div id="numbercosts" class="subtitles"></div>
+      <div id="totalnumber" class="answers"></div>
+      <div id="sumtotal" class="subtitles"></div>
+      <div id="totalcosts" class="answers"></div>
+    </div>
+    <div id="insert-inner-html1" class="keihi-show-history">
+    </div>
   </div>
      <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
      <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js" type="text/javascript"></script>-->
      <script src="../script/swal.js"></script>
-     <script type="text/javascript" src="../script/restFlux.js"></script>
+     <script type="text/javascript" src="../script/commonjs.js"></script>
+     <script>
+
+      let category = ``
+     window.addEventListener("load", async (event) => {
+       document.getElementById('startdt').value= await gettoday(0)
+       document.getElementById('finisdt').value= await gettoday(1)
+       prcessnoswall()
+       await createcategorys()
+       languagechange()
+       await getdts()
+       });
+
+       async function createcategorys(){
+             category = await makerequest(`${accessmainserver}/gategorycostGet`)
+             let name = ""
+             let row = `<option value="0">${ltxt74[language]}</option>`
+             for(let i=0;i<category.clients.length;i++){
+                if(language==0){
+                  name = category.clients[i].name_pt
+                }else{
+                  name = category.clients[i].name_jp
+                }
+                row += `<option value=${category.clients[i].control_id}>
+                        ${name}</option>
+                        `
+             }
+             document.getElementById('categorytype').innerHTML = row
+       }
+
+       async function getdts(){
+         prcessnoswall()
+         let st = document.getElementById('startdt').value
+         let fn = document.getElementById('finisdt').value
+         let costid = document.getElementById('categorytype').value
+         let querys = `?id=${restid}&&costid=${costid}&&stdt=${st}&&fndt=${fn}`
+         const payname =  await makerequest(`${accessmainserver}/serchcosts${querys}`)　//支出の項目をGET
+         payname.sort(function(a, b) {
+          return b.id-a.id;
+         });
+
+         await createrows(payname)
+       }
+
+       async function createrows(d){
+         let sumTotal=0
+         let row = ``
+         for(let i=0;i<d.length;i++){
+           let dt = `${d[i].payday.split("-")[1]}/${d[i].payday.split("-")[2]}`
+            sumTotal += (d[i].amount -0)
+           let ifdata = await getname(d[i].cost_id)
+           row += `
+           <div class="keihi-show-history-child" onclick="swalldeatalShow('${d[i].id}')">
+              <div class="keihi-show-history-day">${dt}</div>
+              <img src="../image/ic${ifdata[1]}.png" width="40" class="setting-right-button"  />
+              <div class="keihi-show-history-name">${ifdata[0]}</div>
+              <div class="keihi-show-history-value">${await kanmaReplase(d[i].amount)}</div>
+              <div class="keihi-show-history-day">${await payinfGet(d[i].paykubun)}</div>
+           </div>
+           `
+         }
+         document.getElementById('insert-inner-html1').innerHTML =row
+         document.getElementById('totalnumber').innerText =d.length
+         document.getElementById('totalcosts').innerText =`￥${await kanmanomireplace(sumTotal)}`
+         swal.close()
+       }
+
+      async function getname(d){
+        for(let i=0;i<category.clients.length;i++){
+　　　　　if(d==category.clients[i].control_id){
+            if(language==0){
+              return [category.clients[i].name_pt,category.clients[i].icon_id]
+            }else{
+              return [category.clients[i].name_jp,category.clients[i].icon_id]
+            }
+
+           }
+        }
+      }
+
+      async function payinfGet(data){
+        if(data==0){
+          return　ltxt84[language]
+        }else if(data==1){
+          return　ltxt85[language]
+        }else if(data==2){
+          return　ltxt86[language]
+        }
+      }
+
+      function languagechange(){
+        document.getElementById('serchbutton').value=ltxt83[language]
+        document.getElementById('numbercosts').innerText=ltxt87[language]
+        document.getElementById('sumtotal').innerText=ltxt88[language]
+      }
+
+      async function swalldeatalShow(d){
+        let shdt = await makerequest(`${accessmainserver}/serchcostsidselects?id=${d}`)
+        let ifdata = await getname(shdt[0].cost_id)
+        let getpays = await getstatuspay(shdt[0].status)
+        let row =`
+        <div class="swalltitle">${ltxt89[language]}:${d}</div>
+        <div class="swall-displey-flex">
+         <div class="titles-left">${ltxt90[language]}</div>
+         <div>${await getworker(shdt[0].worker_id)}</div>
+        </div>
+        <div class="swall-displey-flex">
+         <div class="titles-left">${ltxt91[language]}</div>
+         <div>${shdt[0].payday}</div>
+        </div>
+        <div class="swall-displey-flex">
+         <div class="titles-left">${ltxt92[language]}</div>
+         <div>${ifdata[0]}</div>
+        </div>
+        <div class="swall-displey-flex">
+         <div class="titles-left">${ltxt93[language]}</div>
+         <div>${shdt[0].seq}</div>
+        </div>
+        <div class="margintop-divds">${await payinfGet(shdt[0].paykubun)}
+        <div>
+        <div  class="margintop-divds" style="${getpays[1]}">${getpays[0]}
+        </div>
+        <div class="closeSwaldivs" onclick="closeswalas()">Close</div>
+        `
+
+        swallmessages(row)
+      }
+
+      async function  getstatuspay(d){
+        if(d==1){
+          return [ltxt94[language],`background-color:blue;color:white`]
+        }else{
+          return [ltxt95[language],`background-color:red;color:white`]
+        }
+      }
+
+     </script>
 </body>
 
 
