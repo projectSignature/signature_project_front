@@ -29,17 +29,12 @@
       <input type="date" class="" id="finishInput"  onchange="getData()"/>
       <select id="menutype" onchange="getData()"></select>
     </div>
-    <div class="top-main-div">
-
-      <div class="second-title">
-        <div class="title-top-div">Pedidos</div>
-        <div class="answer-div" id="total-pedidos"></div>
+      <div class="totalcostsdiv">
+        <div class="subtitles">Pedidos</div>
+        <div class="answers" id="total-pedidos"></div>
+        <div class="subtitles">Venda total</div>
+        <div class="answers" id="total-vendas"></div>
       </div>
-      <div class="second-title">
-        <div class="title-top-div">Venda total</div>
-        <div class="answer-div" id="total-vendas"></div>
-      </div>
-    </div>
     <div id="insert-inner-html1-title" class="keihi-show-history-title">
 
 
@@ -59,9 +54,9 @@
    let workerid=sessionStorage.getItem("id")
    let menbername = sessionStorage.getItem("name")
    if(restid==null||workerid==null||menbername==null){
-     pagechange('loginadminrst')
+     //pagechange('loginadminrst')
    }
-  //restid=0
+  restid=0
    document.getElementById('name-span').innerText = menbername
    //APIアクセスファンクション
    async function makerequest(url){
@@ -125,7 +120,7 @@ async function creatData(){
                 row += `<div class="syunyu-history-main-scroll">
                       <div class="tandoku-div">
                         <div class="numberid">${orderlistadd[i].id}</div>
-                        <div class="other-title">${await menuTokutei(orderlistadd[i].menu_id.split(",")[ii],menuArray)}</div>
+                        <div class="other-title-name">${await menuTokutei(orderlistadd[i].menu_id.split(",")[ii],menuArray)}</div>
                         <div class="other-title">${(orderlistadd[i].quantity_menu.split(",")[ii]).toLocaleString()}</div>
                         <div class="other-title">￥${(orderlistadd[i].menu_value.split(",")[ii]).toLocaleString()}</div>
 
@@ -167,7 +162,7 @@ async function creatData(){
       function titledivCreate(){
       let row=`<div class="tandoku-div-title">
               <div class="numberid">N.º</div>
-              <div class="other-title">Nome</div>
+              <div class="other-title-name">Nome</div>
               <div class="other-title">Quant.</div>
               <div class="other-title">Valor</div>
               <div class="other-title">Type</div>
