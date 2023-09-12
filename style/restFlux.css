@@ -97,7 +97,7 @@ header img{
     align-items: flex-end;
   }
   .answers{
-    width:7rem;
+    width:10rem;
     color: white;
     font-weight: bold;
     font-size: 3vh;
@@ -125,5 +125,45 @@ header img{
     color:white;
     margin-top: 30px;
     margin-left: 38%
+  }
+  .top-main-div{
+    display: flex;
+    width:100%;
+    background-color: gray;
+    height:5%
+  }
+  .second-title{
+    display: flex;
+  }
+  .daymonthselect{
+    width:100%;
+    height:6%;
+    display:  flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .daymonthselect input,.daymonthselect select{
+    width:10rem;
+    height:80%;
+    text-align: center;
+    font-size: 1.7vh
+  }
+  .daymonthselect select{
+  margin-left: 10px
+  }
+  .tandoku-div-title,.tandoku-div{
+    display: flex
+  }
+  .syunyu-history-main-scroll{
+    border-bottom: 0.5px solid gray
+  }
+  .numberid{
+    width:15%
+  }
+  .other-title{
+    width:15%
+  }
+  .other-title-name{
+    width:35%
   }
 }
