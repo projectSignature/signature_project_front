@@ -1,5 +1,5 @@
 
-let accessmainserver = 'https://squid-app-ug7x6.ondigitalocean.app'　　//メインサーバーのチェックアクセス先
+
 let user
 let password
 let errormessage
@@ -13,10 +13,13 @@ let saveArray1 = []
 let restid=sessionStorage.getItem("restid")
 let workerid=sessionStorage.getItem("id")
 let menbername = sessionStorage.getItem("name")
-if(restid==null||workerid==null||menbername==null){
-  pagechange('loginadminrst')
-}
-document.getElementById('name-span').innerText = menbername
+//if(restid==null||workerid==null||menbername==null){
+  //pagechange('loginadminrst')
+//}
+restid=0
+workerid=0
+menbername='Paulo'
+document.getElementById('name-span').innerText = 'Paulo'//menbername
 var today = new Date();
 let yyyy = today.getFullYear();
 let mm = ("0"+(today.getMonth()+1)).slice(-2);
