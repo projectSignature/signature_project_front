@@ -6,6 +6,9 @@ let errormessage
 let menbername = sessionStorage.getItem("name")
 let language = sessionStorage.getItem("language")
 let workerid =sessionStorage.getItem("id")
+if(restid==null||workerid==null||menbername==null){
+  pagechange('loginadminrst')
+}
 
 
 /////////////////////////////////////テキスト翻訳///////////////////////////////////////
@@ -22,12 +25,14 @@ let txt9 = ["Erro no registro","登録に失敗しました"]
 let text48 = ["Registrado","完了"]
 let text17 = ["salvando",'登録中']
 let text18= ["Aguarde",'しばらくお待ちください']
+let text19= ["Resumo",'まとめ']
 
 document.getElementById("txt0").innerText = txt0[language]
 document.getElementById("txt1").innerText = txt1[language]
 document.getElementById("txt2").innerText = txt2[language]
 document.getElementById("txt3").innerText = txt3[language]
 document.getElementById("txt4").innerText = txt4[language]
+document.getElementById("txt5").innerText = txt4[language]
 
 //////////////////////////////////////////////////////////////////////////////////////
 
