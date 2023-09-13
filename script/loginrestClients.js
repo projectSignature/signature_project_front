@@ -26,7 +26,7 @@ let txt9 = ["Erro no registro","登録に失敗しました"]
 let text48 = ["Registrado","完了"]
 let text17 = ["salvando",'登録中']
 let text18= ["Aguarde",'しばらくお待ちください']
-let text19= ["Resumo",'まとめ']
+let txt19= ["Resumo",'まとめ']
 
 document.getElementById("txt0").innerText = txt0[language]
 document.getElementById("txt1").innerText = txt1[language]
