@@ -6,6 +6,7 @@ let errormessage
 let menbername = sessionStorage.getItem("name")
 let language = sessionStorage.getItem("language")
 let workerid =sessionStorage.getItem("id")
+let restid = 0
 if(restid==null||workerid==null||menbername==null){
   pagechange('loginadminrst')
 }
