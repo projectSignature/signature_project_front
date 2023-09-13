@@ -33,7 +33,7 @@ document.getElementById("txt1").innerText = txt1[language]
 document.getElementById("txt2").innerText = txt2[language]
 document.getElementById("txt3").innerText = txt3[language]
 document.getElementById("txt4").innerText = txt4[language]
-document.getElementById("txt5").innerText = txt4[language]
+document.getElementById("txt5").innerText = txt19[language]
 
 //////////////////////////////////////////////////////////////////////////////////////
 
