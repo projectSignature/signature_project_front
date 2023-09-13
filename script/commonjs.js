@@ -5,10 +5,10 @@ let restid=sessionStorage.getItem("restid")           //レストランid
 let workerid=sessionStorage.getItem("id")            //ワーカーid
 let menbername = sessionStorage.getItem("name")      //ワーカー名
 let language = sessionStorage.getItem("language")　　//言語
-restid=0　//消す
-workerid=0//消す
-menbername='Paulo'//消す
-language=0
+//restid=0　//消す
+//workerid=0//消す
+//menbername='Paulo'//消す
+//language=0
 
 if(restid==null||workerid==null||menbername==null){
   pagechange('loginadminrst')
