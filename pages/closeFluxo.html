@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+<head>
+    <meta charset="utf-8" >
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="../style/restFluxmonths.css">
+    </script>
+</head>
+<body  class="bg-dark">
+  <header>
+    <div class="header-left-div">
+      <img src="..\image\rootsgrill_logo.png" width="50" class="setting-right-button"  />
+      <span>Roots Grill</span>
+    </div>
+    <div class="header-right-div">
+     <span id="name-span"></span>
+   </div>
+  </header>
+  <div class="main-div">
+    <div class="div-comon-division">
+      <input type="date" class="datas-input-selects" id="startdt"  onchange=""/>~
+      <input type="date" class="datas-input-selects" id="finisdt"  onchange=""/>
+      <input type="button" class="inputs-kensaku" id="serchbutton"value="検索"onclick="getdts()"/>
+    </div>
+    <div class="totalcostsdiv">
+      <div class="totalcostsdiv-div">
+       <div id="honyakudiv1" class="titles-divs">Vendas
+       </div>
+       <div id="monthsfluxo" class="values-answer" >
+       </div>
+     </div>
+      <div class="totalcostsdiv-div">
+        <div id="honyakudiv2" class="titles-divs">Despesas
+        </div>
+        <div id="monthcosts" class="values-answer">
+        </div>
+      </div>
+      <div class="totalcostsdiv-div">
+        <div id="honyakudiv3" class="titles-divs">Estoques
+        </div>
+        <div  id="stocks"  class="values-answer">0
+        </div>
+      </div>
+    </div>
+    <div class="right-main-div-graphs">
+      <canvas id="graph-area" width="400" height="200"></canvas>
+    </div>
+
+      <div class="flex-div-ranks" id="ranksdivs">
+        <div class="rank1">RANK</div>
+        <div class="rank2">Nome</div>
+        <div class="rank3">Quant.</div>
+        <div class="rank4">Valor</div>
+      </div>
+      <div id="rannks" class="ranks-div">
+    </div>
+
+  </div>
+     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+     <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js" type="text/javascript"></script>-->
+     <script src="../script/swal.js"></script>
+     <script type="text/javascript" src="../script/commonjs.js"></script>
+     <script>
+
+      let category = ``
+     window.addEventListener("load", async (event) => {
+       document.getElementById('startdt').value= await gettoday(0)
+       document.getElementById('finisdt').value= await gettoday(1)
+       prcessnoswall()
+       await getdts()
+       swal.close()
+       });
+
+       async function createcategorys(){
+             category = await makerequest(`${accessmainserver}/gategorycostGet`)
+             let name = ""
+             let row = `<option value="0">${ltxt74[language]}</option>`
+             console.log(category)
+             for(let i=0;i<category.clients.length;i++){
+                if(language==0){
+                  name = category.clients[i].name_pt
+                }else{
+                  name = category.clients[i].name_jp
+                }
+                row += `<option value=${category.clients[i].control_id}>
+                        ${name}</option>
+                        `
+             }
+             document.getElementById('monthsfluxo').innerHTML = row
+       }
+
+       async function getdts(){
+         //prcessnoswall()
+         let st = document.getElementById('startdt').value
+         let fn = document.getElementById('finisdt').value
+         let querys = `?id=${restid}&&costid=0&&stdt=${st}&&fndt=${fn}`
+         const payname =  await makerequest(`${accessmainserver}/serchcosts${querys}`)　//支出の項目をGET
+         console.log(payname)
+         let despesas =0
+         let dsdy =[]
+      　 for(let i=0;i<payname.length;i++){
+            despesas = despesas+ (payname[i].amount-0)
+            dsdy.push(payname[i].payday)
+          }
+          //console.log(dsdy)
+          const set = new Set(dsdy);
+          const newArr = [...set];
+          createdts(newArr.sort(),payname)
+        //console.log(newArr.sort())
+      //  const set = new Set(dsdy);
+        //console.log(set[1])
+        let mgt = await makerequest(`${accessmainserver}/menuGet?id='0'`)
+        let mnuArry = []
+        for(let i=0;i<mgt.length;i++){
+          let mns = {id:mgt[i].id,name:mgt[i].control_name,vls:0,qt:0}
+          mnuArry.push(mns)
+        }
+        document.getElementById('monthcosts').innerText = await kanmanomireplace(despesas)
+        const syunyu = await makerequest(`${accessmainserver}/serchsyunyuu${querys}`)　//支出の項目をGET
+        despesas = 0
+        for(let i=0;i<syunyu.length;i++){
+          const lc = (syunyu[i].menu_value.match(/,/g) || []).length
+          for(let ii=0;ii<lc;ii++){
+            despesas = despesas + ((syunyu[i].menu_value.split(",")[ii])-0)
+            for(let j=0;j<mnuArry.length;j++){
+              if(mnuArry[j].id==syunyu[i].menu_id.split(",")[ii]){
+                mnuArry[j].vls=mnuArry[j].vls+((syunyu[i].menu_value.split(",")[ii])-0)
+                mnuArry[j].qt=mnuArry[j].qt+((syunyu[i].quantity_menu.split(",")[ii])-0)
+                break
+              }
+            }
+          }
+
+         document.getElementById('monthsfluxo').innerText = await kanmanomireplace(despesas)
+        }
+        mnuArry.sort(function(a, b) {
+return b.qt - a.qt;
+});
+        creterowrank(mnuArry)
+       }
+
+       async function creterowrank(d){
+         console.log(d)
+         let row=""
+         for(let i=0;i<d.length;i++){
+           console.log(d[i])
+           row+=`<div class="flex-div-ranks">
+           <div class="rank1">${i+1}</div>
+           <div class="rank2">${d[i].name}</div>
+           <div class="rank3">${d[i].qt}</div>
+           <div class="rank4">${await kanmanomireplace(d[i].vls)}</div>
+           </div>`
+         }
+         document.getElementById('rannks').innerHTML+=row
+       }
+
+      function createdts(d,dts){
+        let chdt = []
+        for(let i=0;i<d.length;i++){
+          let ndt = {dt:d[i],vl:0}
+          chdt.push(ndt)
+        }
+        for(let i=0;i<chdt.length;i++){
+          for(let ii=0;ii<dts.length;ii++){
+            if(chdt[i].dt==dts[ii].payday){
+              chdt[i].vl= chdt[i].vl+ (dts[ii].amount-0)
+            }
+          }
+        }
+        let lbar =[]
+        let dtas =[]
+        for(let i=0;i<chdt.length;i++){
+          lbar.push(`${(chdt[i].dt).split("-")[1]}/${(chdt[i].dt).split("-")[2]}`)
+          dtas.push(chdt[i].vl)
+        }
+        console.log(lbar)
+        console.log(dtas)
+        weekaccessdataGet(lbar,dtas)
+      }
+
+
+
+       function weekaccessdataGet(weekdayArray,res){
+
+         var ctx2 = document.getElementById("graph-area")//.getContext("2d");
+
+         new Chart(ctx2, {
+                  type: 'line',
+                  data: {
+                    labels: weekdayArray,
+                    datasets: [{
+                      label: "Gastos",
+                      data: res,
+                    }],
+                  },
+                  options: {
+                    responsive: false,
+                  }
+                })
+       }
+
+
+
+
+      function languagechange(){
+        document.getElementById('honyakudiv1').innerText=ltxt96[language]
+        document.getElementById('honyakudiv2').innerText=ltxt97[language]
+        document.getElementById('honyakudiv3').innerText=ltxt98[language]
+      }
+
+
+
+
+     </script>
+</body>
+
+
+</html>
