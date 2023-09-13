@@ -1,0 +1,138 @@
+html{
+overflow-y: hidden;
+      height: 100%;
+}
+body {
+  height: 100%;
+  margin: 0;
+}
+header{
+  width:100%;
+  height:6%;
+  background-color: #FF6928;
+  display: flex;
+  justify-content:space-between;
+  align-items:  center;
+}
+header div{
+  height:100%;
+}
+.header-left-div,.header-right-div{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+header span{
+  font-size:4vh;
+  font-weight: bold;
+  align-items: center;
+  text-align: center;
+}
+header img{
+  height:100%;
+}
+.main-div{
+  width:100%;
+  height:90%;
+}
+
+.titles-divs{
+  width: 100%;
+  background-color: #333333;
+  color:white;
+  text-align: center;
+}
+.values-answer{
+
+   text-align:center;
+   font-size: 2.5vh
+}
+
+
+
+@media only screen and (max-width: 800px) {
+  .main-div{
+    flex-wrap: wrap;
+  }
+  .main-div-div{
+    margin-left:1rem;
+    width:14rem;
+  }
+  header span{
+    font-size:3vh;
+  }
+  .div-comon-division{
+    margin-top: 5px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height:5%
+  }
+  .datas-input-selects{
+    width:8rem;
+    height:2rem
+  }
+  .inputs-kensaku{
+    height:90%
+  }
+  .totalcostsdiv{
+    margin-top: 3px;
+    width: 100%;
+    height:10%;
+    background-color:#DDDDDD;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+  .totalcostsdiv-div{
+    border: 0.2px solid gray;
+    width:30%;
+    height:80%;
+    display: flex;
+    justify-content:space-around;
+    flex-wrap: wrap;
+    align-items:center;
+  }
+  .right-main-div-graphs{
+    width:100%;
+    height:25%;
+    overflow-x: auto;
+    margin-top: 15px
+  }
+  .ranks-div{
+    width:100%;
+    height:30%;
+    overflow-y: auto;
+  }
+  .flex-div-ranks{
+    display: flex;
+    width: 100%;
+    justify-content:space-between;
+    border-bottom: 0.2px solid gray
+  }
+  .flex-div-ranks div{
+    height:2rem;
+    text-align: center;
+  }
+  .rank1{
+    width:15%;
+    border-right: 0.2px solid gray
+  }
+  .rank2{
+    width:45%;
+    border-right: 0.2px solid gray
+  }
+  .rank3{
+    width:20%;
+    border-right: 0.2px solid gray
+  }
+  .rank4{
+    width:20%;
+    border-right: 0.2px solid gray
+  }
+  #ranksdivs{
+    background-color: orange;
+    margin-top: 3px
+  }
+}
