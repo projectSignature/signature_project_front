@@ -68,11 +68,8 @@ header img{
 }
 .fifity-changemoney{
   width:45%;
-
   display: flex;
   flex-wrap: wrap;
-
-
 }
 .fifity-changemoney div{
   width:100%;
