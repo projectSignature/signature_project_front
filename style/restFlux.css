@@ -36,19 +36,24 @@ header img{
   width:100%;
   height:90%;
 }
-
-.titles-divs{
-  width: 100%;
-  background-color: #333333;
-  color:white;
-  text-align: center;
+.div-comon-division{
+  width:100%;
+  height:7%;
+  display: flex;
+  align-items: center;
 }
-.values-answer{
-
-   text-align:center;
-   font-size: 2.5vh
+.keihi-show-history{
+  width:100%;
+  height:90%;
+  overflow-y: auto
 }
+.keihi-show-history-child{
+  display: flex;
+  height:2.5rem;
+  border-bottom: 0.5px solid gray;
+  align-items: center;
 
+}
 
 
 @media only screen and (max-width: 800px) {
@@ -63,76 +68,102 @@ header img{
     font-size:3vh;
   }
   .div-comon-division{
-    margin-top: 5px;
-    display: flex;
     justify-content: space-around;
-    align-items: center;
-    height:5%
   }
-  .datas-input-selects{
-    width:8rem;
-    height:2rem
-  }
-  .inputs-kensaku{
-    height:90%
-  }
-  .totalcostsdiv{
-    margin-top: 3px;
-    width: 100%;
-    height:10%;
-    background-color:#DDDDDD;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-  }
-  .totalcostsdiv-div{
-    border: 0.2px solid gray;
-    width:30%;
-    height:80%;
-    display: flex;
-    justify-content:space-around;
-    flex-wrap: wrap;
-    align-items:center;
-  }
-  .right-main-div-graphs{
-    width:100%;
-    height:25%;
-    overflow-x: auto;
-    margin-top: 15px
-  }
-  .ranks-div{
-    width:100%;
-    height:30%;
-    overflow-y: auto;
-  }
-  .flex-div-ranks{
-    display: flex;
-    width: 100%;
-    justify-content:space-between;
-    border-bottom: 0.2px solid gray
-  }
-  .flex-div-ranks div{
-    height:2rem;
+
+  .datas-input-selects, .div-comon-division select{
+    width:6rem;
+    height:60%;
     text-align: center;
   }
-  .rank1{
-    width:15%;
-    border-right: 0.2px solid gray
+  .inputs-kensaku{
+    height:70%
   }
-  .rank2{
-    width:45%;
-    border-right: 0.2px solid gray
+  .keihi-show-history-value ,.keihi-show-history-day{
+    margin-left: 10px;
+    width:5rem
   }
-  .rank3{
-    width:20%;
-    border-right: 0.2px solid gray
+  .keihi-show-history-name{
+    width:7rem
   }
-  .rank4{
-    width:20%;
-    border-right: 0.2px solid gray
+  .totalcostsdiv{
+    width:100%;
+    height:6%;
+    background-color: gray;
+    display: flex;
+    align-items: center;
   }
-  #ranksdivs{
-    background-color: orange;
-    margin-top: 3px
+  .subtitles{
+    align-items: flex-end;
+  }
+  .answers{
+    width:10rem;
+    color: white;
+    font-weight: bold;
+    font-size: 3vh;
+
+  }
+  .swalltitle{
+    background-color: orange
+  }
+  .swall-displey-flex{
+    display: flex;
+    width:100%;
+    margin-top:10px;
+    border-bottom: 0.5px solid gray
+  }
+  .titles-left{
+    width:10rem
+  }
+  .margintop-divds{
+    margin-top: 10px
+  }
+  .closeSwaldivs{
+    width:5rem;
+    height:2rem;
+    background-color:gray;
+    color:white;
+    margin-top: 30px;
+    margin-left: 38%
+  }
+  .top-main-div{
+    display: flex;
+    width:100%;
+    background-color: gray;
+    height:5%
+  }
+  .second-title{
+    display: flex;
+  }
+  .daymonthselect{
+    width:100%;
+    height:6%;
+    display:  flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .daymonthselect input,.daymonthselect select{
+    width:10rem;
+    height:80%;
+    text-align: center;
+    font-size: 1.7vh
+  }
+  .daymonthselect select{
+  margin-left: 10px
+  }
+  .tandoku-div-title,.tandoku-div{
+    display: flex
+  }
+  .syunyu-history-main-scroll{
+    border-bottom: 0.5px solid gray
+  }
+  .numberid{
+    width:15%
+  }
+  .other-title{
+    width:15%
+  }
+  .other-title-name{
+    width:35%
   }
 }
