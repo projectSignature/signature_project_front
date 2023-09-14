@@ -135,4 +135,27 @@ header img{
     background-color: orange;
     margin-top: 3px
   }
+  .display-main-flex{
+    width:100%;
+    height: 2rem;
+    border-bottom: 0.5px solid gray;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+  .setting-right-button{
+    width:1.5rem;
+    height:1.5rem;
+    margin-right: 15px
+  }
+  .setting-right-button-count{
+    width:4rem;
+    height:4rem;
+    margin-top: 10px;
+    margin-left: 20px
+  }
+  .display-main-flex div{
+    font-size: 1.5vh
+
+  }
 }
