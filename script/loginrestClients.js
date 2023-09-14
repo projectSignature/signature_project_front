@@ -27,6 +27,7 @@ let text48 = ["Registrado","完了"]
 let text17 = ["salvando",'登録中']
 let text18= ["Aguarde",'しばらくお待ちください']
 let txt19= ["Resumo",'まとめ']
+let txt20= ["Estoque","在庫"]
 
 document.getElementById("txt0").innerText = txt0[language]
 document.getElementById("txt1").innerText = txt1[language]
@@ -34,6 +35,7 @@ document.getElementById("txt2").innerText = txt2[language]
 document.getElementById("txt3").innerText = txt3[language]
 document.getElementById("txt4").innerText = txt4[language]
 document.getElementById("txt5").innerText = txt19[language]
+document.getElementById("txt6").innerText = txt20[language]
 
 //////////////////////////////////////////////////////////////////////////////////////
 
