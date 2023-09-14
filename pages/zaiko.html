@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+<head>
+    <meta charset="utf-8" >
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="../style/restFluxmonths.css">
+    </script>
+</head>
+<body  class="bg-dark">
+  <header>
+    <div class="header-left-div">
+      <img src="..\image\rootsgrill_logo.png" width="50" class="setting-right-button"  />
+      <span>Roots Grill</span>
+    </div>
+    <div class="header-right-div">
+     <span id="name-span"></span>
+   </div>
+  </header>
+  <div id="estoquetotal" style="margin-top: 5px;text-align:right;margin-right: 30px"></div>
+  <div class="main-div" id="creates-html" style="height:80%;overflow-y: auto">
+
+
+
+  </div>
+     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+     <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js" type="text/javascript"></script>-->
+     <script src="../script/swal.js"></script>
+     <script type="text/javascript" src="../script/commonjs.js"></script>
+     <script>
+
+
+     window.addEventListener("load", async (event) => {
+       cretsdts()
+       });
+
+
+async function cretsdts(){
+  let dts = ``
+ dts = await makerequest(`${accessmainserver}/gategorycostGet2`)
+ let dt = dts.clients
+ let total = 0
+ let row =`<div class="display-main-flex" style="margin-top: 5px;background-color: #333333;color:white">
+ <div class="setting-right-button"/></div>
+ <div style="margin-right:2px;width:10rem">nome</div>
+ <div style="margin-right:2px;width:3rem">Quant.</div>
+ <div style="margin-right:2px;width:3rem">Custo</div>
+ <div style="margin-right:2px;width:5rem">Valor</div>
+ </div>`
+
+ console.log(dt)
+ for(let i=0;i<dt.length;i++){
+   console.log(dt[i])
+   row += `<div class="display-main-flex" onclick="changesdatas(${dt[i].id},'${(dt[i].quantity-0)}','${dt[i].name}')">
+   <img src='../image/${dt[i].categorys}.svg' class="setting-right-button"  />
+
+   <div style="margin-right:2px;width:10rem">${dt[i].name}</div>
+   <div style="margin-right:2px;width:3rem">${dt[i].quantity}</div>
+   <div style="margin-right:2px;width:3rem">￥${dt[i].cust}</div>
+   <div style="margin-right:2px;width:5rem">￥${(dt[i].quantity-0)*(dt[i].cust-0)}</div>
+   </div>`
+   total = total +(dt[i].quantity-0)*(dt[i].cust-0)
+ }
+  //category = await makerequest(`${accessmainserver}/tryszaiko`)
+  console.log(dt)
+  document.getElementById('creates-html').innerHTML=row
+  document.getElementById('estoquetotal').innerText=`Estoque total  ￥${total}`
+}
+
+
+   async function changesdatas(id,qt,name){
+     let row=`<div>${name}</div>
+     <div>
+       <input id="qt-swal" type="number" value="${qt}" style="text-align:center;width:80%;height:5rem;font-size:3vh"/></div>
+     <div>
+      <img src='../image/minase.svg' class="setting-right-button-count" onclick="countchange(0)"  />
+      <img src='../image/plus.svg' class="setting-right-button-count" onclick="countchange(1)"/>
+     </div>`
+
+
+     const swal =  Swal.fire({
+             html: row,
+             allowOutsideClick : false,
+             showConfirmButton: true,
+             showCancelButton:true,
+             confirmButtonText:'Salvar',
+             cancelButtonText:'Cancelar'
+       }).then(async (result) => {
+         if(result.isConfirmed) {
+           let zk = document.getElementById('qt-swal').value
+           let url =`https://squid-app-ug7x6.ondigitalocean.app/changezaiko`
+           body = {
+             d0:zk,
+             d1:id
+           }
+           const reqInsert = await makerequestStatus(url,body)
+             if(reqInsert.status==200){
+                 successsmal()
+                 cretsdts()
+             }else{
+                 swallError(txt9[language])
+             }
+         }
+       })
+   }
+
+  function countchange(d){
+    let tgt = document.getElementById('qt-swal')
+    if(d==0){
+      if(tgt.value!=0){
+        tgt.value = (tgt.value-0) - 1
+      }
+    }else{
+      tgt.value = (tgt.value-0) + 1
+    }
+  }
+
+  async function makerequestStatus(url,data){
+    const request = await fetch(url, {//pegar todos dados do table de pagamentos //n]
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: { "Content-type": "application/json; charset=UTF-8" }
+    })
+
+    return request
+  }
+
+
+  async function successsmal(){
+    const Toast = await Swal.mixin({
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 2000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer);
+        toast.addEventListener('mouseleave', Swal.resumeTimer);
+      },
+    });
+
+    await Toast.fire({
+      icon: 'success',
+      title: 'salvo',
+    });
+  await Toast.close()
+  }
+  function swallError(){
+    const swal =  Swal.fire({
+            html: 'erro',
+            icon:'error',
+            allowOutsideClick : false,
+            showConfirmButton: true,
+          }).then(async(result) => {
+              if(result.isConfirmed) {
+                swal.close()
+              }
+            })
+  }
+
+     </script>
+</body>
+
+
+</html>
