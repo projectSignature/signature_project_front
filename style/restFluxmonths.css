@@ -188,17 +188,18 @@ header img{
     margin-top: 5px
   }
   .filters select{
-    width:8rem;
-    height:80%;
+    width:9rem;
+    height:90%;
     text-align: center;
   }
   .filters input{
     width: 5rem;
-    height:80%;
+    height:90%;
     text-align: center;
   }
   .second-divs{
     width: 100%;
+    height:2.5rem;
     display: flex;
     justify-content: space-around;
     align-items:  center;
