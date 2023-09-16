@@ -17,7 +17,28 @@
      <span id="name-span"></span>
    </div>
   </header>
-  <div id="estoquetotal" style="margin-top: 5px;text-align:right;margin-right: 30px"></div>
+  <div class="filters">
+    <select id="filtertype">
+    <option value="0">Todos</option>
+    </select>
+    <select id="typemercado">
+      <option value="0">Todos</option>
+      <option value="brasilian food">brasilian food</option>
+      <option value="felna">felna</option>
+      <option value="costco">costco</option>
+      <option value="H&B">H&B</option>
+      <option value="gyoumu">gyoumu</option>
+      <option value="amika">amika</option>
+      <option value="daiso">daiso</option>
+      <option value="naka atsu">naka atsu</option>
+    </select>
+    <input type="button" value="buscar" onclick="cretsdts()"/>
+  </div>
+  <div class="second-divs">
+    <input type="button" value="lista" onclick="createtables()"/>
+    <div id="estoquetotal" style="margin-top: 5px;text-align:right;margin-right: 30px">
+    </div>
+  </div>
   <div class="main-div11" id="creates-html" style="height:80%;overflow-y: scroll;"></div>
      <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
@@ -30,7 +51,10 @@
       let = jpcategory = ["材料","肉","デザート","容器"]
 
      window.addEventListener("load", async (event) => {
+       document.getElementById('filtertype').innerHTML += await getcategorys()
        cretsdts()
+       //
+       //getnewarray()
        });
 
 
@@ -46,22 +70,64 @@ async function cretsdts(){
  <div style="margin-right:2px;width:5rem">Custo</div>
  <div style="margin-right:2px;width:5rem">Valor</div>
  </div>`
+ let types = document.getElementById("filtertype").value
+ let mercado = document.getElementById('typemercado').value
+ console.log(types)
+ console.log(mercado)
+ let newarry=[]
+ if(types!=0||mercado!=00){
+    newarry = await getnewarray(dt,types,mercado)
+ }else{
+   newarry =dt
+ }
 
- for(let i=0;i<dt.length;i++){
-   row += `<div class="display-main-flex" onclick="changesdatas(${dt[i].id},'${(dt[i].quantity-0)}','${dt[i].name}')">
-   <img src='../image/${dt[i].categorys}.svg' class="setting-right-button"/>
-   <div style="margin-right:2px;width:7rem">${dt[i].name}</div>
-   <div style="margin-right:2px;width:3rem">${dt[i].quantity}</div>
-   <div style="margin-right:2px;width:5rem">￥${dt[i].cust}</div>
-   <div style="margin-right:2px;width:5rem">￥${(dt[i].quantity-0)*(dt[i].cust-0)}</div>
+
+
+ for(let i=0;i<newarry.length;i++){
+   row += `<div class="display-main-flex" onclick="changesdatas(${newarry[i].id},'${(newarry[i].quantity-0)}','${newarry[i].name}')">
+   <img src='../image/${newarry[i].categorys}.svg' class="setting-right-button"/>
+   <div style="margin-right:2px;width:7rem">${newarry[i].name}</div>
+   <div style="margin-right:2px;width:3rem">${newarry[i].quantity}</div>
+   <div style="margin-right:2px;width:5rem">￥${newarry[i].cust}</div>
+   <div style="margin-right:2px;width:5rem">￥${(newarry[i].quantity-0)*(newarry[i].cust-0)}</div>
    </div>`
-   total = total +(dt[i].quantity-0)*(dt[i].cust-0)
+   total = total +(newarry[i].quantity-0)*(newarry[i].cust-0)
  }
     row +=`<div style="width:100%;display:flex;justify-content:center;margin-top:15px;height:3rem">
     <input type="button" value="adicionar" style="font-size:2vh;width:8rem" onclick="addnewdata()"/></div>`
   document.getElementById('creates-html').innerHTML=row
   console.log(document.getElementById('creates-html'))
   document.getElementById('estoquetotal').innerText=`Estoque total  ￥${total}`
+}
+
+async function getnewarray(d,tp,mc){
+  let filetr1 =[]
+  if(tp!=0){
+    filetr1 = d.filter(el => el.categorys == tp);
+  }
+  if(tp!=0&&mc!=0){
+    filetr1 = filetr1.filter(el => el.mercado == tp);
+  }else if(mc!=0){
+    console.log(d)
+    console.log(mc)
+    filetr1 = d.filter(el => el.mercado == mc);
+  }
+   console.log(filetr1)
+   return filetr1
+}
+
+
+function memossss(){
+  //一個のめ返す方法
+  const jungle = [
+    { name: "frog", threat: 5 },
+    { name: "monkey", threat: 5 },
+    { name: "gorilla", threat: 5 },
+    { name: "lion", threat: 10 }
+  ];
+
+  const newarr = jungle.filter(el => el.threat == 5); // returns object - {name: "monkey", threat: 5}
+  console.log(newarr)
 }
 
 
@@ -155,7 +221,7 @@ async function cretsdts(){
     </div>
     <div  class="div-input">
      <select id="n5">
-        <option value="brasilia food">brasilia food</option>
+        <option value="brasilian food">brasilian food</option>
         <option value="felna">felna</option>
         <option value="costco">costco</option>
         <option value="H&B">H&B</option>
@@ -193,7 +259,6 @@ console.log(row)
             d5:document.getElementById("n6").value,
             d6:await gettoday(1)
           }
-          console.log(body)
           const reqInsert = await makerequestStatus(url,body)
            if(reqInsert.status==200){
                successsmal()
@@ -216,6 +281,7 @@ console.log(row)
         row +=`<option value='${ptcategory[i]}'>${jpcategory[i]}</option>`
       }
     }
+    console.log(row)
     return row
   }
   async function successsmal(){
@@ -248,6 +314,99 @@ console.log(row)
                 swal.close()
               }
             })
+  }
+
+async  function createtables(s){
+    let row = await `
+    <div class="scroll-tbl">
+    <table>
+      <tbody>
+        ${await createsth()}
+      </tbody>
+    </table>
+    </div>
+    <style>
+    .swal2-popup {
+        width: 100% !important;
+        height: 600px !important;
+    }
+    table {
+      border-collapse: collapse;
+      border-spacing: 0;
+      width: 100%;
+      min-width: 1000px;
+    }
+    th, td {
+      vertical-align: middle;
+      padding: 20px 15px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      text-align: center;
+    }
+    th {
+      color: #fff;
+      background: #795548;
+    }
+    ._sticky {
+      position: sticky;
+      top: 0;
+      left: 0;
+      z-index: 1;
+      background: #333333;
+    }
+    table{
+      font-size:1.5vh
+    }
+    </style>`
+     console.log(row)
+    const swal =  Swal.fire({
+            html: row,
+            allowOutsideClick : false,
+            showConfirmButton: false,
+          }).then(async(result) => {
+              if(result.isConfirmed) {
+                swal.close()
+              }
+            })
+  }
+
+  async function createsth(){
+    let row = `<tr>
+    <th>mercado</th>
+    <th>nome</th>
+    <th>Esto.</th>
+    <th>Refe.</th>
+    <th>Comprar</th>
+    <th>Valor</th>
+    </tr>
+    ${await gettds()}`
+    return row
+  }
+
+  async function gettds(){
+     dts = await makerequest(`${accessmainserver}/gategorycostGet2`)
+     let mercado = document.getElementById('typemercado').value
+     await console.log(dts)
+     let row=``
+     for(let i=0;i<dts.clients.length;i++){
+       console.log('innnnn')
+       console.log(`${dts.clients[i].quantity}-${dts.clients[i].kijun}`)
+       console.log(dts.clients[i].kijun)
+       console.log(dts.clients[i].mercado)
+       if(dts.clients[i].quantity<dts.clients[i].kijun){
+         //dts.clients[i].mercado==mercado
+         console.log('in2')
+         row+=`<tr>
+         <td>${dts.clients[i].mercado}</td>
+         <td>${dts.clients[i].name}</td>
+         <td>${dts.clients[i].quantity}</td>
+         <td>${dts.clients[i].kijun}</td>
+         <td>${dts.clients[i].kijun-dts.clients[i].quantity}</td>
+         <td>￥${((dts.clients[i].kijun-dts.clients[i].quantity)*dts.clients[i].cust).toFixed(0)}</td>
+         </tr>`
+       }
+     }
+     return row
   }
 
      </script>
