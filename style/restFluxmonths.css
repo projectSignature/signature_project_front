@@ -165,16 +165,17 @@ header img{
     margin-top: 15px
   }
   .div-label label{
-    width: 100%;
+    width: 90%;
     text-align: left;
       margin-top: 2.5px;
+      padding-left: 20px
   }
   .div-input{
-    width:100%;
+    width:90%;
     height:3rem;
   }
   .div-input input, .div-input select{
-    width:80%;
+    width:90%;
     height:80%;
     margin-top: 2.5px;
     margin-bottom: 2.5px
