@@ -61,6 +61,7 @@
 async function cretsdts(){
   let dts = ``
  dts = await makerequest(`${accessmainserver}/gategorycostGet2`)
+ console.log(dts)
  let dt = dts.clients
  let total = 0
  let row =`<div class="display-main-flex" style="margin-top: 5px;background-color: #333333;color:white">
@@ -87,7 +88,7 @@ async function cretsdts(){
    row += `<div class="display-main-flex" onclick="changesdatas(${newarry[i].id},'${(newarry[i].quantity-0)}','${newarry[i].name}')">
    <img src='../image/${newarry[i].categorys}.svg' class="setting-right-button"/>
    <div style="margin-right:2px;width:7rem">${newarry[i].name}</div>
-   <div style="margin-right:2px;width:3rem">${newarry[i].quantity}</div>
+   <div style="margin-right:2px;width:3rem">${newarry[i].quantity}${dts.clients[i].tani}</div>
    <div style="margin-right:2px;width:5rem">￥${newarry[i].cust}</div>
    <div style="margin-right:2px;width:5rem">￥${(newarry[i].quantity-0)*(newarry[i].cust-0)}</div>
    </div>`
@@ -317,11 +318,25 @@ console.log(row)
   }
 
 async  function createtables(s){
-    let row = await `
+  let getnewss = await gettds()
+  let row=""
+  console.log(getnewss)
+  if(getnewss==""){
+    row =`<div>Selecione o mercado primeiro</div>`
+  }else{
+     row = await `
     <div class="scroll-tbl">
+     Lista de compras ${document.getElementById('typemercado').value}
     <table>
       <tbody>
-        ${await createsth()}
+        <tr>
+        <th>nome</th>
+        <th>Esto.</th>
+        <th>Refe.</th>
+        <th>Comprar</th>
+        <th>Valor</th>
+        </tr>
+        ${getnewss}
       </tbody>
     </table>
     </div>
@@ -334,18 +349,21 @@ async  function createtables(s){
       border-collapse: collapse;
       border-spacing: 0;
       width: 100%;
-      min-width: 1000px;
+      min-width: 300px;
+      margin-top:20px;
     }
     th, td {
       vertical-align: middle;
-      padding: 20px 15px;
+      padding: 0px 0px;
       border: 1px solid #ccc;
-      font-size: 14px;
+      font-size: 1.2vh;
       text-align: center;
+      width:3rem !important;
+      height:2rem
     }
     th {
       color: #fff;
-      background: #795548;
+      background: orange;
     }
     ._sticky {
       position: sticky;
@@ -357,55 +375,50 @@ async  function createtables(s){
     table{
       font-size:1.5vh
     }
+    .scroll-tbl{
+      overflow-x:auto
+    }
     </style>`
+  }
+
      console.log(row)
     const swal =  Swal.fire({
             html: row,
             allowOutsideClick : false,
-            showConfirmButton: false,
+            showConfirmButton: true,
+            confirmButtonText:"ok"
           }).then(async(result) => {
               if(result.isConfirmed) {
-                swal.close()
               }
             })
   }
 
-  async function createsth(){
-    let row = `<tr>
-    <th>mercado</th>
-    <th>nome</th>
-    <th>Esto.</th>
-    <th>Refe.</th>
-    <th>Comprar</th>
-    <th>Valor</th>
-    </tr>
-    ${await gettds()}`
-    return row
-  }
+
 
   async function gettds(){
      dts = await makerequest(`${accessmainserver}/gategorycostGet2`)
      let mercado = document.getElementById('typemercado').value
-     await console.log(dts)
      let row=``
-     for(let i=0;i<dts.clients.length;i++){
-       console.log('innnnn')
-       console.log(`${dts.clients[i].quantity}-${dts.clients[i].kijun}`)
-       console.log(dts.clients[i].kijun)
-       console.log(dts.clients[i].mercado)
-       if(dts.clients[i].quantity<dts.clients[i].kijun){
-         //dts.clients[i].mercado==mercado
-         console.log('in2')
-         row+=`<tr>
-         <td>${dts.clients[i].mercado}</td>
-         <td>${dts.clients[i].name}</td>
-         <td>${dts.clients[i].quantity}</td>
-         <td>${dts.clients[i].kijun}</td>
-         <td>${dts.clients[i].kijun-dts.clients[i].quantity}</td>
-         <td>￥${((dts.clients[i].kijun-dts.clients[i].quantity)*dts.clients[i].cust).toFixed(0)}</td>
-         </tr>`
+
+       for(let i=0;i<dts.clients.length;i++){
+          if(mercado==dts.clients[i].mercado){
+
+         console.log(`${dts.clients[i].quantity}-${dts.clients[i].kijun} ${dts.clients[i].mercado}=${mercado}`)
+           if(dts.clients[i].quantity-0<dts.clients[i].kijun-0){
+             //dts.clients[i].mercado==mercado
+             row+=`
+             <tr>
+             <td>${dts.clients[i].name}</td>
+             <td>${dts.clients[i].quantity}${dts.clients[i].tani}</td>
+             <td>${dts.clients[i].kijun}${dts.clients[i].tani}</td>
+             <td>${dts.clients[i].kijun-dts.clients[i].quantity}${dts.clients[i].tani}</td>
+             <td>￥${((dts.clients[i].kijun-dts.clients[i].quantity)*dts.clients[i].cust).toFixed(0)}</td>
+             </tr>`
+         }
        }
      }
+     console.log(row)
+
      return row
   }
 
