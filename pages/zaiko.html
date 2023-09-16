@@ -18,11 +18,7 @@
    </div>
   </header>
   <div id="estoquetotal" style="margin-top: 5px;text-align:right;margin-right: 30px"></div>
-  <div class="main-div" id="creates-html" style="height:80%;overflow-y: auto">
-
-
-
-  </div>
+  <div class="main-div11" id="creates-html" style="height:80%;overflow-y: scroll;"></div>
      <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
      <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js" type="text/javascript"></script>-->
@@ -30,6 +26,8 @@
      <script type="text/javascript" src="../script/commonjs.js"></script>
      <script>
 
+      let = ptcategory = ["material","carne","sobremesa","embalagem"]
+      let = jpcategory = ["材料","肉","デザート","容器"]
 
      window.addEventListener("load", async (event) => {
        cretsdts()
@@ -43,28 +41,26 @@ async function cretsdts(){
  let total = 0
  let row =`<div class="display-main-flex" style="margin-top: 5px;background-color: #333333;color:white">
  <div class="setting-right-button"/></div>
- <div style="margin-right:2px;width:10rem">nome</div>
+ <div style="margin-right:2px;width:7rem">nome</div>
  <div style="margin-right:2px;width:3rem">Quant.</div>
- <div style="margin-right:2px;width:3rem">Custo</div>
+ <div style="margin-right:2px;width:5rem">Custo</div>
  <div style="margin-right:2px;width:5rem">Valor</div>
  </div>`
 
- console.log(dt)
  for(let i=0;i<dt.length;i++){
-   console.log(dt[i])
    row += `<div class="display-main-flex" onclick="changesdatas(${dt[i].id},'${(dt[i].quantity-0)}','${dt[i].name}')">
-   <img src='../image/${dt[i].categorys}.svg' class="setting-right-button"  />
-
-   <div style="margin-right:2px;width:10rem">${dt[i].name}</div>
+   <img src='../image/${dt[i].categorys}.svg' class="setting-right-button"/>
+   <div style="margin-right:2px;width:7rem">${dt[i].name}</div>
    <div style="margin-right:2px;width:3rem">${dt[i].quantity}</div>
-   <div style="margin-right:2px;width:3rem">￥${dt[i].cust}</div>
+   <div style="margin-right:2px;width:5rem">￥${dt[i].cust}</div>
    <div style="margin-right:2px;width:5rem">￥${(dt[i].quantity-0)*(dt[i].cust-0)}</div>
    </div>`
    total = total +(dt[i].quantity-0)*(dt[i].cust-0)
  }
-  //category = await makerequest(`${accessmainserver}/tryszaiko`)
-  console.log(dt)
+    row +=`<div style="width:100%;display:flex;justify-content:center;margin-top:15px;height:3rem">
+    <input type="button" value="adicionar" style="font-size:2vh;width:8rem" onclick="addnewdata()"/></div>`
   document.getElementById('creates-html').innerHTML=row
+  console.log(document.getElementById('creates-html'))
   document.getElementById('estoquetotal').innerText=`Estoque total  ￥${total}`
 }
 
@@ -126,7 +122,101 @@ async function cretsdts(){
     return request
   }
 
+  async function addnewdata(){
+    let row = `<div style="background-color:orange;width:100%">Adcionar item</div>
+    <div class="div-label">
+     <label>Nome</label>
+    </div>
+    <div class="div-input">
+     <input id="n1" type="text"/>
+    </div>
+    <div class="div-label">
+     <label>Categoria</label>
+    </div>
+    <div  class="div-input">
+     <select id="n2">
+        ${await getcategorys()}
+     </select>
+    </div>
+    <div class="div-label">
+     <label>Quantidade</label>
+    </div>
+    <div class="div-input">
+     <input type="number" id="n3"/>
+    </div>
+    <div class="div-label">
+     <label>Valor</label>
+    </div>
+    <div class="div-input">
+     <input type="number" id="n4"/>
+    </div>
+    <div class="div-label">
+     <label>Mercado</label>
+    </div>
+    <div  class="div-input">
+     <select id="n5">
+        <option value="brasilia food">brasilia food</option>
+        <option value="felna">felna</option>
+        <option value="costco">costco</option>
+        <option value="gyoumu">gyoumu</option>
+        <option value="amika">amika</option>
+        <option value="daiso">daiso</option>
+        <option value="naka atsu">naka atsu</option>
+     </select>
+    </div>
+    <div class="div-label">
+     <label>Referência para compra</label>
+    </div>
+    <div class="div-input">
+     <input idtype="number" id="n6"/>
+    </div>`
 
+
+console.log(row)
+    const swal =  Swal.fire({
+            html: row,
+            allowOutsideClick : false,
+            showConfirmButton: true,
+            showCancelButton:true,
+            confirmButtonText:'Salvar',
+            cancelButtonText:'Cancelar'
+      }).then(async (result) => {
+        if(result.isConfirmed) {
+          let url =`https://squid-app-ug7x6.ondigitalocean.app/addnewzaiko`
+          body = {
+            d0:document.getElementById("n1").value,
+            d1:document.getElementById("n2").value,
+            d2:document.getElementById("n3").value,
+            d3:document.getElementById("n4").value,
+            d4:document.getElementById("n5").value,
+            d5:document.getElementById("n6").value,
+            d6:await gettoday(1)
+          }
+          console.log(body)
+          const reqInsert = await makerequestStatus(url,body)
+           if(reqInsert.status==200){
+               successsmal()
+                cretsdts()
+            }else{
+               swallError(txt9[language])
+            }
+        }
+      })
+  }
+
+  async function getcategorys(){
+    let row=""
+    if(language==0){
+      for(let i=0;i<ptcategory.length;i++){
+        row +=`<option value='${ptcategory[i]}'>${ptcategory[i]}</option>`
+      }
+    }else{
+      for(let i=0;i<jpcategory.length;i++){
+        row +=`<option value='${jpcategory[i]}'>${jpcategory[i]}</option>`
+      }
+    }
+    return row
+  }
   async function successsmal(){
     const Toast = await Swal.mixin({
       toast: true,
