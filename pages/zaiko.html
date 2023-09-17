@@ -94,7 +94,7 @@ async function cretsdts(){
    row += `<div class="display-main-flex" onclick="changesdatas(${newarry[i].id},'${(newarry[i].quantity-0)}','${newarry[i].name}')">
    <img src='../image/${newarry[i].categorys}.svg' class="setting-right-button"/>
    <div style="margin-right:2px;width:7rem">${newarry[i].name}</div>
-   <div style="margin-right:2px;width:3rem">${newarry[i].quantity}${dts.clients[i].tani}</div>
+   <div style="margin-right:2px;width:3rem">${newarry[i].quantity}${newarry[i].tani}</div>
    <div style="margin-right:2px;width:5rem">￥${newarry[i].cust}</div>
    <div style="margin-right:2px;width:5rem">￥${(newarry[i].quantity-0)*(newarry[i].cust-0)}</div>
    </div>`
@@ -104,7 +104,7 @@ async function cretsdts(){
     <input type="button" value="adicionar" style="font-size:2vh;width:8rem" onclick="addnewdata()"/></div>`
   document.getElementById('creates-html').innerHTML=row
   console.log(document.getElementById('creates-html'))
-  document.getElementById('estoquetotal').innerText=`Estoque total  ￥${total}`
+  document.getElementById('estoquetotal').innerText=`Estoque total  ￥${(total).toFixed(0)}`
 }
 
 async function getnewarray(d,tp,mc){
