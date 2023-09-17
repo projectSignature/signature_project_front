@@ -96,7 +96,7 @@ async function cretsdts(){
    <div style="margin-right:2px;width:7rem">${newarry[i].name}</div>
    <div style="margin-right:2px;width:3rem">${newarry[i].quantity}${newarry[i].tani}</div>
    <div style="margin-right:2px;width:5rem">￥${newarry[i].cust}</div>
-   <div style="margin-right:2px;width:5rem">￥${(newarry[i].quantity-0)*(newarry[i].cust-0)}</div>
+   <div style="margin-right:2px;width:5rem">￥${((newarry[i].quantity-0)*(newarry[i].cust-0)).toFixed(0)}</div>
    </div>`
    total = total +(newarry[i].quantity-0)*(newarry[i].cust-0)
  }
