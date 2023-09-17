@@ -95,16 +95,15 @@ async function cretsdts(){
    <img src='../image/${newarry[i].categorys}.svg' class="setting-right-button"/>
    <div style="margin-right:2px;width:7rem">${newarry[i].name}</div>
    <div style="margin-right:2px;width:3rem">${newarry[i].quantity}${newarry[i].tani}</div>
-   <div style="margin-right:2px;width:5rem">￥${newarry[i].cust}</div>
-   <div style="margin-right:2px;width:5rem">￥${((newarry[i].quantity-0)*(newarry[i].cust-0)).toFixed(0)}</div>
+   <div style="margin-right:2px;width:5rem">${await kanmaReplase(newarry[i].cust)}</div>
+   <div style="margin-right:2px;width:5rem">${await kanmaReplase(((newarry[i].quantity-0)*(newarry[i].cust-0)).toFixed(0))}</div>
    </div>`
    total = total +(newarry[i].quantity-0)*(newarry[i].cust-0)
  }
     row +=`<div style="width:100%;display:flex;justify-content:center;margin-top:15px;height:3rem">
     <input type="button" value="adicionar" style="font-size:2vh;width:8rem" onclick="addnewdata()"/></div>`
   document.getElementById('creates-html').innerHTML=row
-  console.log(document.getElementById('creates-html'))
-  document.getElementById('estoquetotal').innerText=`Estoque total  ￥${(total).toFixed(0)}`
+  document.getElementById('estoquetotal').innerText=`Estoque total  ${await kanmaReplase((total).toFixed(0))}`
 }
 
 async function getnewarray(d,tp,mc){
@@ -424,7 +423,7 @@ async  function createtables(s){
              <td>${dts.clients[i].quantity}${dts.clients[i].tani}</td>
              <td>${dts.clients[i].kijun}${dts.clients[i].tani}</td>
              <td>${dts.clients[i].kijun-dts.clients[i].quantity}${dts.clients[i].tani}</td>
-             <td>￥${((dts.clients[i].kijun-dts.clients[i].quantity)*dts.clients[i].cust).toFixed(0)}</td>
+             <td>${await kanmaReplase(((dts.clients[i].kijun-dts.clients[i].quantity)*dts.clients[i].cust).toFixed(0))}</td>
              </tr>`
          }
        }
