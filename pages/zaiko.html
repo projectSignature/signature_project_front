@@ -344,10 +344,7 @@ async  function createtables(s){
       <tbody>
         <tr>
         <th>nome</th>
-        <th>Esto.</th>
-        <th>Refe.</th>
         <th>Comprar</th>
-        <th>Valor</th>
         </tr>
         ${getnewss}
       </tbody>
@@ -422,10 +419,7 @@ async  function createtables(s){
              row+=`
              <tr>
              <td>${dts.clients[i].name}</td>
-             <td>${dts.clients[i].quantity}${dts.clients[i].tani}</td>
-             <td>${dts.clients[i].kijun}${dts.clients[i].tani}</td>
              <td>${dts.clients[i].kijun-dts.clients[i].quantity}${dts.clients[i].tani}</td>
-             <td>${await kanmaReplase(((dts.clients[i].kijun-dts.clients[i].quantity)*dts.clients[i].cust).toFixed(0))}</td>
              </tr>`
          }
        }
