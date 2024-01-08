@@ -1,5 +1,6 @@
 
-let accessmainserver = 'https://squid-app-ug7x6.ondigitalocean.app'　　//メインサーバーのチェックアクセス先
+let accessmainserver = 'https://squid-app-ug7x6.ondigitalocean.app'　　//メインサーバーのチェックアクセス先]
+//let accessmainserver = 'http://localhost:3000'
 let user
 let password
 let errormessage
@@ -11,8 +12,7 @@ let workerid=sessionStorage.getItem("id")
 let menbername = sessionStorage.getItem("name")
 let language = sessionStorage.getItem("language")
 let catelength = 0
-language=0
-
+//language texts
 let text1 = ["histórico","履歴"]
 let text2 = ["gastos","経費"]
 let text3 = ["rendas","収入"]
@@ -33,11 +33,16 @@ let text17 = ["salvando",'登録中']
 let text18= ["Aguarde",'しばらくお待ちください']
 let text19=["número da notinha","レシート番号"]
 let text20=["bolsa2","バッグ2"]
+let text21=["Fornecedor","仕入先"]
+let langsName=['name_pt','name_jp']
 
 
 createSelectepaykuun()
 
 async function createSelectepaykuun(){
+  if(restid==null||workerid==null){
+      pagechange('loginadminrst')
+    }
   let row = ""
     row = await `
     <option value="1">${text9[language]}</option>
@@ -56,6 +61,7 @@ async function createSelectepaykuun(){
  document.getElementById("div3").innerText=text7[language]
  document.getElementById("input1").value=text11[language]
  document.getElementById("input2").value=text12[language]
+ document.getElementById("div4").innerText=text21[language]
 }
 //if(restid==null||workerid==null||menbername==null){
   //pagechange('loginadminrst')
@@ -63,25 +69,26 @@ async function createSelectepaykuun(){
 
 createcategorys()
 async function createcategorys(){
-    const category = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/gategorycostGet`)
+    const category = await makerequest(`${accessmainserver}/gategorycostGet`)
+    let supplieres = await makerequest(`${accessmainserver}/getsupplires`)
+    let options = ``
+    for(let i=0;i<supplieres.length;i++){
+      options += `<option value="${supplieres[i].id}">${supplieres[i][langsName[language]]}</option>`
+    }
       catelength = category.clients.length
       let name = ""
       let row = ``
       for(let i=0;i<category.clients.length;i++){
-         if(language==0){
-           name = category.clients[i].name_pt
-         }else{
-           name = category.clients[i].name_jp
-         }
          row += `
         <div class="category-select-button" id="type${i}" onclick="selectType(${i},'${category.clients[i].control_id}')">
           <img src="../image/ic${category.clients[i].icon_id}.png" width="40"/>
-          <div><span>${name}</span></div>
+          <div><span>${category.clients[i][langsName[language]]}</span></div>
         </div>`
       }
       document.getElementById('categorysdiv').innerHTML = row
+      document.getElementById('Suppliers-select').innerHTML = options
 }
-//let menbername = "Paulo Shigaki"
+
 document.getElementById('name-span').innerText = menbername
 var today = new Date();
 let yyyy = today.getFullYear();
@@ -98,21 +105,19 @@ document.getElementById('keihi-select').style = "background:#FF6928"
      proccessKubun = 1
    }else{
      pagechange(`profitfluxo`)
-     //document.getElementById('syunyu-select').style = "background:#FF6928"
-     //document.getElementById('keihi-select').style = "background:#FFFFFF"
-     //swallErrorOpen('まだ準備できていません')
-     //proccessKubun = 2
    }
 }
 
 async function savedata(data){//data is pay status 1:paid,2:yet
-if(restid==null||workerid==null||menbername==null){
+  console.log('paystart')
+if(restid==null||workerid==null){
     pagechange('loginadminrst')
   }else{
     let datainput = document.getElementById('calender-input').value
     let memo = document.getElementById('memo-pay').value
     let slectPay = document.getElementById('pay-select').value
     let valuePay = document.getElementById('value-input').value
+    let suppliere = document.getElementById('Suppliers-select').value
     if(paykubun==0){
       swallErrorOpen(text13[language])
     }else if(datainput==""){
@@ -137,13 +142,13 @@ if(restid==null||workerid==null||menbername==null){
               }
             })
 
-             let seq = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/costRestGet?id=0`)
+             let seq = await makerequest(`${accessmainserver}/costRestGet?id=0`)
              let seqs = 0
              if(seq.length!=0){
                seqs = seq[seq.length-1].seq+1
              }
 
-            let url = `https://squid-app-ug7x6.ondigitalocean.app/createCostRest`
+            let url = `${accessmainserver}/createCostRest`
             body = {
               d1:restid,
               d2:workerid,
@@ -153,16 +158,17 @@ if(restid==null||workerid==null||menbername==null){
               d6:memo,
               d7:slectPay,
               d8:data,
-              d9:seqs
+              d9:seqs,
+              d10:suppliere
             }
           const reqInsert = await makerequestStatus(url,body)
-
+          await console.log(reqInsert)
           if(reqInsert!=200){
             swallErrorOpen("Ops, houve erro")
           }else{
               document.getElementById('memo-pay').value = ""
               document.getElementById('value-input').value = ""
-              const getRestStatus = await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/restmanegerTimeGet`)
+              const getRestStatus = await makerequest(`${accessmainserver}/restmanegerTimeGet`)
                 let payinsert
                 let upvalue
                 if(slectPay==1){
@@ -175,7 +181,7 @@ if(restid==null||workerid==null||menbername==null){
                   payinsert = 1
                   upvalue = (getRestStatus[0].bank-0)-((valuePay.split('￥')[1]).replace(",","")-0)
                 }
-                  const url = 'https://squid-app-ug7x6.ondigitalocean.app/cachChangeonlykaikei';
+                  const url = `${accessmainserver}/cachChangeonlykaikei`;
                   const body = {
                     d0: payinsert,
                     d1: upvalue,
@@ -313,11 +319,6 @@ async function kanmaReplase(){
  }
    //return `￥${kanmaAns}`
 };
-
-
-
-
-
 
  function addkamoku(){
    swallErrorOpen("追加の権限がありません")
