@@ -12,6 +12,9 @@ let workerid=sessionStorage.getItem("id")
 let menbername = sessionStorage.getItem("name")
 let language = sessionStorage.getItem("language")
 let catelength = 0
+//language = 0
+//workerid=0
+//restid=0
 //language texts
 let text1 = ["histórico","履歴"]
 let text2 = ["gastos","経費"]
@@ -71,9 +74,11 @@ createcategorys()
 async function createcategorys(){
     const category = await makerequest(`${accessmainserver}/gategorycostGet`)
     let supplieres = await makerequest(`${accessmainserver}/getsupplires`)
+
+    var s = supplieres.sort(SortArray);
     let options = ``
-    for(let i=0;i<supplieres.length;i++){
-      options += `<option value="${supplieres[i].id}">${supplieres[i][langsName[language]]}</option>`
+    for(let i=0;i<s.length;i++){
+      options += `<option value="${s.id}">${s[i][langsName[language]]}</option>`
     }
       catelength = category.clients.length
       let name = ""
@@ -106,6 +111,10 @@ document.getElementById('keihi-select').style = "background:#FF6928"
    }else{
      pagechange(`profitfluxo`)
    }
+}
+
+function SortArray(x, y) {
+return x[langsName[language]].localeCompare(y[langsName[language]]);
 }
 
 async function savedata(data){//data is pay status 1:paid,2:yet
