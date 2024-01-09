@@ -1,4 +1,5 @@
 let accessmainserver = 'https://squid-app-ug7x6.ondigitalocean.app'　　//メインサーバーのチェックアクセス先
+//let accessmainserver = 'http://localhost:3000'
 
 
 let restid=sessionStorage.getItem("restid")           //レストランid
@@ -14,6 +15,9 @@ if(restid==null||workerid==null||menbername==null){
   pagechange('loginadminrst')
 }
 
+function pagechange(data){
+  window.location = `./${data}.html`;
+}
 
 //日付取得
 function gettoday(d){
@@ -83,6 +87,58 @@ function prcessnoswall(){
           Swal.showLoading();
       }
     })
+}
+
+function prcessnoswallregist(){
+  const swal =  Swal.fire({
+          icon:"info",
+          title: ltxt108[language],
+          html: ltxt82[language],
+          allowOutsideClick : false,
+          showConfirmButton: false,
+          timerProgressBar: true,
+          onBeforeOpen: () => {
+          Swal.showLoading();
+      }
+    })
+}
+
+function errorswals(d){
+  const swal =  Swal.fire({
+          icon:"info",
+          title: d,
+          allowOutsideClick : false,
+          confirButtonText:'close',
+    })
+}
+
+async function makerequestStatus(url,data){
+  const request = await fetch(url, {//pegar todos dados do table de pagamentos //n]
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: { "Content-type": "application/json; charset=UTF-8" }
+  })
+  return request.status
+}
+
+async function successsmal(){
+  const Toast = await Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 2000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener('mouseenter', Swal.stopTimer);
+      toast.addEventListener('mouseleave', Swal.resumeTimer);
+    },
+  });
+
+  await Toast.fire({
+    icon: 'success',
+    title: ltxt110[language],
+  });
+await Toast.close()
 }
 
 //翻訳テキスト//
@@ -199,3 +255,20 @@ const ltxt95 = ["Pendente","未払い"]
 const ltxt96 = ["Vendas","収入"]
 const ltxt97 = ["Despesas","支出"]
 const ltxt98 = ["Estoques","在庫"]
+const ltxt99 = ["Pagamento", "支払方法"]
+const ltxt100 = ["Alterar","修正"]
+const ltxt101 = ["fechar","閉じる"]
+const ltxt102 = ["Não é possível alterar a nota selecionada","選択された領主書は修正できません"]
+const ltxt103 = ["Cancelar","キャンセル"]
+const ltxt104 = ["Mude o campo desejado","何も変更されていません"]
+const ltxt105 = ["Valor","金額"]
+const ltxt106 =["Fornecedor","仕入先"]
+const ltxt107 = ["Anotação","メモ"]
+const ltxt108 = ["Registrando","登録中"]
+const ltxt109 = ["ops, houve erro","登録失敗しました"]
+const ltxt110 = ["Feito","完了"]
+const ltxt111 = ["Deletar","削除"]
+const ltxt112 = ["Deseja deletar a nota?","領収証を削除しますか？"]
+const ltxt113 = ["Sim","はい"]
+const ltxt114 = ["Não","いいえ"]
+const ltxt115 = ["Não é possível deletar a nota selecionada","選択された領収証は削除できません"]
