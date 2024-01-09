@@ -168,7 +168,8 @@ if(restid==null||workerid==null){
               d7:slectPay,
               d8:data,
               d9:seqs,
-              d10:suppliere
+              d10:suppliere,
+              d11:1
             }
           const reqInsert = await makerequestStatus(url,body)
           await console.log(reqInsert)
@@ -328,6 +329,11 @@ async function kanmaReplase(){
  }
    //return `￥${kanmaAns}`
 };
+
+
+
+
+
 
  function addkamoku(){
    swallErrorOpen("追加の権限がありません")
