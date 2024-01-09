@@ -41,6 +41,10 @@
      <script>
 
       let category = ``
+      let nowinf = {dt:"",kamoku:"",paykubun:"",value:"",suppliere:"",memo:"",id:""}
+      let btkubun=0
+      let supplieres
+      let langsName=['name_pt','name_jp']
      window.addEventListener("load", async (event) => {
        document.getElementById('startdt').value= await gettoday(0)
        document.getElementById('finisdt').value= await gettoday(1)
@@ -52,6 +56,7 @@
 
        async function createcategorys(){
              category = await makerequest(`${accessmainserver}/gategorycostGet`)
+            　supplieres = await makerequest(`${accessmainserver}/getsupplires`)
              let name = ""
              let row = `<option value="0">${ltxt74[language]}</option>`
              for(let i=0;i<category.clients.length;i++){
@@ -95,6 +100,7 @@
               <div class="keihi-show-history-name">${ifdata[0]}</div>
               <div class="keihi-show-history-value">${await kanmaReplase(d[i].amount)}</div>
               <div class="keihi-show-history-day">${await payinfGet(d[i].paykubun)}</div>
+              ${await getcheckeds(d[i].checked_kubun)}
            </div>
            `
          }
@@ -103,6 +109,15 @@
          document.getElementById('totalcosts').innerText =`￥${await kanmanomireplace(sumTotal)}`
          swal.close()
        }
+
+     async function getcheckeds(d){
+       if(d==0){
+         return '<img src="../image/checks.svg" width="25"/>'
+       }else{
+         return '<img src="../image/exmation.svg" width="25"/>'
+       }
+     }
+
 
       async function getname(d){
         for(let i=0;i<category.clients.length;i++){
@@ -134,10 +149,18 @@
       }
 
       async function swalldeatalShow(d){
+        btkubun=0
         prcessnoswall()
         let shdt = await makerequest(`${accessmainserver}/serchcostsidselects?id=${d}`)
         let ifdata = await getname(shdt[0].cost_id)
         let getpays = await getstatuspay(shdt[0].status)
+        nowinf.dt=shdt[0].payday
+        nowinf.kamoku=shdt[0].cost_id
+        nowinf.paykubun=shdt[0].paykubun
+        nowinf.value=await kanmaReplase((shdt[0].amount).split(".")[0])
+        nowinf.suppliere=shdt[0].suppliers_id
+        nowinf.memo=shdt[0].memo
+        nowinf.id=d
         let row =`
         <div class="swalltitle">${ltxt89[language]}:${d}</div>
         <div class="swall-displey-flex">
@@ -146,24 +169,180 @@
         </div>
         <div class="swall-displey-flex">
          <div class="titles-left">${ltxt91[language]}</div>
-         <div>${shdt[0].payday}</div>
+         <div id="paydays">${shdt[0].payday}</div>
+         <div id="calender-update" style="display:none"  class="answers-divs"><input type="date" class="calender-input" id="calender-input-updts" required/></div>
+        </div>
+        <div class="swall-displey-flex">
+         <div class="titles-left">${ltxt106[language]}</div>
+         <div id="suppliere">${await getsupplires(shdt[0].suppliers_id)}</div>
+         <div id="suppliers-update" style="display:none"  class="answers-divs"><select id="suppliere_selects"></select></div>
+        </div>
+        <div class="swall-displey-flex">
+         <div class="titles-left">${ltxt105[language]}</div>
+         <div id="nowamount">${nowinf.value}</div>
+         <div id="amount-update" style="display:none" class="answers-divs"><input placeholder="￥" type="text" class="calender-input" id="amount" oninput="kanmaReplaseupdate()"  inputmode="numeric" required/></div>
         </div>
         <div class="swall-displey-flex">
          <div class="titles-left">${ltxt92[language]}</div>
-         <div>${ifdata[0]}</div>
+         <div id="nowkamoku">${ifdata[0]}</div>
+         <div id="kamoku-update" style="display:none" class="answers-divs"><select id="kamokus"></select></div>
         </div>
         <div class="swall-displey-flex">
          <div class="titles-left">${ltxt93[language]}</div>
          <div>${shdt[0].seq}</div>
         </div>
-        <div class="margintop-divds">${await payinfGet(shdt[0].paykubun)}
-        <div>
+        <div class="swall-displey-flex">
+         <div class="titles-left">${ltxt99[language]}</div>
+         <div id="nowpays">${await payinfGet(shdt[0].paykubun)}</div>
+         <div id="pays-update" style="display:none" class="answers-divs"><select id="paysinfo"></select></div>
+        </div>
+        <div class="swall-displey-flex">
+         <div class="titles-left">${ltxt107[language]}</div>
+         <div id="memos">${nowinf.memo}</div>
+         <div id="memos-update" style="display:none" class="answers-divs"><input id="memoinfop" type="text" value="${nowinf.memo}" /></div>
+        </div>
         <div  class="margintop-divds" style="${getpays[1]}">${getpays[0]}
         </div>
-        <div class="closeSwaldivs" onclick="closeswalas()">Close</div>
+        <div class="swall-displey-flex-buttons">
+        <div id="updatesbuton" class="closeSwaldivs" style='background-color:#FF3366'onclick="updatesdata(${shdt[0].checked_kubun})">${ltxt100[language]}</div>
+        <div class="closeSwaldivs" style="background-color:#00EE00;color:black" onclick="deleteconfirm(${shdt[0].checked_kubun})">${ltxt111[language]}</div>
+        <div id="cancelsbutton" class="closeSwaldivs" onclick="closswal()">${ltxt101[language]}</div>
+        </div>
         `
-
         swallmessages(row)
+      }
+
+      function closswal(){
+        btkubun=0
+        swal.close()
+      }
+
+      async function deleteconfirm(d){
+        if(d==0){
+        errorswals(ltxt115[language])
+        }else{
+          Swal.fire({
+            icon: "info",
+            title:ltxt112[language],
+            showCancelButton:true,
+            showConfirmButton:true,
+            confirmButtonText: ltxt113[language],
+            cancelButtonText:ltxt114[language],
+            background:'#FF3300',
+            color:'white',
+            allowOutsideClick:false,
+          }).then( async result => {
+              if (result.isConfirmed) {
+            prcessnoswallregist()
+            let url = `${accessmainserver}/destroycost`
+            body = {
+              id:nowinf.id
+            }
+           const reqInsert = await makerequestStatus(url,body)
+           if(reqInsert==200){
+             successsmal()
+           }else{
+             errorswals(ltxt109[language])
+           }
+        }
+        })
+        }
+
+      }
+
+
+　　　async function getsupplires(d){
+     const resp = supplieres.filter(user => user.id === d)
+     return resp[0][langsName[language]]
+      }
+      async function updatesdata(d){
+        if(btkubun==0){
+          if(d==0){
+          errorswals(ltxt102[language])
+          }else{
+            let text8 = ["banco","銀行"]
+            let text9 = ["bolsa1","バッグ1"]
+            let text10 = ["crédito","クレジット"]
+            let text20=["bolsa2","バッグ2"]
+            //console.log(d)
+              const category = await makerequest(`${accessmainserver}/gategorycostGet`)
+              let rows=""
+              for(let i=0;i<category.clients.length;i++){
+                rows += `<option value="${category.clients[i].control_id}">${category.clients[i][langsName[language]]}</option>`
+              }
+              let suppliereOptions =""
+              for(let i=0;i<supplieres.length;i++){
+                suppliereOptions += `<option value="${supplieres[i].id}">${supplieres[i][langsName[language]]}</option>`
+              }
+              let row = `
+                <option value="1">${text9[language]}</option>
+                <option value="4">${text20[language]}</option>
+                <option value="0">${text8[language]}</option>
+                <option value="2">${text10[language]}</option>
+                `
+            let nwday = document.getElementById('paydays').innerText
+            document.getElementById('paydays').style='display:none'
+            document.getElementById('nowkamoku').style='display:none'
+            document.getElementById('nowpays').style='display:none'
+            document.getElementById('nowamount').style='display:none'
+            document.getElementById('suppliere').style='display:none'
+            document.getElementById('memos').style='display:none'
+            document.getElementById('pays-update').style='display:block'
+            document.getElementById('calender-update').style='display:block'
+            document.getElementById('kamoku-update').style='display:block'
+            document.getElementById('suppliers-update').style='display:block'
+            document.getElementById('amount-update').style='display:block'
+            document.getElementById('memos-update').style='display:block'
+            document.getElementById('calender-input-updts').value = nwday
+            document.getElementById('kamokus').innerHTML = rows
+            document.getElementById('paysinfo').innerHTML=row
+            document.getElementById('suppliere_selects').innerHTML= suppliereOptions
+            document.getElementById('amount').value = await kanmaReplase(nowinf.value)
+            document.getElementById('updatesbuton').innerText=ltxt9[language]
+            document.getElementById('cancelsbutton').innerText=ltxt103[language]
+            document.getElementById("suppliere_selects").querySelector(`option[value='${nowinf.suppliere}']`).setAttribute("selected", "selected");
+            document.getElementById("kamokus").querySelector(`option[value='${nowinf.kamoku}']`).setAttribute("selected", "selected");
+            btkubun=1
+          }
+        }else{
+          updatesrecits()
+        }
+      }
+
+      function creatsSelects(){
+
+      }
+
+      async function updatesrecits(){
+        let updt = document.getElementById('calender-input-updts').value
+        let upkamoku = document.getElementById('kamokus').value
+        let uppayinfo = document.getElementById('paysinfo').value
+        let upamount = document.getElementById('amount').value
+        let upsupplier = document.getElementById('suppliere_selects').value
+        let upmemos = document.getElementById('memoinfop').value
+        if(updt==nowinf.dt&&upkamoku==nowinf.kamoku&&uppayinfo==nowinf.paykubun&&upamount==nowinf.value
+        &&upsupplier==nowinf.suppliere&&upmemos==nowinf.memo){
+          errorswals(ltxt104[language])
+        }else{
+          prcessnoswallregist()
+          let url = `${accessmainserver}/updatecostfluxo`
+          body = {
+            d1:updt,
+            d2:(upamount.split('￥')[1]).replace(",",""),
+            d3:upkamoku,
+            d4:upmemos,
+            d5:uppayinfo,
+            d6:upsupplier,
+            id:nowinf.id
+          }
+         const reqInsert = await makerequestStatus(url,body)
+         if(reqInsert==200){
+           successsmal()
+         }else{
+           errorswals(ltxt109[language])
+         }
+          btkubun=0
+        }
       }
 
       async function  getstatuspay(d){
@@ -173,6 +352,18 @@
           return [ltxt95[language],`background-color:red;color:white`]
         }
       }
+
+      async function kanmaReplaseupdate(){
+        let data = document.getElementById('amount')
+        if(data.value.length==1&&data.value!="￥"){
+          data.value = ("￥" + data.value)
+        }else{
+         let numberAns = (data.value.slice( 1 )).replace(/[^0-9]/g, "");
+         kanmaAns = numberAns.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
+         data.value = `￥${kanmaAns}`
+       }
+         //return `￥${kanmaAns}`
+      };
 
      </script>
 </body>
