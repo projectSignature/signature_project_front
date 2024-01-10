@@ -78,7 +78,7 @@ async function createcategorys(){
     var s = supplieres.sort(SortArray);
     let options = ``
     for(let i=0;i<s.length;i++){
-      options += `<option value="${s.id}">${s[i][langsName[language]]}</option>`
+      options += `<option value="${s[i].id}">${s[i][langsName[language]]}</option>`
     }
       catelength = category.clients.length
       let name = ""
