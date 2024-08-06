@@ -2,7 +2,7 @@ let socket;
 
 
 function connectWebSocket() {
-    socket = new WebSocket('ws://localhost:3000');
+    socket = new WebSocket('ws://squid-app-ug7x6.ondigitalocean.app');
 
     socket.onopen = function(event) {
         console.log('Connected to the WebSocket server.');
@@ -56,7 +56,8 @@ function sendMessage() {
 
 // チャット履歴を読み込む処理
 function loadChatHistory() {
-    fetch('http://localhost:3000/chat/history/1')  // 自分のユーザーIDを指定
+  fetch('https://squid-app-ug7x6.ondigitalocean.app/chat/history/1')
+ // 自分のユーザーIDを指定
         .then(response => response.json())
         .then(messages => {
           console.log(messages)
@@ -67,6 +68,7 @@ function loadChatHistory() {
             });
         })
         .catch(error => {
+          console.log('kok')
             console.error('Error fetching chat history:', error);
         });
 }
