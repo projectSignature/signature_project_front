@@ -2,7 +2,7 @@ let socket;
 
 
 function connectWebSocket() {
-    socket = new WebSocket('ws://squid-app-ug7x6.ondigitalocean.app');
+    socket = new WebSocket('wss://squid-app-ug7x6.ondigitalocean.app');
 
     socket.onopen = function(event) {
         console.log('Connected to the WebSocket server.');
