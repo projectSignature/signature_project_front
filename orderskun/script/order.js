@@ -392,7 +392,8 @@ sortedData.forEach(item => {
                "Nome da comanda":"Nome da comanda",
                "Valor total":"Valor total",
                "Quantidade":"Quantidade",
-               "Valor":"Valor"
+               "Valor":"Valor",
+               "Histórico não encontrado":"Histórico não encontrado"
            },
            ja: {
                "Histórico": "履歴",
@@ -418,7 +419,8 @@ sortedData.forEach(item => {
                 "Nome da comanda":"オーダー名",
                 "Valor total":"合計金額",
                 "Quantidade":"数量",
-                "Valor":"価格"
+                "Valor":"価格",
+                "Histórico não encontrado":"履歴存在しません"
            },
            en: {
                "Histórico": "History",
@@ -444,7 +446,8 @@ sortedData.forEach(item => {
                 "Nome da comanda": "Order name",
                 "Valor total":"Total ammount",
                 "Quantidade":"Quantity",
-                "Valor":"ammount"
+                "Valor":"ammount",
+                "Histórico não encontrado":"Not exist history"
            }
        };
 
@@ -758,10 +761,10 @@ document.getElementById('view-history').addEventListener('click', () => {
               // updateActiveName(orderNameDiv);
               // closeModal(historyModal);  // モーダルを閉じる
           } else {
-              console.error('Failed to fetch order data');
+              showAlert(translations[userLanguage]["Histórico não encontrado"]);
           }
       } catch (error) {
-          console.error('Error fetching order data:', error);
+          showAlert(translations[userLanguage]["Histórico não encontrado"]);
       }
   });
 
