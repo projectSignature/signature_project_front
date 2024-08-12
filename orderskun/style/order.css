@@ -53,7 +53,7 @@ header {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    width:8rem;
+    width:9rem;
     height:3rem;
     font-size: 1.2em
 }
@@ -143,7 +143,7 @@ aside {
     margin-bottom: 15px;
     border: 1px solid #ccc; /* 境界線を追加 */
     padding: 10px; /* 内側の余白 */
-    max-height: 150px; /* 最大高さを設定してスクロールバーを表示 */
+    max-height: 160px; /* 最大高さを設定してスクロールバーを表示 */
     overflow-y: auto; /* 縦スクロールを許可 */
     background-color: #fff; /* 背景色を設定 */
 }
@@ -620,3 +620,102 @@ button + button {
 #language-switcher img{
   width:70px
 }
+
+#close-alert-btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#close-alert-btn:hover {
+    background-color: #45a049;
+}
+
+.custom-alert {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #d4edda;
+    color: #155724;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: none;
+    z-index: 1000;
+    text-align: center;
+}
+
+.custom-alert .alert-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.custom-alert .checkmark {
+    font-size: 24px;
+    color: #28a745; /* Green color */
+}
+
+.selected-category {
+    background-color: #007BFF !important;
+    color: white !important;
+    border: 2px solid #0056b3 !important;
+}
+.history-item {
+    padding: 10px;
+    margin: 5px 0;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.history-item:hover {
+    background-color: #dcdcdc;
+}
+
+#order-name-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-align: center;
+    color: #333;
+}
+
+/* 合計金額 */
+#order-total-amount {
+    font-size: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #555;
+}
+
+/* アイテムリスト */
+#order-items-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+#order-items-list li {
+    background-color: #f9f9f9;
+    margin: 10px 0;
+    padding: 15px;
+    border-radius: 5px;
+    border-left: 4px solid #007bff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#order-items-list li strong {
+    color: #333;
+}
+
+#order-items-list li p {
+  margin: 5px 0;
+ }
