@@ -18,7 +18,7 @@
                 <img src="./imagen/language-en.png" alt="English" class="language-icon" data-lang="en">
             </div>
             <div id="table-container">
-                <div>
+                <div id="div-table-btn">
                     <img src="./imagen/table-illustration.png" alt="Table" id="table-illustration">
                     <div id="table-number">1</div>
                 </div>
@@ -37,7 +37,7 @@
                 <div id="order-names-container" class="scrollable-names">
                     <!-- 名前がここに追加される -->
                 </div>
-                <button id="show-add-name-modal" data-translate-key="Abrir comanda">Abrir comanda</button>
+                <button id="show-add-name-modal" data-translate-key="Criar comanda">Criar comanda</button>
                 <h2 id="list-title-h2" data-translate-key="Lista de pedidos">Lista de pedidos</h2>
                 <ul id="selected-items">
                     <!-- 選択されたアイテムがここに表示される -->
@@ -87,6 +87,44 @@
                     <button id="save-table-number-btn" data-translate-key="Salvar">Salvar</button>
                 </div>
             </div>
+            <!-- 警告メッセージ用モーダルウィンドウ -->
+            <div id="alert-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h2 data-translate-key="Atencion">Atenção</h2>
+                    <p id="alert-message">Selecione ou abra uma comanda</p>
+                    <button id="close-alert-btn">Fechar</button>
+                </div>
+            </div>
+            <div id="custom-alert" class="custom-alert">
+              <div class="alert-content">
+                  <span class="checkmark">✓</span>
+                  <p>オーダーが確定されました。</p>
+              </div>
+          </div>
+          <!-- 履歴表示のモーダルウィンドウ -->
+<div id="history-modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3 data-translate-key="Escolha a comanda">Escolha a comanda</h3>
+        <div id="history-list">
+            <!-- ここに履歴のオーダー名を追加 -->
+        </div>
+    </div>
+</div>
+<!-- オーダー詳細を表示するためのモーダル -->
+<div id="order-details-modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="order-name-title"></h2>
+        <p id="order-total-amount"></p>
+        <ul id="order-items-list">
+            <!-- アイテム詳細がここに表示される -->
+        </ul>
+    </div>
+</div>
+
+
         </main>
     </div>
     <script src="../config.js"></script>
