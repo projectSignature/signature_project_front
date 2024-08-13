@@ -226,3 +226,10 @@ button {
     font-size: 24px;
     color: #28a745; /* Green color */
 }
+
+@media screen and (min-width: 1024px) and (max-width: 1966px) {
+  #deposit-amount{
+    width:10rem;
+    font-size: 1em
+  }
+}
