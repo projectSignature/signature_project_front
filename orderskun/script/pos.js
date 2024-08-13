@@ -226,64 +226,57 @@ async function recite() {
   const order = clients.printInfo
 
   let reciteOrders = "";
-  order.OrderItems.forEach(item => {
-    reciteOrders += `
-      <div class="items-name">[id:${item.id}] ${item.menu_id}</div>
-      <div class="details-iten">@${item.item_price} * ${item.quantity}ｺ ￥${(item.total_price - 0).toLocaleString('ja-JP')}</div>`;
-  });
+    order.OrderItems.forEach(item => {
+      reciteOrders += `
+        <div class="items-name">[id:${item.id}] ${item.menu_id}</div>
+        <div class="details-iten">@${item.item_price} * ${item.quantity}ｺ ￥${(item.total_price - 0).toLocaleString('ja-JP')}</div>`;
+    });
 
-  const currentDate = new Date().toLocaleString('ja-JP');
+    const currentDate = new Date().toLocaleString('ja-JP');
 
-  let row = `
-    <div id="contentToPrint" class="print-content">
-      <div class="img-dicvs"><img src="../imagen/logo.png" width="100" class="setting-right-button" /></div>
-      <div class="adress-div">
-        <p>Buonissimo<br>〒475-0801 <br>愛知県西尾市吉良町富好新田井戸東39<br>090-1749-2810</p>
-      </div>
-      <div class='display-center-div'>
-        <p>${currentDate} テーブル番号: ${order.table_no}</p>
-        <p>オーダー名: ${order.order_name}</p>
-      </div>
-      <div class="contents-div">
-        ${reciteOrders}
-      </div>
-      <div class="total-qt">
-        <p>御買上げ点数　　:${order.OrderItems.length}</p>
-      </div>
-      <div class="dotted-line"></div>
-      <div class="total-amount-div">
-        <div>合計</div>
-        <div>￥${(order.total_amount - 0).toLocaleString('ja-JP')}</div>
-      </div>
-      <div class="azukari-amount-div">
-        <div>お預り</div>
-        <div>￥${(document.getElementById('deposit-amount').value - 0).toLocaleString('ja-JP')}</div>
-      </div>
-      <div class="azukari-amount-div">
-        <div>お釣り</div>
-        <div>￥${(document.getElementById('change-amount').innerText - 0).toLocaleString('ja-JP')}</div>
-      </div>
-      <div class="dotted-line"></div>
-    </div>`;
+    let htmlContent = `
+      <div id="contentToPrint" class="print-content">
+        <div class="img-dicvs"><img src="../imagen/logo.png" width="100" class="setting-right-button" /></div>
+        <div class="adress-div">
+          <p>Buonissimo<br>〒475-0801 <br>愛知県西尾市吉良町富好新田井戸東39<br>090-1749-2810</p>
+        </div>
+        <div class='display-center-div'>
+          <p>${currentDate} テーブル番号: ${order.table_no}</p>
+          <p>オーダー名: ${order.order_name}</p>
+        </div>
+        <div class="contents-div">
+          ${reciteOrders}
+        </div>
+        <div class="total-qt">
+          <p>御買上げ点数　　:${order.OrderItems.length}</p>
+        </div>
+        <div class="dotted-line"></div>
+        <div class="total-amount-div">
+          <div>合計</div>
+          <div>￥${(order.total_amount - 0).toLocaleString('ja-JP')}</div>
+        </div>
+        <div class="azukari-amount-div">
+          <div>お預り</div>
+          <div>￥${(document.getElementById('deposit-amount').value - 0).toLocaleString('ja-JP')}</div>
+        </div>
+        <div class="azukari-amount-div">
+          <div>お釣り</div>
+          <div>￥${(document.getElementById('change-amount').innerText - 0).toLocaleString('ja-JP')}</div>
+        </div>
+        <div class="dotted-line"></div>
+      </div>`;
 
-  // 現在のコンテンツを保存
-  const originalContent = document.body.innerHTML;
+    // サーバーにHTMLを送信
+    const response = await fetch('http://localhost:3000/printRecite', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/html'
+      },
+      body: htmlContent
+    });
 
-  // 新しいコンテンツを挿入
-  document.body.innerHTML = row;
-
-  // 画像が正しく読み込まれるまで待機してから印刷
-  await new Promise(resolve => {
-    const img = new Image();
-    img.onload = resolve;
-    img.src = "../imagen/logo.png"; // 画像のパスを正確に指定
-  });
-
-  // 印刷
-  window.print();
-
-  // 元のコンテンツに戻す
-  document.body.innerHTML = originalContent;
+    const result = await response.text();
+    console.log(result);
 }
 
 
