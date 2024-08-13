@@ -156,17 +156,23 @@ button {
     font-family: 'Noto Sans JP', sans-serif;
 }
 
+#payment-methods {
+    display: flex;
+    justify-content: space-between; /* ボタンの間にスペースを均等に配置 */
+    flex-wrap: wrap; /* 画面に収まらない場合に折り返しを許可 */
+    gap: 10px; /* ボタンの間にスペースを追加（オプション） */
+}
+
 .payment-method {
-    padding: 12px 25px;
-    margin: 8px;
-    border: 2px solid #ddd;
-    background-color: #f7f7f7;
-    cursor: pointer;
-    border-radius: 25px;
-    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-    font-size: 30px;
-    font-weight: bold;
-    color: #555;
+    flex: 1; /* 各ボタンが等しく幅をとるように設定 */
+    min-width: 0; /* 折り返しを防ぐために最小幅を設定 */
+    padding: 10px;
+    text-align: center;
+    box-sizing: border-box; /* ボタンのパディングを含めてサイズを計算 */
+    font-size: 16px;
+}
+#tax-buttons{
+  display: flex
 }
 
 .right-panel .payment-method.selected {
