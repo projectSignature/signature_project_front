@@ -240,9 +240,10 @@ function applyTax(taxRate) {
     const taxAmount = originalAmount * (taxRate / 100);
     const totalWithTax = Math.floor(originalAmount + taxAmount);
 
-    // カンマ区切りと小数点を明確にするため、en-USのロケールを強制使用
-    const finalFormattedTotalWithTax = totalWithTax.toLocaleString('en-US');
+    // 手動でカンマ区切りを適用
+    const finalFormattedTotalWithTax = totalWithTax.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
+    // 整数値を表示
     document.getElementById('tax-included-amount').textContent = `¥${finalFormattedTotalWithTax}`;
 }
 
