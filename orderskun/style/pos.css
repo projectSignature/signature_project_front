@@ -61,7 +61,7 @@ body {
 }
 
 .left-panel {
-    width: 30%;
+    width: 20%;
     background-color: #ffffff;
     overflow-y: auto;
     border-right: 1px solid #ddd;
@@ -74,7 +74,7 @@ body {
 }
 
 .right-panel {
-    width: 40%;
+    width: 50%;
     background-color: #f8f9fa;
     border-left: 1px solid #ddd;
     display: flex;
@@ -88,7 +88,7 @@ body {
     padding: 10px;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 30px;
+    font-size: 20px;
     transition: background-color 0.3s ease;
 }
 
