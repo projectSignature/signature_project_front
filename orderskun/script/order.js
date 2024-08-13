@@ -813,7 +813,7 @@ function displayOrderDetails(orderName, items) {
         const options = JSON.parse(item.options); // オプションをパースしてオブジェクトに変換
 
         const itemElement = document.createElement('li');
-          const menuItem = MainData.menus.find(item => item.menu_id == item.menu_id);
+          const menuItem = MainData.menus.find(itemss => itemss.id == item.menu_id);
           console.log(menuItem)
         itemElement.innerHTML = `
             <strong> ${menuItem[`menu_name_${userLanguage}`]}</strong> <!-- ここでmenu_idではなく実際のメニュー名を表示するなら他の情報も必要 -->
