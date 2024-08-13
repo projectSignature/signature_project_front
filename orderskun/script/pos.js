@@ -203,32 +203,50 @@ document.addEventListener('DOMContentLoaded', function() {
     // 初期設定: ボタンのクリックイベントを追加
     document.getElementById('tax-8').addEventListener('click', function() {
         applyTax(8);
+        selectTaxButton('tax-8');
     });
 
     document.getElementById('tax-10').addEventListener('click', function() {
         applyTax(10);
+        selectTaxButton('tax-10');
     });
 });
 
 let originalAmount = null; // 元の金額を保存する変数
 
+function selectTaxButton(selectedButtonId) {
+    // すべての税ボタンから active-tax クラスを削除
+    const taxButtons = document.querySelectorAll('.tax-button');
+    taxButtons.forEach(button => {
+        button.classList.remove('active-tax');
+        console.log('Removed active-tax from', button.id); // クラス削除の確認用
+    });
+
+    // クリックされたボタンに active-tax クラスを追加
+    const selectedButton = document.getElementById(selectedButtonId);
+    selectedButton.classList.add('active-tax');
+    console.log('Added active-tax to', selectedButtonId); // クラス追加の確認用
+}
+
+// 既存の applyTax 関数
 function applyTax(taxRate) {
     const totalAmountElement = document.getElementById('total-amount');
 
-    // 初回クリック時に元の金額を保存
-    if (originalAmount === null) {
-        // 通貨記号やカンマを取り除いて元の金額を保存
+    if (!originalAmount) {
         const totalAmountText = totalAmountElement.textContent.replace(/[^\d.-]/g, '');
         originalAmount = parseFloat(totalAmountText);
     }
 
-    // 税込み価格を計算
     const taxAmount = originalAmount * (taxRate / 100);
     const totalWithTax = originalAmount + taxAmount;
 
-    // 税込み価格を表示
-    document.getElementById("tax-included-amount").textContent = totalWithTax.toLocaleString('ja-JP', { style: 'currency', currency: 'JPY' });
+    // 四捨五入を防ぎ、常に2桁の小数点を表示する
+    const formattedTotalWithTax = totalWithTax.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+    document.getElementById('tax-included-amount').textContent = `¥${formattedTotalWithTax}`;
 }
+
+
 
 // 税率が適用される前の状態に戻すためのリセット関数
 function resetOriginalAmount() {
