@@ -233,10 +233,14 @@ function applyTax(taxRate) {
     const totalAmountElement = document.getElementById('total-amount');
 
     if (!originalAmount) {
-        const totalAmountText = totalAmountElement.textContent.replace(/[^\d.-]/g, '');
-        originalAmount = Number(totalAmountText);
+        // ￥記号とカンマ、ピリオドを削除して数値に変換
+        const totalAmountText = totalAmountElement.textContent.replace(/[￥,.\s]/g, '');
+        originalAmount = parseFloat(totalAmountText);
+
+        console.log("Original Amount (after removing symbols):", originalAmount); // デバッグ用
     }
 
+    // 税額を計算
     const taxAmount = originalAmount * (taxRate / 100);
     const totalWithTax = Math.floor(originalAmount + taxAmount);
 
