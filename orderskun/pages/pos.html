@@ -36,14 +36,18 @@
         </div>
         <div class="right-panel">
     <h2>Pagamento</h2>
-    <div id="payment-summary">
-        <p>Valor: <span id="total-amount">0</span></p>
-        <p>Recebido: <input type="number" id="deposit-amount" value="0"></p>
-        <p>Troco: <span id="change-amount">0</span></p>
+    <div id="tax-buttons">
+        <button id="tax-8" class="tax-button">8%</button>
+        <button id="tax-10" class="tax-button">10%</button>
     </div>
+    <div id="payment-summary">
+    <p>Valor (Sem imposto): <span id="total-amount">0</span></p>
+    <p>Valor (Com imposto): <span id="tax-included-amount">0</span></p>
+    <p>Recebido: <input type="number" id="deposit-amount" value="0"></p>
+    <p>Troco: <span id="change-amount">0</span></p>
+</div>
 
     <div id="payment-methods">
-        <p>Select Payment Method:</p>
         <button id="cash-payment" class="payment-method">Dinheiro</button>
         <button id="credit-payment" class="payment-method">Cartão</button>
         <button id="other-payment" class="payment-method">Outors</button>
