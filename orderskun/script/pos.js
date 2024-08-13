@@ -240,11 +240,16 @@ function applyTax(taxRate) {
     const taxAmount = originalAmount * (taxRate / 100);
     const totalWithTax = originalAmount + taxAmount;
 
-    // 四捨五入を防ぎ、常に2桁の小数点を表示する
-    const formattedTotalWithTax = totalWithTax.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    // 正確な小数点以下2桁までのフォーマット
+    const formattedTotalWithTax = totalWithTax.toFixed(2);
 
-    document.getElementById('tax-included-amount').textContent = `¥${formattedTotalWithTax}`;
+    // カンマ区切りを適用し、四捨五入を防ぐ
+    const finalFormattedTotalWithTax = formattedTotalWithTax.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+    // 手動で通貨記号を追加して表示
+    document.getElementById('tax-included-amount').textContent = `¥${finalFormattedTotalWithTax}`;
 }
+
 
 
 
