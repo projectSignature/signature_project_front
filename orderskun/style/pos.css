@@ -241,3 +241,9 @@ button {
     font-size: 1em
   }
 }
+
+.active-tax {
+    background-color: #4CAF50 !important; /* 背景色を変更 */
+    color: white !important; /* テキスト色を変更 */
+    border: 2px solid #4CAF50 !important; /* ボーダーも変更 */
+}
