@@ -3,8 +3,10 @@ let clients ={
   id:1,
   language:'pt',
   paytype:'',
-  selectedOrder:""
+  selectedOrder:"",
+  printInfo:""
 }
+
 let selectedCard = null;
 
 document.addEventListener('DOMContentLoaded', async  () => {
@@ -45,6 +47,7 @@ document.addEventListener('DOMContentLoaded', async  () => {
 
     function displayOrderDetails(order) {
       console.log(order)
+      clients.printInfo = order
         orderItems.innerHTML = ''; // Clear previous items
         clients.selectedOrder = order.id
 
@@ -210,3 +213,230 @@ document.getElementById('logout-btn').addEventListener('click', () => {
     console.log('Logout button clicked');
     // Perform logout actions
 });
+
+document.getElementById('print-receipt').addEventListener('click', () => {
+  recite();
+});
+
+document.getElementById('print-receipt').addEventListener('click', () => {
+  recite();
+});
+
+async function recite() {
+  const order = clients.printInfo
+
+  let reciteOrders = "";
+  order.OrderItems.forEach(item => {
+    reciteOrders += `
+      <div class="items-name">[id:${item.id}] ${item.menu_id}</div>
+      <div class="details-iten">@${item.item_price} * ${item.quantity}ｺ ￥${(item.total_price - 0).toLocaleString('ja-JP')}</div>`;
+  });
+
+  const currentDate = new Date().toLocaleString('ja-JP');
+
+  let row = `
+    <div id="contentToPrint" class="print-content">
+      <div class="img-dicvs"><img src="../imagen/logo.png" width="100" class="setting-right-button" /></div>
+      <div class="adress-div">
+        <p>Buonissimo<br>〒475-0801 <br>愛知県西尾市吉良町富好新田井戸東39<br>090-1749-2810</p>
+      </div>
+      <div class='display-center-div'>
+        <p>${currentDate} テーブル番号: ${order.table_no}</p>
+        <p>オーダー名: ${order.order_name}</p>
+      </div>
+      <div class="contents-div">
+        ${reciteOrders}
+      </div>
+      <div class="total-qt">
+        <p>御買上げ点数　　:${order.OrderItems.length}</p>
+      </div>
+      <div class="dotted-line"></div>
+      <div class="total-amount-div">
+        <div>合計</div>
+        <div>￥${(order.total_amount - 0).toLocaleString('ja-JP')}</div>
+      </div>
+      <div class="azukari-amount-div">
+        <div>お預り</div>
+        <div>￥${(document.getElementById('deposit-amount').value - 0).toLocaleString('ja-JP')}</div>
+      </div>
+      <div class="azukari-amount-div">
+        <div>お釣り</div>
+        <div>￥${(document.getElementById('change-amount').innerText - 0).toLocaleString('ja-JP')}</div>
+      </div>
+      <div class="dotted-line"></div>
+    </div>`;
+
+  // 現在のコンテンツを保存
+  const originalContent = document.body.innerHTML;
+
+  // 新しいコンテンツを挿入
+  document.body.innerHTML = row;
+
+  // 画像が正しく読み込まれるまで待機してから印刷
+  await new Promise(resolve => {
+    const img = new Image();
+    img.onload = resolve;
+    img.src = "../imagen/logo.png"; // 画像のパスを正確に指定
+  });
+
+  // 印刷
+  window.print();
+
+  // 元のコンテンツに戻す
+  document.body.innerHTML = originalContent;
+}
+
+
+
+
+// let trcs = document.getElementById('troco').value;
+// let pgs = document.getElementById('pagoss').value;
+// aftTroco =parseFloat(trcs.replace(/[^\d.-]/g, ''))
+//
+// if (aftTroco >= 0) {
+// let localInfo = JSON.parse(localStorage.getItem("productsDetails"));
+// const totalQuantidade = localInfo.reduce((accumulator, currentItem) => {
+// return accumulator + currentItem.Quantidade;
+// }, 0);
+//
+// let reciteOrders = "";
+// for (let i = 0; i < localInfo.length; i++) {
+//   reciteOrders += `<div class="items-name">[id:${localInfo[i].id}]  ${localInfo[i].Item}</div>
+//     <div class="details-iten">@${localInfo[i].Preco}  *  ${localInfo[i].Quantidade}ｺ　  ￥${(localInfo[i].Total-0).toLocaleString('ja-JP')}</div>`;
+// }
+//
+// let row = `<div id="contentToPrint" class="print-content">
+//   <div class="img-dicvs"><img src="../img/logo.png" width="100" class="setting-right-button" /></div>
+//   <div class="adress-div">
+//     <p>Roots Grill <br>〒475-0801 <br>愛知県碧南市相生町4-13 102号室<br>070-9166-0218</p>
+//   </div>
+//   <div class='display-center-div'>
+//     <p>${await getCurrentDateTime()} ${nb.split('_')[0]}</p>
+//   </div>
+//   <div class="contents-div">
+//     ${reciteOrders}
+//   </div>
+//   <div class="total-qt">
+//     <p>御買上げ点数　　:${totalQuantidade}</p>
+//   </div>
+//   <div class="dotted-line"></div>
+//   <div class="total-amount-div">
+//     <div>合計</div>
+//     <div>${reciteAmount}</div>
+//   </div>
+//   <div class="azukari-amount-div">
+//     <div>お預り</div>
+//     <div>￥${(pgs-0).toLocaleString('ja-JP')}</div>
+//   </div>
+//   <div class="azukari-amount-div">
+//     <div>お釣り</div>
+//     <div>${trcs}</div>
+//   </div>
+//   <div class="dotted-line"></div>
+// </div>`;
+//
+//
+// //var printWindow = window.open('', '_blank');
+//
+// // 新しいウィンドウにコンテンツを書き込む
+// document.write(
+//  `
+//   <html>
+//   <head>
+//     <title id="title-print"></title>
+//     <style>
+//     @media print {
+//       #body-testes {
+//         width:80mm;
+//         height:100mm !important;
+//         margin: 0; /* マージンをゼロに設定 */
+//         padding: 0; /* パディングをゼロに設定 */;
+//
+//         overflow:hiden;
+//         background-color:red !important
+//       }
+//       .adress-div {
+//         width: 100%;
+//         height: 7rem;
+//         background-color: black;
+//         -webkit-print-color-adjust: exact;
+//         color: white;
+//       }
+//       .img-dicvs {
+//         display: flex;
+//         justify-content: center;
+//       }
+//       .display-center-div {
+//         display: flex;
+//         justify-content: center;
+//       }
+//       .contents-div {
+//         width: 100%;
+//       }
+//       .items-name {
+//         text-align: left;
+//       }
+//       .details-iten {
+//         width: 80%;
+//         text-align: right;
+//         margin-right: 1rem;
+//       }
+//       .dotted-line::before {
+//         content: '';
+//         display: block;
+//         width: 100%;
+//         height: 1px;
+//         background-color: black;
+//         background-image: repeating-linear-gradient(90deg, black, black 2px, transparent 2px, transparent 4px);
+//         -webkit-print-color-adjust: exact;
+//       }
+//       .total-amount-div {
+//         width: 100%;
+//         display: flex;
+//         justify-content: space-between;
+//         font-size: 3vh;
+//       }
+//       .azukari-amount-div {
+//         width: 100%;
+//         display: flex;
+//         justify-content: space-between;
+//       }
+//       .total-qt{
+//         margin-top:1rem
+//       }
+//     }
+//     </style>
+//   </head>
+//   <body id="body-testes">
+//     ${row}
+//   </body>
+//   </html>
+// `
+// );
+//
+// //  画像が正しく読み込まれるまで待機
+// await new Promise(resolve => {
+//   var img = new Image();
+//   img.onload = resolve;
+//   img.src = "../img/logo.png"; // 画像のパスを正確に指定
+// });
+//
+//
+// window.print();
+// payed(nb.split("_")[0])
+// document.location.reload();
+// // htmls= `<div>省略</div>`
+//
+// //   let url = `http://localhost:3089/printsdata`
+// //   body = {
+// //     dt:htmls,
+// //     // status:1
+// //   }
+// // const reqInsert = await makerequestStatus(url,body)
+// // //await console.log(reqInsert.status)
+// // if(reqInsert.status==200){
+// //   await   window.location.reload();
+// // }
+// }
+
+// }
