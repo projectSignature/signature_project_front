@@ -68,13 +68,13 @@ body {
 }
 
 .center-panel {
-    width: 40%;
+    width: 30%;
     background-color: #ffffff;
     overflow-y: auto;
 }
 
 .right-panel {
-    width: 30%;
+    width: 40%;
     background-color: #f8f9fa;
     border-left: 1px solid #ddd;
     display: flex;
@@ -88,6 +88,7 @@ body {
     padding: 10px;
     border-radius: 5px;
     cursor: pointer;
+    font-size: 30px;
     transition: background-color 0.3s ease;
 }
 
@@ -107,6 +108,7 @@ button {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-size: 30px
 }
 
 #confirm-payment {
@@ -162,7 +164,7 @@ button {
     cursor: pointer;
     border-radius: 25px;
     transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-    font-size: 16px;
+    font-size: 30px;
     font-weight: bold;
     color: #555;
 }
@@ -196,7 +198,7 @@ button {
 
 
 #deposit-amount{
-  width:8rem !important;
+  width:10rem !important;
   font-size: 1em
 }
 
@@ -227,4 +229,9 @@ button {
     color: #28a745; /* Green color */
 }
 
-
+@media screen and (min-width: 1024px) and (max-width: 1966px) {
+  #deposit-amount{
+    width:10rem;
+    font-size: 1em
+  }
+}
