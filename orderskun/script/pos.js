@@ -237,14 +237,12 @@ function applyTax(taxRate) {
         originalAmount = parseFloat(totalAmountText);
     }
 
+    // 税込み金額を計算（四捨五入しないように処理）
     const taxAmount = originalAmount * (taxRate / 100);
-    const totalWithTax = originalAmount + taxAmount;
+    const totalWithTax = (Math.round((originalAmount + taxAmount) * 100) / 100).toFixed(2);
 
-    // 正確な小数点以下2桁までのフォーマット
-    const formattedTotalWithTax = totalWithTax.toFixed(2);
-
-    // カンマ区切りを適用し、四捨五入を防ぐ
-    const finalFormattedTotalWithTax = formattedTotalWithTax.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    // カンマ区切りを適用
+    const finalFormattedTotalWithTax = totalWithTax.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
     // 手動で通貨記号を追加して表示
     document.getElementById('tax-included-amount').textContent = `¥${finalFormattedTotalWithTax}`;
