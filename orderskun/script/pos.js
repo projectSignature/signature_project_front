@@ -234,21 +234,18 @@ function applyTax(taxRate) {
 
     if (!originalAmount) {
         const totalAmountText = totalAmountElement.textContent.replace(/[^\d.-]/g, '');
-        originalAmount = parseFloat(totalAmountText);
+        originalAmount = Number(totalAmountText);
     }
 
-    // 1. 元の金額に税率を掛けて税額を計算
     const taxAmount = originalAmount * (taxRate / 100);
-
-    // 2. 税込み金額を計算し、小数点以下を切り捨てる
     const totalWithTax = Math.floor(originalAmount + taxAmount);
 
-    // 3. カンマ区切りを適用
-    const finalFormattedTotalWithTax = totalWithTax.toLocaleString('ja-JP');
+    // カンマ区切りと小数点を明確にするため、en-USのロケールを強制使用
+    const finalFormattedTotalWithTax = totalWithTax.toLocaleString('en-US');
 
-    // 4. 整数値を表示
     document.getElementById('tax-included-amount').textContent = `¥${finalFormattedTotalWithTax}`;
 }
+
 
 
 
