@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', async  () => {
 
     function updateChange() {
         let deposit = parseInt(depositAmountElement.value) || 0;
-        let total = parseInt(totalAmountElement.textContent.replace(/[^\d]/g, '')) || 0;;
+        let total = parseInt(document.getElementById("tax-included-amount").textContent.replace(/[^\d]/g, '')) || 0;;
         let change = deposit - total;
         changeAmountElement.textContent = change >= 0 ? change : 0;
     }
@@ -82,7 +82,8 @@ document.addEventListener('DOMContentLoaded', async  () => {
         alert('Seleciona uma comanda');
         return;
     }
-
+     console.log('clients:')
+     console.log(clients)
     // Update the order in the database
     try {
         const response = await fetch(`${server}/orders/updatePayment`, {
@@ -135,6 +136,7 @@ function clearOrderDetails() {
     document.getElementById('total-amount').textContent = '0';
     document.getElementById('deposit-amount').value = '0';
     document.getElementById('change-amount').textContent = '0';
+    document.getElementById('tax-included-amount').textContent = '0'
     clients.paytype = '';  // Reset the payment method
     selectedOrder = null;  // Reset the selected order
     clients.selectedOrder =""
@@ -196,6 +198,47 @@ async function fetchPendingOrders() {
         return null;
     }
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    // 初期設定: ボタンのクリックイベントを追加
+    document.getElementById('tax-8').addEventListener('click', function() {
+        applyTax(8);
+    });
+
+    document.getElementById('tax-10').addEventListener('click', function() {
+        applyTax(10);
+    });
+});
+
+let originalAmount = null; // 元の金額を保存する変数
+
+function applyTax(taxRate) {
+    const totalAmountElement = document.getElementById('total-amount');
+
+    // 初回クリック時に元の金額を保存
+    if (originalAmount === null) {
+        // 通貨記号やカンマを取り除いて元の金額を保存
+        const totalAmountText = totalAmountElement.textContent.replace(/[^\d.-]/g, '');
+        originalAmount = parseFloat(totalAmountText);
+    }
+
+    // 税込み価格を計算
+    const taxAmount = originalAmount * (taxRate / 100);
+    const totalWithTax = originalAmount + taxAmount;
+
+    // 税込み価格を表示
+    document.getElementById("tax-included-amount").textContent = totalWithTax.toLocaleString('ja-JP', { style: 'currency', currency: 'JPY' });
+}
+
+// 税率が適用される前の状態に戻すためのリセット関数
+function resetOriginalAmount() {
+    const totalAmountElement = document.getElementById('total-amount');
+    totalAmountElement.textContent = originalAmount.toLocaleString('ja-JP', { style: 'currency', currency: 'JPY' });
+    originalAmount = null; // 初期化
+}
+
+
+
 
 
 document.getElementById('menu-btn').addEventListener('click', () => {
