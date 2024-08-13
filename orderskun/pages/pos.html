@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cash Register</title>
+    <link rel="stylesheet" href="../style/pos.css"> <!-- Link to your stylesheet -->
+</head>
+<body>
+    <header class="header">
+      <div class="logo-container">
+  <div class="logo-text">
+      <span class="orders-text">Orders</span>
+      <span class="kun-text">君</span>
+  </div>
+</div>
+
+        <div class="header-buttons">
+            <button class="header-btn" id="menu-btn">Menu</button>
+            <button class="header-btn" id="history-btn">Histórico</button>
+            <button class="header-btn" id="logout-btn">Logout</button>
+        </div>
+    </header>
+    <div class="container">
+        <div class="left-panel">
+            <h2>Comandas não pagas</h2>
+            <div id="orders-list">
+                <!-- Cards with pending orders will be generated here -->
+            </div>
+        </div>
+        <div class="center-panel">
+            <h2>Detalhes da comanda</h2>
+            <ul id="order-items">
+                <!-- Order items will be listed here -->
+            </ul>
+        </div>
+        <div class="right-panel">
+    <h2>Pagamento</h2>
+    <div id="payment-summary">
+        <p>Valor: <span id="total-amount">0</span></p>
+        <p>Recebido: <input type="number" id="deposit-amount" value="0"></p>
+        <p>Troco: <span id="change-amount">0</span></p>
+    </div>
+
+    <div id="payment-methods">
+        <p>Select Payment Method:</p>
+        <button id="cash-payment" class="payment-method">Dinheiro</button>
+        <button id="credit-payment" class="payment-method">Cartão</button>
+        <button id="other-payment" class="payment-method">Outors</button>
+    </div>
+
+    <button id="print-receipt">Print Receipt</button>
+    <button id="print-invoice">Print Ryosyusho</button>
+    <button id="confirm-payment">Confirmar pagamento</button>
+</div>
+<div id="custom-alert" class="custom-alert">
+  <div class="alert-content">
+      <span class="checkmark">✓</span>
+      <p>オーダーが確定されました。</p>
+  </div>
+</div>
+
+    </div>
+    <script src="../../config.js"></script>
+    <script src="../script/pos.js"></script> <!-- Link to your JavaScript file -->
+    <script src="../script/common.js"></script>
+</body>
+</html>
