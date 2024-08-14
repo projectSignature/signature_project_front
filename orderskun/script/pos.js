@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', async  () => {
               console.log(item)
               console.log(menuGt)
             let li = document.createElement('li');
-            li.textContent = `${menuGt[0].menu_name_pt} x${item.quantity} - ¥${item.item_price * item.quantity}`;
+            li.textContent = `${menuGt[0].menu_name_pt} x${item.quantity} - ¥${item.item_price}`;
             orderItems.appendChild(li);
         });
 
