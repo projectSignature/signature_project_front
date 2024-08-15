@@ -255,6 +255,12 @@ function applyTax(taxRate) {
 
 
 
+
+
+
+
+
+
 // 税率が適用される前の状態に戻すためのリセット関数
 function resetOriginalAmount() {
     const totalAmountElement = document.getElementById('total-amount');
@@ -282,69 +288,24 @@ document.getElementById('logout-btn').addEventListener('click', () => {
     // Perform logout actions
 });
 
-document.getElementById('print-receipt').addEventListener('click', () => {
-  recite();
-});
+
 
 document.getElementById('print-receipt').addEventListener('click', () => {
+  console.log('kokokni')
   recite();
 });
 
 async function recite() {
   const order = clients.printInfo
-
-  let reciteOrders = "";
-    order.OrderItems.forEach(item => {
-      reciteOrders += `
-        <div class="items-name">[id:${item.id}] ${item.menu_id}</div>
-        <div class="details-iten">@${item.item_price} * ${item.quantity}ｺ ￥${(item.total_price - 0).toLocaleString('ja-JP')}</div>`;
-    });
-
-    const currentDate = new Date().toLocaleString('ja-JP');
-
-    let htmlContent = `
-      <div id="contentToPrint" class="print-content">
-        <div class="img-dicvs"><img src="../imagen/logo.png" width="100" class="setting-right-button" /></div>
-        <div class="adress-div">
-          <p>Buonissimo<br>〒475-0801 <br>愛知県西尾市吉良町富好新田井戸東39<br>090-1749-2810</p>
-        </div>
-        <div class='display-center-div'>
-          <p>${currentDate} テーブル番号: ${order.table_no}</p>
-          <p>オーダー名: ${order.order_name}</p>
-        </div>
-        <div class="contents-div">
-          ${reciteOrders}
-        </div>
-        <div class="total-qt">
-          <p>御買上げ点数　　:${order.OrderItems.length}</p>
-        </div>
-        <div class="dotted-line"></div>
-        <div class="total-amount-div">
-          <div>合計</div>
-          <div>￥${(order.total_amount - 0).toLocaleString('ja-JP')}</div>
-        </div>
-        <div class="azukari-amount-div">
-          <div>お預り</div>
-          <div>￥${(document.getElementById('deposit-amount').value - 0).toLocaleString('ja-JP')}</div>
-        </div>
-        <div class="azukari-amount-div">
-          <div>お釣り</div>
-          <div>￥${(document.getElementById('change-amount').innerText - 0).toLocaleString('ja-JP')}</div>
-        </div>
-        <div class="dotted-line"></div>
-      </div>`;
-
-    // サーバーにHTMLを送信
-    const response = await fetch('http://localhost:3000/printRecite', {
+  const response = await fetch(`${server}/orders/PrintRecite`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'text/html'
+          'Content-Type': 'application/json'
       },
-      body: htmlContent
-    });
-
-    const result = await response.text();
-    console.log(result);
+      body: JSON.stringify({
+          order
+      })
+  });
 }
 
 
