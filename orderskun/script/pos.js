@@ -342,7 +342,7 @@ async function recite() {
      alert("Selecione o imposto")
      return
    }
-   if(order.depositAmount===""){
+   if(order.depositAmount===""||order.depositAmount-0===0){
      alert("Insira o vlor recebido")
      return
    }
