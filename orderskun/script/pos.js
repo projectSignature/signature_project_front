@@ -70,6 +70,11 @@ document.addEventListener('DOMContentLoaded', async  () => {
     depositAmountElement.addEventListener('input', updateChange);
 
     function updateChange() {
+      if(clients.taxtType===""){
+        depositAmountElement.value=0
+        alert('Selecione o imposto primeiro')
+        return
+      }
         let deposit = parseInt(depositAmountElement.value) || 0;
         let total = parseInt(document.getElementById("tax-included-amount").textContent.replace(/[^\d]/g, '')) || 0;;
         let change = deposit - total;
