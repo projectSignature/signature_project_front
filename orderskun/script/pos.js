@@ -83,8 +83,26 @@ document.addEventListener('DOMContentLoaded', async  () => {
         alert('Seleciona uma comanda');
         return;
     }
-     console.log('clients:')
-     console.log(clients)
+    if(clients.taxtType===""){
+      alert("Selecione o imposto")
+      return
+    }
+    if(clients.depositAmount===""){
+      alert("Insira o vlor recebido")
+      return
+    }
+    if(clients.paytype===""){
+      alert("Selecione a forma de pagamento")
+      return
+    }
+    if(document.getElementById('deposit-amount').value===""||document.getElementById('deposit-amount').value-0===0){
+      alert("Insira o valor recebido")
+      return
+    }
+
+    console.log(clients)
+    console.log(document.getElementById('deposit-amount').value)
+
     // Update the order in the database
     try {
         const response = await fetch(`${server}/orders/updatePayment`, {
@@ -139,9 +157,12 @@ function clearOrderDetails() {
     document.getElementById('change-amount').textContent = '0';
     document.getElementById('tax-included-amount').textContent = '0'
     clients.paytype = '';  // Reset the payment method
+    clients.depositAmount=""
     selectedOrder = null;  // Reset the selected order
     clients.selectedOrder =""
+    clients.taxtType=""
 }
+
 
 
     const cashPaymentButton = document.getElementById('cash-payment');
@@ -317,12 +338,12 @@ async function recite() {
    // order オブジェクトをコンソールに表示
    console.log(order);
 
-   if(order.taxtTypes===""){
-     Alert("Selecione o imposto")
+   if(clients.taxtTypes===""){
+     alert("Selecione o imposto")
      return
    }
    if(order.depositAmount===""){
-     Alert("Insira o vlor recebido")
+     alert("Insira o vlor recebido")
      return
    }
 
