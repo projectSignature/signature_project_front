@@ -71,14 +71,14 @@ document.addEventListener('DOMContentLoaded', async  () => {
 
     function updateChange() {
       if(clients.taxtType===""){
-        depositAmountElement.value=0
-        alert('Selecione o imposto primeiro')
-        return
-      }
+
+      }else{
         let deposit = parseInt(depositAmountElement.value) || 0;
         let total = parseInt(document.getElementById("tax-included-amount").textContent.replace(/[^\d]/g, '')) || 0;;
         let change = deposit - total;
         changeAmountElement.textContent = change >= 0 ? change : 0;
+      }
+
     }
 
     // Confirm Payment Button Logic
@@ -225,6 +225,10 @@ async function fetchPendingOrders() {
         return null;
     }
 }
+// let totalAmountElement = document.getElementById('total-amount');
+// let depositAmountElement = document.getElementById('deposit-amount');
+// let changeAmountElement = document.getElementById('change-amount');
+
 
 document.addEventListener('DOMContentLoaded', function() {
     // 初期設定: ボタンのクリックイベントを追加
@@ -232,12 +236,22 @@ document.addEventListener('DOMContentLoaded', function() {
         applyTax(8);
         selectTaxButton('tax-8');
         clients.taxtType=8
+        let deposit = document.getElementById('deposit-amount').value;
+        let total = parseInt(document.getElementById("tax-included-amount").textContent.replace(/[^\d]/g, '')) || 0;;
+        let change = deposit - total;
+        console.log(change)
+        document.getElementById('change-amount').textContent = change >= 0 ? change : 0;
     });
 
     document.getElementById('tax-10').addEventListener('click', function() {
         applyTax(10);
         selectTaxButton('tax-10');
         clients.taxtType=10
+        let deposit = document.getElementById('deposit-amount').value;
+        let total = parseInt(document.getElementById("tax-included-amount").textContent.replace(/[^\d]/g, '')) || 0;;
+        let change = deposit - total;
+        console.log(change)
+        document.getElementById('change-amount').textContent = change >= 0 ? change : 0;
     });
 });
 
