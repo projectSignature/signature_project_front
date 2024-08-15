@@ -4,7 +4,8 @@ let clients ={
   language:'pt',
   paytype:'',
   selectedOrder:"",
-  printInfo:""
+  printInfo:"",
+  taxtType:""
 }
 
 let selectedCard = null;
@@ -204,11 +205,13 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('tax-8').addEventListener('click', function() {
         applyTax(8);
         selectTaxButton('tax-8');
+        clients.taxtType=8
     });
 
     document.getElementById('tax-10').addEventListener('click', function() {
         applyTax(10);
         selectTaxButton('tax-10');
+        clients.taxtType=10
     });
 });
 
@@ -296,16 +299,46 @@ document.getElementById('print-receipt').addEventListener('click', () => {
 });
 
 async function recite() {
-  const order = clients.printInfo
-  const response = await fetch(`http://localhost:3000/orders/PrintRecite`, {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-          order
-      })
-  });
+  try{
+    const order = clients.printInfo
+    // const order = clients.printInfo || {};
+     console.log(order);
+   // お預かり金額とお釣りの設定
+   order.depositAmount = document.getElementById('deposit-amount').value;
+   order.changeAmount = document.getElementById('change-amount').textContent;
+
+   // 税率の設定
+   // const selectedTaxButton = document.querySelector('.tax-button.active-tax');
+   //     return selectedTaxButton ? selectedTaxButton.textContent : '未選択';
+
+   // 税込み価格の設定
+   order.taxIncludedAmount = document.getElementById('tax-included-amount').textContent;
+   order.taxtTypes = clients.taxtType
+   // order オブジェクトをコンソールに表示
+   console.log(order);
+
+   if(order.taxtTypes===""){
+     Alert("Selecione o imposto")
+     return
+   }
+   if(order.depositAmount===""){
+     Alert("Insira o vlor recebido")
+     return
+   }
+
+    const response = await fetch(`http://localhost:3000/orders/PrintRecite`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            order
+        })
+    });
+  }catch(e){
+    console.log(e)
+  }
+
 }
 
 
