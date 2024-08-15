@@ -297,7 +297,7 @@ document.getElementById('print-receipt').addEventListener('click', () => {
 
 async function recite() {
   const order = clients.printInfo
-  const response = await fetch(`${server}/orders/PrintRecite`, {
+  const response = await fetch(`http'//localhost:3000/orders/PrintRecite`, {
       method: 'POST',
       headers: {
           'Content-Type': 'application/json'
