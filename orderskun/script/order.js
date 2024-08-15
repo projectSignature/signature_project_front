@@ -3,7 +3,6 @@ let orderList = {
   tableNo:1,
   clienId:1,
   order:{
-
   }
 }
 
@@ -13,9 +12,28 @@ let categories = []; // カテゴリ情報を保存する配列
 document.addEventListener("DOMContentLoaded", async () => {
   console.log(server)
 
+  let tableNumber = localStorage.getItem('tableNumber');
+  console.log(tableNumber)
+    // テーブル番号が存在しない場合はデフォルト値を1に設定
+    if (!tableNumber) {
+      console.log('kokoni hairu')
+        tableNumber = 1;
+        orderList.tableNo = 1
+        localStorage.setItem('tableNumber', tableNumber);
+    }else{
+      orderList.tableNo = tableNumber
+    }
+
+    console.log(document.getElementById('new-table-number').value)
+
+    document.getElementById('table-number').textContent =  orderList.tableNo
+    console.log(document.getElementById('new-table-number').value)
+
+    console.log(`Current table number: ${tableNumber}`);
+
+
   const MainData = await makerequest(`${server}/orders/getBasedata?user_id=1`)
   MainData.categories.sort((a, b) => a.display_order - b.display_order);
-  console.log(MainData)
     const orderCategories = document.getElementById('order-categories');
     const menuItemsContainer = document.getElementById('menu-items');
     const selectedItemsContainer = document.getElementById('selected-items');
@@ -74,7 +92,7 @@ sortedData.forEach(item => {
     } else {
         div.innerHTML = `<img src="./imagen/${item.menu_name_pt}" alt="${item.menu_name_pt}">
                          <h3 data-id="${item.id}">${item[`menu_name_${userLanguage}`]}</h3>
-                         <p>￥${Math.floor(item.price)}</p>`;
+                         <p>￥${Math.floor(item.price).toLocaleString()}</p>`;
         div.addEventListener('click', () => {
           if (!selectedName) {
               showAlert(translations[userLanguage]["selecione uma comanda"]);
@@ -107,7 +125,7 @@ sortedData.forEach(item => {
                     <p>${translations[userLanguage]["option"]}:</p>
                     <div id="options-list" class="options-list">
                         ${sortedOptions.map(opt => `
-                            <div class="option-item" data-price="${opt.additional_price}">
+                            <div class="option-item" data-id="${opt.id}" data-price="${opt.additional_price}">
                                 <span class="option-name">${opt[`option_name_${userLanguage}`]}</span>
                                 <span class="option-price">+￥${Math.floor(opt.additional_price)}</span>
                             </div>
@@ -171,7 +189,7 @@ sortedData.forEach(item => {
 
             const selectedOptions = [];
             document.querySelectorAll('.option-item.selected').forEach(optionDiv => {
-                const optionId = optionDiv.getAttribute('data-price');
+                const optionId = optionDiv.getAttribute('data-id');
                 const additionalPrice = parseFloat(optionDiv.getAttribute('data-price'));
                 selectedOptions.push({
                     id: optionId,
@@ -214,13 +232,20 @@ sortedData.forEach(item => {
             displayOrderForName(selectedName)
         } else {
             // 存在しない場合は新しいアイテムを追加
+            console.log(MainData.categories)
+            console.log(item.id)
+            const getIP = MainData.categories
+                .filter(items => items.id === item.category_id)
+                console.log(getIP)
+             console.log(getIP.printer_ip)
             let newItem = {
                 id: item.id,
                 name: item[`menu_name_${userLanguage}`],
                 amount: totalPrice,
                 category: item.category_id,
                 quantity: quantity,
-                options: selectedOptions
+                options: selectedOptions,
+                printer:getIP[0].printer_ip
             };
             orderList.order[selectedName].push(newItem);
             displayOrderForName(selectedName)
@@ -596,6 +621,7 @@ document.getElementById('confirm-order').addEventListener('click', async () => {
       }
       // orderList.clienId = 1
       // orderList.tableNo = 11
+      console.log(orderList.order[selectedName])
         const response = await fetch(`${server}/orders/confirm`, {
             method: 'POST',
             headers: {
@@ -604,7 +630,7 @@ document.getElementById('confirm-order').addEventListener('click', async () => {
             body: JSON.stringify({ order_name:selectedName,user_id:orderList.clienId,table_no:orderList.tableNo,items: orderList.order[selectedName] })
         });
         if (response.ok) {
-            console.log('Current Orders:', currentOrder);
+
             // オーダーが確定された場合に呼び出す
             showCustomAlert(translations[userLanguage]["Pedido feito"]);
           orderList.order[selectedName] = [];
@@ -662,6 +688,7 @@ document.getElementById('save-table-number-btn').addEventListener('click', () =>
     orderList.tableNo = newTableNumber
     if (newTableNumber) {
         document.getElementById('table-number').textContent = newTableNumber;
+        localStorage.setItem('tableNumber', newTableNumber);
         document.getElementById('table-number-modal').style.display = 'none';
     } else {
         alert('Por favor, insira um número de mesa válido.');
@@ -753,7 +780,7 @@ document.getElementById('view-history').addEventListener('click', () => {
           console.log(response)
 
 
-          if (response.ok) {
+          if (response.status===200) {
               const orderData = await response.json();
               console.log(orderData)
               displayOrderDetails(orderData.order_name,orderData.OrderItems)
@@ -802,8 +829,9 @@ function displayOrderDetails(orderName, items) {
 
     // モーダルのタイトルと合計金額を設定
     orderNameTitle.textContent = `${translations[userLanguage]["Nome da comanda"]}： ${orderName}`;
-    const totalAmount = items.reduce((sum, item) => sum + parseFloat(item.total_price), 0);
-    orderTotalAmount.textContent = `${translations[userLanguage]["Valor total"]}： ￥${totalAmount}`;
+    console.log(items)
+    const totalAmount = items.reduce((sum, item) => sum + parseFloat(item.item_price), 0);
+    orderTotalAmount.textContent = `${translations[userLanguage]["Valor total"]}： ￥${totalAmount.toLocaleString()}`;
 
     // アイテムリストをクリア
     orderItemsList.innerHTML = '';
@@ -811,24 +839,36 @@ function displayOrderDetails(orderName, items) {
     // 各アイテムをリストに追加
     items.forEach(item => {
         const options = JSON.parse(item.options); // オプションをパースしてオブジェクトに変換
+        const menuItem = MainData.menus.find(itemss => itemss.id == item.menu_id);
+
+        const optionNames = options.map(opt => {
+            const optionDetail = MainData.options.find(optionItem => optionItem.id == opt.id);
+            return optionDetail ? optionDetail[`option_name_${userLanguage}`] : '不明なオプション';
+        }).join(', ');
 
         const itemElement = document.createElement('li');
-          const menuItem = MainData.menus.find(itemss => itemss.id == item.menu_id);
-          console.log(menuItem)
         itemElement.innerHTML = `
-            <strong> ${menuItem[`menu_name_${userLanguage}`]}</strong> <!-- ここでmenu_idではなく実際のメニュー名を表示するなら他の情報も必要 -->
+            <strong> ${menuItem[`menu_name_${userLanguage}`]}</strong>
             <br>
             <strong>${translations[userLanguage]["Quantidade"]}:</strong> ${item.quantity}
             <br>
-            <strong>${translations[userLanguage]["option"]}:</strong> ${options.length ? options.map(opt => opt.option_name).join(', ') : 'なし'}
+            <strong>${translations[userLanguage]["option"]}:</strong>
+            <div class="option-container">
+                ${options.length ? optionNames : 'なし'}
+            </div>
             <br>
-            <strong>${translations[userLanguage]["Valor"]}:</strong> ￥${item.item_price}
+            <strong>${translations[userLanguage]["Valor"]}:</strong> ${formatPrice(item.item_price)}
         `;
         orderItemsList.appendChild(itemElement);
     });
 
+
     // モーダルを表示
     modal.style.display = 'block';
+}
+
+function formatPrice(price) {
+    return new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY' }).format(price);
 }
 
 // モーダルを閉じるためのリスナー
