@@ -98,7 +98,7 @@ body {
 
 #payment-summary p {
     margin: 10px 0;
-    font-size: 20px
+    font-size: 30px
 }
 
 button {
@@ -159,7 +159,7 @@ button {
 #payment-methods {
     display: flex;
     justify-content: space-between; /* ボタンの間にスペースを均等に配置 */
-    flex-wrap: wrap; /* 画面に収まらない場合に折り返しを許可 */
+    /* flex-wrap: wrap; /* 画面に収まらない場合に折り返しを許可 */
     gap: 10px; /* ボタンの間にスペースを追加（オプション） */
 }
 
@@ -240,10 +240,40 @@ button {
     width:10rem;
     font-size: 1em
   }
+  button {
+      padding: 10px;
+      margin-top: 1px;
+      width: 100%;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 20px
+  }
 }
 
 .active-tax {
     background-color: #4CAF50 !important; /* 背景色を変更 */
     color: white !important; /* テキスト色を変更 */
     border: 2px solid #4CAF50 !important; /* ボーダーも変更 */
+}
+#payment-methods button{
+  width:20rem;
+}
+
+.cfm-btns{
+  font-size: 2em
+}
+
+.header-btn.active {
+    background-color: orange;
+    color: white; /* 文字色も変更 */
+}
+.menu-actions{
+  display: none;
+}
+
+.placeholder {
+    height: 30px; /* プラホルダーの高さを調整 */
+    background-color: #ffeb3b; /* プラホルダーの背景色を設定 */
+    margin: 5px 0; /* 上下にスペースを作る */
 }
