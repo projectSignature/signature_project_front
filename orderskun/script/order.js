@@ -90,7 +90,7 @@ sortedData.forEach(item => {
                          <h3 data-id="${item.id}">${item[`menu_name_${userLanguage}`]}</h3>
                          <p>Sold Out</p>`;
     } else {
-        div.innerHTML = `<img src="./imagen/${item.menu_name_pt}" alt="${item.menu_name_pt}">
+        div.innerHTML = `<img src="./imagen/${item.menu_name_pt}.jpg" alt="${item.menu_name_pt}" style="width:20rem">
                          <h3 data-id="${item.id}">${item[`menu_name_${userLanguage}`]}</h3>
                          <p>￥${Math.floor(item.price).toLocaleString()}</p>`;
         div.addEventListener('click', () => {
@@ -613,6 +613,7 @@ window.addEventListener('click', (event) => {
 //     // ここに詳細画面を表示するロジックを追加
 //     addToOrder(item);
 // }
+
 
 // 確定ボタンのイベントリスナーを追加
 document.getElementById('confirm-order').addEventListener('click', async () => {
