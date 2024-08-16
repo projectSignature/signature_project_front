@@ -1,86 +1,86 @@
 
 let clients ={
-  id:1,
-  language:'pt',
-  paytype:'',
-  selectedOrder:"",
-  printInfo:"",
-  taxtType:""
+  id:1, //クライアントid
+  language:'pt', //クライアント言語
+  paytype:'',　//ユーザー支払い方法
+  selectedOrder:"",　//選択オーダー
+  printInfo:"",　//？？
+  taxtType:""　//税金区分
 }
 
 let selectedCard = null;
 
 document.addEventListener('DOMContentLoaded', async  () => {
-    // Simulated data fetch
-    const MainData = await makerequest(`${server}/orders/getBasedata?user_id=${clients.id}`)
-    let pendingOrders = await fetchPendingOrders(clients.id);
-    console.log(pendingOrders)
-
-
-    let ordersList = document.getElementById('orders-list');
-    let orderItems = document.getElementById('order-items');
-    let totalAmountElement = document.getElementById('total-amount');
-    let depositAmountElement = document.getElementById('deposit-amount');
-    let changeAmountElement = document.getElementById('change-amount');
-
-
-
+  //メニュー、カテゴリー、オープション表示
+  const MainData = await makerequest(`${server}/orders/getBasedata?user_id=${clients.id}`)
+  let pendingOrders = await fetchPendingOrders(clients.id);
+  let ordersList = document.getElementById('orders-list');//未支払い枠エレメント
+  let orderItems = document.getElementById('order-items');//詳細枠エレメント
+  let totalAmountElement = document.getElementById('total-amount');//支払い総額エレメント
+  let depositAmountElement = document.getElementById('deposit-amount');//預入金額エレメント
+  let changeAmountElement = document.getElementById('change-amount');//お釣りエレメント
+  let taxIncluidAmountElent = document.getElementById('tax-included-amount');//税金込み総額エレメント
+　　//未支払いオーダーカードを作成
     pendingOrders.forEach(order => {
-      console.log(order.id)
       let orderCard = document.createElement('div');
       orderCard.classList.add('order-card');
       orderCard.setAttribute('data-id', order.id); // data-id 属性を設定
       orderCard.innerHTML = `<h3>Table ${order.table_no}</h3><p>${order.order_name}</p>`;
-
       orderCard.addEventListener('click', () => {
           if (selectedCard) {
               selectedCard.classList.remove('selected-card');
           }
-
           orderCard.classList.add('selected-card');
           selectedCard = orderCard;
-
           displayOrderDetails(order);
       });
-
       ordersList.appendChild(orderCard);
   });
 
-    function displayOrderDetails(order) {
-      console.log(order)
-      clients.printInfo = order
-        orderItems.innerHTML = ''; // Clear previous items
-        clients.selectedOrder = order.id
+  function displayOrderDetails(order) {
+  console.log(order.OrderItems);
+  clients.printInfo = order;
+  orderItems.innerHTML = ''; // Clear previous items
+  clients.selectedOrder = order.id;
 
+  order.OrderItems.forEach(item => {
+      const menuGt = MainData.menus
+          .filter(items => items.id === item.menu_id);
 
-        order.OrderItems.forEach(item => {
-          const menuGt = MainData.menus
-              .filter(items => items.id === item.menu_id)
-              console.log(item)
-              console.log(menuGt)
-            let li = document.createElement('li');
-            li.textContent = `${menuGt[0].menu_name_pt} x${item.quantity} - ¥${item.item_price}`;
-            orderItems.appendChild(li);
-        });
+      let disOption = ""; // オプションを格納する変数
+      const options = JSON.parse(item.options);
 
-        totalAmountElement.textContent = `￥${Math.floor(order.total_amount).toLocaleString()}`;
-        updateChange(); // Initial calculation
-    }
+      options.forEach(option => {
+          const optionGt = MainData.options
+              .filter(itm => itm.id === parseInt(option.id));
+          if (optionGt.length > 0) {
+              disOption += `<p>${optionGt[0].option_name_pt}</p>`;
+          }
+      });
+
+      let li = document.createElement('li');
+      li.innerHTML = `
+          ${menuGt[0].menu_name_pt} x${item.quantity} - ¥${parseInt(item.item_price).toLocaleString()}
+          ${disOption}
+      `;
+      orderItems.appendChild(li);
+  });
+
+  totalAmountElement.textContent = `￥${Math.floor(order.total_amount).toLocaleString()}`;
+  updateChange(); // Initial calculation
+}
+
 
     depositAmountElement.addEventListener('input', updateChange);
 
     function updateChange() {
-      if(clients.taxtType===""){
-
-      }else{
+      if(clients.taxtType!=""){
         let deposit = parseInt(depositAmountElement.value) || 0;
         let total = parseInt(document.getElementById("tax-included-amount").textContent.replace(/[^\d]/g, '')) || 0;;
         let change = deposit - total;
-        changeAmountElement.textContent = change >= 0 ? change : 0;
+        changeAmountElement.textContent = change >= 0 ? `¥${change.toLocaleString()}` : 0;
       }
-
     }
-
     // Confirm Payment Button Logic
     document.getElementById('confirm-payment').addEventListener('click', async () => {
     // Assuming you have a selectedOrder variable that stores the current order
@@ -104,10 +104,6 @@ document.addEventListener('DOMContentLoaded', async  () => {
       alert("Insira o valor recebido")
       return
     }
-
-    console.log(clients)
-    console.log(document.getElementById('deposit-amount').value)
-
     // Update the order in the database
     try {
         const response = await fetch(`${server}/orders/updatePayment`, {
@@ -132,7 +128,6 @@ document.addEventListener('DOMContentLoaded', async  () => {
             if (orderCard) {
                 orderCard.remove();
             }
-
             // Optionally, you can clear the order details or reset the UI
             clearOrderDetails();
         } else {
@@ -148,7 +143,6 @@ function showCustomAlert(message) {
     const alertBox = document.getElementById('custom-alert');
     alertBox.querySelector('p').textContent = message;
     alertBox.style.display = 'block';
-
     setTimeout(() => {
         alertBox.style.display = 'none';
     }, 1000); // 1秒間表示
@@ -167,29 +161,20 @@ function clearOrderDetails() {
     clients.selectedOrder =""
     clients.taxtType=""
 }
-
-
-
     const cashPaymentButton = document.getElementById('cash-payment');
         const creditPaymentButton = document.getElementById('credit-payment');
         const otherPaymentButton = document.getElementById('other-payment');
-
         const paymentButtons = [cashPaymentButton, creditPaymentButton, otherPaymentButton];
-
         // Update the paytype in the clients object
         function updatePayType(type) {
             clients.paytype = type;
-            console.log(`Payment type selected: ${clients.paytype}`);
         }
-
         paymentButtons.forEach(button => {
             button.addEventListener('click', () => {
                 // Remove 'selected' class from all buttons
                 paymentButtons.forEach(btn => btn.classList.remove('selected'));
-
                 // Add 'selected' class to the clicked button
                 button.classList.add('selected');
-
                 // Update the paytype based on the selected button
                 if (button === cashPaymentButton) {
                     updatePayType('cash');
@@ -200,11 +185,7 @@ function clearOrderDetails() {
                 }
             });
         });
-
-
 });
-
-
 async function fetchPendingOrders() {
     try {
         const response = await fetch(`${server}/orders/pending`, {
@@ -225,11 +206,6 @@ async function fetchPendingOrders() {
         return null;
     }
 }
-// let totalAmountElement = document.getElementById('total-amount');
-// let depositAmountElement = document.getElementById('deposit-amount');
-// let changeAmountElement = document.getElementById('change-amount');
-
-
 document.addEventListener('DOMContentLoaded', function() {
     // 初期設定: ボタンのクリックイベントを追加
     document.getElementById('tax-8').addEventListener('click', function() {
@@ -239,8 +215,8 @@ document.addEventListener('DOMContentLoaded', function() {
         let deposit = document.getElementById('deposit-amount').value;
         let total = parseInt(document.getElementById("tax-included-amount").textContent.replace(/[^\d]/g, '')) || 0;;
         let change = deposit - total;
-        console.log(change)
-        document.getElementById('change-amount').textContent = change >= 0 ? change : 0;
+
+        document.getElementById('change-amount').textContent = change >= 0 ? `¥${change.toLocaleString()}` : 0;
     });
 
     document.getElementById('tax-10').addEventListener('click', function() {
@@ -251,7 +227,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let total = parseInt(document.getElementById("tax-included-amount").textContent.replace(/[^\d]/g, '')) || 0;;
         let change = deposit - total;
         console.log(change)
-        document.getElementById('change-amount').textContent = change >= 0 ? change : 0;
+        document.getElementById('change-amount').textContent = change >= 0 ? `¥${change.toLocaleString()}` : 0;
     });
 });
 
@@ -347,16 +323,12 @@ async function recite() {
    order.depositAmount = document.getElementById('deposit-amount').value;
    order.changeAmount = document.getElementById('change-amount').textContent;
 
-   // 税率の設定
-   // const selectedTaxButton = document.querySelector('.tax-button.active-tax');
-   //     return selectedTaxButton ? selectedTaxButton.textContent : '未選択';
 
    // 税込み価格の設定
    order.taxIncludedAmount = document.getElementById('tax-included-amount').textContent;
    order.taxtTypes = clients.taxtType
    // order オブジェクトをコンソールに表示
    console.log(order);
-
    if(clients.taxtTypes===""){
      alert("Selecione o imposto")
      return
@@ -365,7 +337,6 @@ async function recite() {
      alert("Insira o vlor recebido")
      return
    }
-
     const response = await fetch(`http://localhost:3000/orders/PrintRecite`, {
         method: 'POST',
         headers: {
@@ -378,160 +349,4 @@ async function recite() {
   }catch(e){
     console.log(e)
   }
-
 }
-
-
-
-
-// let trcs = document.getElementById('troco').value;
-// let pgs = document.getElementById('pagoss').value;
-// aftTroco =parseFloat(trcs.replace(/[^\d.-]/g, ''))
-//
-// if (aftTroco >= 0) {
-// let localInfo = JSON.parse(localStorage.getItem("productsDetails"));
-// const totalQuantidade = localInfo.reduce((accumulator, currentItem) => {
-// return accumulator + currentItem.Quantidade;
-// }, 0);
-//
-// let reciteOrders = "";
-// for (let i = 0; i < localInfo.length; i++) {
-//   reciteOrders += `<div class="items-name">[id:${localInfo[i].id}]  ${localInfo[i].Item}</div>
-//     <div class="details-iten">@${localInfo[i].Preco}  *  ${localInfo[i].Quantidade}ｺ　  ￥${(localInfo[i].Total-0).toLocaleString('ja-JP')}</div>`;
-// }
-//
-// let row = `<div id="contentToPrint" class="print-content">
-//   <div class="img-dicvs"><img src="../img/logo.png" width="100" class="setting-right-button" /></div>
-//   <div class="adress-div">
-//     <p>Roots Grill <br>〒475-0801 <br>愛知県碧南市相生町4-13 102号室<br>070-9166-0218</p>
-//   </div>
-//   <div class='display-center-div'>
-//     <p>${await getCurrentDateTime()} ${nb.split('_')[0]}</p>
-//   </div>
-//   <div class="contents-div">
-//     ${reciteOrders}
-//   </div>
-//   <div class="total-qt">
-//     <p>御買上げ点数　　:${totalQuantidade}</p>
-//   </div>
-//   <div class="dotted-line"></div>
-//   <div class="total-amount-div">
-//     <div>合計</div>
-//     <div>${reciteAmount}</div>
-//   </div>
-//   <div class="azukari-amount-div">
-//     <div>お預り</div>
-//     <div>￥${(pgs-0).toLocaleString('ja-JP')}</div>
-//   </div>
-//   <div class="azukari-amount-div">
-//     <div>お釣り</div>
-//     <div>${trcs}</div>
-//   </div>
-//   <div class="dotted-line"></div>
-// </div>`;
-//
-//
-// //var printWindow = window.open('', '_blank');
-//
-// // 新しいウィンドウにコンテンツを書き込む
-// document.write(
-//  `
-//   <html>
-//   <head>
-//     <title id="title-print"></title>
-//     <style>
-//     @media print {
-//       #body-testes {
-//         width:80mm;
-//         height:100mm !important;
-//         margin: 0; /* マージンをゼロに設定 */
-//         padding: 0; /* パディングをゼロに設定 */;
-//
-//         overflow:hiden;
-//         background-color:red !important
-//       }
-//       .adress-div {
-//         width: 100%;
-//         height: 7rem;
-//         background-color: black;
-//         -webkit-print-color-adjust: exact;
-//         color: white;
-//       }
-//       .img-dicvs {
-//         display: flex;
-//         justify-content: center;
-//       }
-//       .display-center-div {
-//         display: flex;
-//         justify-content: center;
-//       }
-//       .contents-div {
-//         width: 100%;
-//       }
-//       .items-name {
-//         text-align: left;
-//       }
-//       .details-iten {
-//         width: 80%;
-//         text-align: right;
-//         margin-right: 1rem;
-//       }
-//       .dotted-line::before {
-//         content: '';
-//         display: block;
-//         width: 100%;
-//         height: 1px;
-//         background-color: black;
-//         background-image: repeating-linear-gradient(90deg, black, black 2px, transparent 2px, transparent 4px);
-//         -webkit-print-color-adjust: exact;
-//       }
-//       .total-amount-div {
-//         width: 100%;
-//         display: flex;
-//         justify-content: space-between;
-//         font-size: 3vh;
-//       }
-//       .azukari-amount-div {
-//         width: 100%;
-//         display: flex;
-//         justify-content: space-between;
-//       }
-//       .total-qt{
-//         margin-top:1rem
-//       }
-//     }
-//     </style>
-//   </head>
-//   <body id="body-testes">
-//     ${row}
-//   </body>
-//   </html>
-// `
-// );
-//
-// //  画像が正しく読み込まれるまで待機
-// await new Promise(resolve => {
-//   var img = new Image();
-//   img.onload = resolve;
-//   img.src = "../img/logo.png"; // 画像のパスを正確に指定
-// });
-//
-//
-// window.print();
-// payed(nb.split("_")[0])
-// document.location.reload();
-// // htmls= `<div>省略</div>`
-//
-// //   let url = `http://localhost:3089/printsdata`
-// //   body = {
-// //     dt:htmls,
-// //     // status:1
-// //   }
-// // const reqInsert = await makerequestStatus(url,body)
-// // //await console.log(reqInsert.status)
-// // if(reqInsert.status==200){
-// //   await   window.location.reload();
-// // }
-// }
-
-// }
