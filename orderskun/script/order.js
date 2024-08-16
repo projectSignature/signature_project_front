@@ -418,7 +418,8 @@ sortedData.forEach(item => {
                "Valor total":"Valor total",
                "Quantidade":"Quantidade",
                "Valor":"Valor",
-               "Histórico não encontrado":"Histórico não encontrado"
+               "Histórico não encontrado":"Histórico não encontrado",
+               "Selecione ou abra uma comanda":"Selecione ou abra uma comanda"
            },
            ja: {
                "Histórico": "履歴",
@@ -445,7 +446,8 @@ sortedData.forEach(item => {
                 "Valor total":"合計金額",
                 "Quantidade":"数量",
                 "Valor":"価格",
-                "Histórico não encontrado":"履歴存在しません"
+                "Histórico não encontrado":"履歴存在しません",
+                "Selecione ou abra uma comanda":"オーダーを作成または選択してください"
            },
            en: {
                "Histórico": "History",
@@ -472,7 +474,8 @@ sortedData.forEach(item => {
                 "Valor total":"Total ammount",
                 "Quantidade":"Quantity",
                 "Valor":"ammount",
-                "Histórico não encontrado":"Not exist history"
+                "Histórico não encontrado":"Not exist history",
+                "Selecione ou abra uma comanda":"Select or open an order"
            }
        };
 
@@ -487,11 +490,14 @@ sortedData.forEach(item => {
          userLanguage = lang
          console.log(lang)
            document.querySelectorAll('[data-translate-key]').forEach(element => {
-               const key = element.getAttribute('data-translate-key');
-               if (translations[lang] && translations[lang][key]) {
-                   element.textContent = translations[lang][key];
-               }
-           });
+                         const key = element.getAttribute('data-translate-key');
+                         if (translations[lang] && translations[lang][key]) {
+                             element.textContent = translations[lang][key];
+                         }
+                     });
+
+
+
            updateCategoryButtons()
            updateMenuItems()
              console.log(userLanguage)
@@ -610,31 +616,34 @@ window.addEventListener('click', (event) => {
 
 // 確定ボタンのイベントリスナーを追加
 document.getElementById('confirm-order').addEventListener('click', async () => {
+    const confirmButton = document.getElementById('confirm-order');
+    const loadingPopup = document.getElementById('loading-popup');
+    confirmButton.disabled = true; // ボタンを無効化
+    loadingPopup.style.display = 'block'; // ポップアップを表示
     try {
-      console.log(orderList.clienId)
-      console.log(orderList.tableNo)
-      console.log(selectedName)
-      console.log(orderList.order[selectedName])
-      if(orderList.clienId===""||orderList.tableNo===""||selectedName===""||orderList.order[selectedName].length === 0){
-        showAlert(translations[userLanguage]["Nenhum item foi selecionado"]);
-        return
-      }
-      // orderList.clienId = 1
-      // orderList.tableNo = 11
-      console.log(orderList.order[selectedName])
+        if (orderList.clienId === "" || orderList.tableNo === "" || selectedName === "" || orderList.order[selectedName].length === 0) {
+            showAlert(translations[userLanguage]["Nenhum item foi selecionado"]);
+            confirmButton.disabled = false;
+            loadingPopup.style.display = 'none'; // エラーの場合はポップアップを非表示
+            return;
+        }
         const response = await fetch(`${server}/orders/confirm`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ order_name:selectedName,user_id:orderList.clienId,table_no:orderList.tableNo,items: orderList.order[selectedName] })
+            body: JSON.stringify({
+                order_name: selectedName,
+                user_id: orderList.clienId,
+                table_no: orderList.tableNo,
+                items: orderList.order[selectedName]
+            })
         });
-        if (response.ok) {
 
-            // オーダーが確定された場合に呼び出す
+        if (response.ok) {
             showCustomAlert(translations[userLanguage]["Pedido feito"]);
-          orderList.order[selectedName] = [];
-          selectedItemsContainer.innerHTML = ''; // リストをクリア
+            orderList.order[selectedName] = [];
+            selectedItemsContainer.innerHTML = ''; // リストをクリア
         } else {
             const errorData = await response.json();
             console.error('Error:', errorData);
@@ -642,9 +651,13 @@ document.getElementById('confirm-order').addEventListener('click', async () => {
         }
     } catch (error) {
         console.error('Error:', error);
-        alert(translations[userLanguage]["Erro no registro"]);
+        showAlert(translations[userLanguage]["Erro no registro"]);
+    } finally {
+        confirmButton.disabled = false;
+        loadingPopup.style.display = 'none'; // リクエスト完了後にポップアップを非表示
     }
 });
+
 
 
 
@@ -705,8 +718,10 @@ window.onclick = function(event) {
 function showAlert(message) {
     const alertModal = document.getElementById('alert-modal');
     const alertMessage = document.getElementById('alert-message');
-    alertMessage.textContent = message;
+    alertMessage.textContent = translations[userLanguage]["Selecione ou abra uma comanda"];
     alertModal.style.display = 'block';
+    document.getElementById('Atanction-title').textContent = translations[userLanguage]["Atencion"]
+    document.getElementById('close-alert-btn').textContent = translations[userLanguage]["Voltar"]
 
     // モーダルを閉じるボタンのイベントリスナー
     document.getElementById('close-alert-btn').addEventListener('click', () => {
