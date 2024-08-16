@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Orders君</title>
-    <link rel="stylesheet" href="./style/orders.css">
+    <link rel="stylesheet" href="./style/order.css">
 </head>
 <body>
     <div id="app">
@@ -91,7 +91,7 @@
             <div id="alert-modal" class="modal">
                 <div class="modal-content">
                     <span class="close">&times;</span>
-                    <h2 data-translate-key="Atencion">Atenção</h2>
+                    <h2 id="Atanction-title">Atenção</h2>
                     <p id="alert-message">Selecione ou abra uma comanda</p>
                     <button id="close-alert-btn">Fechar</button>
                 </div>
@@ -99,7 +99,7 @@
             <div id="custom-alert" class="custom-alert">
               <div class="alert-content">
                   <span class="checkmark">✓</span>
-                  <p>オーダーが確定されました。</p>
+                  <p id="oder-successfully">オーダーが確定されました。</p>
               </div>
           </div>
           <!-- 履歴表示のモーダルウィンドウ -->
@@ -123,12 +123,15 @@
         </ul>
     </div>
 </div>
+<div id="loading-popup" class="loading-popup" style="display: none;">
+    登録中...
+</div>
+
 
 
         </main>
     </div>
     <script src="../config.js"></script>
-    <script src="../translation.js"></script>
     <script src="./script/common.js"></script>
     <script src="./script/order.js"></script>
 </body>
