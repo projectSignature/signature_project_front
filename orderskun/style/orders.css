@@ -250,6 +250,9 @@ button {
     max-width: 900px;
     box-sizing: border-box;
 }
+.details-content p{
+  font-size: 20px
+}
 
 .left-side, .right-side {
     width: 45%; /* 両サイドをバランスよく配置 */
@@ -277,14 +280,16 @@ button {
     border: none;
     padding: 10px;
     border-radius: 5px;
-    font-size: 1.2rem;
+    font-size: 3rem;
+    width:4rem;
     cursor: pointer;
 }
 
 .quantity-selector input {
     width: 50px;
     text-align: center;
-    font-size: 1.2rem;
+    font-size: 3rem;
+    width:7rem;
     margin: 0 10px;
 }
 
@@ -406,7 +411,7 @@ button {
     cursor: pointer;
 }
 .option-container {
-  background-color: yellow;
+
     max-height: 60px; /* 固定したい高さを設定します */
     overflow-y: auto; /* Y方向にスクロールを有効にします */
 }
@@ -415,6 +420,11 @@ button {
     display: flex;
     flex-direction: column;
     gap: 10px;
+
+    height:300px;
+    max-height:300px;
+    overflow-y: auto;
+    margin-bottom: 10px
 }
 
 .option-item {
@@ -439,9 +449,14 @@ button {
 
 .option-price {
     color: #ddd; /* 選択時にはテキストの色を淡い色に */
+
 }
 
-
+#item-price{
+  background-color:orange;
+  font-size: 2em;
+  text-align: center;
+}
 
 .close {
     color: #aaa;
@@ -738,4 +753,8 @@ button + button {
 
 #order-items-list li p {
   margin: 5px 0;
+ }
+
+ .add-cancle-btn{
+   font-size: 30px
  }
