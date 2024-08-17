@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
   const MainData = await makerequest(`${server}/orders/getBasedata?user_id=1`)
-  MainData.categories.sort((a, b) => a.display_order - b.display_order);
+    MainData.categories.sort((a, b) => a.display_order - b.display_order);
     const orderCategories = document.getElementById('order-categories');
     const menuItemsContainer = document.getElementById('menu-items');
     const selectedItemsContainer = document.getElementById('selected-items');
@@ -131,13 +131,18 @@ sortedData.forEach(item => {
                             </div>
                         `).join('')}
                     </div>
-                    <div class="quantity-selector">
+                    <div>
+                        <div>
+                        <p >${translations[userLanguage]["Quantidade"]}:</p>
+                        </div>
+                        <div class="quantity-selector">
                         <button id="decrease-quantity">-</button>
                         <input type="number" id="item-quantity" value="1" min="1">
                         <button id="increase-quantity">+</button>
+                        </div>
                     </div>
-                    <button id="add-to-cart">${translations[userLanguage]["Adicionar no carrinho"]}</button>
-                    <button id="back-button">${translations[userLanguage]["Voltar"]}</button>
+                    <button id="add-to-cart" class="add-cancle-btn">${translations[userLanguage]["Adicionar no carrinho"]}</button>
+                    <button id="back-button" class="add-cancle-btn">${translations[userLanguage]["Voltar"]}</button>
                 </div>
             </div>
         `;
