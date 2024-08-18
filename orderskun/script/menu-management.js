@@ -11,8 +11,12 @@ let clients ={
 }
 document.getElementById('menu-btn').style = "background-color:orange"
 let newFlug = false
+const loadingMessage = document.getElementById('loading-message');
 
 document.addEventListener('DOMContentLoaded', async () => {
+
+
+   loadingMessage.style.display = 'block';
     const categorySelectElement = document.getElementById('category-select');
     const menuListElement = document.getElementById('menu-list');
     const menuForm = document.getElementById('menu-form');
@@ -22,6 +26,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Fetch categories, menus, and options
     const getData = await makerequest(`${server}/orders/getBasedata?user_id=${clients.id}`);
     const { categories, menus, options } = getData;
+    loadingMessage.style.display = 'none';
     clients.options = options
     clients.categories = categories
 
@@ -39,6 +44,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         const selectedCategoryId = categorySelectElement.value;
         displayMenuItems(menus.filter(menu => menu.category_id == selectedCategoryId));
     });
+
+
+
+
 
     let draggedItem = null; // ドラッグ中の項目を保存する変数
     let isDragging = false; // ドラッグ状態を管理する変数
