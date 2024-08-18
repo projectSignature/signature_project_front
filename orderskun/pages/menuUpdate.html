@@ -130,6 +130,22 @@
 .delete-btn:hover {
     background-color: #da190b;
 }
+#loading-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 20px 40px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    text-align: center;
+    display: none; /* デフォルトでは非表示 */
+}
 
 
     </style>
@@ -149,7 +165,9 @@
             <button class="header-btn nav-btn" id="logout-btn">Logout</button>
         </div>
     </header>
+
     <div class="container">
+        <div id="loading-message" style="display:none;">データを取得中...</div>
         <div class="left-panel">
           <div style="display:flex;justify-content: space-between">
             <h2>Categorias</h2>
@@ -232,7 +250,10 @@
         <div id="loading-popup" class="loading-popup" style="display: none;">
             登録中...
         </div>
+
+
     </div>
+
     <script src="../script/menu-management.js"></script>
     <script src="../script/common.js"></script>
     <script src="../../config.js"></script>
