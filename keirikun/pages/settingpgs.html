@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Settings - Keirikun</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="stylesheet" href="../style/settingspgs.css">
+    <!-- <link rel="stylesheet" href="../style/kaikei.css"> -->
+</head>
+
+<body>
+  <header>
+        <div class="header-buttons">
+            <button class="header-button" id="input-button">
+                <i class="fas fa-pencil-alt"></i>
+                <span data-translate="input">入力</span>
+            </button>
+            <button class="header-button" id="history-button">
+                <i class="fas fa-list"></i>
+                <span data-translate="history">履歴</span>
+            </button>
+            <button class="header-button" id="analysis-button">
+                <i class="fas fa-chart-bar"></i>
+                <span data-translate="analysis">解析</span>
+            </button>
+            <button class="header-button" id="submit-button">
+                <i class="fas fa-file-upload"></i>
+                <span data-translate="finalizeData">データ確定</span>
+            </button>
+            <button class="header-button" id="settings-button">
+                <i class="fas fa-cogs"></i>
+                <span data-translate="settings">設定</span>
+            </button>
+        </div>
+    </header>
+    <div id="loading-indicator">
+        <div class="spinner"></div>
+        Loading...
+    </div>
+    <div class="settings-container">
+        <h1 data-translate="title">System Settings</h1>
+        <form id="settings-form">
+            <div class="form-group">
+                <label for="email" data-translate="email">E-mail</label>
+                <input type="email" id="email" name="email" placeholder="E-mail">
+            </div>
+            <div class="form-group">
+                <label for="language" data-translate="language">Language</label>
+                <select id="language" name="language">
+                    <option value="en">English</option>
+                    <option value="ja">Japanese</option>
+                    <option value="pt">Portuguese</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="invoice_number" data-translate="invoice_number">Invoice Number</label>
+                <input type="text" id="invoice_number" name="invoice_number" placeholder="Invoice Number">
+            </div>
+            <div class="form-group">
+                <label for="company_name" data-translate="company_name">Company Name</label>
+                <input type="text" id="company_name" name="company_name" placeholder="Company Name">
+            </div>
+            <div class="form-group">
+                <label for="phone_number" data-translate="phone_number">Phone Number</label>
+                <input type="text" id="phone_number" name="phone_number" placeholder="Phone Number">
+            </div>
+            <button type="submit" data-translate="save_changes">Save Changes</button>
+        </form>
+        <button id="change-password-btn" class="btn" data-translate="change_password">Change Password</button>
+
+        <!-- 取引先・販売先の登録ボタン -->
+        <button id="register-partner-button" class="btn" data-translate="register_partner">取引先・販売先</button>
+
+        <!-- 取引先・販売先の登録フォーム（初期状態は非表示） -->
+  <div id="register-partner-form" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 data-translate="partners">取引先・販売先</h2>
+        <form id="partner-form">
+            <div class="form-group">
+                <label for="partner-name" data-translate="partner_name">名前:</label>
+                <input type="text" id="partner-name" name="partner-name" required>
+            </div>
+            <div class="form-group">
+                <label for="partner-type" data-translate="partner_type">種別:</label>
+                <select id="partner-type" name="partner-type">
+                    <option value="supplier">取引先</option>
+                    <option value="customer">販売先</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="partner-address" data-translate="partner_address">住所:</label>
+                <input type="text" id="partner-address" name="partner-address" required>
+            </div>
+            <div class="form-group">
+                <label for="partner-phone" data-translate="partner_phone">電話番号:</label>
+                <input type="text" id="partner-phone" name="partner-phone" required>
+            </div>
+            <div class="form-group">
+                <label for="partner-contact-person" data-translate="partner_contact_person">代表者:</label>
+                <input type="text" id="partner-contact-person" name="partner-contact-person" required>
+            </div>
+            <button type="submit" class="btn" data-translate="add">追加</button>
+        </form>
+        <h3 data-translate="registered_partners">登録済みの取引先・販売先</h3>
+        <ul id="partner-list">
+            <!-- 登録済みの取引先・販売先のリストがここに表示される -->
+        </ul>
+    </div>
+</div>
+
+
+        <!-- 編集フォーム -->
+        <div id="edit-form" class="form-container">
+            <h3 id="form-title">Edit Partner</h3>
+            <form id="partner-edit-form">
+                <div>
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div>
+                    <label for="address">Address:</label>
+                    <input type="text" id="address" name="address">
+                </div>
+                <div>
+                    <label for="phone">Phone:</label>
+                    <input type="text" id="phone" name="phone">
+                </div>
+                <div>
+                    <label for="contact_person">Contact Person:</label>
+                    <input type="text" id="contact_person" name="contact_person">
+                </div>
+                <button type="submit">Save Changes</button>
+                <button type="button" id="delete-button">Delete</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Password Change Modal -->
+    <div id="password-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 data-translate="change_password">Change Password</h2>
+            <form id="password-form">
+                <div class="form-group">
+                    <label for="current_password" data-translate="current_password">Current Password</label>
+                    <input type="password" id="current_password" name="current_password" placeholder="">
+                </div>
+                <div class="form-group">
+                    <label for="new_password" data-translate="new_password">New Password</label>
+                    <input type="password" id="new_password" name="new_password" placeholder="">
+                </div>
+                <div class="form-group">
+                    <label for="confirm_password" data-translate="confirm_password">Confirm Password</label>
+                    <input type="password" id="confirm_password" name="confirm_password" placeholder="">
+                </div>
+                <button type="submit" data-translate="save_changes">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="../script/swal.js"></script>
+    <script src="../script/common.js"></script>
+    <script src="../script/translations.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
+    <script src="../script/settingpgs.js"></script>
+    <script>
+        // JavaScript to toggle the partner registration form and handle addition and deletion
+        // document.addEventListener("DOMContentLoaded", function() {
+
+
+        //
+
+        //
+        //     closeModal.addEventListener("click", function() {
+        //         registerForm.style.display = "none";
+        //     });
+        //
+        //     window.addEventListener("click", function(event) {
+        //         if (event.target == registerForm) {
+        //             registerForm.style.display = "none";
+        //         }
+        //     });
+        //
+        //     partnerForm.addEventListener("submit", function(event) {
+        //         event.preventDefault();
+        //         addPartner();
+        //     });
+        //
+        //     function loadPartners() {
+        //         // Fetch partners from the server (mocked here as an example)
+        //         var partners = [
+        //             { id: 1, name: 'Supplier A', type: 'supplier', address: 'Address A' },
+        //             { id: 2, name: 'Customer B', type: 'customer', address: 'Address B' }
+        //         ];
+        //
+        //         partnerList.innerHTML = '';
+        //         partners.forEach(function(partner) {
+        //             var listItem = document.createElement('li');
+        //             listItem.textContent = partner.name + ' (' + partner.type + ') - ' + partner.address;
+        //             var deleteButton = document.createElement('button');
+        //             deleteButton.textContent = '削除';
+        //             deleteButton.onclick = function() {
+        //                 deletePartner(partner.id);
+        //             };
+        //             listItem.appendChild(deleteButton);
+        //             partnerList.appendChild(listItem);
+        //         });
+        //     }
+        //
+        //     function addPartner() {
+        //         var name = document.getElementById("partner-name").value;
+        //         var type = document.getElementById("partner-type").value;
+        //         var address = document.getElementById("partner-address").value;
+        //
+        //         // Add the partner to the server (mocked here as an example)
+        //         var newPartner = { id: Date.now(), name: name, type: type, address: address };
+        //
+        //         // Add the new partner to the list
+        //         var listItem = document.createElement('li');
+        //         listItem.textContent = newPartner.name + ' (' + newPartner.type + ') - ' + newPartner.address;
+        //         var deleteButton = document.createElement('button');
+        //         deleteButton.textContent = '削除';
+        //         deleteButton.onclick = function() {
+        //             deletePartner(newPartner.id);
+        //         };
+        //         listItem.appendChild(deleteButton);
+        //         partnerList.appendChild(listItem);
+        //
+        //         // Clear the form
+        //         partnerForm.reset();
+        //     }
+        //
+        //     function deletePartner(id) {
+        //         // Delete the partner from the server (mocked here as an example)
+        //
+        //         // Remove the partner from the list
+        //         var items = partnerList.getElementsByTagName('li');
+        //         for (var i = 0; i < items.length; i++) {
+        //             if (items[i].textContent.includes(id.toString())) {
+        //                 partnerList.removeChild(items[i]);
+        //                 break;
+        //             }
+        //         }
+        //     }
+        // });
+    </script>
+</body>
+
+</html>

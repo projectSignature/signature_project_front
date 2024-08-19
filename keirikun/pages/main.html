@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+
+<head>
+    <meta charset="utf-8" >
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="stylesheet" href="../style/kaikei.css">
+</head>
+
+<body class="bg-dark">
+  <header>
+          <div class="header-buttons">
+              <button class="header-button" id="input-button">
+                  <i class="fas fa-pencil-alt"></i>
+                  <span data-translate="input">入力</span>
+              </button>
+              <button class="header-button" id="history-button">
+                  <i class="fas fa-list"></i>
+                  <span data-translate="history">履歴</span>
+              </button>
+              <button class="header-button" id="analysis-button">
+                  <i class="fas fa-chart-bar"></i>
+                  <span data-translate="analysis">解析</span>
+              </button>
+              <button class="header-button" id="submit-button">
+                  <i class="fas fa-file-upload"></i>
+                  <span data-translate="finalizeData">データ確定</span>
+              </button>
+              <button class="header-button" id="settings-button">
+                  <i class="fas fa-cogs"></i>
+                  <span data-translate="settings">設定</span>
+              </button>
+          </div>
+      </header>
+      <div id="loading-indicator">
+        <div class="spinner"></div>
+        Loading...
+    </div>
+    <div class="main-div">
+        <div class="div-comon-division-common">
+            <div class="date-div-span" id="div0">日付</div>
+            <div class="right-div-add" onclick="dayChange(1)"><</div>
+            <div class="center-colomn-div"><input type="date" class="calender-input" id="calender-input" required/></div>
+            <div class="right-div-add" onclick="dayChange(2)">></div>
+        </div>
+        <div class="div-comon-division-common" id="supplieres-top-div">
+            <div class="date-div-span" id="div4">サプライヤー</div>
+            <div class="right-div-add"></div>
+            <div class="center-colomn-div">
+                <select id="Suppliers-options">
+                </select>
+            </div>
+            <div class="right-div-add"></div>
+        </div>
+
+        <div class="div-comon-division-common" id="payinfo">
+            <div class="date-div-span" id="div2">方法</div>
+            <div class="right-div-add"></div>
+            <div class="center-colomn-div">
+                <select id="pay-select">
+                </select>
+            </div>
+            <div class="right-div-add"></div>
+        </div>
+
+        <div class="div-comon-division-common" id="amoun-top-div">
+            <div class="date-div-span" id="div3">金額</div>
+            <div class="right-div-add"></div>
+            <div class="center-colomn-div"><input placeholder="￥" type="text" class="calender-input" id="value-input" oninput="kanmaReplase()" inputmode="numeric" required/></div>
+            <div class="right-div-add"></div>
+        </div>
+        <div class="div-comon-division-common" id="top-memo-div">
+            <div class="date-div-span" id="div1">メモ</div>
+            <div class="right-div-add"></div>
+            <div class="center-colomn-div"><textarea placeholder="" type="text" id="memo-pay" rowa="8" cols="40" required class="calender-input-text"></textarea></div>
+            <div class="right-div-add"></div>
+        </div>
+        <div id="tranfer-mother-div" class="transfer-form">
+            <div id="wallet-balance"></div>
+            <div id="bank-balance">Saldo do Banco: $500</div>
+
+            <select id="from-account">
+                <option value="">De</option>
+                <option value="999">banco</option>
+                <option value="998">carteira</option>
+                <option value="189">particular</option>
+            </select>
+            <br>
+            <input type="number" id="amount" placeholder="valor">
+            <br>
+            <select id="to-account">
+                <option value="">para</option>
+                <option value="999">banco</option>
+                <option value="998">carteira</option>
+                <option value="327">uso particular</option>
+            </select>
+            <br>
+            <div class="regist-button">
+                <input value="Registrar" type="button" onclick="savetranferenvia()"/>
+            </div>
+        </div>
+
+        <div class="category-main-div" id="categorysdiv">
+        </div>
+        <div class="regist-button" id="confirms-buttons">
+            <input id="input1" value="登録" type="button" onclick="soubetsuProcess()"/>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+    <script src="../script/swal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
+    <script src="../script/translations.js"></script>
+    <script src="../script/common.js"></script>
+    <script src="../script/kaikei.js"></script>
+</body>
+
+</html>

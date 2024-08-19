@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../style/monthdataConfirm.css">
+    <link rel="stylesheet" href="../style/kaikei.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <title>KEIRI君 - 月次データ確定・提出</title>
+</head>
+<body>
+  <header>
+        <div class="header-buttons">
+            <button class="header-button" id="input-button">
+                <i class="fas fa-pencil-alt"></i>
+                <span data-translate="input">入力</span>
+            </button>
+            <button class="header-button" id="history-button">
+                <i class="fas fa-list"></i>
+                <span data-translate="history">履歴</span>
+            </button>
+            <button class="header-button" id="analysis-button">
+                <i class="fas fa-chart-bar"></i>
+                <span data-translate="analysis">解析</span>
+            </button>
+            <button class="header-button" id="submit-button">
+                <i class="fas fa-file-upload"></i>
+                <span data-translate="finalizeData">データ確定</span>
+            </button>
+            <button class="header-button" id="settings-button">
+                <i class="fas fa-cogs"></i>
+                <span data-translate="settings">設定</span>
+            </button>
+        </div>
+    </header>
+    <main>
+      <div class="filter-container">
+        <div>
+           <input type="month" class="calender-input" id="filter-date" value="" />
+         </div>
+
+         <!-- <div>
+          <select id="filter-category" class="calender-input">
+              <option value="">すべての科目</option>
+          </select>
+        </div> -->
+      </div>
+        <div class="data-summary">
+            <div class="summary-item">
+                <span>収入合計値: </span><span id="total-income">0</span>
+            </div>
+            <div class="summary-item">
+                <span>支出合計値: </span><span id="total-expenditure">0</span>
+            </div>
+            <div class="summary-item">
+                <span>差額: </span><span id="balance" class="positive">0</span>
+            </div>
+        </div>
+        <button id="submit-data-button">データ提出</button>
+    </main>
+    <script src="../script/monthConfirm.js"></script>
+    <script src="../script/translations.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
+</body>
+</html>

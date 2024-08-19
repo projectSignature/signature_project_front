@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+
+<head>
+    <meta charset="utf-8" >
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="../style/history_despesas.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  </head>
+
+<body  class="bg-dark">
+  <main class="container">
+    <header>
+      <div class="header-left-div">
+        <i id="btn-home" class="fa-solid fa-house"></i>
+       <span id="name-span"></span>
+     </div>
+      <div class="header-center-div">
+        <span>Keirikun</span>
+      </div>
+      <div class="header-right-div">
+        <i class="fa-solid fa-right-from-bracket" onclick="quit()"></i>
+      </div>
+    </header>
+    <div class="main-div">
+      <div class="keihi-show-history-title">
+        <div class="icons">
+  <i id="change-calender"><img src="../image/icons8-data-de-pagamento-48.png " height="25" width="30" alt="Gráfico"></i>
+  <i id="change-grafic"><img src="../image/icons8-analytics-48.png" height="25" width="30" alt="Gráfico"></i>
+        </div>
+      </div>
+    <section class="aba-history">
+      <div class="btns-filter">
+        <button id="filter-geral" onclick="getAllData(1)">Todos</button>
+        <button id="filter-despesa" onclick="getAllData(2)">Despesas</button>
+        <button id="filter-renda" onclick="getAllData(3)">Rendas</button>
+      </div>
+     <div class="history-area">
+        <ul class="new-card">
+          <li><span>ID: </span><span>01</span></li>
+          <li><span>NAME: </span><span>teste</span></li>
+          <li><span>DATA_REGISTER: </span><span>teste</span></li>
+          <li><span>METHOD: </span><span>teste</span></li>
+          <li><span>VALUE_MONEY: </span><span>teste</span></li>
+          <li><span>CATEGORY: </span><span>teste</span></li>
+          <li><span>STATUS: </span><span>teste</span></li>
+          <li><span>MEMO: </span><span>teste</span></li>
+        </ul>
+        <ul class="new-card">
+          <li><span>ID: </span><span>01</span></li>
+          <li><span>NAME: </span><span>teste</span></li>
+          <li><span>DATA_REGISTER: </span><span>teste</span></li>
+          <li><span>METHOD: </span><span>teste</span></li>
+          <li><span>VALUE_MONEY: </span><span>teste</span></li>
+          <li><span>CATEGORY: </span><span>teste</span></li>
+          <li><span>STATUS: </span><span>teste</span></li>
+          <li><span>MEMO: </span><span>teste</span></li>
+        </ul>
+        <ul class="new-card">
+          <li><span>ID: </span><span>01</span></li>
+          <li><span>NAME: </span><span>teste</span></li>
+          <li><span>DATA_REGISTER: </span><span>teste</span></li>
+          <li><span>METHOD: </span><span>teste</span></li>
+          <li><span>VALUE_MONEY: </span><span>teste</span></li>
+          <li><span>CATEGORY: </span><span>teste</span></li>
+          <li><span>STATUS: </span><span>teste</span></li>
+          <li><span>MEMO: </span><span>teste</span></li>
+        </ul>
+        <ul class="new-card">
+          <li><span>ID: </span><span>01</span></li>
+          <li><span>NAME: </span><span>teste</span></li>
+          <li><span>DATA_REGISTER: </span><span>teste</span></li>
+          <li><span>METHOD: </span><span>teste</span></li>
+          <li><span>VALUE_MONEY: </span><span>teste</span></li>
+          <li><span>CATEGORY: </span><span>teste</span></li>
+          <li><span>STATUS: </span><span>teste</span></li>
+          <li><span>MEMO: </span><span>teste</span></li>
+        </ul>
+
+     </div>
+     <span id="export">
+      <button id="xlsx">
+        <i class="fa-solid fa-file-excel"></i>
+        xlsx
+      </button>
+      <button id="csv">
+        <i class="fa-solid fa-file-csv"></i>
+        csv
+      </button>
+
+     </span>
+    </section>
+
+    <div id="mygrafics">
+      <div id="grafic-area">
+        <nav class="nav-chart">
+          <button class="btn-chart" onclick="alterGrafic()">Despesa</button>
+        </nav>
+        <div class="myChart">
+          <canvas id="myChart"></canvas>
+        </div>
+
+        <div class="myChart2">
+          <canvas id="myChart2"></canvas>
+        </div>
+     </div>
+
+     <div id="grafic-area-pie">
+      <div class="myChart3">
+        <canvas id="myChart3"></canvas>
+      </div>
+      <div class="myChart4">
+        <canvas id="myChart4"></canvas>
+      </div>
+     </div>
+    </div>
+
+
+
+     <section class="aba-calender">
+      <h1>Calendário de Renda e Despesa</h1>
+      <div id="mouth-nav">
+       <button onclick="mesAnterior()">&#11013</button>
+       <span id="mes-atual">Mês e Ano Atual</span>
+       <button onclick="mesSeguinte()">&#10145</button>
+     </div>
+      <div id="calendar"></div>
+      <div class="area-resume">
+        <h2 id="bg-renda">Total de Renda: <span id="total-renda">0</span></h2>
+        <h2 id="bg-despesa">Total de Despesa: <span id="total-despesa">0</span></h2>
+      </div>
+     </section>
+    </div>
+  </main>
+
+  <!-- configs -->
+   <script src="../script/config.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0"></script>
+  <script src="../lib/package/dist/chartjs-plugin-datalabels.min.js"></script>
+  <script src="../lib/chartjs-plugin-annotation-2.1.2/package/dist/chartjs-plugin-annotation.min.js"></script>
+  <script src="../script/swal.js"></script>
+  <script src="../script/history.js"></script>
+</body>
+
+
+</html>
