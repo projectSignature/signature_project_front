@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+<head>
+  <meta charset="utf-8" name="viewport" content="width=device-width">
+  <title>ログイン</title>
+  <link rel="stylesheet" type="text/css" href="./style/users.css" />
+</head>
+
+<body>
+  <div id="oosotowaku">
+    <div id="soto1">
+      <div id="title">
+        <image src="./image/logo.png"></image>
+      </div>
+      <div id="sotowaku">
+        <div id="login-div">
+          <div id="login">
+            <form name='form-login'>
+              <span class="fontawesome-user"></span>
+              <input type="text" id="user" placeholder="Username">
+              <span class="fontawesome-lock"></span>
+              <input type="password" id="pass" placeholder="Password">
+              <input type="button" id="login-bottom" value="Login">
+              <p>Não tem cadastro? <a href="./pages/register.html">Clique aqui</a></p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Janela modal de carregamento -->
+  <div id="loadingModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <p id="modalText"></p>
+    </div>
+  </div>
+
+  <!-- configs -->
+  <script src="./script/config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <!-- <script src="./lib/sweetalert2.all.min.js"></script> -->
+  <script src="./script/userslogin.js"></script>
+</body>
+</html>

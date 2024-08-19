@@ -1,0 +1,40 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+.header-button i {
+
+    margin-bottom: 1px;
+}
+
+
+
+.filter-section, .data-summary {
+    margin: 20px;
+}
+
+.summary-item {
+    margin-bottom: 10px;
+}
+
+#balance.positive {
+    color: blue;
+}
+
+#balance.negative {
+    color: red;
+}
+
+#submit-data-button {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+#submit-data-button:hover {
+    background-color: #45a049;
+}

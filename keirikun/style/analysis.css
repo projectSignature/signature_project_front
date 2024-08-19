@@ -1,0 +1,120 @@
+html{
+overflow-y: auto;
+      height: 100%;
+}
+body {
+  height: 100%;
+  margin: 0;
+}
+header{
+  width:100%;
+  height:6%;
+  background-color: #FF6928;
+  display: flex;
+  justify-content:center;
+  align-items:  center;
+  overflow:hidden;
+}
+
+.header-buttons {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 100%;
+    padding: 10px;
+}
+.header-button span{
+  font-size: 0.8em
+}
+
+.header-button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 5rem;
+    text-align: center;
+    height: 100%
+}
+
+.header-button i {
+
+    margin-bottom: 1px;
+}
+
+.header-button:hover {
+    color: #FFDAB9;
+}
+#loading-indicator {
+     display: none;
+     position: fixed;
+     left: 50%;
+     top: 50%;
+     transform: translate(-50%, -50%);
+     padding: 1rem 2rem;
+     background: rgba(0, 0, 0, 0.8);
+     color: #fff;
+     border-radius: 5px;
+     font-size: 1.2rem;
+     z-index: 1000;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+ }
+
+ .spinner {
+     border: 4px solid rgba(255, 255, 255, 0.3);
+     border-radius: 50%;
+     border-top: 4px solid #fff;
+     width: 24px;
+     height: 24px;
+     animation: spin 1s linear infinite;
+     margin-right: 10px;
+ }
+
+.header-button:hover {
+    color: #ccc;
+}
+
+.filter-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 10px;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.filter-container label {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.filter-container input,
+.filter-container button {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.chart-container {
+    max-width: 800px;
+    margin: 10px auto;
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+canvas {
+    width: 100% !important;
+    height: auto !important;
+}
