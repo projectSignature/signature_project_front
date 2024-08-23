@@ -86,11 +86,11 @@ sortedData.forEach(item => {
     // 在庫がない場合はsold-outクラスを追加し、表示を変更
     if (!item.stock_status) {
         div.classList.add('sold-out');
-        div.innerHTML = `<img src="./imagen/${item.menu_name_pt}" alt="${item.menu_name_pt}">
+        div.innerHTML = `<img src="./imagen/${item.id}" alt="${item.menu_name_pt}">
                          <h3 data-id="${item.id}">${item[`menu_name_${userLanguage}`]}</h3>
                          <p>Sold Out</p>`;
     } else {
-        div.innerHTML = `<img src="./imagen/${item.menu_name_pt}.jpg" alt="${item.menu_name_pt}" style="width:20rem">
+        div.innerHTML = `<img src="./imagen/${item.id}.jpg" alt="${item.menu_name_pt}" style="width:20rem">
                          <h3 data-id="${item.id}">${item[`menu_name_${userLanguage}`]}</h3>
                          <p>￥${Math.floor(item.price).toLocaleString()}</p>`;
         div.addEventListener('click', () => {
