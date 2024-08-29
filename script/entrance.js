@@ -9,7 +9,7 @@ async function windowLoadGt(){
   //console.log(token)
   //console.log(gymid)
   //gymid = 4
-  //gymid=4
+  gymid=4
   //if (token==null||token=="") {
   //  window.location = `https://squid-app-ug7x6.ondigitalocean.app/signature-project-front/pages/loginMember.html`
   //}else{
@@ -25,7 +25,7 @@ async function windowLoadGt(){
         }
       })
 
-     document.querySelector('#gym-name').innerHTML = sessionStorage.getItem("gym");//gymname
+     document.querySelector('#gym-name').innerHTML = "Kussano dojo"//sessionStorage.getItem("gym");//gymname
     const res =  await makerequest(`https://squid-app-ug7x6.ondigitalocean.app/calender/gymentrance?id=${gymid}`)
     await console.log(res)
     await classesHandler_today(res)
