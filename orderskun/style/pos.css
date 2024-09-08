@@ -47,9 +47,10 @@ body {
 
 .container {
     display: flex;
-    width: 90%;
-    height: 80vh;
+    width: 98%;
+    height: 84vh;
     margin: 20px auto;
+    margin-bottom: 0!important;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
     overflow: hidden;
@@ -66,6 +67,17 @@ body {
     overflow-y: auto;
     border-right: 1px solid #ddd;
 }
+#delete-order {
+           background-color: #ffcccc; /* 薄い赤色 */
+           border: none; /* ボーダーをなしに */
+           padding: 10px 20px; /* パディング */
+           border-radius: 5px; /* ボタンの角を丸く */
+           cursor: pointer; /* ポインタの形を手のアイコンに */
+       }
+
+       #delete-order:hover {
+           background-color: #ff9999; /* ホバー時に少し濃い赤色 */
+       }
 
 .center-panel {
     width: 30%;
@@ -172,7 +184,12 @@ button {
     font-size: 16px;
 }
 #tax-buttons{
-  display: flex
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+}
+#tax-buttons button{
+  width:40%!important
 }
 
 .right-panel .payment-method.selected {
