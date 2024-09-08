@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', async  () => {
       let orderCard = document.createElement('div');
       orderCard.classList.add('order-card');
       orderCard.setAttribute('data-id', order.id); // data-id 属性を設定
+      orderCard.id = order.id
       orderCard.innerHTML = `<h3>Table ${order.table_no}</h3><p>${order.order_name}</p>`;
       orderCard.addEventListener('click', () => {
           if (selectedCard) {
@@ -69,6 +70,8 @@ document.addEventListener('DOMContentLoaded', async  () => {
   totalAmountElement.textContent = `￥${Math.floor(order.total_amount).toLocaleString()}`;
   updateChange(); // Initial calculation
 }
+
+
 
 
     depositAmountElement.addEventListener('input', updateChange);
@@ -349,4 +352,54 @@ async function recite() {
   }catch(e){
     console.log(e)
   }
+}
+
+document.getElementById('delete-order').addEventListener('click', () => {
+    if (!clients.selectedOrder) {
+        alert('Escolha uma comanda que gostaria de deletar');
+        return;
+    }
+    // 選択されたオーダーのIDと、オーダー内のアイテムIDを取得
+    const selectedOrderId = clients.selectedOrder;
+    const orderItems = clients.printInfo.OrderItems.map(item => item.id); // アイテムIDの配列を取得
+
+    // 削除確認のダイアログを表示
+    const confirmDelete = confirm('Deseja deletar a comanda? Não tera mais como recuperar.');
+    if (!confirmDelete) return;
+
+    // 削除リクエストを送信（オーダーIDとアイテムIDを一緒に送信）
+    fetch(`${server}/orders/delete/${selectedOrderId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ itemIds: orderItems }) // アイテムIDもリクエストに含める
+    })
+    .then(response => {
+        if (response.ok) {
+            alert('Comanda deletada com sucesso.');
+            // 必要に応じて注文リストを更新
+            removeOrderFromList(selectedOrderId);
+            clients.selectedOrder=""
+            document.getElementById('total-amount').innerText=0
+            document.getElementById('order-items').innerHTML = ''
+        } else {
+            return response.json().then(data => {
+                throw new Error(data.message || 'Tivemos um erro');
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Tivemos um erros ');
+    });
+});
+
+// 削除後に画面から該当オーダーを消す処理（必要に応じてカスタマイズ）
+function removeOrderFromList(orderId) {
+  console.log(orderId)
+    const orderElement = document.getElementById(`${orderId}`);
+    if (orderElement) {
+        orderElement.remove(); // 画面から削除
+    }
 }
