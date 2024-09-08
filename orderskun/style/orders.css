@@ -250,8 +250,18 @@ button {
     max-width: 900px;
     box-sizing: border-box;
 }
-.details-content p{
+.details-content p,.details-content-halfandhalf p{
   font-size: 20px
+}
+
+.details-content-halfandhalf {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 900px;
+    box-sizing: border-box;
+    margin-right: 10rem
 }
 
 .left-side, .right-side {
@@ -427,7 +437,7 @@ button {
     margin-bottom: 10px
 }
 
-.option-item {
+.option-item,.flavor-item ,.edge-item{
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -437,11 +447,12 @@ button {
     transition: background-color 0.3s, color 0.3s; /* スムーズな色の変化を追加 */
 }
 
-.option-item.selected {
+.option-item.selected,.flavor-item.selected,.edge-item.selected {
     background-color: #007BFF; /* 選択時の背景色を濃い青色に変更 */
     color: white; /* テキストの色を白に変更してコントラストを高める */
     border-color: #0056b3; /* ボーダーの色も濃い青色に変更 */
 }
+
 
 .option-name {
     font-weight: bold;
@@ -758,3 +769,19 @@ button + button {
  .add-cancle-btn{
    font-size: 30px
  }
+
+ #loading-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 20px 40px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    text-align: center;
+}
