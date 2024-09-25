@@ -413,7 +413,7 @@ document.getElementById('save-menu-item').addEventListener('click', async () => 
             formData.append('menuData', JSON.stringify(menuData)); // Adiciona os dados do menu
             formData.append('menu_image', menuImageFile); // Adiciona a imagem como BLOB
             console.log(formData, 'formData')
-            /*try {
+            try {
                 const response = await fetch(`${server}/orders/updates/menu`, {
                     method: 'POST',
                     body: formData // Envia o FormData
@@ -429,7 +429,7 @@ document.getElementById('save-menu-item').addEventListener('click', async () => 
             } catch (error) {
                 console.error(error);
                 alert('Erro no registro');
-            }*/
+            }
         } else {
             alert('Por favor, selecione uma imagem.');
         }
@@ -439,93 +439,7 @@ document.getElementById('save-menu-item').addEventListener('click', async () => 
 });
 
 
-
-/*document.getElementById('save-menu-item').addEventListener('click', async () => {
- 
-  if(!newFlug){
-    const menuData = {
-        user_id: clients.id,
-        id: clients.currenMenuID,
-        category_id: document.getElementById('category-select').value,
-        menu_name_en: document.getElementById('menu_name_en').value,
-        menu_name_pt: document.getElementById('menu_name_pt').value,
-        menu_name_ja: document.getElementById('menu_name_ja').value,
-        description_en: document.getElementById('description_en').value,
-        description_pt: document.getElementById('description_pt').value,
-        description_ja: document.getElementById('description_ja').value,
-        price: document.getElementById('price').value,
-        display_order: document.getElementById('display_order').value,
-        stock_status: document.getElementById('stock_status').value === "true"
-    };
-    try {
-        fetch(`${server}/orders/updates/menu`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(menuData)
-        })
-        .then(response => response.json())
-        .then(menus => {
-          alert('Menu alterado com sucesso');
-          window.location.reload();
-        })
-        .catch(error => {
-          console.log(error)
-          alert('erro no registro')
-        });
-    } catch (error) {
-      console.log(error)
-        alert('Erro no registro');
-    }
-  }else{
-    newAddMenu()
-  }
-
-});*/
-//old
-/*async function newAddMenu(){
-  console.log('koko')
-  console.log(newFlug)
-  const menuData = {
-      user_id: clients.id,
-      category_id: document.getElementById('new-category-select').value,
-      menu_name_en: document.getElementById('menu_name_en').value,
-      menu_name_pt: document.getElementById('menu_name_pt').value,
-      menu_name_ja: document.getElementById('menu_name_ja').value,
-      description_en: document.getElementById('description_en').value,
-      description_pt: document.getElementById('description_pt').value,
-      description_ja: document.getElementById('description_ja').value,
-      price: document.getElementById('price').value,
-      display_order: document.getElementById('display_order').value,
-      stock_status: document.getElementById('stock_status').value === "true"
-  };
-  try {
-      fetch(`${server}/orders/create/menu`, {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(menuData)
-      })
-      .then(response => response.json())
-      .then(menus => {
-        alert('Menu registrado com sucesso');
-        window.location.reload();
-      })
-      .catch(error => {
-        console.log(error)
-        alert('erro no registro')
-      });
-  } catch (error) {
-    console.log(error)
-      alert('Erro no registro');
-  }
-}*/
-
 async function newAddMenu() {
-    console.log('koko')
-    console.log(newFlug)
     const menuData = {
         user_id: clients.id,
         category_id: document.getElementById('new-category-select').value,
