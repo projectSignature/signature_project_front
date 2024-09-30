@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+
+<head>
+    <meta charset="utf-8" >
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="stylesheet" href="../style/kaikei.css">
+    <!-- <link rel="stylesheet" href="../style/main.css"> -->
+</head>
+
+<body class="bg-dark">
+  <!-- <header>
+      <div class="logo-container">
+          <img src="../imagen/logo.png" alt="Logo"/>
+      </div>
+      <div class="header-right">
+          <span id="spn-representative">Paulo</span>
+      </div>
+  </header> -->
+
+  <div class="button-container">
+      <button>
+          <i class="fas fa-chart-line"></i> 解析
+      </button>
+      <button>
+          <i class="fas fa-wallet"></i> 支出
+      </button>
+      <button>
+          <i class="fas fa-cash-register"></i> レジ履歴
+      </button>
+      <button>
+          <i class="fas fa-cog"></i> 設定
+      </button>
+  </div>
+      <div id="loading-indicator">
+        <div class="spinner"></div>
+        Loading...
+    </div>
+    <div class="main-div">
+        <div class="div-comon-division-common">
+            <div class="date-div-span" id="div0">日付</div>
+            <div class="right-div-add" onclick="dayChange(1)"><</div>
+            <div class="center-colomn-div"><input type="date" class="calender-input" id="calender-input" required/></div>
+            <div class="right-div-add" onclick="dayChange(2)">></div>
+        </div>
+        <div class="div-comon-division-common" id="supplieres-top-div">
+            <div class="date-div-span" id="div4">サプライヤー</div>
+            <div class="right-div-add"></div>
+            <div class="center-colomn-div">
+                <select id="Suppliers-options">
+                </select>
+            </div>
+            <div class="right-div-add"></div>
+        </div>
+
+        <div class="div-comon-division-common" id="payinfo">
+            <div class="date-div-span" id="div2">方法</div>
+            <div class="right-div-add"></div>
+            <div class="center-colomn-div">
+                <select id="pay-select">
+                </select>
+            </div>
+            <div class="right-div-add"></div>
+        </div>
+
+        <div class="div-comon-division-common" id="amoun-top-div">
+            <div class="date-div-span" id="div3">金額</div>
+            <div class="right-div-add"></div>
+            <div class="center-colomn-div"><input placeholder="￥" type="text" class="calender-input" id="value-input" oninput="kanmaReplase()" inputmode="numeric" required/></div>
+            <div class="right-div-add"></div>
+        </div>
+        <div class="div-comon-division-common" id="top-memo-div">
+            <div class="date-div-span" id="div1">メモ</div>
+            <div class="right-div-add"></div>
+            <div class="center-colomn-div"><textarea placeholder="" type="text" id="memo-pay" rowa="8" cols="40" required class="calender-input-text"></textarea></div>
+            <div class="right-div-add"></div>
+        </div>
+        <div class="category-main-div" id="categorysdiv">
+        </div>
+        <div class="regist-button" id="confirms-buttons">
+            <input id="input1" value="登録" type="button" onclick="soubetsuProcess()"/>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+    <script src="../script/swal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
+    <script src="../script/translations.js"></script>
+    <script src="../script/common.js"></script>
+    <script src="../script/kaikei.js"></script>
+</body>
+
+</html>
