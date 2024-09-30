@@ -1,4 +1,5 @@
-const token = window.localStorage.getItem('token');
+const token = JSON.parse(window.localStorage.getItem('user'));
+console.log(token)
 let nameSpan = document.getElementById('spn-representative')
 let userInfo={}
 let currentSaleId = ""
@@ -6,17 +7,17 @@ let currentSaleId = ""
 
 
 document.addEventListener("DOMContentLoaded", async () => {
-  const decodedToken = await jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
-  console.log(decodedToken)
-   userInfo.language = decodedToken.language;
-   userInfo.id = decodedToken.userId;
-   userInfo.representativeName = decodedToken.name;
-   userInfo.expense_id = decodedToken.expense_id;
-   nameSpan.innerText = userInfo.representativeName;
+  // const decodedToken = await jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
+  // console.log(decodedToken)
+   userInfo.language = token.language;
+   userInfo.id = token.user_id;
+   userInfo.representativeName = token.representative_name;
+   userInfo.expense_id = token.expenses_get_id;
+   nameSpan.innerText = token.representative_name;
    userInfo.current_password = '';
    userInfo.password = '';
    userInfo.confirm_password = '';
-   userInfo.email = decodedToken.email
+   userInfo.email = token.username
 
 
   fetchTotalSales()
