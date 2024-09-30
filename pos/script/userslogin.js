@@ -40,6 +40,7 @@ async function signin(payload) {
     if (response.data.success) {
       hideLoading(); // ローディングを非表示
       const { user } = response.data;
+      console.log(user)
       // alert('Seja bem！'); // 成功メッセージを表示
       window.localStorage.setItem('user', JSON.stringify(user)); // ユーザー情報を保存
       window.location.href = './pages/dashboard.html'; // ダッシュボードにリダイレクト
