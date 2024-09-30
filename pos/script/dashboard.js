@@ -2,7 +2,7 @@ const token = window.localStorage.getItem('token');
 let nameSpan = document.getElementById('spn-representative')
 let userInfo={}
 let currentSaleId = ""
-console.log(server)
+
 
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -21,7 +21,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function fetchTotalSales() {
       loadingIndicator.style.display = 'block';
       try {
-          console.log(server);
           const response = await fetch(`${server}/pos/total-sales?user_id=${userInfo.id}`, {
               method: 'GET',
               headers: {
@@ -191,10 +190,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById('startDate').value = firstDayOfMonth;
     document.getElementById('endDate').value = todayFormatted;
 
-    // expenseButton.addEventListener('click', async()=>{
-    //   window.location = './expense.html'
-    // })
-
     // 分析ボタンのイベントリスナー
     analistButton.addEventListener('click', async() =>{
         toggleDisplay(
@@ -223,9 +218,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             [registerFilter, registerHistory], // 表示する要素
             [salesChartContainer, expensesChartContainer, totalincome, salesContainer, settingsList] // 非表示にする要素
         );
-
-        // デフォルト日付でレジ履歴を自動的に表示
-        console.log('レジ履歴入り')
         await fetchAndDisplayRegisterHistory(firstDayOfMonth, todayFormatted);
           loadingIndicator.style.display = 'none';
     });
@@ -251,12 +243,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         element.style.display = 'block';
     });
     hideElements.forEach(element => {
-      console.log(element)
         element.style.display = 'none';
     });
 }
-
-
      // フィルターボタンをクリックしたときの動作
      document.getElementById('filterButton').addEventListener('click', async () => {
          const startDate = document.getElementById('startDate').value;
@@ -284,9 +273,7 @@ document.addEventListener("DOMContentLoaded", async () => {
              if (!response.ok) {
                  throw new Error('データ取得に失敗しました');
              }
-
              const data = await response.json();
-             console.log(data)
              // レジ履歴を表示
              let historyHtml = '';
              data.forEach(record => {
@@ -351,16 +338,6 @@ listItems.forEach(item => {
            }
        });
 
-       // saveButton.addEventListener('click', function () {
-       //
-       //     const form = document.getElementById('personalSettingsForm');
-       //     if (form) {
-       //         form.submit(); // フォームの送信処理
-       //     }
-       //     settingsModal.style.display = 'none';
-       //     alert('設定が保存されました');
-       // });
-
        function generateModalContent(settingKey) {
            switch (settingKey) {
                case 'personal_settings':
@@ -416,9 +393,6 @@ listItems.forEach(item => {
   // データをJSON形式に変換し、変更があったフィールドのみ追加
   const data = {};
   for (let [key, value] of formData.entries()) {
-      console.log(key);
-      console.log(value);
-      console.log(userInfo[key]);
 // 変更があったかどうかをチェック (userInfo[key] が存在するか確認)
       if (userInfo[key] !== undefined && userInfo[key] !== value) {
 // パスワード関連のフィールドかどうかをチェック
@@ -485,24 +459,6 @@ async function updateInformations(dataobject){
 loadingIndicator.style.display = 'none';
 }
 
-
-
-
-
-
-    // function generateModalContent(settingName) {
-    //     switch (settingName) {
-    //         case '個人設定':
-    //             return '<label for="username">ユーザー名: </label><input type="text" id="username">';
-    //         case 'レジ番号':
-    //             return '<label for="registerNumber">レジ番号: </label><input type="number" id="registerNumber">';
-    //         case 'レジ担当者':
-    //             return '<label for="cashierName">担当者名: </label><input type="text" id="cashierName">';
-    //         default:
-    //             return '';
-    //     }
-    // }
-
    async function fetchAndDisplaySalesHistory(startDate, endDate) {
      loadingIndicator.style.display = 'block';
        try {
@@ -565,7 +521,6 @@ loadingIndicator.style.display = 'none';
    document.getElementById('filterButton').addEventListener('click', async () => {
        const startDate = document.getElementById('startDate').value;
        const endDate = document.getElementById('endDate').value;
-       console.log(endDate)
        if (!startDate || !endDate) {
            alert('開始日と終了日を選択してください。');
            return;
@@ -608,7 +563,6 @@ loadingIndicator.style.display = 'none';
 })
 
 function showItemDetails(itemDetails) {
-  console.log(itemDetails)
     const detailsHTML = itemDetails.map(item => `
         <li>
             <strong>Nome:</strong> ${item.item_name}<br>
@@ -639,7 +593,6 @@ function closePopup() {
 
 function deleteSale(sale_id) {
     if (confirm('Deseja deletar o registro？')) {
-      console.log(`${server}/pos/delete/sale`)
         fetch(`${server}/pos/delete/sale`, {
             method: 'POST',
             headers: {
@@ -666,9 +619,6 @@ function deleteSale(sale_id) {
 }
 
 function updateSale(totalPrice, menu, saleId) {
-  console.log('Total Price:', totalPrice);
-  console.log('Menu:', menu);
-  console.log('Sale ID:', saleId);
 
   // 配列をオブジェクト形式に変換し、キーを1から始める
   const itemDetails = {};
@@ -683,8 +633,6 @@ function updateSale(totalPrice, menu, saleId) {
       tax_rate: parseFloat(item.tax_rate).toFixed(2)  // 小数点2桁に固定
     };
   });
-
-  console.log(itemDetails)
 
   // そのままのJSON文字列を生成
   const itemDetailsString = JSON.stringify(itemDetails);
@@ -719,15 +667,6 @@ function updateSale(totalPrice, menu, saleId) {
   });
 }
 
-
-
-
-
-
-
-
-
-
 // 削除されたカードを画面から削除する関数
 function removeSaleCard(sale_id) {
     const cardElement = document.querySelector(`[data-sale-id="${sale_id}"]`);
@@ -743,7 +682,6 @@ async function updateSaleCard(datas,sale_id){
   registerHistory.innerHTML += await createNewSaleCard(datas.data);
   // 親要素を取得
   const parentElement = document.querySelector('#registerHistory'); // 親要素のセレクタを指定
-  console.log(parentElement)
   // 親要素内の data-sale-id 属性を持つすべての子要素を取得
   const cardElements = Array.from(parentElement.querySelectorAll('[data-sale-id]'));
   // data-sale-id を基準に要素を昇順で並び替え
@@ -817,13 +755,9 @@ let currentSale = null;
 
 function showUpdateModal(sale) {
   currentSale = sale;
-  console.log(currentSale)
-
   currentSaleId = currentSale.sale_id
-
   const itemDetailsContainer = document.getElementById('itemDetailsContainer');
   itemDetailsContainer.innerHTML = ''; // コンテナをクリア
-
   sale.item_details.forEach((item, index) => {
     console.log(index)
     const priceWithoutDecimals = parseFloat(item.total_price).toFixed(0); // .00 を省く処理
@@ -856,8 +790,6 @@ function showUpdateModal(sale) {
   document.getElementById('updateModal').style.display = "block";
 }
 
-
-
 function increaseQuantity(index) {
   const quantityInput = document.getElementById(`quantity_${index}`);
   quantityInput.value = parseInt(quantityInput.value) + 1;
@@ -877,7 +809,6 @@ function closeModal() {
 
 function saveChanges() {
   loadingIndicator.style.display = 'block';
-  console.log(currentSaleId);
   // updatedItemsのリストを作成
   const updatedItems = currentSale.item_details.map((item, index) => {
     const updatedQuantity = document.getElementById(`quantity_${index}`).value;
@@ -901,11 +832,9 @@ function saveChanges() {
     updateSale(totalAmount,updatedItems,currentSaleId)
     // console.log('合計金額:', totalAmount);
   }
-
   closeModal();
 loadingIndicator.style.display = "none"
 }
-
 
 function deleteItem(index) {
   // アイテムを削除する
@@ -915,102 +844,6 @@ function deleteItem(index) {
   showUpdateModal(currentSale);
   loadingIndicator.style.display = 'none';
 }
-
-
-
-// async function fetchMonthlyExpenses() {
-//        try {
-//          let test = `<html>test today</html`
-//            const response = await fetch(`${server}/pos/monthly-expenses?user_id=${userInfo.expense_id}`, {
-//                method: 'GET',
-//                headers: {
-//                    'Authorization': `Bearer ${token}`,  // トークンをヘッダーに含める
-//                    'Content-Type': 'application/json'
-//                }
-//            });
-//
-//            if (!response.ok) {
-//             throw new Error('データ取得に失敗しました');
-//         }
-//
-//         const data = await response.json();
-//
-//         // 総支出の表示
-//         document.getElementById('totalExpenses').textContent = `¥${parseFloat(data.totalExpenses).toLocaleString()}`;
-//
-//         console.log(data)
-//         // 日別支出の推移グラフを描画
-//         const labels = data.dailyExpenses.map(expense => {
-//             const date = new Date(expense.date);
-//             const month = date.getMonth() + 1;
-//             const day = date.getDate();
-//             return `${month}/${day}`;  // "MM/DD"形式で日付を表示
-//         });
-//
-//         // 修正部分: 日別の支出のみをプロットする
-//         const expensesData = data.dailyExpenses.map(expense => parseFloat(expense.expense));
-//         console.log(expensesData)
-//
-//         const ctx = document.getElementById('expensesChart').getContext('2d');
-//         new Chart(ctx, {
-//             type: 'line',
-//             data: {
-//                 labels: labels,
-//                 datasets: [{
-//                     label: '日別支出',
-//                     data: expensesData,
-//                     backgroundColor: 'rgba(255, 99, 132, 0.2)',
-//                     borderColor: 'rgba(255, 99, 132, 1)',
-//                     borderWidth: 2,
-//                     fill: true,
-//                     tension: 0.4
-//                 }]
-//             },
-//             options: {
-//                 scales: {
-//                     y: {
-//                         beginAtZero: true,
-//                         grid: {
-//                             display: false
-//                         },
-//                         ticks: {
-//                             display: true
-//                         }
-//                     },
-//                     x: {
-//                         grid: {
-//                             display: false
-//                         },
-//                         ticks: {
-//                             display: true
-//                         }
-//                     }
-//                 },
-//                 plugins: {
-//                     legend: {
-//                         display: false
-//                     }
-//                 },
-//                 elements: {
-//                     line: {
-//                         borderWidth: 3
-//                     },
-//                     point: {
-//                         radius: 4,
-//                         backgroundColor: 'rgba(255, 99, 132, 1)',
-//                     }
-//                 },
-//                 layout: {
-//                     padding: 10
-//                 }
-//             }
-//            });
-//
-//        } catch (error) {
-//            console.error('Error fetching monthly expenses:', error);
-//            alert('支出データの取得中にエラーが発生しました');
-//        }
-//    }
 
 // 設定項目を言語ごとにマッピング
 const settingMap = {
