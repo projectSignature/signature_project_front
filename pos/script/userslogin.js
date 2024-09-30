@@ -8,58 +8,55 @@ console.log(server)
 
 document.getElementById("login-button").addEventListener("click", login_check);
 //ログイン情報の確認をする処理、IDが空白かどうか、その後PASSがくうはくかどうか、TRUEの場合Swal処理
-async function login_check(user, password) {
-  console.log('in');
-  user = document.getElementById("user").value; //ユーザー名
-  password = document.getElementById("pass").value; //パスワード
+async function login_check() {
+  // ユーザー名とパスワードを取得
+  const user = document.getElementById("user").value; // ユーザー名
+  const password = document.getElementById("pass").value; // パスワード
 
-  if (user == "") {
-    errormessage = "Enter your username";
-    swallopen(errormessage);
+  // フィールドのバリデーション
+  if (user === "") {
+    const errormessage = "ユーザー名を入力してください";
+    swallopen(errormessage); // エラーメッセージ表示用の関数
+  } else if (password === "") {
+    const errormessage = "パスワードを入力してください";
+    swallopen(errormessage); // エラーメッセージ表示用の関数
   } else {
-    if (password == "") {
-      errormessage = "Enter your password";
-      swallopen(errormessage);
-    } else {
-      if (!isLoading) { // Verifica se não está carregando
-        showLoading(); // Exibe o carregamento
-        signin({email: user, password})
-      }
+    if (!isLoading) { // もしロード中でなければ
+      showLoading(); // ローディングアニメーションを表示
+      await signin({ username: user, password_hash: password }); // ログイン処理
     }
   }
 }
 
 async function signin(payload) {
-  // let server = accessmainserver;
-  // let server = 'http://localhost:3000'
-  // if (window.location.href.includes('/localhost') || window.location.href.includes('http://127.0.0.1:5500')) {
-  //   server = 'http://localhost:3000';
-  // }
-  axios.post(`${server}/noauth/pos/signin`, payload, {
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
-  .then((response) =>{
+  try {
+    const response = await axios.post(`${server}/pos/login`, payload, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    // 成功時の処理
     if (response.data.success) {
-      const { token } = response.data.info;
-      window.localStorage.setItem('token', token);
-      hideLoading(); // Oculta o carregamento
-      // alert('Conectado com sucesso'); // Mensagem de sucesso
-      window.location.href = './pages/dashboard.html'; // Redireciona para renda.html
+      hideLoading(); // ローディングを非表示
+      const { user } = response.data;
+      // alert('Seja bem！'); // 成功メッセージを表示
+      window.localStorage.setItem('user', JSON.stringify(user)); // ユーザー情報を保存
+      window.location.href = './pages/dashboard.html'; // ダッシュボードにリダイレクト
     } else {
-      errormessage = "Check username and password";
-      document.getElementById("pass").value = "";
-      swallopen(errormessage);
-      hideLoading(); // Oculta o carregamento
+      // ログイン失敗時の処理
+      const errormessage = response.data.message || "ユーザー名またはパスワードが間違っています";
+      swallopen(errormessage); // エラーメッセージ表示用
+      hideLoading(); // ローディングを非表示
     }
-  })
-  .catch(error => {
-    alert('Usuário não encontrado ou Senha Incorreta');
-    console.error(error);
-    hideLoading(); // Oculta o carregamento
-  });
+  } catch (error) {
+    // サーバーエラーや通信エラー時の処理
+    alert('サーバーエラーが発生しました。後でもう一度試してください。');
+    console.error('エラー:', error);
+    hideLoading(); // ローディングを非表示
+  }
 }
+
 
 function swallopen() {
   Swal.fire({
