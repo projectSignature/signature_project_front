@@ -7,6 +7,7 @@ let currentSaleId = ""
 
 document.addEventListener("DOMContentLoaded", async () => {
   const decodedToken = await jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
+  console.log(decodedToken)
    userInfo.language = decodedToken.language;
    userInfo.id = decodedToken.userId;
    userInfo.representativeName = decodedToken.name;
@@ -15,10 +16,13 @@ document.addEventListener("DOMContentLoaded", async () => {
    userInfo.current_password = '';
    userInfo.password = '';
    userInfo.confirm_password = '';
+   userInfo.email = decodedToken.email
+
 
   fetchTotalSales()
   // fetchMonthlyExpenses()
   async function fetchTotalSales() {
+     console.log(userInfo)
       loadingIndicator.style.display = 'block';
       try {
           const response = await fetch(`${server}/pos/total-sales?user_id=${userInfo.id}`, {
@@ -357,15 +361,19 @@ listItems.forEach(item => {
                                <input type="password" id="confirmPassword" name="confirm_password" value="">
                            </div>
                            <div class="form-group">
+                               <label for="email_form">email:</label>
+                               <input type="text" id="form_email" name="email" value="${userInfo.email}">
+                           </div>
+                           <div class="form-group">
                                <label for="representativeName">Nome do representante:</label>
                                <input type="text" id="representativeName" name="representativeName" value="${nameSpan.innerText}">
                            </div>
                            <div class="form-group">
                                <label for="language">Idioma:</label>
                                <select id="language" name="language">
-                                   <option value="pt">Português</option>
-                                   <option value="en">Inglês</option>
-                                   <option value="ja">Japonês</option>
+                                   <option value="pt" ${userInfo.language==='pt'?'selected':''}>Português</option>
+                                   <option value="en" ${userInfo.language==='en'?'selected':''}>Inglês</option>
+                                   <option value="ja" ${userInfo.language==='ja'?'selected':''}>Japonês</option>
                                </select>
                            </div>
                        </form>
@@ -395,6 +403,9 @@ listItems.forEach(item => {
   for (let [key, value] of formData.entries()) {
 // 変更があったかどうかをチェック (userInfo[key] が存在するか確認)
       if (userInfo[key] !== undefined && userInfo[key] !== value) {
+        console.log(key)
+        console.log(userInfo[key])
+        console.log(value)
 // パスワード関連のフィールドかどうかをチェック
           if (['current_password', 'password', 'confirm_password'].includes(key)) {
               const currentPass = document.getElementById('currentPassword').value.trim();
@@ -443,6 +454,11 @@ async function updateInformations(dataobject){
       if (response.status===200) {
         nameSpan.innerText = document.getElementById('representativeName').value
         userInfo.representativeName = document.getElementById('representativeName').value
+        userInfo.email = document.getElementById('form_email').value
+        userInfo.current_password = document.getElementById('currentPassword').value
+        userInfo.password = document.getElementById('password').value
+        userInfo.confirm_password = document.getElementById('confirmPassword').value
+
           const result = await response.json();
           console.log('保存成功:', result);
           alert('Feito com sucesso');
