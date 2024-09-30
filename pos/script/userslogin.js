@@ -3,7 +3,8 @@
 let user;
 let password;
 let errormessage;
-let isLoading = false; // Variável para controlar o estado de carregamento
+let isLoading = false; // Variável para controlar o estado de carregament
+console.log(server)
 
 document.getElementById("login-button").addEventListener("click", login_check);
 //ログイン情報の確認をする処理、IDが空白かどうか、その後PASSがくうはくかどうか、TRUEの場合Swal処理
@@ -29,24 +30,17 @@ async function login_check(user, password) {
 }
 
 async function signin(payload) {
-  // let urlBase = accessmainserver;
-  let urlBase = 'http://localhost:3000'
-
-  if (window.location.href.includes('/localhost') || window.location.href.includes('http://127.0.0.1:5500')) {
-    urlBase = 'http://localhost:3000';
-  }
-
-  console.log(payload)
-
-  console.log(urlBase)
-
-  axios.post(`${urlBase}/noauth/pos/signin`, payload, {
+  // let server = accessmainserver;
+  // let server = 'http://localhost:3000'
+  // if (window.location.href.includes('/localhost') || window.location.href.includes('http://127.0.0.1:5500')) {
+  //   server = 'http://localhost:3000';
+  // }
+  axios.post(`${server}/noauth/pos/signin`, payload, {
     headers: {
       'Content-Type': 'application/json'
     }
   })
   .then((response) =>{
-    console.log(response)
     if (response.data.success) {
       const { token } = response.data.info;
       window.localStorage.setItem('token', token);
