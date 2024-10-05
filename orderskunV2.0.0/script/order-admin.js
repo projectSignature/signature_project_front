@@ -1,5 +1,5 @@
-const token = window.localStorage.getItem('token');
-const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
+// const token = window.localStorage.getItem('token');
+// const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
 const seletOrderType = document.getElementById('take-or-uber')
 const menuItemsContainer = document.getElementById('center-div');
 const selectedItemsContainer = document.getElementById('list-order')
@@ -12,9 +12,9 @@ let totalPrice = 0; // 合計金額
 // ページ読み込み時にデフォルトで8%を選択状態にする
 document.getElementById('tax8').classList.add('selected');
 
-if (!decodedToken) {
-  // window.location.href = '../index.html';
-}
+// if (!decodedToken) {
+//   // window.location.href = '../index.html';
+// }
 
 let clients ={
   id:17, //クライアントid
@@ -27,7 +27,7 @@ let clients ={
 
 let orderList = {
   tableNo:1,
-  clienId:decodedToken.userId,
+  clienId:47,
   order:{
   },
   historyOrder:{

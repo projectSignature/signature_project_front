@@ -1,5 +1,5 @@
-const token = window.localStorage.getItem('token');
-const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
+// const token = window.localStorage.getItem('token');
+// const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
 
 const currentTime = document.getElementById('current_time');
 

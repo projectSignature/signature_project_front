@@ -1,10 +1,10 @@
-const token = window.localStorage.getItem('token');
-const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
-
-
-if (!decodedToken) {
-  // window.location.href = '../index.html';
-}
+// const token = window.localStorage.getItem('token');
+// // const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
+//
+//
+// // if (!decodedToken) {
+// //   // window.location.href = '../index.html';
+// }
 
 let clients ={
   id:17, //クライアントid

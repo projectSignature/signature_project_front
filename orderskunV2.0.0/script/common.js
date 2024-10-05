@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const correspondingButtonId = pageToButtonMap[currentPage];
 
     if (correspondingButtonId) {
-        document.getElementById(correspondingButtonId).classList.add('active');
+        // document.getElementById(correspondingButtonId).classList.add('active');
     }
 
     // ボタンのクリックイベントを設定

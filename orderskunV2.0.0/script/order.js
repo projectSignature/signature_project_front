@@ -1,5 +1,5 @@
-const token = window.localStorage.getItem('token');
-const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
+// const token = window.localStorage.getItem('token');
+// const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
 const orderNamesContainer = document.getElementById('order-names-container');
 // const selectedItemsContainer = document.getElementById('selected-items');
 const nameInput = document.getElementById('name-input');
@@ -11,9 +11,9 @@ const modal = document.getElementById('add-name-modal');
 const showAddNameModalBtn = document.getElementById('show-add-name-modal');
 const closeModalBtn = document.querySelector('.modal .close');
 
-if (!decodedToken) {
-  // window.location.href = '../index.html';
-}
+// if (!decodedToken) {
+//   // window.location.href = '../index.html';
+// }
 
 let orderList = {
   tableNo:1,
