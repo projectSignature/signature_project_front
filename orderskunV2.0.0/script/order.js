@@ -780,12 +780,9 @@ document.getElementById('confirm-order').addEventListener('click', async () => {
             return;
         }
 
-        console.log(
-                    orderList.order[selectedName]
-            )
-
         const orderID = orderList.historyOrder.filter(item => item.order_name === selectedName)
-        console.log(orderID)
+
+        const ordersId = orderID.length===0?'':orderID[0].id
         const response = await fetch(`${server}/orderskun/confirm`, {
             method: 'POST',
             headers: {
@@ -796,13 +793,13 @@ document.getElementById('confirm-order').addEventListener('click', async () => {
                 user_id: orderList.clienId,
                 table_no: orderList.tableNo,
                 items: orderList.order[selectedName],
-                orderId:orderID[0].id
+                orderId:ordersId
             })
         });
         console.log(response)
 
         if (response.ok) {
-            updateAlarmStatus(orderID[0].id,true)
+            updateAlarmStatus(ordersId,true)
             showCustomAlert(translations[userLanguage]["Pedido feito"]);
             orderList.order[selectedName] = [];
             selectedItemsContainer.innerHTML = ''; // リストをクリア
