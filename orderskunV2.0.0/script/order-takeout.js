@@ -12,7 +12,7 @@ const showAddNameModalBtn = document.getElementById('show-add-name-modal');
 const closeModalBtn = document.querySelector('.modal .close');
 
 if (!decodedToken) {
-  window.location.href = '../index.html';
+  // window.location.href = '../index.html';
 }
 
 let orderList = {

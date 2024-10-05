@@ -2,11 +2,11 @@ const token = window.localStorage.getItem('token');
 const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
 
 if (!decodedToken) {
-  window.location.href = '../index.html';
+  // window.location.href = '../index.html';
 }
 
 let clients ={
-  id:decodedToken.userId, //クライアントid
+  id:17, //クライアントid
   language:'pt',
   paytype:'',
   selectedOrder:"",

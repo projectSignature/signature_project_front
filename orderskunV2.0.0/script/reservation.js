@@ -5,15 +5,15 @@ const currentTime = document.getElementById('current_time');
 
 
 let clients ={
-  userId: decodedToken.userId,
-  email: decodedToken.email,
-  username: decodedToken.uername,
-  table_count: decodedToken.table_count, // Quantidade de mesas
+  userId: 17,
+  email: 'rootsgrillhekinan@gmeil.com',
+  username: 'RootsGrill',
+  table_count: 5, // Quantidade de mesas
   iat: 1727826129
 }
 
 if (!decodedToken) {
-  window.location.href = '../index.html';
+  // window.location.href = '../index.html';
 }
 
 sessionStorage.setItem('userInfo', JSON.stringify(simulatedUserInfo));

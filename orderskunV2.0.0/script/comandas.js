@@ -3,11 +3,11 @@ const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使
 
 
 if (!decodedToken) {
-  window.location.href = '../index.html';
+  // window.location.href = '../index.html';
 }
 
 let clients ={
-  id:decodedToken.userId, //クライアントid
+  id:17, //クライアントid
   language:'pt', //クライアント言語
   paytype:'',　//ユーザー支払い方法
   selectedOrder:"",　//選択オーダー

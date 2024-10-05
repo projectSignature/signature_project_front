@@ -13,11 +13,11 @@ let totalPrice = 0; // 合計金額
 document.getElementById('tax8').classList.add('selected');
 
 if (!decodedToken) {
-  window.location.href = '../index.html';
+  // window.location.href = '../index.html';
 }
 
 let clients ={
-  id:decodedToken.userId, //クライアントid
+  id:17, //クライアントid
   language:'pt', //クライアント言語
   paytype:'',　//ユーザー支払い方法
   selectedOrder:"",　//選択オーダー
