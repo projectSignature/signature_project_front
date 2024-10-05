@@ -12,6 +12,10 @@ let totalPrice = 0; // 合計金額
 // ページ読み込み時にデフォルトで8%を選択状態にする
 document.getElementById('tax8').classList.add('selected');
 
+if (!decodedToken) {
+  window.location.href = '../index.html';
+}
+
 let clients ={
   id:decodedToken.userId, //クライアントid
   language:'pt', //クライアント言語

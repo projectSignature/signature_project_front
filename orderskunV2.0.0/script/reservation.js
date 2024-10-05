@@ -1,20 +1,25 @@
-const baseApi = 'https://squid-app-ug7x6.ondigitalocean.app/';
+const token = window.localStorage.getItem('token');
+const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
 
 const currentTime = document.getElementById('current_time');
 
-// Simulação do sessionStorage
-const simulatedUserInfo = {
-    userId: 1,
-    email: "test2@gmail.com",
-    username: "Test2",
-    table_count: 8, // Quantidade de mesas
-    iat: 1727826129
-};
+
+let clients ={
+  userId: decodedToken.userId,
+  email: decodedToken.email,
+  username: decodedToken.uername,
+  table_count: decodedToken.table_count, // Quantidade de mesas
+  iat: 1727826129
+}
+
+if (!decodedToken) {
+  window.location.href = '../index.html';
+}
 
 sessionStorage.setItem('userInfo', JSON.stringify(simulatedUserInfo));
 
 function getUserInfo() {
-    const userInfo = sessionStorage.getItem('userInfo');
+    const userInfo = clients
     return userInfo ? JSON.parse(userInfo) : null;
 }
 
@@ -64,7 +69,7 @@ function showNotification(message, type = 'success') {
     notification.style.padding = '10px';
     notification.style.textAlign = 'center';
     notification.style.fontSize = '16px';
-    notification.style.marginTop = '10px'; 
+    notification.style.marginTop = '10px';
 
     notification.textContent = message;
 
@@ -90,7 +95,7 @@ function fillTableWithReservations(reservations) {
     reservations.forEach(reservation => {
         const tableElement = document.createElement('div');
         tableElement.classList.add('mesa');
-        
+
         tableElement.setAttribute('data-id', `mesa${reservation.table_number}`);
         tableElement.setAttribute('data-reservation-id', reservation.id);
 
@@ -149,7 +154,7 @@ function openModal(table) {
     modal.style.display = 'block';
 
     deleteReservationButton.onclick = () => {
-        deleteTable(table.id); 
+        deleteTable(table.id);
     };
 
     saveReservationButton.onclick = () => {
@@ -168,15 +173,15 @@ function openModal(table) {
 }
 
 function hasTimeConflict(newReservation, existingReservations) {
-    return existingReservations.some(reservation => 
+    return existingReservations.some(reservation =>
         reservation.table_number == newReservation.table_number &&
         reservation.reservation_date == newReservation.reservation_date &&
         (
-            (newReservation.reservation_start_time >= reservation.reservation_start_time && 
-             newReservation.reservation_start_time < reservation.reservation_end_time) || 
-            (newReservation.reservation_end_time > reservation.reservation_start_time && 
+            (newReservation.reservation_start_time >= reservation.reservation_start_time &&
+             newReservation.reservation_start_time < reservation.reservation_end_time) ||
+            (newReservation.reservation_end_time > reservation.reservation_start_time &&
              newReservation.reservation_end_time <= reservation.reservation_end_time) ||
-            (newReservation.reservation_start_time <= reservation.reservation_start_time && 
+            (newReservation.reservation_start_time <= reservation.reservation_start_time &&
              newReservation.reservation_end_time >= reservation.reservation_end_time)
         )
     );
@@ -196,15 +201,15 @@ function createReservation() {
     const url = 'https://squid-app-ug7x6.ondigitalocean.app/reservations/create';
 
     const reservationData = {
-        user_id: userInfo.userId, 
+        user_id: userInfo.userId,
         reservation_date: document.getElementById('create-reservation-date').value,
         reservation_start_time: document.getElementById('create-start-time').value,
         reservation_end_time: document.getElementById('create-end-time').value,
-        table_number: document.getElementById('create-table-number').value, 
+        table_number: document.getElementById('create-table-number').value,
         reservation_name: document.getElementById('create-reservation-name').value,
         phone_number: document.getElementById('create-phone-number').value,
         num_people: document.getElementById('create-num-people').value,
-        remarks: document.getElementById('create-remarks').value || null 
+        remarks: document.getElementById('create-remarks').value || null
     };
 
     fetch(url, {
@@ -242,7 +247,7 @@ submitCreateReservationBtn.addEventListener('click', createReservation);
 
 function deleteTable(reservationId) {
     showLoading();
-    const url = `${baseApi}reservations/delete/${reservationId}`;
+    const url = `${server}reservations/delete/${reservationId}`;
 
     fetch(url, {
         method: 'DELETE',
@@ -277,7 +282,7 @@ function deleteTable(reservationId) {
 
 function editTable(reservationId) {
     showLoading();
-    const url = `${baseApi}reservations/update/${reservationId}`;
+    const url = `${server}reservations/update/${reservationId}`;
 
     const tableNumber = document.getElementById('modal-table-number').value;
 
@@ -292,7 +297,7 @@ function editTable(reservationId) {
         reservation_date: document.getElementById('modal-reservation-date').value,
         reservation_start_time: document.getElementById('modal-start-time').value,
         reservation_end_time: document.getElementById('modal-end-time').value,
-        table_number: document.getElementById('modal-table-number').value, 
+        table_number: document.getElementById('modal-table-number').value,
         reservation_name: document.getElementById('modal-reservation-name').value,
         phone_number: document.getElementById('modal-phone-number').value,
         num_people: document.getElementById('modal-num-people').value,
@@ -331,7 +336,7 @@ function editTable(reservationId) {
 
 function getTableData() {
     showLoading();
-    const url = `${baseApi}reservations?user_id=${userInfo.userId}&reservation_date=${japaneseDate}`;
+    const url = `${server}reservations?user_id=${userInfo.userId}&reservation_date=${japaneseDate}`;
 
     fetch(url)
         .then(response => {

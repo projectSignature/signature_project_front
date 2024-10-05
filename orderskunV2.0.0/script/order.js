@@ -11,6 +11,10 @@ const modal = document.getElementById('add-name-modal');
 const showAddNameModalBtn = document.getElementById('show-add-name-modal');
 const closeModalBtn = document.querySelector('.modal .close');
 
+if (!decodedToken) {
+  window.location.href = '../index.html';
+}
+
 let orderList = {
   tableNo:1,
   clienId:decodedToken.userId,

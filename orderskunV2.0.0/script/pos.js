@@ -1,7 +1,11 @@
 const token = window.localStorage.getItem('token');
 const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
 let selectOrders = ""
-console.log(decodedToken)
+
+
+if (!decodedToken) {
+  window.location.href = '../index.html';
+}
 
 
 

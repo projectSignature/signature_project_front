@@ -1,6 +1,9 @@
 const token = window.localStorage.getItem('token');
 const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
-console.log(decodedToken)
+
+if (!decodedToken) {
+  window.location.href = '../index.html';
+}
 
 let clients ={
   id:decodedToken.userId, //クライアントid
