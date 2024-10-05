@@ -17,13 +17,15 @@ let clients ={
 
 let selectedCard = null;
 
+let MainData = null; // グローバルな変数として宣言
+
 document.addEventListener('DOMContentLoaded', async () => {
     const updateData = async () => {
         console.log(clients.id);
         // メニュー、カテゴリー、オープション表示
         const loadingPopup = document.getElementById('loading-popup');
         loadingPopup.style.display = 'block'; // ポップアップを表示
-        const MainData = await makerequest(`${server}/orders/getBasedata?user_id=${clients.id}`);
+        MainData = await makerequest(`${server}/orders/getBasedata?user_id=${clients.id}`); // MainDataにデータを格納
         let pendingOrders = await fetchPendingOrders(clients.id);
         const orderContainer = document.getElementById('order-list');
         orderContainer.innerHTML = ''; // 前の注文カードをクリア
@@ -156,6 +158,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 });
+
 
 
 
