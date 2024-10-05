@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     //   }
     // }
     //カテゴリーの順番を変える
-    const Categorys = MainData.categories.filter(category => category.is_takeout === false);
+    const Categorys = MainData.categories.filter(category => category.is_takeout === true);
     Categorys.sort((a, b) => a.display_order - b.display_order);
     console.log(Categorys)
     const orderCategories = document.getElementById('order-categories');
