@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Management</title>
+    <link rel="stylesheet" href="../style/reservation.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="../script/reservation.js" defer></script>
+</head>
+
+<body>
+    <header class="header">
+        <div class="logo-container">
+            <a href="/">
+                <div class="logo-text">
+                    <span class="orders-text">Orders</span>
+                    <span class="kun-text">君</span>
+                </div>
+            </a>
+        </div>
+        <div class="header-buttons">
+          <button class="header-btn nav-btn" id="pedido-admin-btn">Pedido<br>Admin</button>
+          <button class="header-btn nav-btn" id="pedido-client-btn">Pedido<br>tablet</button>
+          <button class="header-btn nav-btn" id="pedido-takeout-btn">Pedido<br>takeout</button>
+          <button class="header-btn nav-btn" id="comanda-btn">Comandas</button>
+            <button class="header-btn nav-btn" id="reserva-btn">Reservas</button>
+            <button class="header-btn nav-btn" id="pos-btn">POS</button>
+            <button class="header-btn nav-btn" id="menu-btn">Menu</button>
+            <button class="header-btn nav-btn" id="history-btn">Histórico</button>
+            <button class="header-btn nav-btn" id="logout-btn">Logout</button>
+        </div>
+        <!-- Menu Hambúrguer -->
+        <div class="hamburger-menu">
+            <input type="checkbox" id="menu-toggle" />
+            <label for="menu-toggle" class="hamburger-icon">
+                <span></span>
+                <span></span>
+                <span></span>
+            </label>
+            <div class="hamburger-items">
+                <a class="header-btn nav-btn" href="./index.html">Reservas</a>
+                <button class="header-btn nav-btn">POS</button>
+                <button class="header-btn nav-btn">Menu</button>
+                <a class="header-btn nav-btn" href="./historico.html">Histórico</a>
+                <button class="header-btn nav-btn">Logout</button>
+            </div>
+    </header>
+
+    <div class="container">
+        <!-- Data do dia atual -->
+        <div class="left">
+            <h2 id="current_time"></h2>
+
+            <!--Mesas-->
+            <div class="mesas" id="mesas-container"></div>
+
+            <div class="adicionar-btn">
+                <button id="create-reservation-btn">Adicionar Reserva</button>
+            </div>
+            <div id="notification-container" style="display: none;"></div>
+        </div>
+
+        <div class="right">
+            <!-- Tabela de Reservas do Dia -->
+            <h2>Reservas do Dia</h2>
+            <table class="reservation-tab-day">
+                <thead>
+                    <tr class="tab-dia-col">
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>Mesa</th>
+                        <th>Quantidade</th>
+                        <th>Horário</th>
+                    </tr>
+                </thead>
+                <tbody id="reservas-dia-body">
+                    <!-- Conteúdo dinâmico das reservas será inserido aqui -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Modal Criar Reserva -->
+        <div id="create-reservation-modal" class="modal" style="display:none;">
+            <div class="modal-content">
+                <div class="modal-title">
+                    <span class="close">&times;</span>
+                    <h2>Criar Nova Reserva</h2>
+                </div>
+                <div class="modal-input-container">
+                    <label for="create-reservation-date">Data da Reserva:</label>
+                    <input id="create-reservation-date" type="date" placeholder="YYYY-MM-DD" required>
+                </div>
+                <div class="modal-input-container">
+                    <label for="create-start-time">Hora de Início:</label>
+                    <input id="create-start-time" type="time" required>
+                </div>
+                <div class="modal-input-container">
+                    <label for="create-end-time">Hora de Término:</label>
+                    <input id="create-end-time" type="time" required>
+                </div>
+                <div class="modal-input-container">
+                    <label for="create-table-number">Número da Mesa:</label>
+                    <input id="create-table-number" type="number" min="1" required>
+                </div>
+                <div class="modal-input-container">
+                    <label for="create-reservation-name">Nome da Reserva:</label>
+                    <input id="create-reservation-name" type="text" placeholder="Nome do Cliente" required>
+                </div>
+                <div class="modal-input-container">
+                    <label for="create-phone-number">Telefone:</label>
+                    <input id="create-phone-number" type="tel" placeholder="09012345678" required>
+                </div>
+                <div class="modal-input-container">
+                    <label for="create-num-people">Número de Pessoas:</label>
+                    <input id="create-num-people" type="number" min="1" required>
+                </div>
+                <div class="modal-input-container">
+                    <label for="create-remarks">Observações:</label>
+                    <input id="create-remarks" type="text" placeholder="Observações (opcional)">
+                </div>
+                <div class="modal-buttons">
+                    <button id="submit-create-reservation" class="btn-primary">Criar Reserva</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Editar/Excluir-->
+        <div id="mesa-modal" class="modal" style="display:none;">
+            <div class="modal-content">
+                <div class="modal-title">
+                    <span class="close" id="close-modal">&times;</span>
+                    <h2>Editar Reserva</h2>
+                </div>
+                <div class="modal-input-container">
+                    <label for="modal-reservation-date">Data da Reserva:</label>
+                    <input id="modal-reservation-date" type="date" required>
+                </div>
+                <div class="modal-input-container">
+                    <label for="modal-start-time">Hora de Início:</label>
+                    <input id="modal-start-time" type="time" required>
+                </div>
+                <div class="modal-input-container">
+                    <label for="modal-end-time">Hora de Término:</label>
+                    <input id="modal-end-time" type="time" required>
+                </div>
+                <div class="modal-input-container">
+                    <label for="modal-table-number">Número da Mesa:</label>
+                    <input id="modal-table-number" type="number" min="1" required>
+                </div>
+                <div class="modal-input-container">
+                    <label for="modal-reservation-name">Nome da Reserva:</label>
+                    <input id="modal-reservation-name" type="text" required>
+                </div>
+                <div class="modal-input-container">
+                    <label for="modal-phone-number">Telefone:</label>
+                    <input id="modal-phone-number" type="tel" required>
+                </div>
+                <div class="modal-input-container">
+                    <label for="modal-num-people">Número de Pessoas:</label>
+                    <input id="modal-num-people" type="number" min="1" required>
+                </div>
+                <div class="modal-input-container">
+                    <label for="modal-remarks">Observações:</label>
+                    <input id="modal-remarks" type="text" placeholder="Observações (opcional)">
+                </div>
+                <div class="modal-buttons">
+                    <button class="modal-save" id="submit-edit-reservation">Salvar</button>
+                    <button class="modal-delete" id="modal-delete">Deletar</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="loading-overlay" class="overlay" style="display: none;">
+            <div id="loading-spinner" class="spinner"></div>
+        </div>
+
+    </div>
+    <script src="../script/common.js"></script>
+    <script src="../../config.js"></script>
+</body>
+
+</html>

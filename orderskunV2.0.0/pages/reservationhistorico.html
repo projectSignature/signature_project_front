@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Management</title>
+    <link rel="stylesheet" href="./pos.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="anonymous" />
+    <script src="./script.js" defer></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header class="header">
+        <div class="logo-container">
+            <a href="/">
+                <div class="logo-text">
+                    <span class="orders-text">Orders</span>
+                    <span class="kun-text">君</span>
+                </div>
+            </a>
+        </div>
+        <div class="header-buttons">
+            <a class="header-btn nav-btn" id="reservas-btn" href="./index.html">Reservas</a>
+            <button class="header-btn nav-btn" id="pos-btn">POS</button>
+            <button class="header-btn nav-btn" id="menu-btn">Menu</button>
+            <a class="header-btn nav-btn" id="history-btn" href="./historico.html">Histórico</a>
+            <button class="header-btn nav-btn" id="logout-btn">Logout</button>
+        </div>
+        <!-- Menu Hambúrguer -->
+        <div class="hamburger-menu">
+            <input type="checkbox" id="menu-toggle" />
+            <label for="menu-toggle" class="hamburger-icon">
+                <span></span>
+                <span></span>
+                <span></span>
+            </label>
+            <div class="hamburger-items">
+                <a class="header-btn nav-btn" href="./index.html">Reservas</a>
+                <button class="header-btn nav-btn">POS</button>
+                <button class="header-btn nav-btn">Menu</button>
+                <a class="header-btn nav-btn" href="./historico.html">Histórico</a>
+                <button class="header-btn nav-btn">Logout</button>
+            </div>
+    </header>
+
+    <div class="container-page">
+        <div class="container-historico">
+            <div class="filter">
+                <h2>Filtro</h2>
+                <div class="date-range">
+                    <label>Entre</label>
+                    <input class="hist-input" type="date">
+                    <label>até</label>
+                    <input class="hist-input" type="date">
+                    <button class="btn-primary search">Search</button>
+                </div>
+            </div>
+
+            <!-- Overlay de Loading -->
+            <div id="loading-overlay" class="overlay" style="display: none;">
+                <div id="loading-spinner" class="spinner"></div>
+            </div>
+
+            <table class="reservation-table">
+                <thead class="tab-hist">
+                    <tr>
+                        <th>Id</th>
+                        <th>Date</th>
+                        <th>Name</th>
+                        <th>Table</th>
+                        <th>Obs</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Linhas de reserva virão aqui -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="pagination"></div>
+
+    <script src="./historico.js"></script>
+</body>
+
+</html>

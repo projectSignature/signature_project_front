@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cash Register</title>
+    <link rel="stylesheet" href="../style/pos.css">
+    <link rel="stylesheet" href="../style/orders-takeout.css">
+    <link rel="stylesheet" href="../style/order.css">
+</head>
+<body>
+    <header class="header" style="height:5rem!important">
+      <div class="logo-container">
+  <div class="logo-text">
+      <span class="orders-text">Orders</span>
+      <span class="kun-text">君</span>
+  </div>
+</div>
+<div class="header-buttons">
+  <button class="header-btn nav-btn" id="pedido-admin-btn">Pedido<br>Admin</button>
+  <button class="header-btn nav-btn" id="pedido-client-btn">Pedido<br>tablet</button>
+  <button class="header-btn nav-btn" id="pedido-takeout-btn">Pedido<br>takeout</button>
+  <button class="header-btn nav-btn" id="comanda-btn">Comandas</button>
+  <button class="header-btn nav-btn" id="reserva-btn">Reservas</button>
+  <button class="header-btn nav-btn" id="pos-btn">POS</button>
+  <button class="header-btn nav-btn" id="menu-btn">Menu</button>
+  <button class="header-btn nav-btn" id="history-btn">Histórico</button>
+  <button class="header-btn nav-btn" id="logout-btn">Logout</button>
+</div>
+    </header>
+    <div class="container">
+      <div id="categories-div">
+        <div id="select-categorie">
+          <select id="take-or-uber">
+         <option value='9999'>Teke out</option>
+         <option value="9998">Uber</option>
+         <option value="1000">Local</option>
+       </select>
+     </div>
+     </div>
+     <div id="center-div"></div>
+     <div id="right-div">
+      <div id="list-order">
+      </div>
+      <div class="name-imput">
+        <input type="text" id="name-input" placeholder="Nome do cliente ou número uber"/>
+      </div>
+      <div id="tax-button">
+        <button id="tax8">8%</button>
+        <button id="tax10">10%</button>
+      </div>
+      <div id="cashier">
+        <div id="total-amount">Sem imposto:￥0</div>
+        <div id="tax">Imposto ￥0</div>
+        <div id="total">Total ￥0</div>
+        <button id="confirm-order">Registrar</button>
+      </div>
+    </div>
+   </div>
+   <div id="loading-popup" class="loading-popup" style="display: none;">
+       登録中...
+   </div>
+   <div id="custom-alert" class="custom-alert">
+     <div class="alert-content">
+         <span class="checkmark">✓</span>
+         <p id="oder-successfully">オーダーが確定されました。</p>
+     </div>
+ </div>
+ <!-- 警告メッセージ用モーダルウィンドウ -->
+ <div id="alert-modal" class="modal">
+     <div class="modal-content">
+         <span class="close">&times;</span>
+         <h2 id="Atanction-title">Atenção</h2>
+         <p id="alert-message">Selecione ou abra uma comanda</p>
+         <button id="close-alert-btn">Fechar</button>
+     </div>
+ </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
+    <script src="../../config.js"></script>
+    <script src="../script/order-admin.js"></script> <!-- Link to your JavaScript file -->
+    <script src="../script/common.js"></script>
+</body>
+</html>
