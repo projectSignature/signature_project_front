@@ -3,9 +3,7 @@
 let selectOrders = ""
 
 
-if (!decodedToken) {
-  // window.location.href = '../index.html';
-}
+
 
 
 
