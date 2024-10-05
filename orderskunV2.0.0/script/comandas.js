@@ -17,155 +17,146 @@ let clients ={
 
 let selectedCard = null;
 
-document.addEventListener('DOMContentLoaded', async  () => {
-  console.log(clients.id)
-  //メニュー、カテゴリー、オープション表示
-  const loadingPopup = document.getElementById('loading-popup');
-  loadingPopup.style.display = 'block'; // ポップアップを表示
-  const MainData = await makerequest(`${server}/orders/getBasedata?user_id=${clients.id}`)
-  let pendingOrders = await fetchPendingOrders(clients.id);
-  const orderContainer = document.getElementById('order-list');
-  console.log(pendingOrders)
-  console.log(MainData)
+document.addEventListener('DOMContentLoaded', async () => {
+    const updateData = async () => {
+        console.log(clients.id);
+        // メニュー、カテゴリー、オープション表示
+        const loadingPopup = document.getElementById('loading-popup');
+        loadingPopup.style.display = 'block'; // ポップアップを表示
+        const MainData = await makerequest(`${server}/orders/getBasedata?user_id=${clients.id}`);
+        let pendingOrders = await fetchPendingOrders(clients.id);
+        const orderContainer = document.getElementById('order-list');
+        orderContainer.innerHTML = ''; // 前の注文カードをクリア
+        console.log(pendingOrders);
+        console.log(MainData);
 
-pendingOrders.forEach(order => {
-  console.log(pendingOrders)
-  playAlarmIfEnabled(order.alarm_enabled,order.id)
-  // let alarmFlug = pendingOrders.alarm_enabled
+        pendingOrders.forEach(order => {
+            console.log(pendingOrders);
+            playAlarmIfEnabled(order.alarm_enabled, order.id);
 
-  let tableDisplay = order.table_no;
-if (tableDisplay == "9999") {
-    tableDisplay = "Takeout";
-} else if (tableDisplay == "9998") {
-    tableDisplay = "Uber Eats";
-}else{
-  tableDisplay =`Mesa:${tableDisplay} *${order.order_name}`
-}
+            let tableDisplay = order.table_no;
+            if (tableDisplay == "9999") {
+                tableDisplay = "Takeout";
+            } else if (tableDisplay == "9998") {
+                tableDisplay = "Uber Eats";
+            } else {
+                tableDisplay = `Mesa:${tableDisplay} *${order.order_name}`;
+            }
 
-const orderCard = document.createElement('div');
-orderCard.classList.add('order-card');
+            const orderCard = document.createElement('div');
+            orderCard.classList.add('order-card');
 
-orderCard.innerHTML = `
-    <h3>${tableDisplay}</h3>
-    <p>Total Amount: ${formatPrice(order.total_amount)}</p>
-    <div class="order-items"></div>
-`;
+            orderCard.innerHTML = `
+                <h3>${tableDisplay}</h3>
+                <p>Total Amount: ${formatPrice(order.total_amount)}</p>
+                <div class="order-items"></div>
+            `;
 
-const orderItemsContainer = orderCard.querySelector('.order-items');
+            const orderItemsContainer = orderCard.querySelector('.order-items');
 
-order.OrderItems.forEach(item => {
-        const menuItemName = MainData.menus.filter(items => items.id === item.menu_id);
-        const options = JSON.parse(item.options).map(opt => {
-                const optionName = getOptionNameById(opt.id);  // opt.idからオプション名を取得
-                return `${optionName}`;
-            }).join(', ');
+            order.OrderItems.forEach(item => {
+                const menuItemName = MainData.menus.filter(items => items.id === item.menu_id);
+                const options = JSON.parse(item.options).map(opt => {
+                    const optionName = getOptionNameById(opt.id); // opt.idからオプション名を取得
+                    return `${optionName}`;
+                }).join(', ');
 
-                    const itemElement = document.createElement('div');
-                    itemElement.classList.add('order-item');
+                const itemElement = document.createElement('div');
+                itemElement.classList.add('order-item');
 
-                    const statusClass = item.serve_status === 'pending' ? 'pending' : 'served';
-                    const statusText = item.serve_status === 'pending' ? '✕' : '〇';
+                const statusClass = item.serve_status === 'pending' ? 'pending' : 'served';
+                const statusText = item.serve_status === 'pending' ? '✕' : '〇';
 
-                    itemElement.innerHTML = `
+                itemElement.innerHTML = `
                     <div class="left-div">
-                     <div class="item-name-div">${menuItemName[0].admin_item_name}</div>
-                     <div class="option-div">
-                      <span>${options.length > 0 ? options : ''}</span>
-                     </div>
-                     </div>
-                    <div class="right-div">
-                     <div class="serve-status ${statusClass}"  data-item-id="${item.id}">${statusText}</div>
+                        <div class="item-name-div">${menuItemName[0].admin_item_name}</div>
+                        <div class="option-div">
+                            <span>${options.length > 0 ? options : ''}</span>
+                        </div>
                     </div>
-                        <!-- <strong>${menuItemName[0].menu_name_pt} x ${item.quantity}</strong><br> -->
+                    <div class="right-div">
+                        <div class="serve-status ${statusClass}" data-item-id="${item.id}">${statusText}</div>
+                    </div>
+                `;
 
-
-                    `;
-
-                    orderItemsContainer.appendChild(itemElement);
-                });
-
-                // カードをスライダー内に追加
-                orderContainer.appendChild(orderCard);
-                loadingPopup.style.display = 'none'; // リクエスト完了後にポップアップを非表示
+                orderItemsContainer.appendChild(itemElement);
             });
-            // 金額フォーマットの関数
-            function formatPrice(amount) {
-                return `¥${parseFloat(amount).toLocaleString()}`;
-            }
 
-            function getOptionNameById(optionId) {
-              console.log(optionId)
-              console.log(MainData.options)
-                const optionDetail = MainData.options.find(option => option.id-0 === optionId-0);
-                console.log(optionDetail)
-                return optionDetail ? optionDetail.option_name_pt : '不明なオプション'; // オプション名が見つからない場合は '不明なオプション' を表示
-            }
+            // カードをスライダー内に追加
+            orderContainer.appendChild(orderCard);
+            loadingPopup.style.display = 'none'; // リクエスト完了後にポップアップを非表示
+        });
 
-            // .serve-status がクリックされたときにイベントを発生させる
-document.querySelectorAll('.serve-status').forEach(statusDiv => {
-    statusDiv.addEventListener('click', function () {
-        const itemId = this.getAttribute('data-item-id');  // アイテムIDを取得
-        const currentStatus = this.textContent.trim();  // 現在の表示（✕ or 〇）を取得
+        // ステータスのクリックイベントを再度セット
+        document.querySelectorAll('.serve-status').forEach(statusDiv => {
+            statusDiv.addEventListener('click', function () {
+                const itemId = this.getAttribute('data-item-id');
+                const currentStatus = this.textContent.trim();
+                const newStatus = currentStatus === '✕' ? '〇' : '✕';
 
-        // 新しいステータスを決定する（✕なら〇に、〇なら✕に切り替える）
-        const newStatus = currentStatus === '✕' ? '〇' : '✕';
+                this.textContent = newStatus;
+                const newClass = newStatus === '✕' ? 'pending' : 'served';
+                this.classList.remove('pending', 'served');
+                this.classList.add(newClass);
 
-        // UIを更新（✕ ⇔ 〇）
-        this.textContent = newStatus;
+                updateStatus(itemId, newStatus);
+            });
+        });
+    };
 
-        const newClass = newStatus === '✕' ? 'pending' : 'served';
+    // 最初のデータ更新を実行
+    await updateData();
 
-       // 既存のクラスを削除して新しいクラスを追加
-       this.classList.remove('pending', 'served');  // 両方のクラスを削除
-       this.classList.add(newClass);  // 新しいクラスを追加
+    // 30秒ごとにデータ更新を実行
+    setInterval(updateData, 30000);
 
-        // ステータス更新のためのデータをバックエンドに送信
-        updateStatus(itemId, newStatus);
-    });
-});
+    function formatPrice(amount) {
+        return `¥${parseFloat(amount).toLocaleString()}`;
+    }
 
-// ステータスをバックエンドに送信する関数
-function updateStatus(itemId, newStatus) {
-  console.log(itemId, newStatus)
-    // ステータスが "〇" の場合は "served"、"✕" の場合は "pending" としてバックエンドに送信
-    const statusToUpdate = newStatus === '〇' ? 'served' : 'pending';
+    function getOptionNameById(optionId) {
+        console.log(optionId);
+        console.log(MainData.options);
+        const optionDetail = MainData.options.find(option => option.id - 0 === optionId - 0);
+        return optionDetail ? optionDetail.option_name_pt : '不明なオプション';
+    }
 
-    fetch(`${server}/orderskun/update-status`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            orderItemId: itemId,  // 更新するアイテムID
-            newStatus: statusToUpdate  // 新しいステータス（'served' or 'pending'）
+    function updateStatus(itemId, newStatus) {
+        console.log(itemId, newStatus);
+        const statusToUpdate = newStatus === '〇' ? 'served' : 'pending';
+
+        fetch(`${server}/orderskun/update-status`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                orderItemId: itemId,
+                newStatus: statusToUpdate
+            })
         })
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Status updated:', data);
-    })
-    .catch(error => {
-        console.error('Error updating status:', error);
-    });
-}
-
-function playAlarmIfEnabled(alarmFlug,id) {
-  console.log(alarmFlug)
-  console.log(id)
-  updateAlarmStatus(id,false)
-    if (alarmFlug) {
-        // <audio> 要素を取得
-        const alarmSound = document.getElementById('alarmSound');
-
-        // 音を再生
-        alarmSound.play().catch(error => {
-            console.error('Error playing sound:', error);
+        .then(response => response.json())
+        .then(data => {
+            console.log('Status updated:', data);
+        })
+        .catch(error => {
+            console.error('Error updating status:', error);
         });
     }
-}
 
+    function playAlarmIfEnabled(alarmFlug, id) {
+        console.log(alarmFlug);
+        console.log(id);
+        updateAlarmStatus(id, false);
+        if (alarmFlug) {
+            const alarmSound = document.getElementById('alarmSound');
+            alarmSound.play().catch(error => {
+                console.error('Error playing sound:', error);
+            });
+        }
+    }
+});
 
-})
 
 
 async function fetchPendingOrders() {
