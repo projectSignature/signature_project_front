@@ -16,35 +16,37 @@ const closeModalBtn = document.querySelector('.modal .close');
 // }
 
 let orderList = {
-  tableNo:1,
-  clienId:17,
+  tableNo:'',
+  clienId:17,//ログイン処理完了後は動的に
   order:{
   },
   historyOrder:{
-
   }
 }
 let currentOrder = {};
 let selectedName = null;
-
-
 let userLanguage = 'pt'
 let categories = []; // カテゴリ情報を保存する配列
 
 document.addEventListener("DOMContentLoaded", async () => {
-
-  // "key" というキーに "value" という値を保存g676
-orderList.tableNo = sessionStorage.setItem('orders-myTable', orderList.client);
-console.log(orderList)
+const loadingPopup = document.getElementById('loading-popup');
+loadingPopup.innerText = 'await'
+loadingPopup.style="display:block"
+const saveTableNo = sessionStorage.getItem('saveTableNo')
     // テーブル番号が存在しない場合はデフォルト値を1に設定
-    if (!orderList.tableNo) {
+    if (!saveTableNo) {
+        sessionStorage.setItem('saveTableNo',1)
         tableNumber = 1;
         orderList.tableNo = 1
-        localStorage.setItem('order-myTable', tableNumber);
+        localStorage.setItem('order-myTable', orderList.client);
+    }else{
+      orderList.tableNo = saveTableNo
     }
+
     document.getElementById('table-number').textContent =  orderList.tableNo
     //メニューのデータを取得する
     const MainData = await makerequest(`${server}/orders/getBasedata?user_id=${orderList.clienId}`)
+    //未払いのオーダーが存在してるかチェックする
     const PendingData = await fetchPendingOrders()
     orderList.historyOrder = PendingData
     console.log(orderList)
@@ -62,6 +64,7 @@ console.log(orderList)
     const menuItemsContainer = document.getElementById('menu-items');
 
     displayMenuItems(Categorys[0].id)
+    loadingPopup.style="display:none"
 
     // カテゴリボタンを格納する変数
     let currentSelectedButton = null;
@@ -88,6 +91,8 @@ console.log(orderList)
 
     orderCategories.appendChild(button);
 });
+
+
 
 async function fetchPendingOrders() {
     try {
@@ -781,7 +786,6 @@ document.getElementById('confirm-order').addEventListener('click', async () => {
         }
 
         const orderID = orderList.historyOrder.filter(item => item.order_name === selectedName)
-
         const ordersId = orderID.length===0?'':orderID[0].id
         const response = await fetch(`${server}/orderskun/confirm`, {
             method: 'POST',
@@ -882,7 +886,7 @@ document.getElementById('save-table-number-btn').addEventListener('click', () =>
     orderList.tableNo = newTableNumber
     if (newTableNumber) {
         document.getElementById('table-number').textContent = newTableNumber;
-        localStorage.setItem('tableNumber', newTableNumber);
+        sessionStorage.setItem('saveTableNo',newTableNumber)
         document.getElementById('table-number-modal').style.display = 'none';
     } else {
         alert('Por favor, insira um número de mesa válido.');
