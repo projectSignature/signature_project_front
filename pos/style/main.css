@@ -739,3 +739,120 @@ width: 100%;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); /* アクティブ時は少し押し込む */
   transform: translateY(0); /* 押した時は元に戻す */
 }
+/* 新規メニュー作成フォームのスタイル */
+#modalBody form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#modalBody form label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+#modalBody form input[type="text"],
+#modalBody form input[type="number"],
+#modalBody form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+#modalBody form textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+#modalBody form input[type="checkbox"] {
+    width: auto;
+    margin-right: 5px;
+}
+
+#modalBody form button[type="submit"] {
+    padding: 12px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+#modalBody form button[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+/* 新規作成ボタンのスタイル */
+.create-button {
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.create-button:hover {
+    background-color: #0056b3;
+}
+
+/* カードスタイル */
+.menu-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.menu-card h3 {
+    margin-top: 0;
+    font-size: 18px;
+}
+
+.menu-card p {
+    margin: 5px 0;
+}
+
+.menu-card .edit-button,
+.menu-card .delete-button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.menu-card .edit-button {
+    background-color: #FFD700;
+    color: #333;
+}
+
+.menu-card .edit-button:hover {
+    background-color: #FFC107;
+}
+
+.menu-card .delete-button {
+    background-color: #FF6347;
+    color: white;
+}
+
+.menu-card .delete-button:hover {
+    background-color: #FF4500;
+}
+.checkbox_addMEnu{
+  width:5rem;
+  height: 2rem
+}
