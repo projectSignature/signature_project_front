@@ -319,19 +319,254 @@ document.addEventListener("DOMContentLoaded", async () => {
    };
 
    const listItems = settingsList.querySelectorAll('li');
-listItems.forEach(item => {
-    item.addEventListener('click', function () {
-        const rawSettingName = this.textContent.trim();
-        const settingKey = settingMap[rawSettingName]; // 内部キーにマッピング
-        if (settingKey) {
-            modalTitle.textContent = rawSettingName; // 選択した設定名をモーダルに表示
-            modalBody.innerHTML = generateModalContent(settingKey); // 内部キーを使用してモーダル生成
-            settingsModal.style.display = 'block';
-        } else {
-            console.error('未対応の設定名: ' + rawSettingName);
-        }
+   listItems.forEach(item => {
+       item.addEventListener('click', async function () {
+           const rawSettingName = this.textContent.trim();
+           const settingKey = settingMap[rawSettingName];
+
+           if (settingKey === 'menu') {
+               try {
+                   const response = await fetch(`${server}/pos/getmenu`, {
+                       method: 'GET',
+                       headers: {
+                           'Authorization': `Bearer ${token}`,
+                           'Content-Type': 'application/json'
+                       }
+                   });
+                   if (!response.ok) {
+                       throw new Error('メニュー取得に失敗しました');
+                   }
+                   const menuItems = await response.json();
+                   console.log(menuItems)
+                   displayMenuItems(menuItems);
+               } catch (error) {
+                   console.error('メニュー取得エラー: ', error);
+               }
+               return; // 以降の処理をスキップ
+           }
+
+           if (settingKey) {
+               modalTitle.textContent = rawSettingName;
+               modalBody.innerHTML = generateModalContent(settingKey);
+               settingsModal.style.display = 'block';
+           } else {
+               console.error('未対応の設定名: ' + rawSettingName);
+           }
+       });
+   });
+
+   // メニュー一覧を表示する関数
+   // メニュー一覧を表示する関数
+   function displayMenuItems(menuItems) {
+       modalTitle.textContent = 'Lista de menu';
+       modalBody.innerHTML = ''; // モーダルの内容をクリア
+
+       // 新規作成ボタンを追加
+       const createButton = document.createElement('button');
+       createButton.textContent = 'Adicionar';
+       createButton.classList.add('create-button');
+       createButton.addEventListener('click', () => {
+           openCreateMenuModal();
+       });
+       modalBody.appendChild(createButton);
+
+       // メニューアイテムをカード形式で表示
+       menuItems.forEach(item => {
+           const price = parseFloat(item.price); // 価格を数値に変換
+
+           const card = document.createElement('div');
+           card.classList.add('menu-card');
+           card.innerHTML = `
+               <h3>${item.item_name} (${item.item_name_jp || 'N/A'})</h3>
+               <p>カテゴリ: ${item.category || 'N/A'} (${item.category_jp || 'N/A'})</p>
+               <p>価格: ¥${price.toFixed(2)}</p> <!-- 数値に変換された価格を表示 -->
+               <p>単位: ${item.unit}</p>
+               <p>${item.description || ''}</p>
+               <button class="edit-button">Alterar</button>
+               <button class="delete-button">Deletar</button>
+           `;
+
+           // 変更ボタンのクリックイベント
+           card.querySelector('.edit-button').addEventListener('click', () => {
+               openEditMenuModal(item);
+           });
+
+           // 削除ボタンのクリックイベント
+           card.querySelector('.delete-button').addEventListener('click', () => {
+               deleteMenuItem(item.id);
+           });
+
+           modalBody.appendChild(card);
+       });
+
+       settingsModal.style.display = 'block';
+   }
+
+   // 新規メニュー作成フォームを生成する関数
+   function generateCreateMenuForm() {
+       return `
+           <form id="createMenuForm">
+               <label for="menuId">Código na balança:</label>
+               <input type="text" id="menuId" name="menuId" pattern="\\d{5}" required title="5 dígitos"><br>
+
+               <label for="itemName">Nome(pt):</label>
+               <input type="text" id="itemName" name="itemName" required><br>
+
+               <label for="itemNameJp">Nome(jp):</label>
+               <input type="text" id="itemNameJp" name="itemNameJp"><br>
+
+               <label for="category">Categoria(pt):</label>
+               <input type="text" id="category" name="category" required><br>
+
+               <label for="categoryJp">Categoria(jp):</label>
+               <input type="text" id="categoryJp" name="categoryJp"><br>
+
+               <label for="price">Preço:</label>
+               <input type="number" id="price" name="price" step="0.01" required><br>
+
+               <label for="unit">kg ou peça?:</label>
+               <select id="unit" name="unit" required>
+                   <option value="kg">kg</option>
+                   <option value="peça">peça</option>
+               </select><br>
+
+               <label for="description">descrição:</label>
+               <textarea id="description" name="description"></textarea><br>
+
+               <label for="available">Estoque:</label>
+               <input type="checkbox" id="available" name="available" checked><br>
+
+               <label for="isVisible">Mostrar na tela:</label>
+               <input type="checkbox" id="isVisible" name="isVisible" checked><br>
+
+               <button type="submit">作成</button>
+           </form>
+       `;
+   }
+
+
+
+// 新規作成モーダルを開く関数
+function openCreateMenuModal() {
+    modalTitle.textContent = 'Adicionar menu';
+    modalBody.innerHTML = generateCreateMenuForm(); // 新規作成フォームを生成
+    settingsModal.style.display = 'block';
+    const btnSaveModal = document.getElementById('savebtn-form')
+    btnSaveModal.style="display:none"
+
+    // フォーム送信イベントの設定
+    const createMenuForm = document.getElementById('createMenuForm');
+    createMenuForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        await createNewMenu();
     });
-});
+}
+
+// 新規メニューを作成する関数
+async function createNewMenu() {
+  console.log('sinnkimenu')
+    const itemName = document.getElementById('itemName').value;
+    const itemNameJp = document.getElementById('itemNameJp').value;
+    const category = document.getElementById('category').value;
+    const categoryJp = document.getElementById('categoryJp').value;
+    const price = parseFloat(document.getElementById('price').value);
+    const unit = document.getElementById('unit').value;
+    const description = document.getElementById('description').value;
+    const available = document.getElementById('available').checked;
+    const isVisible = document.getElementById('isVisible').checked;
+    const menu_id  = document.getElementById('menuId').value
+
+    const newMenuItem = {
+      menu_id:menu_id,
+        item_name: itemName,
+        item_name_jp: itemNameJp,
+        category: category,
+        category_jp: categoryJp,
+        price: price,
+        unit: unit,
+        description: description,
+        available: available,
+        isVisible: isVisible
+    };
+
+    try {
+      console.log(`${server}/pos/createmenuaddcolomun`)
+        const response = await fetch(`${server}/pos/createmenuaddcolomun`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newMenuItem)
+        });
+
+        if (!response.ok) {
+           const errorData = await response.json();
+           if (response.status === 400 && errorData.message.includes('Menu ID is already in use')) {
+               alert('O código da balança já existe, verifique por favor。');
+           } else {
+               throw new Error(errorData.message || 'Tivemos erros');
+           }
+           return;
+       }
+        alert('Adicionado');
+        settingsModal.style.display = 'none';
+    } catch (error) {
+        console.error('erro: ', error);
+        alert('Tivemos erro, tente novamente');
+    }
+}
+
+
+
+// // 新規作成モーダルを開く関数
+// function openCreateMenuModal() {
+//     modalTitle.textContent = 'Adicionar　menu';
+//     modalBody.innerHTML = generateCreateMenuForm(); // 新規作成フォームを生成
+//     settingsModal.style.display = 'block';
+//     const btnSaveModal = document.getElementById('savebtn-form')
+//     btnSaveModal.style="display:none"
+// }
+
+// メニュー編集モーダルを開く関数
+function openEditMenuModal(item) {
+    modalTitle.textContent = 'メニュー編集';
+    modalBody.innerHTML = generateEditMenuForm(item); // 編集フォームを生成
+    settingsModal.style.display = 'block';
+}
+
+// メニューを削除する関数
+async function deleteMenuItem(id) {
+    if (!confirm('本当に削除しますか？')) return;
+
+    try {
+        const response = await fetch(`${server}/pos/deletemenu/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        if (!response.ok) {
+            throw new Error('メニュー削除に失敗しました');
+        }
+        alert('メニューが削除されました');
+        // 削除後にメニューを再取得して更新
+        const updatedMenuResponse = await fetch(`${server}/pos/getmenu`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        const updatedMenuItems = await updatedMenuResponse.json();
+        displayMenuItems(updatedMenuItems);
+    } catch (error) {
+        console.error('削除エラー: ', error);
+    }
+}
+
 
        closeModal.addEventListener('click', function () {
            settingsModal.style.display = 'none';
@@ -867,7 +1102,9 @@ const settingMap = {
     'Configurações pessoais': 'personal_settings', // ポルトガル語
     'Número do caixa': 'register_number',          // ポルトガル語
     'Responsável pelo caixa': 'cashier',           // ポルトガル語
+    'Menu':'menu',
     '個人設定': 'personal_settings',               // 日本語
     'レジ番号': 'register_number',                // 日本語
-    'レジ担当者': 'cashier'                       // 日本語
+    'レジ担当者': 'cashier',               // 日本語
+    'メニュー':'menu'
 };
