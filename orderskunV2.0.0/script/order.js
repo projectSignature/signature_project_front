@@ -742,13 +742,31 @@ function addName(name) {
         updateActiveName(nameDiv);
     });
     orderNamesContainer.appendChild(nameDiv);
-    // 最初の名前をデフォルトで選択
-    if (!selectedName) {
-        selectedName = name;
-        displayOrderForName(name);
-        updateActiveName(nameDiv);
-    }
+
+    // 名前を追加した後に自動的に選択状態にする
+    selectedName = name;
+    displayOrderForName(name);
+    updateActiveName(nameDiv);
 }
+
+// 名前を追加するボタンのイベントリスナー
+addNameBtn.addEventListener('click', () => {
+    const name = nameInput.value.trim();
+    const orderName = orderList.historyOrder.filter(item => item.order_name === name);
+    const existOrderName = orderName.length === 0 ? false : true;
+    if (existOrderName) {
+        showAlert(translations[userLanguage]["comanda exist"]);
+        alertModal.style.display = 'block';
+    } else {
+        if (name) {
+            addName(name);
+            addOrderName(name);
+            nameInput.value = ''; // インプットフィールドをクリア
+            modal.style.display = 'none'; // モーダルを閉じる
+        }
+    }
+});
+
 
 function displayOrderForName(name) {
     selectedItemsContainer.innerHTML = ''; // 既存のリストをクリア
