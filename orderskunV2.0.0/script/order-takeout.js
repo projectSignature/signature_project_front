@@ -127,7 +127,7 @@ sortedData.forEach(item => {
         detailsContainer.innerHTML = `
             <div class="details-content">
                 <div class="left-side">
-                    <img src="./imagen/${item.id}.jpg" alt="${item.name}" class="details-image">
+                    <img src="../imagen/${item.id}.jpg" alt="${item.name}" class="details-image">
                     <h3>${item[`menu_name_${userLanguage}`]}</h3>
                     <p>${item[`description_${userLanguage}`] || ""}</p>
                     <p id="item-price">￥${Math.floor(item.price)}</p>
