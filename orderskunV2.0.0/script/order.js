@@ -5,15 +5,22 @@ const orderNamesContainer = document.getElementById('order-names-container');
 const nameInput = document.getElementById('name-input');
 const addNameBtn = document.getElementById('add-name-btn');
 const selectedItemsContainer = document.getElementById('selected-items');
+// モーダルを閉じるボタンのイベントリスナー
+document.getElementById('close-alert-btn').addEventListener('click', () => {
+    alertModal.style.display = 'none';
+});
+
+// モーダルの×ボタンを押した時のイベントリスナー
+document.querySelector('.modal .close').addEventListener('click', () => {
+    alertModal.style.display = 'none';
+});
 
 // モーダル要素
 const modal = document.getElementById('add-name-modal');
 const showAddNameModalBtn = document.getElementById('show-add-name-modal');
 const closeModalBtn = document.querySelector('.modal .close');
-
-// if (!decodedToken) {
-//   // window.location.href = '../index.html';
-// }
+const alertModal = document.getElementById('alert-modal');
+const alertMessage = document.getElementById('alert-message');
 
 let orderList = {
   tableNo:'',
@@ -49,8 +56,6 @@ const saveTableNo = sessionStorage.getItem('saveTableNo')
     //未払いのオーダーが存在してるかチェックする
     const PendingData = await fetchPendingOrders()
     orderList.historyOrder = PendingData
-    console.log(orderList)
-    console.log(PendingData)
     if(PendingData){
       for(let i=0;i<PendingData.length;i++){
         addName(PendingData[i].order_name)
@@ -59,13 +64,11 @@ const saveTableNo = sessionStorage.getItem('saveTableNo')
     //カテゴリーの順番を変える
     const Categorys = MainData.categories.filter(category => category.is_takeout === false);
     Categorys.sort((a, b) => a.display_order - b.display_order);
-    console.log(Categorys)
     const orderCategories = document.getElementById('order-categories');
     const menuItemsContainer = document.getElementById('menu-items');
 
     displayMenuItems(Categorys[0].id)
     loadingPopup.style="display:none"
-
     // カテゴリボタンを格納する変数
     let currentSelectedButton = null;
     Categorys.forEach((category, index) => {
@@ -88,7 +91,6 @@ const saveTableNo = sessionStorage.getItem('saveTableNo')
         currentSelectedButton = button;
         displayMenuItems(category.id);
     });
-
     orderCategories.appendChild(button);
 });
 
@@ -144,7 +146,6 @@ sortedData.forEach(item => {
             }else{
               displayItemDetails(item); // 詳細画面を表示する関数を呼び出す
             }
-
         });
     }
     menuItemsContainer.appendChild(div);
@@ -255,7 +256,6 @@ sortedData.forEach(item => {
         const sortedOptions = MainData.options.filter(opt => opt.menu_id === item.id);
         const pizzaFlavors = sortedOptions.filter(opt => !opt.option_name_pt.includes('Borda'));
         const pizzaEdges = sortedOptions.filter(opt => opt.option_name_pt.includes('Borda'));
-
         const detailsContainer = document.createElement('div');
         detailsContainer.classList.add('item-details');
         detailsContainer.innerHTML = `
@@ -440,6 +440,12 @@ sortedData.forEach(item => {
        // オーダー修正モーダルに現在のオーダーを表示
        function displayEditOrderModal() {
            const editOrderList = document.getElementById('edit-order-list');
+           console.log(orderList.order[selectedName])
+           if(orderList.order[selectedName].length===0){
+             showAlert(translations[userLanguage]["Nenhum item foi selecionado"])
+             alertModal.style.display = 'block';
+             return
+           }
            editOrderList.innerHTML = ''; // 既存のリストをクリア
            if (selectedName && orderList.order[selectedName]) {
                orderList.order[selectedName].forEach((item, index) => {
@@ -573,7 +579,8 @@ sortedData.forEach(item => {
                "Categoria":'Categoria',
                "preparando":'preparando',
                "entregue":'entregue',
-               "status":'status'
+               "status":'status',
+               "comanda exist":'Esse nome já existe, por favor, selecione outro nome para poder separar'
            },
            ja: {
                "Histórico": "履歴",
@@ -608,7 +615,8 @@ sortedData.forEach(item => {
                 "Categoria":'カテゴリー',
                 "preparando":'準備中',
                 "entregue":'提供済み',
-                "status":'ステータス'
+                "status":'ステータス',
+                "comanda exist":"This name already exists, please select another name to separate."
            },
            en: {
                "Histórico": "History",
@@ -643,7 +651,8 @@ sortedData.forEach(item => {
                 "Categoria":"Category",
                 "preparando": "preparing",
                 "entregue": "delivered",
-                "status":'status'
+                "status":'status',
+                "comanda exist":"この名前はすでに存在します。別の名前を選択して分けてください。"
            }
        };
 
@@ -662,9 +671,6 @@ sortedData.forEach(item => {
                              element.textContent = translations[lang][key];
                          }
                      });
-
-
-
            updateCategoryButtons()
            updateMenuItems()
        }
@@ -680,14 +686,7 @@ sortedData.forEach(item => {
     });
 }
 
-
-
-
-
-
-
 function addName(name) {
-  console.log(name)
     if (!name || currentOrder[name]) {
         return; // 名前が空、または既に存在する場合は何もしない
     }
@@ -702,7 +701,6 @@ function addName(name) {
         updateActiveName(nameDiv);
     });
     orderNamesContainer.appendChild(nameDiv);
-
     // 最初の名前をデフォルトで選択
     if (!selectedName) {
         selectedName = name;
@@ -730,7 +728,6 @@ function updateActiveName(activeDiv) {
 // オーダーにアイテムを追加
 function addToOrder(item) {
     if (selectedName) {
-
         orderList.order[selectedName].push(item);
         displayOrderForName(selectedName);
     }
@@ -749,12 +746,20 @@ closeModalBtn.addEventListener('click', () => {
 // 名前を追加するボタンのイベントリスナー
 addNameBtn.addEventListener('click', () => {
     const name = nameInput.value.trim();
-    if (name) {
-        addName(name);
-        addOrderName(name)
-        nameInput.value = ''; // インプットフィールドをクリア
-        modal.style.display = 'none'; // モーダルを閉じる
+    const orderName = orderList.historyOrder.filter(item => item.order_name === name)
+    const existOrderName = orderName.length===0?false:true
+    if(existOrderName){
+      showAlert(translations[userLanguage]["comanda exist"])
+      alertModal.style.display = 'block';
+    }else{
+      if (name) {
+          addName(name);
+          addOrderName(name)
+          nameInput.value = ''; // インプットフィールドをクリア
+          modal.style.display = 'none'; // モーダルを閉じる
+      }
     }
+
 });
 
 // モーダル外をクリックした場合にモーダルを閉じる
@@ -764,13 +769,6 @@ window.addEventListener('click', (event) => {
     }
 });
 
-// // アイテム選択時に呼ばれる関数
-// function displayItemDetails(item) {
-//     // ここに詳細画面を表示するロジックを追加
-//     addToOrder(item);
-// }
-
-
 // 確定ボタンのイベントリスナーを追加
 document.getElementById('confirm-order').addEventListener('click', async () => {
     const confirmButton = document.getElementById('confirm-order');
@@ -779,12 +777,12 @@ document.getElementById('confirm-order').addEventListener('click', async () => {
     loadingPopup.style.display = 'block'; // ポップアップを表示
     try {
         if (orderList.clienId === "" || orderList.tableNo === "" || selectedName === "" || orderList.order[selectedName].length === 0) {
+          console.log('nocart')
             showAlert(translations[userLanguage]["Nenhum item foi selecionado"]);
             confirmButton.disabled = false;
             loadingPopup.style.display = 'none'; // エラーの場合はポップアップを非表示
             return;
         }
-
         const orderID = orderList.historyOrder.filter(item => item.order_name === selectedName)
         const ordersId = orderID.length===0?'':orderID[0].id
         const response = await fetch(`${server}/orderskun/confirm`, {
@@ -800,9 +798,12 @@ document.getElementById('confirm-order').addEventListener('click', async () => {
                 orderId:ordersId
             })
         });
-        console.log(response)
-
         if (response.ok) {
+          const responseData = await response.json();
+          if(responseData.newflug){
+            responseData.order.orderItems = responseData.orderItems;//アイテムをオーダーオブジェクトに追加
+            orderList.historyOrder.push(responseData.order);
+          }
             updateAlarmStatus(ordersId,true)
             showCustomAlert(translations[userLanguage]["Pedido feito"]);
             orderList.order[selectedName] = [];
@@ -901,22 +902,13 @@ window.onclick = function(event) {
 }
 
 function showAlert(message) {
-    const alertModal = document.getElementById('alert-modal');
-    const alertMessage = document.getElementById('alert-message');
-    alertMessage.textContent = translations[userLanguage]["Selecione ou abra uma comanda"];
+
+    alertMessage.textContent = message;
     alertModal.style.display = 'block';
     document.getElementById('Atanction-title').textContent = translations[userLanguage]["Atencion"]
     document.getElementById('close-alert-btn').textContent = translations[userLanguage]["Voltar"]
 
-    // モーダルを閉じるボタンのイベントリスナー
-    document.getElementById('close-alert-btn').addEventListener('click', () => {
-        alertModal.style.display = 'none';
-    });
 
-    // モーダルの×ボタンを押した時のイベントリスナー
-    document.querySelector('.modal .close').addEventListener('click', () => {
-        alertModal.style.display = 'none';
-    });
 
     // モーダル外をクリックした場合にモーダルを閉じる
     window.addEventListener('click', (event) => {
@@ -964,6 +956,7 @@ document.getElementById('view-history').addEventListener('click', () => {
       const PendingData = await fetchPendingOrders()
       orderList.historyOrder = PendingData
       const OrderDetail = orderList.historyOrder.filter(order => order.order_name === selectedName);
+      console.log(orderList.historyOrder)
        displayOrderDetails(selectedName,OrderDetail[0].OrderItems)
 
   });
