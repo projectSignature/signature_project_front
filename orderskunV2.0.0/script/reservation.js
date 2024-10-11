@@ -4,7 +4,7 @@
 const currentTime = document.getElementById('current_time');
 
 
-let clients ={
+let userInfo ={
   userId: 17,
   email: 'rootsgrillhekinan@gmeil.com',
   username: 'RootsGrill',
@@ -12,18 +12,18 @@ let clients ={
   iat: 1727826129
 }
 
-if (!decodedToken) {
-  // window.location.href = '../index.html';
-}
+// if (!decodedToken) {
+//   // window.location.href = '../index.html';
+// }
 
-sessionStorage.setItem('userInfo', JSON.stringify(simulatedUserInfo));
+// sessionStorage.setItem('userInfo', clients);
 
-function getUserInfo() {
-    const userInfo = clients
-    return userInfo ? JSON.parse(userInfo) : null;
-}
-
-const userInfo = getUserInfo();
+// function getUserInfo() {
+//     const userInfo = clients
+//     // return userInfo ? JSON.parse(userInfo) : null;
+// }
+//
+// const userInfo = getUserInfo();
 const tableCount = userInfo ? userInfo.table_count : 0;
 
 const today = new Date();
@@ -247,7 +247,7 @@ submitCreateReservationBtn.addEventListener('click', createReservation);
 
 function deleteTable(reservationId) {
     showLoading();
-    const url = `${server}reservations/delete/${reservationId}`;
+    const url = `${server}/reservations/delete/${reservationId}`;
 
     fetch(url, {
         method: 'DELETE',
@@ -282,7 +282,7 @@ function deleteTable(reservationId) {
 
 function editTable(reservationId) {
     showLoading();
-    const url = `${server}reservations/update/${reservationId}`;
+    const url = `${server}/reservations/update/${reservationId}`;
 
     const tableNumber = document.getElementById('modal-table-number').value;
 
@@ -336,7 +336,8 @@ function editTable(reservationId) {
 
 function getTableData() {
     showLoading();
-    const url = `${server}reservations?user_id=${userInfo.userId}&reservation_date=${japaneseDate}`;
+    console.log(`${server}/reservations?user_id=${userInfo.userId}&reservation_date=${japaneseDate}`)
+    const url = `${server}/reservations?user_id=${userInfo.userId}&reservation_date=${japaneseDate}`;
 
     fetch(url)
         .then(response => {

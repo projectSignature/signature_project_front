@@ -731,9 +731,7 @@ function addName(name) {
     if (!name || currentOrder[name]) {
         return; // 名前が空、または既に存在する場合は何もしない
     }
-
     orderList.order[name] = [];
-
     let nameDiv = document.createElement('div');
     nameDiv.textContent = name;
     nameDiv.addEventListener('click', () => {

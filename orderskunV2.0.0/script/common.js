@@ -12,7 +12,8 @@ const pageToButtonMap = {
     'comandas.html':'comanda-btn',
     'ordersTakeOut.html':'pedido-takeout-btn',
     'order-admin.html':'pedido-admin-btn',
-    'reservation.html':'reserva-btn'
+    'reservation.html':'reserva-btn',
+    'reservationhistorico.html':'reserva-hist-btn'
 };
 
 document.addEventListener('DOMContentLoaded', function() {

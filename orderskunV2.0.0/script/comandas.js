@@ -16,26 +16,18 @@ let clients ={
 }
 
 let selectedCard = null;
-
 let MainData = null; // グローバルな変数として宣言
 
 document.addEventListener('DOMContentLoaded', async () => {
     const updateData = async () => {
-        console.log(clients.id);
         // メニュー、カテゴリー、オープション表示
         const loadingPopup = document.getElementById('loading-popup');
-        loadingPopup.style.display = 'block'; // ポップアップを表示
         MainData = await makerequest(`${server}/orders/getBasedata?user_id=${clients.id}`); // MainDataにデータを格納
         let pendingOrders = await fetchPendingOrders(clients.id);
         const orderContainer = document.getElementById('order-list');
         orderContainer.innerHTML = ''; // 前の注文カードをクリア
-        console.log(pendingOrders);
-        console.log(MainData);
-
         pendingOrders.forEach(order => {
-            console.log(pendingOrders);
             playAlarmIfEnabled(order.alarm_enabled, order.id);
-
             let tableDisplay = order.table_no;
             if (tableDisplay == "9999") {
                 tableDisplay = "Takeout";
@@ -44,10 +36,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             } else {
                 tableDisplay = `Mesa:${tableDisplay} *${order.order_name}`;
             }
-
             const orderCard = document.createElement('div');
             orderCard.classList.add('order-card');
-
             orderCard.innerHTML = `
                 <h3>${tableDisplay}</h3>
                 <p>Total Amount: ${formatPrice(order.total_amount)}</p>
@@ -55,20 +45,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             `;
 
             const orderItemsContainer = orderCard.querySelector('.order-items');
-
             order.OrderItems.forEach(item => {
                 const menuItemName = MainData.menus.filter(items => items.id === item.menu_id);
                 const options = JSON.parse(item.options).map(opt => {
                     const optionName = getOptionNameById(opt.id); // opt.idからオプション名を取得
                     return `${optionName}`;
                 }).join(', ');
-
                 const itemElement = document.createElement('div');
                 itemElement.classList.add('order-item');
-
                 const statusClass = item.serve_status === 'pending' ? 'pending' : 'served';
                 const statusText = item.serve_status === 'pending' ? '✕' : '〇';
-
                 itemElement.innerHTML = `
                     <div class="left-div">
                         <div class="item-name-div">${menuItemName[0].admin_item_name}</div>
@@ -80,53 +66,39 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <div class="serve-status ${statusClass}" data-item-id="${item.id}">${statusText}</div>
                     </div>
                 `;
-
                 orderItemsContainer.appendChild(itemElement);
             });
-
             // カードをスライダー内に追加
             orderContainer.appendChild(orderCard);
             loadingPopup.style.display = 'none'; // リクエスト完了後にポップアップを非表示
         });
-
         // ステータスのクリックイベントを再度セット
         document.querySelectorAll('.serve-status').forEach(statusDiv => {
             statusDiv.addEventListener('click', function () {
                 const itemId = this.getAttribute('data-item-id');
                 const currentStatus = this.textContent.trim();
                 const newStatus = currentStatus === '✕' ? '〇' : '✕';
-
                 this.textContent = newStatus;
                 const newClass = newStatus === '✕' ? 'pending' : 'served';
                 this.classList.remove('pending', 'served');
                 this.classList.add(newClass);
-
                 updateStatus(itemId, newStatus);
             });
         });
     };
-
     // 最初のデータ更新を実行
     await updateData();
-
     // 30秒ごとにデータ更新を実行
     setInterval(updateData, 30000);
-
     function formatPrice(amount) {
         return `¥${parseFloat(amount).toLocaleString()}`;
     }
-
     function getOptionNameById(optionId) {
-        console.log(optionId);
-        console.log(MainData.options);
         const optionDetail = MainData.options.find(option => option.id - 0 === optionId - 0);
         return optionDetail ? optionDetail.option_name_pt : '不明なオプション';
     }
-
     function updateStatus(itemId, newStatus) {
-        console.log(itemId, newStatus);
         const statusToUpdate = newStatus === '〇' ? 'served' : 'pending';
-
         fetch(`${server}/orderskun/update-status`, {
             method: 'POST',
             headers: {
@@ -145,10 +117,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.error('Error updating status:', error);
         });
     }
-
     function playAlarmIfEnabled(alarmFlug, id) {
-        console.log(alarmFlug);
-        console.log(id);
         updateAlarmStatus(id, false);
         if (alarmFlug) {
             const alarmSound = document.getElementById('alarmSound');
@@ -158,10 +127,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 });
-
-
-
-
 async function fetchPendingOrders() {
     try {
         const response = await fetch(`${server}/orderskun/pending`, {
@@ -182,7 +147,6 @@ async function fetchPendingOrders() {
         return null;
     }
 }
-
 function updateAlarmStatus(orderId, alarmStatus) {
     // サーバーにPOSTリクエストを送信して、alarm_enabled を true または false に更新
     fetch(`${server}/orderskun/update-alarm`, {
