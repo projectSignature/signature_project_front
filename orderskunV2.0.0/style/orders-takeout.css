@@ -31,7 +31,7 @@
   flex-wrap: wrap;
   justify-content:space-around;
   height: 98%;
-
+  overflow-y: auto;
   gap: 10px!important; /* アイテム間のスペース */
 }
 #right-div{
@@ -46,7 +46,7 @@
 }
 .menu-item{
   height:4rem!important;
-  width:40%!important;
+  width:42%!important;
   margin: 5px;  /* 適度なスペース */
 
 }
@@ -55,8 +55,9 @@
 }
 #list-order{
   height:55%;
-  overflow-y: auto;
-  border-bottom: 0.5px solid #333
+  overflow-y: auto!important;
+  border-bottom: 0.5px solid #333;
+
 }
 #cashier{
   width: 100%;
@@ -67,6 +68,7 @@
   width: 100%;
 
 }
+
 #cashier div{
   border-bottom: 0.5px solid #333;
   text-align:center;
@@ -79,6 +81,17 @@
   justify-content: space-around;
   align-items: center;
   margin-bottom: 10px
+}
+.detail_names-div{
+  width: 160px;
+  display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.item-amount{
+  width: 80px;
+  margin-right: 2px
 }
 #tax-button button{
   width: 40%;
@@ -147,4 +160,9 @@
 .name-imput input{
   width:80%;
   font-size: 20px
+}
+#total-amount{
+  width:100%;
+  text-align: center;
+  font-size: 15px
 }
