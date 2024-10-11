@@ -10,6 +10,40 @@ document.getElementById('close-alert-btn').addEventListener('click', () => {
     alertModal.style.display = 'none';
 });
 
+document.getElementById('fullscreenButton').addEventListener('click', () => {
+    const docElement = document.documentElement;
+    if (docElement.requestFullscreen) {
+        docElement.requestFullscreen();
+    } else if (docElement.mozRequestFullScreen) { // Firefox
+        docElement.mozRequestFullScreen();
+    } else if (docElement.webkitRequestFullscreen) { // Chrome, Safari, Opera
+        docElement.webkitRequestFullscreen();
+    } else if (docElement.msRequestFullscreen) { // IE/Edge
+        docElement.msRequestFullscreen();
+    }
+
+    // フルスクリーンボタンを非表示、解除ボタンを表示
+    document.getElementById('fullscreenButton').style.display = 'none';
+    document.getElementById('exitFullscreenButton').style.display = 'block';
+});
+
+document.getElementById('exitFullscreenButton').addEventListener('click', () => {
+    if (document.exitFullscreen) {
+        document.exitFullscreen();
+    } else if (document.mozCancelFullScreen) { // Firefox
+        document.mozCancelFullScreen();
+    } else if (document.webkitExitFullscreen) { // Chrome, Safari, Opera
+        document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) { // IE/Edge
+        document.msExitFullscreen();
+    }
+
+    // 解除ボタンを非表示、フルスクリーンボタンを表示
+    document.getElementById('fullscreenButton').style.display = 'block';
+    document.getElementById('exitFullscreenButton').style.display = 'none';
+});
+
+
 // モーダルの×ボタンを押した時のイベントリスナー
 document.querySelector('.modal .close').addEventListener('click', () => {
     alertModal.style.display = 'none';
@@ -439,6 +473,7 @@ sortedData.forEach(item => {
 
        // オーダー修正モーダルに現在のオーダーを表示
        function displayEditOrderModal() {
+         try{
            const editOrderList = document.getElementById('edit-order-list');
            console.log(orderList.order[selectedName])
            if(orderList.order[selectedName].length===0){
@@ -475,6 +510,12 @@ sortedData.forEach(item => {
 
            // モーダルを表示
            document.getElementById('edit-order-modal').style.display = 'block';
+         }catch(e){
+           showAlert(translations[userLanguage]["Selecione ou abra uma comanda"])
+           alertModal.style.display = 'block';
+           return
+         }
+
        }
 
        // 数量の変更処理
@@ -815,7 +856,8 @@ document.getElementById('confirm-order').addEventListener('click', async () => {
         }
     } catch (error) {
         console.error('Error:', error);
-        showAlert(translations[userLanguage]["Erro no registro"]);
+        showAlert(translations[userLanguage]["Selecione ou abra uma comanda"]);
+        return
     } finally {
         confirmButton.disabled = false;
         loadingPopup.style.display = 'none'; // リクエスト完了後にポップアップを非表示
@@ -859,7 +901,10 @@ function addOrderName(orderName) {
 
 document.getElementById('div-table-btn').addEventListener('click', () => {
     document.getElementById('password-modal').style.display = 'block';
+
+
 });
+
 
 document.querySelectorAll('.close').forEach(closeBtn => {
     closeBtn.addEventListener('click', () => {
@@ -870,12 +915,37 @@ document.querySelectorAll('.close').forEach(closeBtn => {
 
 document.getElementById('confirm-password-btn').addEventListener('click', () => {
     const enteredPassword = document.getElementById('password-input').value;
-    const correctPassword = '9876'; // ここで正しいパスワードを設定
+
+
+    const correctPassword = '3790'; // ここで正しいパスワードを設定
 
     if (enteredPassword === correctPassword) {
       document.getElementById('password-input').value=""
         document.getElementById('password-modal').style.display = 'none';
         document.getElementById('table-number-modal').style.display = 'block';
+        // fullscreenButtonとexitFullscreenButtonの表示状態をチェック
+        const isFullscreenButtonVisible = document.getElementById('fullscreenButton').style.display === 'flex';
+        const isExitFullscreenButtonVisible = document.getElementById('exitFullscreenButton').style.display === 'flex';
+
+        // どちらが表示されているかを判断して切り替え
+        if (isFullscreenButtonVisible) {
+            // fullscreenButtonが表示されている場合
+            document.getElementById('fullscreenButton').style.display = 'none';
+            document.getElementById('exitFullscreenButton').style.display = 'flex';
+        } else if (isExitFullscreenButtonVisible) {
+            // exitFullscreenButtonが表示されている場合
+            document.getElementById('exitFullscreenButton').style.display = 'none';
+            document.getElementById('fullscreenButton').style.display = 'flex';
+        } else {
+            // どちらも表示されていない場合、デフォルトでfullscreenButtonを表示
+            document.getElementById('fullscreenButton').style.display = 'flex';
+            document.getElementById('exitFullscreenButton').style.display = 'none';
+        }
+        // モーダルを閉じたときにボタンを非表示にするイベントリスナーを追加
+        document.getElementById('table-number-modal').addEventListener('click', () => {
+            document.getElementById('fullscreenButton').style.display = 'none';
+            document.getElementById('exitFullscreenButton').style.display = 'none';
+        });
 
     } else {
         alert('Senha incorreta!');
@@ -889,7 +959,11 @@ document.getElementById('save-table-number-btn').addEventListener('click', () =>
         document.getElementById('table-number').textContent = newTableNumber;
         sessionStorage.setItem('saveTableNo',newTableNumber)
         document.getElementById('table-number-modal').style.display = 'none';
+        document.getElementById('fullscreenButton').style.display = 'none';
+        document.getElementById('exitFullscreenButton').style.display = 'none';
     } else {
+      document.getElementById('fullscreenButton').style.display = 'none';
+      document.getElementById('exitFullscreenButton').style.display = 'none';
         alert('Por favor, insira um número de mesa válido.');
     }
 });
