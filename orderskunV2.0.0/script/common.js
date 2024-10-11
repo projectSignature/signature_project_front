@@ -6,7 +6,7 @@ async function makerequest(url){
 const pageToButtonMap = {
     'pos.html': 'pos-btn',
     'menuUpdate.html': 'menu-btn',
-    'history.html': 'history-btn',
+    'historypedidos.html': 'history-btn',
     'logout.html': 'logout-btn',
     'orders.html':'pedido-client-btn',
     'comandas.html':'comanda-btn',

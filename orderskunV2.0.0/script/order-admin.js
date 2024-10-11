@@ -27,7 +27,7 @@ let clients ={
 
 let orderList = {
   tableNo:1,
-  clienId:47,
+  clienId:17,
   order:{
   },
   historyOrder:{
@@ -84,6 +84,7 @@ const sortedData = MainData.menus
     .filter(item => item.category_id === category)
     .sort((a, b) => a.display_order - b.display_order);
 menuItemsContainer.innerHTML = '';
+console.log(sortedData)
 sortedData.forEach(item => {
     let div = document.createElement('div');
     div.classList.add('menu-item');
@@ -182,13 +183,17 @@ function displayItemDetails(item) {
 
         const selectedOptions = [];
         document.querySelectorAll('.option-item.selected').forEach(optionDiv => {
-            const optionId = optionDiv.getAttribute('data-id');
-            const additionalPrice = parseFloat(optionDiv.getAttribute('data-price'));
-            selectedOptions.push({
-                id: optionId,
-                additional_price: additionalPrice
-            });
-        });
+    const optionId = optionDiv.getAttribute('data-id');
+    const additionalPrice = parseFloat(optionDiv.getAttribute('data-price'));
+    const optionName = optionDiv.querySelector('.option-name').textContent;
+
+    selectedOptions.push({
+        id: optionId,
+        name: optionName, // オプション名を追加
+        additional_price: additionalPrice
+    });
+});
+
 
         addToSelectedItems(item, quantity, selectedOptions);
         document.body.removeChild(detailsContainer);
@@ -239,13 +244,20 @@ function addToSelectedItems(item, quantity, selectedOptions) {
 function displayOrderForName(name) {
   totalPrice = 0; // 合計金額をリセット
   selectedItemsContainer.innerHTML = ''; // 既存のリストをクリア
-  console.log(orderList.order[name])
+  console.log(orderList.order[name]);
   orderList.order[name].forEach((item, index) => {
     let li = document.createElement('li');
-
-    let itemInfo = document.createElement('span');
     let itemAmountFormatted = item.amount.toLocaleString();
-    itemInfo.textContent = `${item.name} - ￥${itemAmountFormatted}`;
+
+    // 金額用のspan要素を作成
+    let itemAmount = document.createElement('span');
+    itemAmount.textContent = `￥${itemAmountFormatted}`;
+    itemAmount.classList.add('item-amount'); // 必要に応じてクラスを追加
+
+    // 親要素としてのspanを作成
+    let itemInfo = document.createElement('span');
+    itemInfo.textContent = item.name;
+    itemInfo.classList.add('detail_names-div'); // 既存のクラスを追加
 
     let quantityDisplay = document.createElement('span');
     quantityDisplay.textContent = ` ${item.quantity}個 `;
@@ -253,7 +265,7 @@ function displayOrderForName(name) {
 
     let minusButton = document.createElement('button');
     minusButton.textContent = '-';
-    minusButton.style="width:50px"
+    minusButton.style = "width:50px";
     minusButton.addEventListener('click', () => {
       if (item.quantity > 1) {
         item.quantity--;
@@ -265,7 +277,7 @@ function displayOrderForName(name) {
 
     let plusButton = document.createElement('button');
     plusButton.textContent = '+';
-    plusButton.style="width:50px"
+    plusButton.style = "width:50px";
     plusButton.addEventListener('click', () => {
       item.quantity++;
       quantityDisplay.textContent = ` ${item.quantity}個 `;
@@ -276,19 +288,30 @@ function displayOrderForName(name) {
     // ゴミ箱ボタン（アイテム削除）
     let trashButton = document.createElement('button');
     trashButton.textContent = '🗑️';  // ゴミ箱アイコン
-    trashButton.style="width:50px;margin-left:15px;background-color:#FFF"
+    trashButton.style = "width:50px;margin-left:15px;background-color:#FFF";
     trashButton.addEventListener('click', () => {
       orderList.order[name].splice(index, 1); // 配列から該当アイテムを削除
       displayOrderForName(name);  // 再表示
     });
 
     li.appendChild(itemInfo);
+    li.appendChild(itemAmount);
     li.appendChild(minusButton);
     li.appendChild(quantityDisplay);
     li.appendChild(plusButton);
-    li.appendChild(trashButton);  // ゴミ箱ボタンを追加
+    li.appendChild(trashButton);
 
-    totalPrice += item.amount * item.quantity; // 合計金額を計算
+    // オプションを表示
+    if (item.options && item.options.length > 0) {
+      item.options.forEach(option => {
+        let optionElement = document.createElement('div');
+        optionElement.textContent = `・opção ：${option.name}, valor ￥${option.additional_price}`;
+        optionElement.classList.add('item-option'); // 必要に応じてクラスを追加
+        li.appendChild(optionElement);
+      });
+    }
+
+    totalPrice += item.amount ; // 合計金額を計算* item.quantity
 
     selectedItemsContainer.appendChild(li);
   });
@@ -296,14 +319,17 @@ function displayOrderForName(name) {
   updateTotals(); // 初期表示時に合計金額を更新
 }
 
+
 // 税金と合計金額を更新する関数
 function updateTotals() {
+  console.log(totalPrice)
   const taxAmount = totalPrice * taxRate; // 税金計算
   const totalWithTax = totalPrice + taxAmount; // 税込合計計算
 
   document.getElementById('total-amount').textContent = `Sem imposto: ￥${totalPrice.toLocaleString()}`;
-  document.getElementById('tax').textContent = `Imposto: ￥${Math.floor(taxAmount).toLocaleString()}`;
-  document.getElementById('total').textContent = `Total: ￥${Math.floor(totalWithTax).toLocaleString()}`;
+  // document.getElementById('tax').textContent = `Imposto: ￥${Math.floor(taxAmount).toLocaleString()}`;
+  document.getElementById('tax').textContent = `Imposto: ￥0`;
+  document.getElementById('total').textContent = `Total: ￥${totalPrice.toLocaleString()}`;
 }
 
 
@@ -335,16 +361,8 @@ document.getElementById('confirm-order').addEventListener('click', async () => {
     confirmButton.disabled = true; // ボタンを無効化
     loadingPopup.style.display = 'block'; // ポップアップを表示
     try {
-    console.log(orderList.order)
-    console.log(seletOrderType)
-  if(seletOrderType.value===9999){
-    selectedName='Take out'
-  }else if(seletOrderType.value===9998){
-    selectedName='Uber'
-  }else{
-    selectedName='balcão'
-  }
-  console.log(orderClient)
+      console.log(orderList.order[9999])
+
   if(!orderClient||orderClient===""){
     showAlert("Insira o nome do cliente");
     return
@@ -364,7 +382,7 @@ document.getElementById('confirm-order').addEventListener('click', async () => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                order_name: selectedName,
+                order_name: orderClient,
                 user_id: orderList.clienId,
                 table_no: seletOrderType.value,
                 items: orderList.order[9999],
@@ -377,6 +395,7 @@ document.getElementById('confirm-order').addEventListener('click', async () => {
             showCustomAlert(translations[userLanguage]["Pedido feito"]);
             orderList.order[selectedName] = [];
             selectedItemsContainer.innerHTML = ''; // リストをクリア
+            nameinput.value=""
         } else {
             const errorData = await response.json();
             console.error('Error:', errorData);

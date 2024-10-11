@@ -46,9 +46,9 @@ document.addEventListener('DOMContentLoaded', async  () => {
       let status = "Pronto"
       let styleColer ="background-color:#90EE90"
       if (tableDisplay == "9999") {
-          tableDisplay = "Takeout";
+          tableDisplay = `Take out<br>${order.order_name}`;
       } else if (tableDisplay == "9998") {
-          tableDisplay = "Uber Eats";
+          tableDisplay = `Uber<br>${order.order_name}`;
       }else{
         tableDisplay =`Mesa:${tableDisplay}<br> *${order.order_name}`
       }
@@ -76,9 +76,6 @@ document.addEventListener('DOMContentLoaded', async  () => {
       ordersList.appendChild(orderCard);
        loadingPopup.style="display:none"
   });
-
-
-
 
   function displayOrderDetails(order) {
       console.log(order.OrderItems);
@@ -125,10 +122,8 @@ document.addEventListener('DOMContentLoaded', async  () => {
           });
 
           // 合計金額を計算
-          receiptData.totalAmount += parseInt(item.item_price) * item.quantity;
+          receiptData.totalAmount += parseInt(item.item_price) ;//* item.quantity
       });
-
-      console.log(selectOrders); // selectOrdersにメニュー名とオプション名が追加された状態で確認
 
       // DOMにアイテムを表示
       selectOrders.OrderItems.forEach(item => {

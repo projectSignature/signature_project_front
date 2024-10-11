@@ -1086,6 +1086,7 @@ function displayOrderDetails(orderName, items) {
     // モーダルのタイトルと合計金額を設定
     orderNameTitle.textContent = `${translations[userLanguage]["Nome da comanda"]}： ${orderName}`;
     const totalAmount = items.reduce((sum, item) => sum + parseFloat(item.item_price), 0);
+    console.log(totalAmount)
     orderTotalAmount.textContent = `${translations[userLanguage]["Valor total"]}： ￥${totalAmount.toLocaleString()}`;
 
     // アイテムリストをクリア

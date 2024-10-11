@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const orderContainer = document.getElementById('order-list');
         orderContainer.innerHTML = ''; // 前の注文カードをクリア
         pendingOrders.forEach(order => {
+          console.log(order)
             playAlarmIfEnabled(order.alarm_enabled, order.id);
             let tableDisplay = order.table_no;
             if (tableDisplay == "9999") {
@@ -40,12 +41,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             orderCard.classList.add('order-card');
             orderCard.innerHTML = `
                 <h3>${tableDisplay}</h3>
-                <p>Total Amount: ${formatPrice(order.total_amount)}</p>
+                <p>Valor: ${formatPrice(order.total_amount)}</p>
                 <div class="order-items"></div>
             `;
 
             const orderItemsContainer = orderCard.querySelector('.order-items');
             order.OrderItems.forEach(item => {
+              console.log(item)
                 const menuItemName = MainData.menus.filter(items => items.id === item.menu_id);
                 const options = JSON.parse(item.options).map(opt => {
                     const optionName = getOptionNameById(opt.id); // opt.idからオプション名を取得
@@ -57,7 +59,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const statusText = item.serve_status === 'pending' ? '✕' : '〇';
                 itemElement.innerHTML = `
                     <div class="left-div">
-                        <div class="item-name-div">${menuItemName[0].admin_item_name}</div>
+                        <div class="item-name-div">${menuItemName[0].admin_item_name}✕${item.quantity}</div>
                         <div class="option-div">
                             <span>${options.length > 0 ? options : ''}</span>
                         </div>
