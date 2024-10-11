@@ -73,8 +73,8 @@
                 <div class="modal-content">
                     <span class="close">&times;</span>
                     <h2 data-translate-key="Senha para alterar número da mesa">Senha para alterar número da mesa</h2>
-                    <input type="password" id="password-input" placeholder="Digite a senha">
-                    <button id="confirm-password-btn" data-translate-key="Confirmar">Confirmar</button>
+                    <input type="password" id="password-input" placeholder="Enter pass" style="font-size: 50px">
+                    <button id="confirm-password-btn" data-translate-key="Confirmar"style="font-size: 50px; margin-top:25px">Confirmar</button>
                 </div>
             </div>
 
@@ -83,8 +83,8 @@
                 <div class="modal-content">
                     <span class="close">&times;</span>
                     <h2 data-translate-key="Alterar número da mesa">Alterar número da mesa</h2>
-                    <input type="number" id="new-table-number" placeholder="Novo número da mesa" min="1" style="text-align: center;">
-                    <button id="save-table-number-btn" data-translate-key="Salvar">Salvar</button>
+                    <input type="number" id="new-table-number" placeholder="Novo número da mesa" min="1" style="text-align: center;font-size: 50px">
+                    <button id="save-table-number-btn" data-translate-key="Salvar"style="font-size: 50px; margin-top:25px">Salvar</button>
                 </div>
             </div>
             <!-- 警告メッセージ用モーダルウィンドウ -->
@@ -126,6 +126,9 @@
 <div id="loading-popup" class="loading-popup" style="display: none;">
     登録中...
 </div>
+<button id="fullscreenButton" style="display: none;">Enter Fullscreen</button>
+<button id="exitFullscreenButton" style="display: none;">Exit Fullscreen</button>
+
         </main>
     </div>
     <script src="../../config.js"></script>
