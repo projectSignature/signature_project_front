@@ -408,7 +408,7 @@ button {
     padding: 20px;
     border: 1px solid #888;
     width: 50%; /* 横幅を広くする */
-  
+    overflow: hidden;
     border-radius: 10px; /* 角を丸くする */
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* 影を付けて立体感を出す */
     text-align: center; /* テキストを中央揃え */
