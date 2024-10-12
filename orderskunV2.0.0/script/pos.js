@@ -234,7 +234,7 @@ async function registeConfirm(){
   try {
 
     loadingPopup.style="display:block"
-      const response = await fetch(`${server}/orders/updatePayment`, {
+      const response = await fetch(`${server}/orderskun/updatePayment`, {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json'
