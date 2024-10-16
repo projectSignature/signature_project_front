@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Orders君</title>
-    <link rel="stylesheet" href="../style/order.css">
+    <link rel="stylesheet" href="../style/order-takeou.css">
 </head>
 <body>
     <div id="app">
@@ -17,15 +17,6 @@
                 <img src="../imagen/language-ja.png" alt="日本語" class="language-icon" data-lang="ja">
                 <img src="../imagen/language-en.png" alt="English" class="language-icon" data-lang="en">
             </div>
-            <!-- <div id="table-container">
-                <div id="div-table-btn">
-                    <img src="../imagen/table-illustration.png" alt="Table" id="table-illustration">
-                    <div id="table-number">1</div>
-                </div>
-                <div style="margin-top: 15px">
-                    <button id="view-history" data-translate-key="Histórico">Histórico</button>
-                </div>
-            </div> -->
         </header>
         <main>
             <div id="menu-container">
@@ -34,29 +25,14 @@
                 </div>
             </div>
             <aside>
-                <!-- <div id="order-names-container" class="scrollable-names">
-
-                 </div>
-                <button id="show-add-name-modal" data-translate-key="Criar comanda">Criar comanda</button>-->
                 <h2 id="list-title-h2" data-translate-key="Lista de pedidos">Lista de pedidos</h2>
-                <ul id="selected-items" style="height:320px; max-height: 320px">
+                <ul id="selected-items" style="height:330px; max-height: 330px">
                    <!-- 選択されたアイテムがここに表示される  -->
                 </ul>
                 <div id="total-amount">￥0</div>
                 <button id="confirm-order" data-translate-key="Confirmar pedido">Confirmar pedido</button>
                 <button id="edit-order" data-translate-key="Alterar o pedido">Alterar o pedido</button> <!-- 修正ボタンを追加 -->
             </aside>
-
-            <!-- 名前を追加するためのモーダルウィンドウ -->
-            <!-- <div id="add-name-modal" class="modal">
-                <div class="modal-content">
-                    <span class="close">&times;</span>
-                    <h2 data-translate-key="Digite o nome para registro da comanda">Digite o nome para registro da comanda</h2>
-                    <input type="text" id="name-input" >
-                    <button id="add-name-btn" data-translate-key="Criar comanda">Criar comanda</button>
-                </div>
-            </div> -->
-
             <!-- オーダー修正のためのモーダルウィンドウ -->
             <div id="edit-order-modal" class="modal">
                 <div class="modal-content">
@@ -68,26 +44,6 @@
                     <button id="save-changes-btn" data-translate-key="Salvar">Salvar</button>
                 </div>
             </div>
-
-            <!-- パスワード入力モーダル -->
-            <!-- <div id="password-modal" class="modal">
-                <div class="modal-content">
-                    <span class="close">&times;</span>
-                    <h2 data-translate-key="Senha para alterar número da mesa">Senha para alterar número da mesa</h2>
-                    <input type="password" id="password-input" placeholder="Digite a senha">
-                    <button id="confirm-password-btn" data-translate-key="Confirmar">Confirmar</button>
-                </div>
-            </div> -->
-
-            <!-- テーブル番号変更モーダル -->
-            <!-- <div id="table-number-modal" class="modal">
-                <div class="modal-content">
-                    <span class="close">&times;</span>
-                    <h2 data-translate-key="Alterar número da mesa">Alterar número da mesa</h2>
-                    <input type="number" id="new-table-number" placeholder="Novo número da mesa" min="1" style="text-align: center;">
-                    <button id="save-table-number-btn" data-translate-key="Salvar">Salvar</button>
-                </div>
-            </div> -->
             <!-- 警告メッセージ用モーダルウィンドウ -->
             <div id="alert-modal" class="modal">
                 <div class="modal-content">
@@ -104,32 +60,31 @@
               </div>
           </div>
           <!-- 履歴表示のモーダルウィンドウ -->
-<div id="history-modal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h3 data-translate-key="Escolha a comanda">Escolha a comanda</h3>
-        <div id="history-list">
-            <!-- ここに履歴のオーダー名を追加 -->
+          <div id="history-modal" class="modal">
+              <div class="modal-content">
+                  <span class="close">&times;</span>
+                  <h3 data-translate-key="Escolha a comanda">Escolha a comanda</h3>
+                  <div id="history-list">
+                      <!-- ここに履歴のオーダー名を追加 -->
+                  </div>
+              </div>
+          </div>
+          <!-- オーダー詳細を表示するためのモーダル -->
+        <div id="order-details-modal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2 id="order-name-title"></h2>
+                <p id="order-total-amount"></p>
+                <ul id="order-items-list">
+                    <!-- アイテム詳細がここに表示される -->
+                </ul>
+            </div>
         </div>
-    </div>
-</div>
-<!-- オーダー詳細を表示するためのモーダル -->
-<div id="order-details-modal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2 id="order-name-title"></h2>
-        <p id="order-total-amount"></p>
-        <ul id="order-items-list">
-            <!-- アイテム詳細がここに表示される -->
-        </ul>
-    </div>
-</div>
-<div id="loading-popup" class="loading-popup" style="display: none;">
-    登録中...
-</div>
-<button id="fullscreenButton" style="">Enter Fullscreen</button>
-
-        </main>
+      <div id="loading-popup" class="loading-popup" style="display: none;">
+          登録中...
+      </div>
+      <button id="fullscreenButton" style="">Enter Fullscreen</button>
+    </main>
     </div>
     <script src="../../config.js"></script>
     <script src="../script/common.js"></script>
