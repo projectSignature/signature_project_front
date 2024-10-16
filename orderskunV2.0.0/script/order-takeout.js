@@ -5,6 +5,7 @@ const orderNamesContainer = document.getElementById('order-names-container');
 const nameInput = document.getElementById('name-input');
 const addNameBtn = document.getElementById('add-name-btn');
 const selectedItemsContainer = document.getElementById('selected-items');
+const totalAmoundDisplay = document.getElementById('total-amount')
 
 // モーダル要素
 const modal = document.getElementById('add-name-modal');
@@ -25,7 +26,7 @@ document.getElementById('fullscreenButton').addEventListener('click', () => {
 
     // フルスクリーンボタンを非表示、解除ボタンを表示
     document.getElementById('fullscreenButton').style.display = 'none';
-  
+
 });
 
 // if (!decodedToken) {
@@ -269,6 +270,7 @@ sortedData.forEach(item => {
                 showCustomAlert(translations[userLanguage]["Pedido feito"]);
                 orderList.order[selectedName] = [];
                 selectedItemsContainer.innerHTML = ''; // リストをクリア
+                totalAmoundDisplay.innerText = "￥0"
             } else {
                 const errorData = await response.json();
                 console.error('Error:', errorData);
@@ -485,7 +487,7 @@ sortedData.forEach(item => {
                orderList.order[selectedName].forEach((item, index) => {
                    let li = document.createElement('li');
                    li.innerHTML = `
-                       ${item.name} - ￥${item.amount}✕(${item.quantity})
+                       <span class="item-name-of-alter-order-list">${item.name} - ￥${item.amount}✕(${item.quantity})</span>
                        <button class="decrease-quantity">-</button>
                        <input type="number" class="quantity-input" value="${item.quantity}" min="1" data-index="${index}">
                        <button class="increase-quantity">+</button>
@@ -773,7 +775,7 @@ function displayOrderForName(name) {
     }
   });
   const totalAmount = orderList.order.takeout.reduce((sum, item) => sum + item.amount, 0);
- document.getElementById('total-amount').innerText = `￥${totalAmount.toLocaleString()}`
+ totalAmoundDisplay.innerText = `￥${totalAmount.toLocaleString()}`
 }
 
 

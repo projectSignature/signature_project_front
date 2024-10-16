@@ -6,6 +6,8 @@ const selectedItemsContainer = document.getElementById('list-order')
 let notaxAmount = document.getElementById('total-amount')
 const confirmButton = document.getElementById('confirm')
 const nameinput = document.getElementById('name-input')
+const totalAmount = document.getElementById('incluid-tax-total-amount')
+const taxByamount = document.getElementById('tax-by-amount')
 let taxRate = 0.08; // デフォルトの税率8%
 let totalPrice = 0; // 合計金額
 
@@ -228,7 +230,7 @@ function addToSelectedItems(item, quantity, selectedOptions) {
             .filter(items => items.id === item.category_id)
         let newItem = {
             id: item.id,
-            name: item[`menu_name_${userLanguage}`],
+            name: item[`admin_item_name`],
             amount: totalPrice,
             category: item.category_id,
             quantity: quantity,
@@ -326,10 +328,10 @@ function updateTotals() {
   const taxAmount = totalPrice * taxRate; // 税金計算
   const totalWithTax = totalPrice + taxAmount; // 税込合計計算
 
-  document.getElementById('total-amount').textContent = `Sem imposto: ￥${totalPrice.toLocaleString()}`;
+  notaxAmount.textContent = `Sem imposto: ￥${totalPrice.toLocaleString()}`;
   // document.getElementById('tax').textContent = `Imposto: ￥${Math.floor(taxAmount).toLocaleString()}`;
-  document.getElementById('tax').textContent = `Imposto: ￥0`;
-  document.getElementById('total').textContent = `Total: ￥${totalPrice.toLocaleString()}`;
+  taxByamount.textContent = `Imposto: ￥0`;
+  totalAmount.textContent = `Total: ￥${totalPrice.toLocaleString()}`;
 }
 
 
@@ -389,13 +391,18 @@ document.getElementById('confirm-order').addEventListener('click', async () => {
                 orderId:''
             })
         });
-        console.log(response)
-
         if (response.ok) {
+          const responseData = await response.json();
+            if(seletOrderType.value==="9998"){
+              await cupom(responseData.order.id)
+            }
             showCustomAlert(translations[userLanguage]["Pedido feito"]);
             orderList.order[selectedName] = [];
             selectedItemsContainer.innerHTML = ''; // リストをクリア
             nameinput.value=""
+            notaxAmount.textContent = `Sem imposto: ￥0`
+            taxByamount.textContent = `Imposto: ￥0`;
+            totalAmount.textContent = `Total: ￥0`;
         } else {
             const errorData = await response.json();
             console.error('Error:', errorData);
@@ -557,3 +564,216 @@ const translations = {
 };
 
 }
+
+async function cupom(id) {
+const totalQuantity = orderList.order[9999].reduce((sum, item) => sum + item.quantity, 0);
+let row = `<div id="contentToPrint" class="print-content">
+  <div class="ubernumber">
+    <p>${nameinput.value}</p>
+  </div>
+  <div class='display-center-div'>
+    <p>${await getCurrentDateTime()}  #${id}</p>
+  </div>
+  <div class="contents-div">
+   <p>ご注文内容(Pedido)</p>
+  </div>
+  <div class="contents-div">
+      ${await generateCupomItemsHTML()}
+  </div>
+
+  <div class="azukari-amount-div">
+    <div>御買上げ点数　　</div>
+    <div>${totalQuantity}点</div>
+  </div>
+  <div class="dotted-line"></div>
+  <div class="contents-div-message">
+   <p>Thanks for order</p>
+  </div>
+  <div class="img-dicvs"><img src="../imagen/logo.png" width="100" class="setting-right-button" /></div>
+  <div class="adress-mother-div">
+    <div>Roots Grill</div>
+    <div>〒475-0801</div>
+    <div>愛知県碧南市相生町4-13 102号室</div>
+  </div>
+</div>`;
+
+var printWindow = window.open('', '_blank');
+// ウィンドウが正常に開けているか確認
+if (!printWindow) {
+  alert('A página foi bloqueata, verifique a configuração do google');
+  return; // 処理を終了します
+}
+
+// 新しいウィンドウにコンテンツを書き込む
+printWindow.document.write(`
+  <html>
+  <head>
+    <title id="title-print"></title>
+    <style>
+      @media print {
+        #body-testes {
+          width: 80mm;
+          height: 100mm !important;
+          margin: 0;
+          padding: 0;
+          overflow: hidden;
+          background-color: red !important;
+        }
+        .adress-div {
+          width: 100%;
+          height: 7rem;
+          background-color: black;
+          -webkit-print-color-adjust: exact;
+          color: white;
+        }
+        .img-dicvs {
+          display: flex;
+          justify-content: center;
+        }
+        .display-center-div {
+          display: flex;
+          justify-content: center;
+        }
+        .contents-div {
+          width: 100%;
+
+        }
+        .contents-div-message{
+          width: 100%;
+          display:flex;
+          justify-content: center;
+          font-size:16px
+        }
+        .items-name {
+          text-align: left;
+          width:80%;
+          overflow:hidden
+        }
+        .details-iten {
+          width: 80%;
+          text-align: right;
+          margin-right: 1rem;
+        }
+        .dotted-line::before {
+          content: '';
+          display: block;
+          width: 100%;
+          height: 1px;
+          background-color: black;
+          background-image: repeating-linear-gradient(90deg, black, black 2px, transparent 2px, transparent 4px);
+          -webkit-print-color-adjust: exact;
+        }
+        .total-amount-div {
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
+          font-size: 3vh;
+        }
+        .azukari-amount-div {
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
+        }
+        .ubernumber {
+          width: 100%;
+          height: 8rem;
+          margin-top:1rem;
+          background-color: black;
+          -webkit-print-color-adjust: exact;
+          color: white;
+          font-size:6vh;
+          font-weight:bold;
+          display: flex;
+          justify-content: center;
+          align-items: center;"
+        }
+        .adress-mother-div{
+          width: 100%;
+          background-color:black;
+          margin-top:2px;
+          -webkit-print-color-adjust: exact;
+          color: white;
+        }
+        .adress-mother-div div{
+          width: 100%;
+          display: flex;
+          justify-content: center;
+        }
+        .items-mother-div-name{
+          width:100%;
+          display:flex
+        }
+         .item-entry{
+           width:100%
+         }
+        .total-qt {
+          margin-top: 1rem;
+        }
+
+      }
+    </style>
+  </head>
+  <body id="body-testes">
+    ${row}
+  </body>
+  </html>
+`);
+// 画像が正しく読み込まれるまで待機
+await new Promise(resolve => {
+  var img = new Image();
+  img.onload = resolve;
+  img.src = "../imagen/logo.png";
+});
+// 印刷を実行
+printWindow.print();
+// 印刷が完了したらウィンドウを閉じる
+printWindow.close();
+}
+
+function generateCupomItemsHTML() {
+    // orderList.order[9999] が存在しない場合は空文字を返す
+    console.log(orderList.order[9999])
+    if (!orderList.order[9999]) {
+        return '';
+    }
+    let receiptHTML = '';
+    // orderList.order[9999] をループ
+    orderList.order[9999].forEach(item => {
+      console.log(item)
+        receiptHTML += `
+            <div class="item-entry">
+                <div class="items-mother-div-name">
+                 <div class="items-name"> ${item.name}</div><div> x ${item.quantity}</div></div>
+        `;
+        // オプションが存在する場合はそれぞれのオプションを1行ずつ表示
+        if (item.options && item.options.length > 0) {
+            item.options.forEach(option => {
+                receiptHTML += `
+                    <div class="details-iten">+ ${option.name}</div>
+                `;
+            });
+        }
+        receiptHTML += `</div>`; // item-entry の終了
+    });
+    return receiptHTML;
+}
+
+function getCurrentDateTime() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth() + 1;
+            const day = now.getDate();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+
+            // ゼロ埋めして二桁にする
+            const formattedMonth = month < 10 ? '0' + month : month;
+            const formattedDay = day < 10 ? '0' + day : day;
+            const formattedHours = hours < 10 ? '0' + hours : hours;
+            const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+            const formattedSeconds = seconds < 10 ? '0' + seconds : seconds;
+
+            return year + '-' + formattedMonth + '-' + formattedDay + ' ' +
+                                                formattedHours + ':' + formattedMinutes + ':' + formattedSeconds;
+        }
