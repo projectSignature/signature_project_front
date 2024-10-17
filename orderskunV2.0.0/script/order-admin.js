@@ -8,6 +8,8 @@ const confirmButton = document.getElementById('confirm')
 const nameinput = document.getElementById('name-input')
 const totalAmount = document.getElementById('incluid-tax-total-amount')
 const taxByamount = document.getElementById('tax-by-amount')
+const loadingPopup = document.getElementById('loading-popup');
+const pickupTimeElement = document.getElementById('pickup-time')
 let taxRate = 0.08; // デフォルトの税率8%
 let totalPrice = 0; // 合計金額
 
@@ -50,7 +52,10 @@ window.onload = async function() {
         return;
     }
     let selectType = seletOrderType.value === '9999' ? true : (seletOrderType.value === '9998' ? true : false);
-
+    const now = new Date();
+    const offset = now.getTimezoneOffset() * 60000;
+    const localTime = new Date(now - offset).toISOString().slice(0, 16);
+    pickupTimeElement.value = localTime;
   //メニュー、カテゴリー、オープション表示
   const MainData = await makerequest(`${server}/orders/getBasedata?user_id=${clients.id}`)
   const Categorys = MainData.categories.filter(category => category.is_takeout === selectType);
@@ -78,6 +83,7 @@ window.onload = async function() {
   console.log(button)
 
   orderCategories.appendChild(button);
+  loadingPopup.style="display:none"
 });
 
 function displayMenuItems(category) {
@@ -378,6 +384,12 @@ document.getElementById('confirm-order').addEventListener('click', async () => {
         }
 
 
+
+
+        // 日本時間のISOフォーマットを取得してサーバーに送信
+        const formattedPickupTime = `${pickupTimeElement.value}:00.000Z`;
+
+
         const response = await fetch(`${server}/orderskun/confirm`, {
             method: 'POST',
             headers: {
@@ -388,7 +400,8 @@ document.getElementById('confirm-order').addEventListener('click', async () => {
                 user_id: orderList.clienId,
                 table_no: seletOrderType.value,
                 items: orderList.order[9999],
-                orderId:''
+                orderId:'',
+                pickup_time:formattedPickupTime
             })
         });
         if (response.ok) {
@@ -403,6 +416,10 @@ document.getElementById('confirm-order').addEventListener('click', async () => {
             notaxAmount.textContent = `Sem imposto: ￥0`
             taxByamount.textContent = `Imposto: ￥0`;
             totalAmount.textContent = `Total: ￥0`;
+            const now = new Date();
+            const offset = now.getTimezoneOffset() * 60000;
+            const localTime = new Date(now - offset).toISOString().slice(0, 16);
+            pickupTimeElement.value = localTime;
         } else {
             const errorData = await response.json();
             console.error('Error:', errorData);

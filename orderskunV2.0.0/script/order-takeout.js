@@ -251,6 +251,12 @@ sortedData.forEach(item => {
                 loadingPopup.style.display = 'none'; // エラーの場合はポップアップを非表示
                 return;
             }
+            const getJapanTime = () => {
+            const now = new Date();
+            const offset = 9 * 60 * 60 * 1000; // UTC+9 (日本標準時)
+            const japanTime = new Date(now.getTime() + offset);
+            return japanTime.toISOString();  // ISOフォーマットに変換
+        };
             const response = await fetch(`${server}/orderskun/confirm`, {
                 method: 'POST',
                 headers: {
@@ -261,7 +267,8 @@ sortedData.forEach(item => {
                     user_id: orderList.clienId,
                     table_no: orderList.tableNo,
                     items: orderList.order[selectedName],
-                    orderId:''
+                    orderId:'',
+                    pickup_time: getJapanTime()  
                 })
             });
             console.log(response)

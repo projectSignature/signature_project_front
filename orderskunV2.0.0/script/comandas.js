@@ -24,10 +24,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         const loadingPopup = document.getElementById('loading-popup');
         MainData = await makerequest(`${server}/orders/getBasedata?user_id=${clients.id}`); // MainDataにデータを格納
         let pendingOrders = await fetchPendingOrders(clients.id);
+        pendingOrders.sort((a, b) => {
+            return new Date(a.pickup_time) - new Date(b.pickup_time);
+        });
         const orderContainer = document.getElementById('order-list');
         orderContainer.innerHTML = ''; // 前の注文カードをクリア
-        pendingOrders.forEach(order => {
-          console.log(order)
+        pendingOrders.forEach(async order => {
+          const {color,message} = await timeGet(order.pickup_time)
+          const pickupTime = new Date(order.pickup_time);
+          const hours = pickupTime.getUTCHours(); // UTC時間で時間を取得
+          const minutes = pickupTime.getUTCMinutes(); // UTC時間で分を取得
             playAlarmIfEnabled(order.alarm_enabled, order.id);
             let tableDisplay = order.table_no;
             if (tableDisplay == "9999") {
@@ -41,13 +47,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             orderCard.classList.add('order-card');
             orderCard.innerHTML = `
                 <h3>${tableDisplay}</h3>
+                <div class="order-time-div" style="background-color: ${color} !important;"><span>Pickup time: ${hours}:${minutes}</span></div>
+                <div class="order-time-div" style="background-color: ${color} !important;"><span>${message}</span></div>
                 <p>Valor: ${formatPrice(order.total_amount)}</p>
                 <div class="order-items"></div>
             `;
 
             const orderItemsContainer = orderCard.querySelector('.order-items');
             order.OrderItems.forEach(item => {
-              console.log(item)
                 const menuItemName = MainData.menus.filter(items => items.id === item.menu_id);
                 const options = JSON.parse(item.options).map(opt => {
                     const optionName = getOptionNameById(opt.id); // opt.idからオプション名を取得
@@ -74,31 +81,57 @@ document.addEventListener('DOMContentLoaded', async () => {
             orderContainer.appendChild(orderCard);
             loadingPopup.style.display = 'none'; // リクエスト完了後にポップアップを非表示
         });
-        // ステータスのクリックイベントを再度セット
-        document.querySelectorAll('.serve-status').forEach(statusDiv => {
-            statusDiv.addEventListener('click', function () {
-                const itemId = this.getAttribute('data-item-id');
-                const currentStatus = this.textContent.trim();
+
+        // イベントデリゲーションを使って、親要素にイベントリスナーを追加
+        orderContainer.addEventListener('click', function (event) {
+            if (event.target.classList.contains('serve-status')) {
+                const statusDiv = event.target;
+                const itemId = statusDiv.getAttribute('data-item-id');
+                const currentStatus = statusDiv.textContent.trim();
                 const newStatus = currentStatus === '✕' ? '〇' : '✕';
-                this.textContent = newStatus;
+                statusDiv.textContent = newStatus;
                 const newClass = newStatus === '✕' ? 'pending' : 'served';
-                this.classList.remove('pending', 'served');
-                this.classList.add(newClass);
+                statusDiv.classList.remove('pending', 'served');
+                statusDiv.classList.add(newClass);
                 updateStatus(itemId, newStatus);
-            });
+            }
         });
     };
+
     // 最初のデータ更新を実行
     await updateData();
     // 30秒ごとにデータ更新を実行
-    setInterval(updateData, 30000);
+    // setInterval(updateData, 30000);
+
     function formatPrice(amount) {
         return `¥${parseFloat(amount).toLocaleString()}`;
     }
+
+    function timeGet(time) {
+        // ISOフォーマットの時間をそのまま日本時間として解釈するため、'Z'を除去
+        const pickupTime = new Date(time.replace('Z', ''));  // 'Z'を削除してそのまま日本時間として扱う
+        // 現在の日本時間を取得
+        const now = new Date();
+        // 時間差を計算
+        const timeDifferenceMs = pickupTime.getTime() - now.getTime();
+        // ミリ秒を時間、分、秒に変換
+        const hoursDiff = Math.floor(Math.abs(timeDifferenceMs) / (1000 * 60 * 60)).toString().padStart(2, '0');
+        const minutesDiff = Math.floor((Math.abs(timeDifferenceMs) % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+        const secondsDiff = Math.floor((Math.abs(timeDifferenceMs) % (1000 * 60)) / 1000).toString().padStart(2, '0');
+        // 未来の場合と過去の場合で出力を分ける
+        if (timeDifferenceMs > 0) {
+            return {color:'#ADD8E6',
+                    message:`faltam: ${hoursDiff}:${minutesDiff}:${secondsDiff}`};
+        } else {
+            return {color:'#FF7F7F',message:`Passou se: ${hoursDiff}:${minutesDiff}:${secondsDiff}`};
+        }
+    }
+
     function getOptionNameById(optionId) {
         const optionDetail = MainData.options.find(option => option.id - 0 === optionId - 0);
         return optionDetail ? optionDetail.option_name_pt : '不明なオプション';
     }
+
     function updateStatus(itemId, newStatus) {
         const statusToUpdate = newStatus === '〇' ? 'served' : 'pending';
         fetch(`${server}/orderskun/update-status`, {
@@ -119,6 +152,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.error('Error updating status:', error);
         });
     }
+
     function playAlarmIfEnabled(alarmFlug, id) {
         updateAlarmStatus(id, false);
         if (alarmFlug) {
@@ -129,6 +163,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 });
+
 async function fetchPendingOrders() {
     try {
         const response = await fetch(`${server}/orderskun/pending`, {

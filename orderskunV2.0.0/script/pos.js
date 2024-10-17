@@ -1,14 +1,9 @@
 // const token = window.localStorage.getItem('token');
 // const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
 let selectOrders = ""
-
-
 // if (!decodedToken) {
 //   // window.location.href = '../index.html';
 // }
-
-
-
 let clients ={
   id:17, //クライアントid
   language:'pt', //クライアント言語
@@ -17,13 +12,10 @@ let clients ={
   printInfo:"",　//？？
   taxtType:""　//税金区分
 }
-
 let selectedCard = null;
-
 document.addEventListener('DOMContentLoaded', async  () => {
   console.log(clients.id)
   const loadingPopup = document.getElementById('loading-popup');
-
   //メニュー、カテゴリー、オープション表示
   const MainData = await makerequest(`${server}/orders/getBasedata?user_id=${clients.id}`)
   let pendingOrders = await fetchPendingOrders(clients.id);
@@ -40,11 +32,11 @@ document.addEventListener('DOMContentLoaded', async  () => {
   let changeAmountElement = document.getElementById('change-amount');//お釣りエレメント
   let taxIncluidAmountElent = document.getElementById('tax-included-amount');//税金込み総額エレメント
 　　//未支払いオーダーカードを作成
-
     pendingOrders.forEach(order => {
       let tableDisplay =order.table_no
       let status = "Pronto"
       let styleColer ="background-color:#90EE90"
+      let icon=""
       if (tableDisplay == "9999") {
           tableDisplay = `Take out<br>${order.order_name}`;
       } else if (tableDisplay == "9998") {
@@ -55,13 +47,26 @@ document.addEventListener('DOMContentLoaded', async  () => {
       if(order.order_status==='pending'){
         status="Em preparo"
         styleColer='background-color:#FFCCCB'
+        icon='<img src="../imagen/pending.jpg">'
+      }else if(order.order_status==='prepared'){
+        icon='<img src="../imagen/prepared.jpg">'
+      }
+      console.log(order.payment_method)
+      if(order.payment_method!="yet"){
+        console.log('paystatusin')
+        icon+='<img src="../imagen/payed.jpg">'
       }
       let orderCard = document.createElement('div');
       orderCard.classList.add('order-card');
       orderCard.style=styleColer
       orderCard.setAttribute('data-id', order.id); // data-id 属性を設定
       orderCard.id = order.id
-      orderCard.innerHTML = `<h3>${tableDisplay}<br>${status}</h3>`;
+      orderCard.innerHTML = `<div class="order-card-main-div">
+         <div class="order-leftdiv"><h3>${tableDisplay}<br>${status}</h3></div>
+         <div class="order-rightdiv">
+          ${icon}
+         </div>
+       </div>`;
       orderCard.addEventListener('click', () => {
           if (selectedCard) {
               selectedCard.classList.remove('selected-card');
@@ -70,7 +75,6 @@ document.addEventListener('DOMContentLoaded', async  () => {
           selectedCard = orderCard;
           selectOrders=order
           displayOrderDetails(order);
-
           console.log(selectOrders)
       });
       ordersList.appendChild(orderCard);
@@ -164,6 +168,10 @@ document.addEventListener('DOMContentLoaded', async  () => {
 
 });
 
+document.getElementById('confirm-ptakes').addEventListener('click',async ()=>{
+  entregueConfirm()
+})
+
 
 
 function showCustomAlert(message) {
@@ -242,6 +250,46 @@ async function registeConfirm(){
           body: JSON.stringify({
               order_id: clients.selectedOrder,
               payment_method: clients.paytype,  // The selected payment method from clients object
+              order_status: 'pending'  // Update the status to 'confirmed'
+          })
+      });
+      console.log(response.status)
+
+      if (response.status===200) {
+          showCustomAlert("Registrado")
+           console.log(clients.selectedOrder)
+          // Remove the order card from the UI
+          const orderCard = document.querySelector(`.selected-card[data-id="${clients.selectedOrder}"]`);
+         console.log('Found Order Card:', orderCard);
+          if (orderCard) {
+              // orderCard.remove();
+          }
+          // Optionally, you can clear the order details or reset the UI
+          clearOrderDetails();
+      } else {
+          alert('Erro no registro.');
+      }
+  } catch (error) {
+      console.error('Error confirming payment:', error);
+      alert('Erro no registro.');
+  }
+  loadingPopup.style="display:none"
+}
+
+async function entregueConfirm(){
+
+  const loadingPopup = document.getElementById('loading-popup');
+  // Update the order in the database
+  try {
+
+    loadingPopup.style="display:block"
+      const response = await fetch(`${server}/orderskun/updateConfirmd`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+              order_id: clients.selectedOrder,
               order_status: 'confirmed'  // Update the status to 'confirmed'
           })
       });
@@ -267,6 +315,7 @@ async function registeConfirm(){
   }
   loadingPopup.style="display:none"
 }
+
 // Function to clear the order details from the UI
 function clearOrderDetails() {
     document.getElementById('order-items').innerHTML = '';
@@ -285,7 +334,6 @@ function showCustomAlert(message) {
     const alertBox = document.getElementById('custom-alert');
     alertBox.querySelector('p').textContent = message;
     alertBox.style.display = 'block';
-
     setTimeout(() => {
         alertBox.style.display = 'none';
     }, 1000); // 1秒間表示
@@ -294,18 +342,18 @@ function showCustomAlert(message) {
 
 async function fetchPendingOrders() {
     try {
-        const response = await fetch(`${server}/orderskun/pending`, {
+        const response = await fetch(`${server}/orderskun/get-by-status`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ client_id: clients.id })
+            body: JSON.stringify({ client_id: clients.id,status:'confirmed' })
         });
         if (!response.ok) {
             throw new Error('Failed to fetch pending orders');
         }
         const pendingOrders = await response.json();
-        console.log('Pending Orders:', pendingOrders);
+        console.log('NotPending Orders:', pendingOrders);
         return pendingOrders;
     } catch (error) {
         console.error('Error fetching pending orders:', error);

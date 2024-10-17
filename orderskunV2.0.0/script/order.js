@@ -89,6 +89,7 @@ const saveTableNo = sessionStorage.getItem('saveTableNo')
     const MainData = await makerequest(`${server}/orders/getBasedata?user_id=${orderList.clienId}`)
     //未払いのオーダーが存在してるかチェックする
     const PendingData = await fetchPendingOrders()
+
     orderList.historyOrder = PendingData
     if(PendingData){
       for(let i=0;i<PendingData.length;i++){
@@ -842,6 +843,12 @@ document.getElementById('confirm-order').addEventListener('click', async () => {
         }
         const orderID = orderList.historyOrder.filter(item => item.order_name === selectedName)
         const ordersId = orderID.length===0?'':orderID[0].id
+        const getJapanTime = () => {
+        const now = new Date();
+        const offset = 9 * 60 * 60 * 1000; // UTC+9 (日本標準時)
+        const japanTime = new Date(now.getTime() + offset);
+        return japanTime.toISOString();  // ISOフォーマットに変換
+    };
         const response = await fetch(`${server}/orderskun/confirm`, {
             method: 'POST',
             headers: {
@@ -852,7 +859,8 @@ document.getElementById('confirm-order').addEventListener('click', async () => {
                 user_id: orderList.clienId,
                 table_no: orderList.tableNo,
                 items: orderList.order[selectedName],
-                orderId:ordersId
+                orderId:ordersId,
+                pickup_time: getJapanTime()
             })
         });
         if (response.ok) {
