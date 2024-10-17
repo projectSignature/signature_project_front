@@ -46,6 +46,10 @@
       <div class="name-imput">
         <input type="text" id="name-input" placeholder="Nome do cliente ou número do uber"/>
       </div>
+      <div class="datetime-picker">
+        <label for="datetime-input">Pickup Time:</label>
+        <input type="datetime-local" id="pickup-time" name="datetime-input">
+      </div>
       <div id="tax-button">
         <button id="tax8">8%</button>
         <button id="tax10">10%</button>
@@ -58,8 +62,8 @@
       </div>
     </div>
    </div>
-   <div id="loading-popup" class="loading-popup" style="display: none;">
-       登録中...
+   <div id="loading-popup" class="loading-popup" style="">
+       await...
    </div>
    <div id="custom-alert" class="custom-alert">
      <div class="alert-content">
