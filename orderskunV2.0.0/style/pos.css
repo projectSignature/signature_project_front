@@ -283,7 +283,8 @@ button {
 }
 
 .cfm-btns{
-  font-size: 2em
+  font-size: 1.5em;
+  width:30%
 }
 
 .header-btn.active {
@@ -330,4 +331,25 @@ button {
 
 .loading-text {
     font-size: 20px; /* テキストサイズを調整 */
+}
+.order-card-main-div{
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  overflow: hidden;
+}
+.order-leftdiv{
+  width: 80% !important;
+  overflow:hidden;
+
+}
+.order-rightdiv{
+  width:15%;
+  overflow:hidden;
+  align-items:stretch;
+  padding: 2px;
+}
+.order-rightdiv img{
+  width: 100%;
+  height: auto;
 }

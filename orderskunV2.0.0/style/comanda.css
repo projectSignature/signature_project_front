@@ -42,8 +42,12 @@
   background-color: #333;
   color:#FFF;
   font-weight: bold;
-  font-size: 25px;
+  font-size: 35px;
   text-align: center;
+  padding: 0px!important;
+  margin:0px!important;
+  overflow: hidden; 
+
 }
 
 /* 提供状況のスタイル */
@@ -78,4 +82,16 @@
 .option-div{
   background-color: yellow;
   width:100%
+}
+.order-time-div{
+  width:100%;
+  display:  flex;
+  justify-content: center;
+  max-height: 2rem;
+  background-color: orange;
+  padding: 0px!important;
+  overflow: hidden;
+}
+.order-time-div span{
+    font-size: 25px;
 }

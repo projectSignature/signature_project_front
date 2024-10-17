@@ -828,3 +828,10 @@ button + button {
     z-index: 1000;
     text-align: center;
 }
+
+.item-name-of-alter-order-list{
+  width: 600px;
+   white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
+}
