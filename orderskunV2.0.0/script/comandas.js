@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 最初のデータ更新を実行
     await updateData();
     // 30秒ごとにデータ更新を実行
-    // setInterval(updateData, 30000);
+    setInterval(updateData, 30000);
 
     function formatPrice(amount) {
         return `¥${parseFloat(amount).toLocaleString()}`;
