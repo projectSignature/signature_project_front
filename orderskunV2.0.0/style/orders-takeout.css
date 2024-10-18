@@ -177,3 +177,13 @@
 .datetime-picker label{
   margin-right: 20px
 }
+.update-time-btn{
+  width:2.5rem;
+  overflow: hidden !important;
+  height:2.5rem;
+  margin-left:15px;
+  cursor: pointer;
+}
+.update-time-btn:hover{
+  background-color: blue
+}

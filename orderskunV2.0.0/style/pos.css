@@ -353,3 +353,172 @@ button {
   width: 100%;
   height: auto;
 }
+.register-caixa-btn{
+  position: absolute;
+  display: flex;
+  top:10;
+  left:75%;
+
+}
+.register-caixa-btn input{
+  border-radius: 10px;
+  border:0.5px solid #333;
+  text-align: center;
+  margin-right: 10px;
+  background-color: #FFC0CB
+}
+.register-caixa-btn button{
+  border-radius: 10px;
+  border:0.5px solid #333;
+  text-align: center;
+  margin-right: 10px;
+  background-color: #FFFF00
+}
+/* モーダル全体 */
+
+  .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.5); /* 背景に半透明の黒 */
+      backdrop-filter: blur(5px); /* 背景を少しぼかす */
+  }
+
+  /* モーダルのコンテンツ */
+  .modal-content {
+      background-color: #fff;
+      border-radius: 12px;
+      display: flex;
+      padding: 20px;
+      width: 90%;  /* 幅を少し狭める */
+      max-width: 1200px;  /* 最大幅の調整 */
+      margin: 2% auto;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      position: relative;
+       z-index: 1000;  /* クローズボタンよりも低い */
+  }
+
+
+/* 左右分割 */
+.modal-left, .modal-right {
+    width: 50%;
+    padding: 10px;  /* パディングを少し減らす */
+}
+
+/* タイトルのスタイル */
+.modal-left h2, .modal-right h2 {
+    font-size: 20px;  /* タイトルサイズを少し小さく */
+    color: #333;
+    margin-bottom: 15px;
+}
+
+/* 入力フィールドのスタイルを統一 */
+.modal-left input[type="number"],
+.modal-left input[type="date"],
+.modal-left input[type="text"] {
+    width: 70%;  /* 同じ幅に揃える */
+    padding: 8px;
+    margin-bottom: 10px;  /* 間隔を少し減らす */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 14px;  /* フォントサイズを少し小さく */
+}
+
+/* ラベルと値を横並びにする */
+/* ラベルと値を横並びにする */
+.result-section {
+    display: flex;
+    flex-direction: row;  /* 横並びにする */
+    justify-content: space-between; /* ラベルと値を左右に配置 */
+    align-items: center; /* 垂直方向を中央揃え */
+    margin-bottom: 10px;
+}
+
+/* ラベルのスタイル */
+.result-section label {
+    font-weight: bold;
+    font-size: 14px;
+
+}
+
+/* 値（span）のスタイル */
+.result-section span {
+    font-size: 14px;
+    text-align: right; /* 数値を右揃えにする */
+    flex: 0 0 40%; /* 値の幅を固定（調整可能） */
+}
+
+
+
+/* ボタンのスタイル */
+.modal button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    width: 100%;  /* ボタンを全幅に */
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.modal button:hover {
+    background-color: #45a049;
+}
+
+/* ×ボタンのスタイル */
+.close {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    z-index: 1001;  /* コンテンツよりも前面に表示するための値 */
+    opacity: 1;  /* 確実に表示されるように設定 */
+    transition: color 0.3s ease;  /* 色だけのアニメーションにする */
+}
+
+.close:hover {
+  color: red;
+}
+.input-section label{
+  display: inline-block;
+
+ width:8rem!important
+}
+
+#saldo-final{
+  background-color: yellow
+}
+/* デフォルトの入力サイズ */
+.input-field {
+  width: 200px;
+  transition: width 0.3s ease, height 0.3s ease;
+}
+
+/* フォーカス時に拡大するスタイル */
+.input-field.expanded {
+  width: 400px; /* 拡張時の幅 */
+  height: 100px; /* 拡張時の高さ */
+}
+#inserirMonys{
+  background-color: orange!important;
+  color:#333
+}
+#total-vendas{
+  font-size: 25px;
+  text-align: center;
+}
+#calculation-again{
+  background-color: gray
+}
