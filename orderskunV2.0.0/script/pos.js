@@ -1,6 +1,8 @@
 // const token = window.localStorage.getItem('token');
 // const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
 let selectOrders = ""
+let registerFlug = false
+const notRegisterInfo = document.getElementById('yet-regit-info')
 // if (!decodedToken) {
 //   // window.location.href = '../index.html';
 // }
@@ -10,15 +12,24 @@ let clients ={
   paytype:'',　//ユーザー支払い方法
   selectedOrder:"",　//選択オーダー
   printInfo:"",　//？？
-  taxtType:""　//税金区分
+  taxtType:"",　//税金区分
+  registerInfo:"",
+  salesInfo:""
 }
 let selectedCard = null;
+let selectFecharcaixa = false
+
 document.addEventListener('DOMContentLoaded', async  () => {
   console.log(clients.id)
   const loadingPopup = document.getElementById('loading-popup');
   //メニュー、カテゴリー、オープション表示
   const MainData = await makerequest(`${server}/orders/getBasedata?user_id=${clients.id}`)
   let pendingOrders = await fetchPendingOrders(clients.id);
+  const registerData = await getRegisters(clients.id);
+   await getOrdersbyPickupTime()
+
+
+  // if(clients.registe)
   console.log(pendingOrders)
   if(pendingOrders.length===0){
     loadingPopup.style="display:none"
@@ -1090,3 +1101,332 @@ function getCurrentDateTime() {
         await registeConfirm();
 
         }
+
+        // 日付を今日の日付に設定
+ document.getElementById("registerDate").valueAsDate = new Date();
+ // モーダルを表示/非表示にするロジック
+ const modal = document.getElementById("registerModal");
+ const openModalBtn = document.getElementById("openModalBtn");
+ const closeModal = document.getElementsByClassName("close")[0];
+
+ openModalBtn.onclick = function() {
+   modal.style.display = "block";
+   console.log('open')
+   console.log(clients.registerInfo)
+   if(registerFlug){
+     document.getElementById('bill5000').value = clients.registerInfo[0].bill_5000
+     document.getElementById('bill1000').value = clients.registerInfo[0].bill_1000
+     document.getElementById('coin500').value = clients.registerInfo[0].coin_500
+     document.getElementById('coin100').value = clients.registerInfo[0].coin_100
+     document.getElementById('coin50').value = clients.registerInfo[0].coin_50
+     document.getElementById('coin10').value = clients.registerInfo[0].coin_10
+     document.getElementById('coin5').value = clients.registerInfo[0].coin_5
+     document.getElementById('coin1').value = clients.registerInfo[0].coin_1
+     calculateTotal()
+     document.getElementById('registerBtn').style.display='none'
+     const inputs = document.querySelectorAll('#modal-left-input input');
+
+      // すべての input 要素に readonly を設定
+      inputs.forEach(input => {
+          input.setAttribute('readonly', true);
+      });
+ console.log(clients)
+    calculationSales()
+
+
+   }
+ }
+
+ closeModal.onclick = function() {
+   modal.style.display = "none";
+ }
+
+ window.onclick = function(event) {
+   if (event.target == modal) {
+     modal.style.display = "none";
+   }
+ }
+
+ document.getElementById('calculation-again').addEventListener('click',()=>{
+   calculationSales()
+ })
+
+ function calculationSales(){
+   const otherSale = document.getElementById('notregister-by-money').value
+   const otherSaleCard = document.getElementById('noregister-by-card').value
+
+   document.getElementById('cashSales').innerText = `￥${clients.salesInfo.cash.total_amount.toLocaleString()}`
+   document.getElementById('creditSales').innerText = `￥${clients.salesInfo.credit.total_amount.toLocaleString()}`
+   document.getElementById('otherSales').innerText = `￥${clients.salesInfo.other.total_amount.toLocaleString()}`
+   document.getElementById('sale-yet-register').innerText = `￥${clients.salesInfo.yet.total_amount.toLocaleString()}`
+   const saldo = (clients.registerInfo[0].open_amount-0) + (clients.salesInfo.cash.total_amount-0) + (otherSale-0)
+   document.getElementById('totalBalance').innerText = `￥${saldo.toLocaleString()}`
+   const totalSalesAmount = clients.salesInfo.cash.total_amount +
+                         clients.salesInfo.credit.total_amount +
+                         clients.salesInfo.other.total_amount +
+                         clients.salesInfo.yet.total_amount;
+   document.getElementById('total-vendas').value = `￥${((totalSalesAmount-0)+(otherSale-0)+(otherSaleCard-0)).toLocaleString()}`
+ }
+
+ // 合計金額を算出する関数
+ function calculateTotal() {
+   const bill5000 = parseInt(document.getElementById('bill5000').value) || 0;
+   const bill1000 = parseInt(document.getElementById('bill1000').value) || 0;
+   const coin500 = parseInt(document.getElementById('coin500').value) || 0;
+   const coin100 = parseInt(document.getElementById('coin100').value) || 0;
+   const coin50 = parseInt(document.getElementById('coin50').value) || 0;
+   const coin10 = parseInt(document.getElementById('coin10').value) || 0;
+   const coin5 = parseInt(document.getElementById('coin5').value) || 0;
+   const coin1 = parseInt(document.getElementById('coin1').value) || 0;
+
+   // 各金額を計算
+   const total = (bill5000 * 5000) + (bill1000 * 1000) +
+                 (coin500 * 500) + (coin100 * 100) + (coin50 * 50) +
+                 (coin10 * 10) + (coin5 * 5) + (coin1 * 1);
+
+   document.getElementById('totalAmount').value = '￥' + total.toLocaleString() ;
+ }
+
+ // 入力フィールドが変更されたら合計を再計算
+ const inputs = document.querySelectorAll('#bill10000, #bill5000, #bill1000, #coin500, #coin100, #coin50, #coin10, #coin5, #coin1');
+ inputs.forEach(input => {
+   input.addEventListener('input', calculateTotal);
+ });
+
+ setInterval(() => {
+    const closeButton = document.querySelector('.close');
+    if (closeButton && getComputedStyle(closeButton).opacity === '0') {
+        closeButton.style.opacity = '1';  // 強制的に再表示
+    }
+}, 500);  // 500ミリ秒ごとに確認
+
+async function getRegisters(id){
+
+  // クエリパラメータとして日付を日本時間で送信
+  const url = `${server}/orderskun/registers?date=${encodeURIComponent(await nextDayfinshTimeGFet())}&clientsId=${id}`;
+  fetch(url, {
+      method: 'GET',
+      headers: {
+          'Content-Type': 'application/json'
+      }
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log(data)
+      clients.registerInfo = data
+      registerFlug = true
+      if(clients.registerInfo.length===0){
+        notRegisterInfo.style.display="block"
+      }
+  })
+  .catch(error => {
+      console.error('Error:', error);
+  });
+
+}
+
+document.getElementById('registerBtn').addEventListener('click', function() {
+  const nowUTC = new Date();
+  // 日本時間に変換 (UTC+9)
+  const nowJST = new Date(nowUTC.getTime() + (9 * 60 * 60 * 1000));
+  const data = {
+    user_id: 1,  // ユーザーIDを指定
+    bill_5000: parseInt(document.getElementById('bill5000').value) || 0,
+    bill_1000: parseInt(document.getElementById('bill1000').value) || 0,
+    coin_500: parseInt(document.getElementById('coin500').value) || 0,
+    coin_100: parseInt(document.getElementById('coin100').value) || 0,
+    coin_50: parseInt(document.getElementById('coin50').value) || 0,
+    coin_10: parseInt(document.getElementById('coin10').value) || 0,
+    coin_1: parseInt(document.getElementById('coin1').value) || 0,
+    open_time: nowJST.toISOString(),
+};
+// 合計金額の計算
+const totalAmount = (data.bill_5000 * 5000) +
+                    (data.bill_1000 * 1000) +
+                    (data.coin_500 * 500) +
+                    (data.coin_100 * 100) +
+                    (data.coin_50 * 50) +
+                    (data.coin_10 * 10) +
+                    (data.coin_1 * 1);
+
+// 合計金額が0ならアラートを表示して処理を中断
+if (totalAmount === 0) {
+    alert('合計金額が0円です。正しい金額を入力してください。');
+    return;
+}
+// 合計金額をオープン金額として追加
+data.totalAmount = totalAmount;
+// サーバーにデータを送信
+fetch(`${server}/orderskun/registers/open`, {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+})
+.then(response => response.json())
+.then(data => {
+    console.log('レジオープン登録完了:', data);
+})
+.catch(error => {
+    console.error('エラー:', error);
+});
+});
+
+document.getElementById('closeRegisterBtn').addEventListener('click', function() {
+  const nowUTC = new Date();
+  // 日本時間に変換 (UTC+9)
+  const nowJST = new Date(nowUTC.getTime() + (9 * 60 * 60 * 1000));
+  const data = {
+    user_id: 1,  // ユーザーIDを指定
+    bill_5000: parseInt(document.getElementById('bill5000').value) || 0,
+    bill_1000: parseInt(document.getElementById('bill1000').value) || 0,
+    coin_500: parseInt(document.getElementById('coin500').value) || 0,
+    coin_100: parseInt(document.getElementById('coin100').value) || 0,
+    coin_50: parseInt(document.getElementById('coin50').value) || 0,
+    coin_10: parseInt(document.getElementById('coin10').value) || 0,
+    coin_1: parseInt(document.getElementById('coin1').value) || 0,
+    open_time: nowJST.toISOString(),
+};
+// 合計金額の計算
+const totalAmount = (data.bill_5000 * 5000) +
+                    (data.bill_1000 * 1000) +
+                    (data.coin_500 * 500) +
+                    (data.coin_100 * 100) +
+                    (data.coin_50 * 50) +
+                    (data.coin_10 * 10) +
+                    (data.coin_1 * 1);
+
+// 合計金額が0ならアラートを表示して処理を中断
+if (totalAmount === 0) {
+    alert('合計金額が0円です。正しい金額を入力してください。');
+    return;
+}
+// 合計金額をオープン金額として追加
+data.totalAmount = totalAmount;
+// サーバーにデータを送信
+fetch(`${server}/orderskun/registers/close`, {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+})
+.then(response => response.json())
+.then(data => {
+  alert('Registrado, bom descanço')
+  modal.style.display = "none";
+    console.log('レジオープン登録完了:', data);
+})
+.catch(error => {
+    console.error('エラー:', error);
+});
+});
+
+async function nextDayfinshTimeGFet(){
+  // 現在のUTC時間を取得
+  const nowUTC = new Date();
+
+  // 日本時間に変換 (UTC+9)
+  const nowJST = new Date(nowUTC.getTime() + (9 * 60 * 60 * 1000));
+
+  // 翌日の午前5時を設定
+  const nextDay5AMJST = new Date(nowJST);
+  nextDay5AMJST.setDate(nowJST.getDate() + 1);  // 翌日
+  nextDay5AMJST.setHours(5, 0, 0, 0);  // 午前5時
+
+  // 年・月・日・時刻をフォーマットして日本時間の文字列を作成
+  const formattedDate = nextDay5AMJST.getFullYear() + '-' +
+                        ('0' + (nextDay5AMJST.getMonth() + 1)).slice(-2) + '-' +
+                        ('0' + nextDay5AMJST.getDate()).slice(-2) + 'T' +
+                        ('0' + nextDay5AMJST.getHours()).slice(-2) + ':' +
+                        ('0' + nextDay5AMJST.getMinutes()).slice(-2) + ':' +
+                        ('0' + nextDay5AMJST.getSeconds()).slice(-2);
+
+                        return formattedDate
+}
+
+async function getOrdersbyPickupTime(){
+// サーバーへのリクエスト
+fetch(`${server}/orderskun/pickup-time?pickupTime=${encodeURIComponent(await nextDayfinshTimeGFet())}&clientsId=${clients.id}`, {
+    method: 'GET',
+    headers: {
+        'Content-Type': 'application/json'
+    }
+})
+.then(response => response.json())
+.then(data => {
+    if (data.length > 0) {
+        console.log('Orders found:', data);
+        // 支払い方法ごとの合計金額を保存するオブジェクト
+        const paymentSummary = {
+            cash: { total_amount: 0, orders: [] },
+            credit: { total_amount: 0, orders: [] },
+            other: { total_amount: 0, orders: [] },
+            yet: { total_amount: 0, orders: [] }
+        };
+
+        // データをループして、支払い方法ごとに合計金額を計算
+        data.forEach(order => {
+            const paymentMethod = order.payment_method;
+
+            // 該当する支払い方法にオーダーを追加し、金額を加算
+            if (paymentSummary[paymentMethod]) {
+                paymentSummary[paymentMethod].orders.push(order);
+                paymentSummary[paymentMethod].total_amount += parseFloat(order.total_amount);  // 合計金額を加算
+            }
+        });
+        // console.log(paymentSummary)
+        clients.salesInfo = paymentSummary
+        // console.log(clients)
+        // ここでデータをフロントエンドのUIに表示するロジックを実装
+    } else {
+        console.log('No orders found for the given pickup time');
+    }
+})
+.catch(error => {
+    console.error('Error fetching orders by pickup time:', error);
+});
+
+}
+
+const inputField = document.getElementById('anotacoes');
+
+// クリック時にサイズを拡張
+inputField.addEventListener('focus', function() {
+  inputField.classList.add('expanded');
+});
+
+// フォーカスが外れたら元のサイズに戻す
+inputField.addEventListener('blur', function() {
+  inputField.classList.remove('expanded');
+});
+
+document.getElementById('inserirMonys').addEventListener('click',()=>{
+  if(selectFecharcaixa){
+    selectFecharcaixa=false
+  }else{
+    selectFecharcaixa=true
+  }
+  if(selectFecharcaixa){
+    document.getElementById('modal-left-input').style="background-color:#333;color:#fff"
+    document.getElementById('inserirMonys').innerText = 'Voltar'
+    // 2つのdiv内のすべての input 要素を取得
+    const inputs = document.querySelectorAll('#coins-mother-div input, #bill-mother-div input, #total-caixa-input input');
+    const title = document.getElementById('left-title-regist-casher')
+    title.innerHTML = 'Insira as quantidades de notas e moedas do caixa'
+    title.style="color:#FFF"
+    // すべての input の value を 0 に設定
+    inputs.forEach(input => {
+        input.value = 0;
+        input.removeAttribute('readonly'); // ここでreadonly属性を削除
+    });
+
+
+
+  }else{
+    document.getElementById('modal-left-input').style="background-color:#fff"
+    document.getElementById('inserirMonys').innerText = 'Inserir valores'
+  }
+
+})

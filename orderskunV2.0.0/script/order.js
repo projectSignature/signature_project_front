@@ -133,18 +133,18 @@ const saveTableNo = sessionStorage.getItem('saveTableNo')
 
 async function fetchPendingOrders() {
     try {
-        const response = await fetch(`${server}/orderskun/pending`, {
+        const response = await fetch(`${server}/orderskun/get-by-status`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ client_id: orderList.clienId,table_no: orderList.tableNo})
+            body: JSON.stringify({ client_id: orderList.clienId,table_no: orderList.tableNo,status:'confirmed'})
         });
         if (!response.ok) {
             throw new Error('Failed to fetch pending orders');
         }
         const pendingOrders = await response.json();
-        console.log('Pending Orders:', pendingOrders);
+        console.log('Not confirmed Orders:', pendingOrders);
         return pendingOrders;
     } catch (error) {
         console.error('Error fetching pending orders:', error);

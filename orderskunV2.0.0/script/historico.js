@@ -17,12 +17,12 @@ document.addEventListener('DOMContentLoaded', () => {
         startDateInput.value = today;
         endDateInput.value = endDate;
 
-        fetchReservations(today, endDate); 
+        fetchReservations(today, endDate);
 
         document.querySelector('.search').addEventListener('click', () => {
             const startDate = startDateInput.value;
             const endDate = endDateInput.value;
-            
+
             const startDateObj = new Date(startDate);
             const endDateObj = new Date(endDate);
             const timeDiff = Math.abs(endDateObj - startDateObj);
@@ -48,14 +48,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function fetchReservations(startDate, endDate) {
-        showLoading(); 
+        showLoading();
 
-        const userId = 1;
-        const apiUrl = `https://squid-app-ug7x6.ondigitalocean.app/reservations/daterange?startDate=${startDate}&endDate=${endDate}&user_id=${userId}`;
+        const userId = 17;
+        const apiUrl = `${server}/reservations/daterange?startDate=${startDate}&endDate=${endDate}&user_id=${userId}`;
+        console.log(apiUrl)
 
         fetch(apiUrl)
             .then(response => response.json())
             .then(data => {
+              console.log(data)
                 hideLoading();
 
                 if (data.success) {
@@ -75,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderPage(page) {
         const start = (page - 1) * itemsPerPage;
         const end = start + itemsPerPage;
-        const reservationsToShow = allReservations.slice(start, end); 
+        const reservationsToShow = allReservations.slice(start, end);
 
         renderReservations(reservationsToShow);
     }
@@ -85,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tbody.innerHTML = ''; // Limpa a tabela antes de preencher
 
         reservations
-            .sort((a, b) => new Date(a.reservation_date) - new Date(b.reservation_date)) 
+            .sort((a, b) => new Date(a.reservation_date) - new Date(b.reservation_date))
             .forEach(reservation => {
                 const reservationDate = new Date(reservation.reservation_date);
                 const formattedDate = reservationDate.toLocaleDateString('ja-JP');
@@ -104,19 +106,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderPagination(totalPages, currentPage) {
         const paginationContainer = document.querySelector('.pagination');
-        paginationContainer.innerHTML = ''; 
+        paginationContainer.innerHTML = '';
 
-        if (totalPages <= 1) return; 
+        if (totalPages <= 1) return;
 
         for (let i = 1; i <= totalPages; i++) {
             const pageButton = document.createElement('button');
             pageButton.textContent = i;
             if (i === currentPage) {
-                pageButton.classList.add('active'); 
+                pageButton.classList.add('active');
             }
             pageButton.addEventListener('click', () => {
-                renderPage(i); 
-                renderPagination(totalPages, i); 
+                renderPage(i);
+                renderPagination(totalPages, i);
             });
 
             paginationContainer.appendChild(pageButton);

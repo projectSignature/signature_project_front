@@ -10,8 +10,10 @@ const totalAmount = document.getElementById('incluid-tax-total-amount')
 const taxByamount = document.getElementById('tax-by-amount')
 const loadingPopup = document.getElementById('loading-popup');
 const pickupTimeElement = document.getElementById('pickup-time')
+const updateTimeBtn = document.getElementById('update-time-btn')
 let taxRate = 0.08; // デフォルトの税率8%
 let totalPrice = 0; // 合計金額
+
 
 // ページ読み込み時にデフォルトで8%を選択状態にする
 document.getElementById('tax8').classList.add('selected');
@@ -80,7 +82,7 @@ window.onload = async function() {
       currentSelectedButton = button;
       displayMenuItems(category.id);
   });
-  console.log(button)
+
 
   orderCategories.appendChild(button);
   loadingPopup.style="display:none"
@@ -172,6 +174,7 @@ function displayItemDetails(item) {
     document.getElementById('increase-quantity').addEventListener('click', () => {
         quantity = parseInt(document.getElementById('item-quantity').value) + 1;
         document.getElementById('item-quantity').value = quantity;
+        console.log(clients)
         updateTotalPrice();
     });
 
@@ -251,9 +254,12 @@ function addToSelectedItems(item, quantity, selectedOptions) {
 
 function displayOrderForName(name) {
   totalPrice = 0; // 合計金額をリセット
+  totalDisplayAmount =0
   selectedItemsContainer.innerHTML = ''; // 既存のリストをクリア
   console.log(orderList.order[name]);
   orderList.order[name].forEach((item, index) => {
+    console.log(item)
+
     let li = document.createElement('li');
     let itemAmountFormatted = item.amount.toLocaleString();
 
@@ -276,9 +282,18 @@ function displayOrderForName(name) {
     minusButton.style = "width:50px";
     minusButton.addEventListener('click', () => {
       if (item.quantity > 1) {
+        const tanka = item.amount / item.quantity
         item.quantity--;
         quantityDisplay.textContent = ` ${item.quantity}個 `;
-        totalPrice -= item.amount;
+
+        // アイテムの単価に数量を掛けた合計金額を表示
+        let updatedAmount = item.amount * item.quantity;
+        itemAmount.textContent = `￥${(tanka*item.quantity).toLocaleString()}`;
+
+        // 合計金額を計算
+        item.amount = tanka*item.quantity
+        totalPrice = item.amount;
+        console.log(orderList.order[name])
         updateTotals(); // 合計金額を更新
       }
     });
@@ -287,11 +302,20 @@ function displayOrderForName(name) {
     plusButton.textContent = '+';
     plusButton.style = "width:50px";
     plusButton.addEventListener('click', () => {
-      item.quantity++;
-      quantityDisplay.textContent = ` ${item.quantity}個 `;
-      totalPrice += item.amount;
-      updateTotals(); // 合計金額を更新
-    });
+      console.log(item.amount)
+      console.log(item.quantity)
+      const tanka = item.amount / item.quantity
+  item.quantity++;
+  quantityDisplay.textContent = ` ${item.quantity}個 `;
+
+  itemAmount.textContent = `￥${(tanka*item.quantity).toLocaleString()}`;
+
+  // 合計金額を計算
+
+  item.amount = tanka*item.quantity
+  totalPrice = item.amount;
+  updateTotals(); // 合計金額を更新
+});
 
     // ゴミ箱ボタン（アイテム削除）
     let trashButton = document.createElement('button');
@@ -321,6 +345,7 @@ function displayOrderForName(name) {
 
     totalPrice += item.amount ; // 合計金額を計算* item.quantity
 
+
     selectedItemsContainer.appendChild(li);
   });
 
@@ -330,14 +355,19 @@ function displayOrderForName(name) {
 
 // 税金と合計金額を更新する関数
 function updateTotals() {
-  console.log(totalPrice)
-  const taxAmount = totalPrice * taxRate; // 税金計算
-  const totalWithTax = totalPrice + taxAmount; // 税込合計計算
 
-  notaxAmount.textContent = `Sem imposto: ￥${totalPrice.toLocaleString()}`;
+  console.log(orderList.order)
+  const dynamicKey = Object.keys(orderList.order)[0];
+  console.log(orderList.order.dynamicKey)
+  console.log(dynamicKey)
+  const totalAmount = orderList.order[`${dynamicKey}`].reduce((sum, item) => sum + item.amount, 0);
+  const taxAmount = totalAmount * taxRate; // 税金計算
+  const totalWithTax = totalAmount + taxAmount; // 税込合計計算
+
+  document.getElementById('total-amount').textContent = `Sem imposto: ￥${totalAmount.toLocaleString()}`;
   // document.getElementById('tax').textContent = `Imposto: ￥${Math.floor(taxAmount).toLocaleString()}`;
   taxByamount.textContent = `Imposto: ￥0`;
-  totalAmount.textContent = `Total: ￥${totalPrice.toLocaleString()}`;
+  totalAmount.textContent = `Total: ￥${totalAmount.toLocaleString()}`;
 }
 
 
@@ -794,3 +824,10 @@ function getCurrentDateTime() {
             return year + '-' + formattedMonth + '-' + formattedDay + ' ' +
                                                 formattedHours + ':' + formattedMinutes + ':' + formattedSeconds;
         }
+
+  updateTimeBtn.addEventListener('click',()=>{
+    const now = new Date();
+    const offset = now.getTimezoneOffset() * 60000;
+    const localTime = new Date(now - offset).toISOString().slice(0, 16);
+    pickupTimeElement.value = localTime;
+  })
