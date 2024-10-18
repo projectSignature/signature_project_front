@@ -43,6 +43,111 @@
         </div>
         <div class="right-panel">
     <h2>Pagamento</h2>
+
+    <!-- ボタンと入力フィールド -->
+    <div class="register-caixa-btn">
+      <input id="yet-regit-info" value="Caixa não registrado" readonly style="display:none"/>
+      <button id="openModalBtn">Status do caixa</button>
+    </div>
+
+    <!-- モーダル -->
+    <div id="registerModal" class="modal" style="display: none;">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+
+        <!-- モーダルを左右に分ける -->
+        <div id="modal-left-input"class="modal-left">
+          <h2 id="left-title-regist-casher">Registro do caixa</h2>
+
+          <!-- デフォルトの日付 -->
+          <label>data:</label>
+          <input type="date" id="registerDate" value="" readonly />
+
+          <!-- 札の入力 -->
+          <div class="input-section" id="bill-mother-div">
+            <h3>notas</h3>
+
+            <label>5,000:</label>
+            <input type="number" id="bill5000" min="0" value="0" /><br />
+            <label>1,000:</label>
+            <input type="number" id="bill1000" min="0" value="0" /><br />
+          </div>
+
+          <!-- コインの入力 -->
+          <div class="input-section" id="coins-mother-div">
+            <h3>moedas</h3>
+            <label>500:</label>
+            <input type="number" id="coin500" min="0" value="0" /><br />
+            <label>100:</label>
+            <input type="number" id="coin100" min="0" value="0" /><br />
+            <label>50:</label>
+            <input type="number" id="coin50" min="0" value="0" /><br />
+            <label>10:</label>
+            <input type="number" id="coin10" min="0" value="0" /><br />
+            <label>5:</label>
+            <input type="number" id="coin5" min="0" value="0" /><br />
+            <label>1:</label>
+            <input type="number" id="coin1" min="0" value="0" /><br />
+          </div>
+
+          <!-- レジオープン金額 -->
+          <div class="total-section" id="total-caixa-input">
+            <h3>Total do valor do caixa</h3>
+            <input type="text" id="totalAmount" value="0" readonly />
+          </div>
+
+          <button id="registerBtn">Registrar</button>
+        </div>
+
+        <!-- 右側：結果表示部分 -->
+        <div class="modal-right">
+          <h2>receita do dia</h2>
+
+          <div class="result-section">
+            <label>Vendas dinheiro:</label>
+            <span id="cashSales">￥0</span>
+          </div>
+          <div class="result-section">
+            <label>Vendas cartão:</label>
+            <span id="creditSales">￥0</span>
+          </div>
+          <div class="result-section">
+            <label>Vendas outras:</label>
+            <span id="otherSales">￥0</span>
+          </div>
+          <div class="result-section">
+            <label>Vendas não registradas:</label>
+            <span id="sale-yet-register">￥0</span>
+          </div>
+
+          <div class="result-section">
+            <label>vendas não registradas(dinheiro):</label>
+            <input id="notregister-by-money"placeholder="insira o valor" value=0 />
+          </div>
+
+          <div class="result-section">
+            <label>vendas não registradas(cartão):</label>
+            <input id="noregister-by-card" placeholder="insira o valor" value=0 />
+          </div>
+          <div class="result-section">
+            <label>Total de vendas:</label>
+            <input id="total-vendas"placeholder="" value=0 />
+          </div>
+          <div class="result-section">
+            <label>anotações:</label>
+            <input id="anotacoes" class="input-field" placeholder="Click to expand">
+          </div>
+          <div id="saldo-final" class="result-section">
+            <label>saldo :</label>
+            <span id="totalBalance">￥0</span>
+          </div>
+          <button id="calculation-again">Calcular novamente</button>
+          <!-- レジクローズボタン -->
+          <button id="inserirMonys">Inserir valores</button>
+          <button id="closeRegisterBtn">Fechar o caixa</button>
+        </div>
+      </div>
+    </div>
     <div id="tax-buttons">
       <button id="tax-8" class="tax-button">8% Tax</button>
       <button id="tax-10" class="tax-button">10% Tax</button>
