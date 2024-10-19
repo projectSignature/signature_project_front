@@ -132,19 +132,19 @@ document.addEventListener('DOMContentLoaded', async  () => {
           receiptData.items.push({
               menu_name: item.menu_name,
               quantity: item.quantity,
-              item_price: parseInt(item.item_price),
+              item_price: parseInt(item.total_price),
               option_names: item.option_names
           });
 
           // 合計金額を計算
-          receiptData.totalAmount += parseInt(item.item_price) ;//* item.quantity
+          receiptData.totalAmount += parseInt(item.total_price) ;//* item.quantity
       });
 
       // DOMにアイテムを表示
       selectOrders.OrderItems.forEach(item => {
           let li = document.createElement('li');
           li.innerHTML = `
-              ${item.menu_name} x${item.quantity} - ¥${parseInt(item.item_price).toLocaleString()}
+              ${item.menu_name} x${item.quantity} - ¥${parseInt(item.total_price).toLocaleString()}
               <br>
               ${item.option_names}
           `;
