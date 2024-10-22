@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cash Register</title>
     <link rel="stylesheet" href="../style/pos.css"> <!-- Link to your stylesheet -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
     <header class="header">
@@ -29,18 +30,81 @@
 </div>
     </header>
     <div class="container">
-        <div class="left-panel">
-            <h2>Comandas não pagas</h2>
-            <div id="orders-list">
-                <!-- Cards with pending orders will be generated here -->
-            </div>
+      <div class="left-panel">
+        <h2>
+            Comandas não pagas
+
+        </h2>
+        <div id="orders-list">
+            <!-- Cards with pending orders will be generated here -->
         </div>
+      </div>
         <div class="center-panel">
-            <h2>Detalhes da comanda</h2>
+            <h2>Detalhes da comanda
+              <button id="addOrderBtn" class="add-btn">
+                  <i class="fas fa-plus"></i>
+              </button></h2>
             <ul id="order-items">
                 <!-- Order items will be listed here -->
             </ul>
         </div>
+        <!-- メニュー表を表示するためのモーダル -->
+        <!-- メニュー表を表示するためのモーダル   <span class="close">&times;</span>-->
+    <div id="menuModal" class="modal-add-menu">
+      <div id="quantity-input" style="display: none;">
+        <div class="quantity-buttons">
+            <button class="quantity-btn active" data-value="1" >1</button>
+            <button class="quantity-btn" data-value="2">2</button>
+            <button class="quantity-btn" data-value="3">3</button>
+            <button class="quantity-btn" data-value="4">4</button>
+            <button class="quantity-btn" data-value="5">5</button>
+        </div>
+        <div class="manual-input">
+            <label for="item-quantity">Quanitdade:</label>
+            <input type="number" id="item-quantity" min="1" max="99" value="1">
+        </div>
+        <button id="confirm-quantity-btn">Confirmar</button>
+    </div>
+
+        <div class="modal-content-add-menu" id="modal-update-order-mother">
+
+            <div>
+              <h2>Adcionar item</h2>
+            </div>
+           <div class="add-menu-child-div">
+            <!-- カテゴリーフィルターボタン -->
+            <div id="category-filters">
+                <!-- カテゴリーボタンがここに生成される -->
+            </div>
+
+            <!-- メニュー一覧 -->
+            <div id="menu-list">
+                <!-- ここにメニューアイテムが表示される -->
+            </div>
+
+            <!-- オプション表示エリア -->
+            <div id="option-list">
+                <!-- ここに選択されたメニューのオプションが表示される -->
+            </div>
+            <div class="add-btn-first">
+              <button id="add-for-new-list">Adicionar</button>
+            </div>
+            <div class="now-oreder-list">
+             <div id="order-nbefore-list">
+
+             </div>
+             <div class="add-or-cancel-btn">
+               <button id="save-add-menu">Salvar</button>
+               <button id="close-menuModal">Cancelar</button>
+             </div>
+             <div class="total-add-menu-display">
+               <div><span class="total-ammount" id="total-alter-order-count"></span></div>
+               <div><span class="total-ammount" id="total-alter-order-amount"></span></div>
+             </div>
+            </div>
+          </div>
+        </div>
+    </div>
         <div class="right-panel">
     <h2>Pagamento</h2>
 
@@ -187,7 +251,7 @@
 
     </div>
 
-    <!-- <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
     <script src="../../config.js"></script>
     <script src="../script/pos.js"></script> <!-- Link to your JavaScript file -->
     <script src="../script/common.js"></script>
