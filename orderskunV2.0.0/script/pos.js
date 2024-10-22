@@ -1,20 +1,42 @@
-// const token = window.localStorage.getItem('token');
-// const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
+ const token = window.localStorage.getItem('token');
+ const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
+ console.log(decodedToken)
 let selectOrders = ""
 let registerFlug = false
 const notRegisterInfo = document.getElementById('yet-regit-info')
+// 日付を今日の日付に設定
+document.getElementById("registerDate").valueAsDate = new Date();
+// モーダルを表示/非表示にするロジック
+const modal = document.getElementById("registerModal");
+const openModalBtn = document.getElementById("openModalBtn");
+const closeModal = document.getElementsByClassName("close")[0];
+const addOrderBtn = document.getElementById('addOrderBtn');
+const menuModal = document.getElementById('menuModal');
+const menuList = document.getElementById('menu-list');
+const optionList = document.getElementById('option-list');
+const categoryFilters = document.getElementById('category-filters');
+const orderList = document.getElementById('order-nbefore-list');
+
+let selectedMenuItem = null;  // 現在選択されているメニューアイテム
+let selectCategory = null;
+let selectedOptions = [];  // 選択されたオプションを保存する配列
+
 // if (!decodedToken) {
 //   // window.location.href = '../index.html';
 // }
 let clients ={
-  id:17, //クライアントid
-  language:'pt', //クライアント言語
+  id:decodedToken.userId, //クライアントid
+  language:decodedToken.language, //クライアント言語
   paytype:'',　//ユーザー支払い方法
   selectedOrder:"",　//選択オーダー
   printInfo:"",　//？？
   taxtType:"",　//税金区分
   registerInfo:"",
-  salesInfo:""
+  salesInfo:"",
+  kubun:decodedToken.role,
+  table_count:decodedToken.table_count,
+  takeout_enabled:decodedToken.takeout_enabled,
+  uber_enabled:decodedToken.uber_enabled
 }
 let selectedCard = null;
 let selectFecharcaixa = false
@@ -27,8 +49,11 @@ document.addEventListener('DOMContentLoaded', async  () => {
   let pendingOrders = await fetchPendingOrders(clients.id);
   const registerData = await getRegisters(clients.id);
    await getOrdersbyPickupTime()
+   await console.log(clients)
 
-
+   openModalBtn.onclick = function() {
+     openCaixaModal()
+   }
   // if(clients.registe)
   console.log(pendingOrders)
   if(pendingOrders.length===0){
@@ -86,7 +111,7 @@ document.addEventListener('DOMContentLoaded', async  () => {
           selectedCard = orderCard;
           selectOrders=order
           displayOrderDetails(order);
-          console.log(selectOrders)
+          // console.log(selectOrders)
       });
       ordersList.appendChild(orderCard);
        loadingPopup.style="display:none"
@@ -107,7 +132,7 @@ document.addEventListener('DOMContentLoaded', async  () => {
           nomedaComanda:order.order_name
       };
 
-      selectOrders.OrderItems.forEach(item => {
+      order.OrderItems.forEach(item => {
           // メニュー名を取得
           const menuGt = MainData.menus.find(menu => menu.id === item.menu_id);
           if (menuGt) {
@@ -141,7 +166,7 @@ document.addEventListener('DOMContentLoaded', async  () => {
       });
 
       // DOMにアイテムを表示
-      selectOrders.OrderItems.forEach(item => {
+      order.OrderItems.forEach(item => {
           let li = document.createElement('li');
           li.innerHTML = `
               ${item.menu_name} x${item.quantity} - ¥${parseInt(item.total_price).toLocaleString()}
@@ -159,11 +184,7 @@ document.addEventListener('DOMContentLoaded', async  () => {
       // レシート用のデータをclientsに保存
       clients.receiptData = receiptData;
   }
-
-
-
     depositAmountElement.addEventListener('input', updateChange);
-
     function updateChange() {
       // if(clients.taxtType!=""){
         let deposit = parseInt(depositAmountElement.value) || 0;
@@ -176,14 +197,10 @@ document.addEventListener('DOMContentLoaded', async  () => {
     document.getElementById('confirm-payment').addEventListener('click', async () => {
     // Assuming you have a selectedOrder variable that stores the current order
     registeConfirm()
-
 });
-
 document.getElementById('confirm-ptakes').addEventListener('click',async ()=>{
   entregueConfirm()
 })
-
-
 
 function showCustomAlert(message) {
     const alertBox = document.getElementById('custom-alert');
@@ -193,7 +210,6 @@ function showCustomAlert(message) {
         alertBox.style.display = 'none';
     }, 1000); // 1秒間表示
 }
-
 
 const cashPaymentButton = document.getElementById('cash-payment');
 const creditPaymentButton = document.getElementById('credit-payment');
@@ -222,7 +238,388 @@ button.addEventListener('click', () => {
 });
 });
 
+
+ let addBeforeOrder = null
+ let selctedCard = null
+ let selectedOrderBackup = null;
+    // プラスボタンをクリックしたらモーダルを表示
+    addOrderBtn.addEventListener('click', () => {
+      console.log(pendingOrders)
+      console.log(selctedCard)
+      console.log(addBeforeOrder)
+      orderList.innerHTML=""
+        if (selectedCard!=null) {
+            // data-id 属性を取得
+            const orderId = selectedCard.getAttribute('data-id');
+            console.log('Selected order ID:', orderId);
+            selctedCard =orderId
+            const selectedOrder = pendingOrders.find(order => order.id === orderId-0);
+            selectedOrderBackup = JSON.parse(JSON.stringify(selectedOrder));  // バックアップを作成
+            addBeforeOrder = selectedOrder;
+            menuModal.style.display = 'block';
+            displayCategoryFilters();  // カテゴリーフィルターを表示
+            displayOrderItems(selectedOrder)
+            // displayMenuItems('all');   // 初期表示ですべてのメニューを表示
+        } else {
+          alert('Selecione uma comanda')
+            console.log('No card selected');
+        }
+    });
+
+
+    // モーダルの閉じるボタンをクリックで非表示
+    closeModal.addEventListener('click', () => {
+        menuModal.style.display = 'none';
+        optionList.innerHTML = '';  // オプションリストをクリア
+    });
+
+    // カテゴリーフィルターを表示する関数
+    function displayCategoryFilters() {
+        categoryFilters.innerHTML = '';  // フィルターリストをクリア
+        const allButton = document.createElement('button');
+        allButton.textContent = 'すべて';
+        allButton.addEventListener('click', () => displayMenuItems('all'));
+        categoryFilters.appendChild(allButton);
+        console.log(MainData )
+        MainData.categories.forEach(category => {
+            const categoryButton = document.createElement('button');
+            categoryButton.textContent = category.admin_item_name;  // 日本語で表示
+            categoryButton.addEventListener('click', () => {
+              if (selectCategory) {
+                  selectCategory.classList.remove('selected');
+              }
+
+              categoryButton.classList.add('selected');
+              selectCategory = categoryButton;
+
+              displayMenuItems(category.id)
+            });
+            categoryFilters.appendChild(categoryButton);
+        });
+    }
+
+    // let selectCategory = null;
+    // let selectOption = null
+let adicionarItem = null
+    // メニューを表示する関数
+    function displayMenuItems(categoryId) {
+        menuList.innerHTML = '';  // メニューリストをクリア
+        const filteredItems = MainData.menus.filter(menu => categoryId === 'all' || menu.category_id === categoryId);
+        filteredItems.forEach(menu => {
+            const menuItemDiv = document.createElement('button');
+            menuItemDiv.textContent = menu.admin_item_name;  // 日本語で表示
+            menuItemDiv.classList.add('menu-item');
+            menuList.appendChild(menuItemDiv);
+            // メニューアイテムをクリックしたらオプションを表示
+            menuItemDiv.addEventListener('click', () => {
+              adicionarItem= []
+                  // 以前の選択をクリア
+                  if (selectedMenuItem) {
+                      selectedMenuItem.classList.remove('selected');
+                  }
+
+                  adicionarItem = {kubun:'add',id:null,order_id:selctedCard,menu_id:menu.id,menu_name:menu.admin_item_name,total_price:menu.price}
+                  // 新しい選択を適用
+                  menuItemDiv.classList.add('selected');
+                  selectedMenuItem = menuItemDiv;  // 現在の選択を保存
+
+                  displayMenuOptions(menu.id);  // オプションを表示
+
+              });
+        });
+    }
+
+    let addNewOption = [];  // 選択したオプションの情報を格納する配列
+
+    // オプションを表示する関数
+    function displayMenuOptions(menuId) {
+        optionList.innerHTML = '';  // オプションリストをクリア
+        const filteredOptions = MainData.options.filter(option => option.menu_id === menuId);
+        if (filteredOptions.length === 0) {
+            // optionList.innerHTML = 'オプションはありません';
+        } else {
+            filteredOptions.forEach(option => {
+                const optionItemDiv = document.createElement('button');
+                optionItemDiv.textContent = option.option_name_pt;  // ポルトガル語のオプション名で表示
+                optionItemDiv.classList.add('option-item');
+                optionList.appendChild(optionItemDiv);
+
+                // オプションアイテムをクリックした時の処理
+                optionItemDiv.addEventListener('click', () => {
+                    // ボタンに 'selected' クラスが既に付いているか確認
+                    if (optionItemDiv.classList.contains('selected')) {
+                        // 'selected' クラスが付いていた場合はクラスを削除
+                        optionItemDiv.classList.remove('selected');
+
+                        // addNewOption 配列から該当するオプションを削除
+                        addNewOption = addNewOption.filter(opt => opt.menu_id !== option.menu_id);
+                    } else {
+                        // 'selected' クラスを追加して選択状態にする
+                        optionItemDiv.classList.add('selected');
+                        // addNewOption 配列にオプション情報を追加
+                        addNewOption.push({
+                          option_id:option.id,
+                            menu_id: option.menu_id,
+                            option_name: option.option_name_pt,
+                            additional_price: option.additional_price
+                        });
+                    }
+
+                    console.log('Selected options:', addNewOption);  // 選択されたオプションを表示（デバッグ用）
+                });
+            });
+        }
+    }
+
+    document.getElementById('add-for-new-list').addEventListener('click', () => {
+        if (!adicionarItem) {
+            alert('Selecione o item');
+            return;
+        }
+        // 数量選択フィールドを表示
+        const quantityInputDiv = document.getElementById('quantity-input');
+        quantityInputDiv.style.display = 'block';
+        const quantityButtons = document.querySelectorAll('.quantity-btn');
+        const quantityInput = document.getElementById('item-quantity');
+        // 数量ボタンをクリックした時の処理
+        quantityButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                quantityButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                const value = button.getAttribute('data-value');
+                quantityInput.value = value;
+            });
+        });
+        // 確定ボタンのイベントハンドラ
+        document.getElementById('confirm-quantity-btn').addEventListener('click', async() => {
+            const quantity = parseInt(document.getElementById('item-quantity').value, 10);
+            if (isNaN(quantity) || quantity <= 0) {
+                alert('数量を正しく入力してください。');
+                return;
+            }
+
+            // オプションの合計金額を計算
+            const totalPrice = addNewOption.reduce((acc, option) => {
+                return acc + parseFloat(option.additional_price);
+            }, 0);
+
+            // オプションを新しい形式に変換
+            const formattedOptions = addNewOption.map(option => ({
+                id: option.option_id.toString(),
+                name: option.option_name,
+                additional_price: parseFloat(option.additional_price)
+            }));
+            // JSON形式に変換
+            const jsonOptions = JSON.stringify(formattedOptions);
+            // アイテムの価格を数量に応じて更新
+            let itemPrice = (parseFloat(adicionarItem.total_price) + totalPrice) * quantity;
+            adicionarItem.total_price = itemPrice;
+            adicionarItem.item_price = itemPrice;
+            adicionarItem.quantity = quantity;
+            adicionarItem.options = jsonOptions;
+            // アイテムが既に存在しないか確認してから追加
+            if (!addBeforeOrder.OrderItems.includes(adicionarItem)) {
+                addBeforeOrder.OrderItems.push(adicionarItem);
+            }
+            // 合計金額を更新
+            const allTotalPrice = parseFloat(addBeforeOrder.total_amount) + itemPrice;
+            addBeforeOrder.total_amount = allTotalPrice;
+            // オーダーアイテムを再描画
+            displayOrderItems(addBeforeOrder);
+            // 状態をリセット
+            addNewOption = [];
+            adicionarItem = null; // ここを `null` に設定して重複を防ぐ
+            selectedMenuItem.classList.remove('selected');
+            optionList.innerHTML = "";
+            quantityInputDiv.style.display = 'none'; // 数量選択フィールドを非表示
+        }, { once: true }); // ボタンのイベントリスナーが複数回登録されるのを防ぐために `once: true` を追加
+    });
+
+    function formatPrice(value) {
+    const parsedValue = parseFloat(value);
+    return parsedValue % 1 === 0 ? parsedValue.toFixed(0) : parsedValue.toFixed(2);
+}
+
+    // リストを表示する関数
+    async function displayOrderItems(selectedOrder) {
+      const totalQuantity = selectedOrder.OrderItems.reduce((acc, item) => {
+          return acc + item.quantity;
+      }, 0);
+      const totalsAmount = formatPrice(selectedOrder.total_amount);
+        document.getElementById('total-alter-order-count').innerText = `${totalQuantity} itens`;
+        document.getElementById('total-alter-order-amount').innerText = `Valor total : ￥${parseFloat(totalsAmount).toLocaleString()}`;
+
+        orderList.innerHTML = ''; // リストをクリア
+        selectedOrder.OrderItems.forEach((item, index) => {
+          let deleteMenu = false
+          let addNewFlug = false
+            // メニューアイテムの表示
+            const menuItemDiv = document.createElement('div');
+            menuItemDiv.style.display = 'flex';
+            menuItemDiv.style.justifyContent = 'space-between'; // アイテムと削除ボタンを左右に分ける
+
+            // アイテム名と金額
+            const itemDetailsDiv = document.createElement('div');
+            if(item.kubun==='add'){
+              itemDetailsDiv.classList.add('adicionar-menu-novo')
+              addNewFlug=true
+            }else if(item.kubun==='delete'){
+              deleteMenu = true
+              itemDetailsDiv.classList.add('deletar-menu-da-lista')
+            }
+            itemDetailsDiv.innerHTML = `
+                <strong>${item.menu_name}</strong>-✕${item.quantity} ￥${parseFloat(item.item_price).toLocaleString()}
+            `;
+
+            // アイテム削除ボタンのロジック
+  const removeItemBtn = document.createElement('button');
+  removeItemBtn.textContent = '🗑️';
+  removeItemBtn.classList.add('remove-item');
+  removeItemBtn.dataset.itemIndex = index; // アイテムのインデックスを保持
+
+  // アイテム削除の処理
+  removeItemBtn.addEventListener('click', () => {
+      if (selectedOrder.OrderItems[index].kubun === 'delete') {
+          // 既に削除フラグが立っている場合は削除を取り消す
+          if(selectedOrder.OrderItems[index].id!=null){
+            selectedOrder.OrderItems[index].kubun = null;
+          }else{
+            selectedOrder.OrderItems[index].kubun = 'add';
+          }
+          itemDetailsDiv.classList.remove('deletar-menu-da-lista');
+          // ボタンを元に戻す
+          removeItemBtn.textContent = '🗑️';
+          removeItemBtn.classList.remove('undo-remove-item');
+      } else {
+          // 削除フラグを立てる
+          selectedOrder.OrderItems[index].kubun = 'delete';
+          itemDetailsDiv.classList.add('deletar-menu-da-lista');
+
+          // ボタンを「削除取り消し」に変更
+          removeItemBtn.textContent = '🔙';
+          removeItemBtn.classList.add('undo-remove-item');
+      }
+
+  });
+            // アイテムの詳細表示エリアに削除ボタンを追加
+            itemDetailsDiv.appendChild(removeItemBtn);
+            // メニューアイテムの行にアイテム名と削除ボタンを追加
+            menuItemDiv.appendChild(itemDetailsDiv);
+            menuItemDiv.appendChild(removeItemBtn);
+            orderList.appendChild(menuItemDiv);
+            // オプションの表示
+            const options = JSON.parse(item.options);
+            options.forEach((option, optionIndex) => {
+                const optionDiv = document.createElement('div');
+                if(deleteMenu){
+                  console.log('adcionar claa nobo')
+                  optionDiv.classList.add('deletar-menu-da-lista')
+                }else if(addNewFlug){
+                  optionDiv.classList.add('adicionar-menu-novo')
+                }
+                optionDiv.style.display = 'flex';
+                optionDiv.style.justifyContent = 'space-between'; // オプションと削除ボタンを左右に分ける
+                optionDiv.style.marginLeft = '20px'; // オプションを少し右にオフセット
+
+                // オプションの詳細
+                const optionDetailsDiv = document.createElement('div');
+                optionDetailsDiv.innerHTML = `
+                    (${option.name} - ￥${parseFloat(option.additional_price).toLocaleString()})
+                `;
+                // オプションの行にオプション名と削除ボタンを追加
+                optionDiv.appendChild(optionDetailsDiv);
+                // optionDiv.appendChild(removeOptionBtn);
+                orderList.appendChild(optionDiv);
+            });
+        });
+    }
+
+
+// オプションを削除する関数
+function removeOption(itemIndex, optionIndex) {
+    const options = JSON.parse(order.OrderItems[itemIndex].options);
+    options.splice(optionIndex, 1); // オプションを削除
+    order.OrderItems[itemIndex].options = JSON.stringify(options); // 更新
+    displayOrderItems(); // リストを再表示
+}
+
+
+// オプション削除ボタンのイベントリスナー
+document.addEventListener('click', (event) => {
+    if (event.target.classList.contains('remove-option')) {
+        const itemIndex = event.target.getAttribute('data-item-index');
+        const optionIndex = event.target.getAttribute('data-option-index');
+        removeOption(itemIndex, optionIndex);
+    }
 });
+
+// オーダーを追加するボタンのイベント
+document.getElementById('save-add-menu').addEventListener('click', async () => {
+  loadingPopup.style = "display:block";
+  try {
+    console.log('Updated Order:', addBeforeOrder);
+
+    // サーバーに更新を送信
+    const response = await fetch(`${server}/orderskun/update/order/admin`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            newOrder: addBeforeOrder
+        })
+    });
+
+    if (response.ok) {
+      const responseData = await response.json();  // サーバーからのレスポンスデータを取得
+      console.log('Response Data:', responseData);  // レスポンスデータを確認
+
+      // レスポンスデータをpendingOrdersに反映
+      const orderIndex = pendingOrders.findIndex(order => order.id === responseData.id);
+      if (orderIndex !== -1) {
+          pendingOrders[orderIndex] = responseData;  // pendingOrdersをサーバーの最新情報で更新
+      } else {
+          pendingOrders.push(responseData);  // もし新規オーダーなら追加
+      }
+
+      showCustomAlert('Alteração feita com sucesso');  // 成功メッセージを表示
+
+      // モーダルを閉じる
+      selctedCard = null;
+      document.getElementById('menuModal').style.display = "none";
+
+      // 最新のオーダー情報を画面に反映（必要に応じて更新されたオーダー詳細を表示）
+      displayOrderDetails(responseData);  // 関数にデータを渡して画面に反映
+    } else {
+      alert('Tivemos erro no registro');
+    }
+
+    loadingPopup.style = "display:none";  // ローディングを非表示
+  } catch (e) {
+    console.log(e);
+    loadingPopup.style = "display:none";  // エラーハンドリングでローディングを消す
+  }
+});
+
+
+
+document.getElementById('close-menuModal').addEventListener('click', ()=>{
+  document.getElementById('menuModal').style.display = "none";
+  addBeforeOrder = null
+  selctedCard = null
+  console.log(pendingOrders)
+  console.log(selectedOrderBackup)
+  if (selectedOrderBackup) {
+        // 元に戻す
+        const orderIndex = pendingOrders.findIndex(order => order.id === selectedOrderBackup.id);
+        pendingOrders[orderIndex] = JSON.parse(JSON.stringify(selectedOrderBackup));  // 元に戻す
+        console.log('Changes reverted for order:', selectedOrderBackup.id);
+    }
+})
+
+
+})
+// });
 
 
 async function registeConfirm(){
@@ -1102,18 +1499,9 @@ function getCurrentDateTime() {
 
         }
 
-        // 日付を今日の日付に設定
- document.getElementById("registerDate").valueAsDate = new Date();
- // モーダルを表示/非表示にするロジック
- const modal = document.getElementById("registerModal");
- const openModalBtn = document.getElementById("openModalBtn");
- const closeModal = document.getElementsByClassName("close")[0];
-
- openModalBtn.onclick = function() {
+ function openCaixaModal(){
    modal.style.display = "block";
-   console.log('open')
-   console.log(clients.registerInfo)
-   if(registerFlug){
+   if(clients.registerInfo.length!=0){
      document.getElementById('bill5000').value = clients.registerInfo[0].bill_5000
      document.getElementById('bill1000').value = clients.registerInfo[0].bill_1000
      document.getElementById('coin500').value = clients.registerInfo[0].coin_500
@@ -1130,11 +1518,8 @@ function getCurrentDateTime() {
       inputs.forEach(input => {
           input.setAttribute('readonly', true);
       });
- console.log(clients)
-    calculationSales()
-
-
    }
+   calculationSales()
  }
 
  closeModal.onclick = function() {
@@ -1152,6 +1537,7 @@ function getCurrentDateTime() {
  })
 
  function calculationSales(){
+   console.log('sales calculation')
    const otherSale = document.getElementById('notregister-by-money').value
    const otherSaleCard = document.getElementById('noregister-by-card').value
 
@@ -1159,7 +1545,13 @@ function getCurrentDateTime() {
    document.getElementById('creditSales').innerText = `￥${clients.salesInfo.credit.total_amount.toLocaleString()}`
    document.getElementById('otherSales').innerText = `￥${clients.salesInfo.other.total_amount.toLocaleString()}`
    document.getElementById('sale-yet-register').innerText = `￥${clients.salesInfo.yet.total_amount.toLocaleString()}`
-   const saldo = (clients.registerInfo[0].open_amount-0) + (clients.salesInfo.cash.total_amount-0) + (otherSale-0)
+
+   let saldo = 0
+   if(clients.registerInfo[0]){
+     saldo = (clients.registerInfo[0].open_amount-0) + (clients.salesInfo.cash.total_amount-0) + (otherSale-0)
+   }else{
+     saldo = (clients.salesInfo.cash.total_amount-0) + (otherSale-0)
+   }
    document.getElementById('totalBalance').innerText = `￥${saldo.toLocaleString()}`
    const totalSalesAmount = clients.salesInfo.cash.total_amount +
                          clients.salesInfo.credit.total_amount +
@@ -1333,7 +1725,8 @@ async function nextDayfinshTimeGFet(){
   // 翌日の午前5時を設定
   const nextDay5AMJST = new Date(nowJST);
   nextDay5AMJST.setDate(nowJST.getDate() + 1);  // 翌日
-  nextDay5AMJST.setHours(5, 0, 0, 0);  // 午前5時
+  // nextDay5AMJST.setHours(5, 0, 0, 0);  // 午前5時
+  console.log(nextDay5AMJST)
 
   // 年・月・日・時刻をフォーマットして日本時間の文字列を作成
   const formattedDate = nextDay5AMJST.getFullYear() + '-' +
@@ -1342,7 +1735,7 @@ async function nextDayfinshTimeGFet(){
                         ('0' + nextDay5AMJST.getHours()).slice(-2) + ':' +
                         ('0' + nextDay5AMJST.getMinutes()).slice(-2) + ':' +
                         ('0' + nextDay5AMJST.getSeconds()).slice(-2);
-
+     console.log(formattedDate)
                         return formattedDate
 }
 
@@ -1365,11 +1758,9 @@ fetch(`${server}/orderskun/pickup-time?pickupTime=${encodeURIComponent(await nex
             other: { total_amount: 0, orders: [] },
             yet: { total_amount: 0, orders: [] }
         };
-
         // データをループして、支払い方法ごとに合計金額を計算
         data.forEach(order => {
             const paymentMethod = order.payment_method;
-
             // 該当する支払い方法にオーダーを追加し、金額を加算
             if (paymentSummary[paymentMethod]) {
                 paymentSummary[paymentMethod].orders.push(order);
@@ -1378,6 +1769,7 @@ fetch(`${server}/orderskun/pickup-time?pickupTime=${encodeURIComponent(await nex
         });
         // console.log(paymentSummary)
         clients.salesInfo = paymentSummary
+        console.log(clients.salesInfo)
         // console.log(clients)
         // ここでデータをフロントエンドのUIに表示するロジックを実装
     } else {
@@ -1391,12 +1783,10 @@ fetch(`${server}/orderskun/pickup-time?pickupTime=${encodeURIComponent(await nex
 }
 
 const inputField = document.getElementById('anotacoes');
-
 // クリック時にサイズを拡張
 inputField.addEventListener('focus', function() {
   inputField.classList.add('expanded');
 });
-
 // フォーカスが外れたら元のサイズに戻す
 inputField.addEventListener('blur', function() {
   inputField.classList.remove('expanded');
@@ -1421,9 +1811,6 @@ document.getElementById('inserirMonys').addEventListener('click',()=>{
         input.value = 0;
         input.removeAttribute('readonly'); // ここでreadonly属性を削除
     });
-
-
-
   }else{
     document.getElementById('modal-left-input').style="background-color:#fff"
     document.getElementById('inserirMonys').innerText = 'Inserir valores'
