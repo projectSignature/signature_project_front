@@ -1,6 +1,6 @@
- const token = window.localStorage.getItem('token');
- const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
- console.log(decodedToken)
+// const token = window.localStorage.getItem('token');
+// const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
+// console.log(decodedToken)
 let selectOrders = ""
 let registerFlug = false
 const notRegisterInfo = document.getElementById('yet-regit-info')
@@ -25,18 +25,18 @@ let selectedOptions = [];  // 選択されたオプションを保存する配�
 //   // window.location.href = '../index.html';
 // }
 let clients ={
-  id:decodedToken.userId, //クライアントid
-  language:decodedToken.language, //クライアント言語
+  id:17, //クライアントiddecodedToken.userId
+  language:'pt', //クライアント言語decodedToken.language
   paytype:'',　//ユーザー支払い方法
   selectedOrder:"",　//選択オーダー
   printInfo:"",　//？？
   taxtType:"",　//税金区分
   registerInfo:"",
   salesInfo:"",
-  kubun:decodedToken.role,
-  table_count:decodedToken.table_count,
-  takeout_enabled:decodedToken.takeout_enabled,
-  uber_enabled:decodedToken.uber_enabled
+  //kubun:decodedToken.role,
+  table_count:17,
+  //takeout_enabled:decodedToken.takeout_enabled,
+  //uber_enabled:decodedToken.uber_enabled
 }
 let selectedCard = null;
 let selectFecharcaixa = false
