@@ -522,3 +522,281 @@ button {
 #calculation-again{
   background-color: gray
 }
+h2 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.add-btn {
+    background-color: #4CAF50; /* ボタンの背景色 */
+    color: white; /* ボタンの文字色 */
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    width:8rem
+}
+
+.add-btn i {
+    font-size: 16px;
+}
+
+.add-btn:hover {
+    background-color: #45a049; /* ホバー時の色 */
+}
+
+.modal-add-menu {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100% !important;
+    height: 95% !important;
+    overflow: hidden;
+    /* background-color: rgba(0, 0, 0, 0.5); */
+
+}
+
+.modal-content-add-menu {
+    background-color: #fff;
+    overflow: hidden !important;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 100%;
+    height: 95%;
+
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.filter-btn {
+    margin: 5px;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.filter-btn:hover {
+    background-color: #45a049;
+}
+#category-filters,#menu-list,#option-list{
+  width:15%;
+  height:90%;
+  overflow-y: auto!important;
+  border:1px solid #333;
+  border-radius: 10px;
+  margin-left: 10px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 5px
+}
+.add-menu-child-div{
+  display: flex;
+  width:100%;
+  height:100%;
+  padding:10px
+}
+.add-menu-child-div button{
+  width:90%;
+  overflow: hidden;
+  font-size: 15px;
+  height: 3rem;
+  margin-top: 5px
+}
+
+.menu-item.selected {
+    background-color: #4CAF50; /* クリックされたときの背景色 */
+    color: white;
+}
+
+.now-oreder-list{
+  width:35%;
+  height:100%;
+  margin-left: 5px;
+}
+.add-or-cancel-btn{
+  position: absolute;
+  top:0;
+  left:70%;
+  display: flex;
+  justify-content: center;
+  width:15rem
+}
+.add-or-cancel-btn button{
+  margin-left: 15px
+}
+.add-btn-first{
+  margin-left:5px;
+  margin-right: 5px;
+  padding-top: 10%;
+  width:8%;
+  height: 100%;
+  align-items: center;
+
+}
+.add-btn-first button {
+    width: 100%;
+    text-align: center;
+    position: relative;
+    padding: 0px;
+    background-color: orange;
+    color: white;
+    border: none;
+    clip-path: polygon(0 0, 90% 0, 100% 50%, 90% 100%, 0 100%);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.add-btn-first button:hover {
+    background-color: #45a049;
+}
+
+
+.add-or-cancel-btn button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    margin: 5px;
+    cursor: pointer;
+}
+
+.add-or-cancel-btn button:first-child {
+    background-color: #4CAF50; /* Adicionar ボタン: 緑色 */
+    color: white;
+}
+
+.add-or-cancel-btn button:last-child {
+    background-color: #f44336; /* Cancelar ボタン: 赤色 */
+    color: white;
+}
+
+.add-or-cancel-btn button:hover {
+    opacity: 0.8; /* ホバー時のエフェクト */
+}
+.remove-option,.remove-item{
+  width:2rem!important;
+  padding: 0px;
+  height: 1.2rem!important;
+  text-align: center;
+}
+#order-nbefore-list{
+  padding: 10px;
+  overflow-y: auto;
+  height: 70%;
+
+  border:1px solid #333;
+  border-radius: 10px;
+}
+.adicionar-menu-novo{
+  color:blue
+}
+.deletar-menu-da-lista{
+  color:red
+}
+
+#quantity-input {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+    z-index: 1000;
+}
+
+.quantity-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.quantity-btn {
+    padding: 10px;
+    font-size: 18px;
+    width: 50px;
+    height: 50px;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.quantity-btn:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.quantity-btn.active {
+    background-color: #0056b3;
+    color: white;
+}
+
+.manual-input {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+#item-quantity {
+    font-size: 16px;
+    padding: 8px;
+    width: 60px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-left: 10px;
+}
+
+#confirm-quantity-btn {
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#confirm-quantity-btn:hover {
+    background-color: #0056b3;
+}
+.total-add-menu-display{
+  border:1px solid #333;
+  border-radius: 10px;
+  height: 15%;
+  width: 90%;
+  flex-wrap: wrap;
+  padding:15px
+}
+.total-add-menu-display span{
+
+  width:100%;
+  font-size: 30px
+}
