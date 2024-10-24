@@ -10,11 +10,9 @@ console.log(decodedToken)
 let userInfo ={
   id:decodedToken.userId, //クライアントid
   language:decodedToken.language,
-  email: 'rootsgrillhekinan@gmeil.com',
-  username: 'RootsGrill',
   table_count: decodedToken.table_count, // Quantidade de mesas
   iat: 1727826129
-
+}
 
 // sessionStorage.setItem('userInfo', clients);
 

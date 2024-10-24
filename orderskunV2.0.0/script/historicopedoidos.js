@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${order.total_amount}</td>
                 <td><button class="check-btn">Check</button></td>
                 <td><button class="alterar-btn">Alterar</button></td>
-                <td><button class="delete-btn">削除</button></td>  <!-- 削除ボタンを追加 -->
+                <td><button class="delete-btn">Deletar</button></td>  <!-- 削除ボタンを追加 -->
             `;
             tbody.appendChild(tr);
 
@@ -156,6 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <ul>${orderItems}</ul>
                 `;
                 openModal('Detalhes do pedido', modalContent);
+                document.getElementById('modal-save-btn').innerText = 'OK'
             });
 
             const alterarBtn = tr.querySelector('.alterar-btn');
@@ -183,54 +184,62 @@ alterarBtn.addEventListener('click', () => {
                 <option value="uber" ${order.order_type === 'uber' ? 'selected' : ''}>Uber</option>
                 <option value="demaekan" ${order.order_type === 'demaekan' ? 'selected' : ''}>Demaekan</option>
                 <option value="other" ${order.order_type === 'other' ? 'selected' : ''}>Other</option>
+                <option value="takeout" ${order.order_type === 'takeout' ? 'selected' : ''}>take out</option>
             </select>
         </form>
     `;
 
-    openModal('注文の変更', modalContent);
+    openModal('Alterar o pedido', modalContent);
 
     // 保存ボタンの処理
     const saveBtn = document.getElementById('modal-save-btn');
     saveBtn.onclick = function() {
-      const updatedOrderStatus = document.getElementById('orderStatus').value;
-      const updatedPaymentMethod = document.getElementById('paymentMethod').value;
-      const updatedOrderType = document.getElementById('orderType').value;
-      // APIに送信するデータ
-      const updateData = {
-          order_status: updatedOrderStatus,
-          payment_method: updatedPaymentMethod,
-          order_type: updatedOrderType
-      };
-      // APIにデータを送信
-      fetch(`${server}/orderskun/update/${order.id}`, {
-          method: 'PUT',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(updateData)
-      })
-      .then(response => response.json())
-      .then(data => {
-          if (data.success) {
-              alert('注文が更新されました');
-              location.reload(); // ページをリロードして更新
-          } else {
-              alert('注文の更新に失敗しました');
-          }
-      })
-      .catch(error => {
-          console.error('エラーが発生しました:', error);
-          alert('エラーが発生しました');
-      });
+      try{
 
-      modal.style.display = 'none'; // モーダルを閉じる
-  };
+        showLoadingPopup();
+        const updatedOrderStatus = document.getElementById('orderStatus').value;
+        const updatedPaymentMethod = document.getElementById('paymentMethod').value;
+        const updatedOrderType = document.getElementById('orderType').value;
+        // APIに送信するデータ
+        const updateData = {
+            order_status: updatedOrderStatus,
+            payment_method: updatedPaymentMethod,
+            order_type: updatedOrderType
+        };
+        // APIにデータを送信
+        fetch(`${server}/orderskun/update/${order.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updateData)
+        })
+        .then(response => response.json())
+        .then(data => {
+          hideLoadingPopup();
+            if (data.success) {
+                alert('Feito com sucesso');
+                location.reload(); // ページをリロードして更新
+            } else {
+                alert('Tivemos um erro');
+            }
+        })
+        .catch(error => {
+            console.error('エラーが発生しました:', error);
+            alert('Tivemos um erro');
+        });
 
+        modal.style.display = 'none'; // モーダルを閉じる
+
+    }catch (e){
+      hideLoadingPopup();
+    }
+  }
 });
 const deleteBtn = tr.querySelector('.delete-btn');
 deleteBtn.addEventListener('click', () => {
     // 確認ダイアログを表示
-    const confirmDelete = confirm(`ID: ${order.id} の注文を削除しますか？`);
+    const confirmDelete = confirm(`Deseja deletar a comanda : ${order.id}`);
     if (confirmDelete) {
         // 削除処理を実行
         const itemIds = order.OrderItems.map(item => item.id); // OrderItems の itemIds を取得
@@ -244,6 +253,7 @@ deleteBtn.addEventListener('click', () => {
 }
     function deleteOrder(orderId,itemIds) {
       // 削除リクエストを送信（オーダーIDとアイテムIDを一緒に送信）
+      showLoadingPopup();
       fetch(`${server}/orderskun/delete/${orderId}`, {
           method: 'DELETE',
           headers: {
@@ -252,6 +262,7 @@ deleteBtn.addEventListener('click', () => {
           body: JSON.stringify({ itemIds: itemIds }) // アイテムIDもリクエストに含める
       })
       .then(response => {
+        hideLoadingPopup();
           if (response.ok) {
               alert('Comanda deletada com sucesso.');
               location.reload()
@@ -263,6 +274,7 @@ deleteBtn.addEventListener('click', () => {
           }
       })
       .catch(error => {
+        hideLoadingPopup();
           console.error('Error:', error);
           alert('Tivemos um erros ');
       });
@@ -289,7 +301,6 @@ deleteBtn.addEventListener('click', () => {
         // 保存ボタンの処理 (必要であればここで処理)
         const saveBtn = document.getElementById('modal-save-btn');
         saveBtn.onclick = function() {
-            console.log('保存が押されました');
             modal.style.display = 'none'; // モーダルを閉じる
         }
     }

@@ -76,13 +76,7 @@ document.addEventListener('DOMContentLoaded', async  () => {
       let status = "Pronto"
       let styleColer ="background-color:#90EE90"
       let icon=""
-      if (tableDisplay == "9999") {
-          tableDisplay = `Take out<br>${order.order_name}`;
-      } else if (tableDisplay == "9998") {
-          tableDisplay = `Uber<br>${order.order_name}`;
-      }else{
-        tableDisplay =`Mesa:${tableDisplay}<br> *${order.order_name}`
-      }
+      tableDisplay = `${order.order_type}<br>${order.order_name}`;
       if(order.order_status==='pending'){
         status="Em preparo"
         styleColer='background-color:#FFCCCB'
@@ -128,6 +122,11 @@ document.addEventListener('DOMContentLoaded', async  () => {
     }
     if(order.payment_method==='other'){
       document.getElementById('other-payment').classList.add('selected')
+    }
+    if(order.payment_method==='yet'){
+      paymentButtons.forEach(button => {
+       button.classList.remove("selected")
+      })
     }
       clients.printInfo = order;
       orderItems.innerHTML = ''; // Clear previous items
@@ -223,6 +222,8 @@ function updatePayType(type) {
 clients.paytype = type;
 console.log(clients)
 }
+
+
 
 paymentButtons.forEach(button => {
 button.addEventListener('click', () => {
@@ -656,6 +657,10 @@ async function registeConfirm(){
       });
       if (response.status===200) {
           showCustomAlert("Registrado")
+          paymentButtons.forEach(button => {
+           button.classList.remove("selected")
+          })
+
           const orderCard = document.querySelector(`.selected-card[data-id="${clients.selectedOrder}"]`);
 
           if (orderCard) {
@@ -691,6 +696,7 @@ if(clients.printInfo.order_type==='uber'||clients.printInfo.order_type==='demaek
 }
   // Update the order in the database
   try {
+    showLoadingPopup()
       const response = await fetch(`${server}/orderskun/updateConfirmd`, {
           method: 'POST',
           headers: {
@@ -703,7 +709,16 @@ if(clients.printInfo.order_type==='uber'||clients.printInfo.order_type==='demaek
           })
       });
       if (response.status===200) {
+           hideLoadingPopup()
           showCustomAlert("Registrado")
+          const cashPaymentButton = document.getElementById('cash-payment');
+          const creditPaymentButton = document.getElementById('credit-payment');
+          const otherPaymentButton = document.getElementById('other-payment');
+          const paymentButtons = [cashPaymentButton, creditPaymentButton, otherPaymentButton];
+          paymentButtons.forEach(button => {
+           button.classList.remove("selected")
+          })
+
           // Remove the order card from the UI
           const orderCard = document.querySelector(`.selected-card[data-id="${clients.selectedOrder}"]`);
           if (orderCard) {
@@ -715,6 +730,7 @@ if(clients.printInfo.order_type==='uber'||clients.printInfo.order_type==='demaek
           alert('Erro no registro.');
       }
   } catch (error) {
+    hideLoadingPopup()
     console.error('Error confirming payment:', error);
     alert('Erro no registro.');
   }

@@ -72,7 +72,7 @@ window.onload = async function() {
         console.error('orderCategories is null. Please check if the element with id "order-categories" exists.');
         return;
     }
-    let selectType = seletOrderType.value === '9999' ? true : (seletOrderType.value === '9998' ? true : false);
+    let selectType = seletOrderType.value === 'local' ? false :true ;
     const now = new Date();
     const offset = now.getTimezoneOffset() * 60000;
     const localTime = new Date(now - offset).toISOString().slice(0, 16);
@@ -107,6 +107,44 @@ window.onload = async function() {
   orderCategories.appendChild(button);
   hideLoadingPopup()
 });
+
+seletOrderType.addEventListener('change', async () => {
+  orderCategories.innerHTML=""
+    // selectType.value で選択された値を取得
+    const isTakeout = seletOrderType.value === 'local' ? false :true ; // 値が "true" なら boolean true に変換
+    // is_takeout の値に基づいてフィルタリング
+    const Categorys = MainData.categories.filter(category => category.is_takeout === isTakeout);
+    // display_order でソート
+    Categorys.sort((a, b) => a.display_order - b.display_order);
+    // ボタンを作成してカテゴリ情報を表示
+    const categories = [];
+    Categorys.forEach((category, index) => {
+    categories.push(category); // カテゴリ情報を配列に保存
+    let button = document.createElement('button');
+    button.textContent = category[`category_name_${userLanguage}`];
+    // デフォルトで1つ目のボタンを選択状態にする
+    if (index === 0) {
+        button.classList.add('selected-category');
+        currentSelectedButton = button;
+        displayMenuItems(category.id);
+    }
+    button.addEventListener('click', () => {
+        // 以前の選択を解除
+        if (currentSelectedButton) {
+            currentSelectedButton.classList.remove('selected-category');
+        }
+        // 現在の選択を適用
+        button.classList.add('selected-category');
+        currentSelectedButton = button;
+        displayMenuItems(category.id);
+    });
+
+
+    orderCategories.appendChild(button);
+    hideLoadingPopup()
+  });
+});
+
 
 function displayMenuItems(category) {
   console.log(category)
@@ -422,19 +460,20 @@ document.getElementById('confirm-order').addEventListener('click', async () => {
       console.log(orderList.order[9999])
 
   if(!orderClient||orderClient===""){
-    showAlert("Insira o nome do cliente");
+    alert("Insira o nome do cliente");
     return
   }
 
-        if (orderList.clienId === "" || selectedName === "" ) {
-            showAlert(translations[userLanguage]["Nenhum item foi selecionado"]);
+        if (orderList.clienId === "" || selectedName === "" || orderList.order[9999]===undefined) {
+            alert(translations[userLanguage]["Nenhum item foi selecionado"]);
             confirmButton.disabled = false;
             loadingPopup.style.display = 'none'; // エラーの場合はポップアップを非表示
             return;
         }
 
 
-
+        console.log(orderClient)
+        console.log(orderList.order[9999])
 
         // 日本時間のISOフォーマットを取得してサーバーに送信
         const formattedPickupTime = `${pickupTimeElement.value}:00.000Z`;
@@ -447,16 +486,17 @@ document.getElementById('confirm-order').addEventListener('click', async () => {
             },
             body: JSON.stringify({
                 order_name: orderClient,
-                user_id: orderList.clienId,
-                table_no: seletOrderType.value,
+                user_id: clients.id,
+                table_no: '',
                 items: orderList.order[9999],
                 orderId:'',
+                order_type:seletOrderType.value,
                 pickup_time:formattedPickupTime
             })
         });
         if (response.ok) {
           const responseData = await response.json();
-            if(seletOrderType.value==="9998"){
+            if(seletOrderType.value==="uber"||selectOrderType==="demaekan"){
               await cupom(responseData.order.id)
             }
             showCustomAlert(translations[userLanguage]["Pedido feito"]);

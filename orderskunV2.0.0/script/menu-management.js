@@ -1,12 +1,11 @@
-// const token = window.localStorage.getItem('token');
-// const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
-//
-// if (!decodedToken) {
-//   // window.location.href = '../index.html';
-// }
+const token = window.localStorage.getItem('token');
+if (!token) {
+  window.location.href = '../index.html';
+}
+const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
 
 let clients ={
-  id:17, //クライアントid
+  id:decodedToken.userId, //クライアントid
   language:'pt',
   paytype:'',
   selectedOrder:"",
@@ -20,9 +19,7 @@ let newFlug = false
 const loadingMessage = document.getElementById('loading-message');
 
 document.addEventListener('DOMContentLoaded', async () => {
-
-
-   loadingMessage.style.display = 'block';
+   showLoadingPopup();
     const categorySelectElement = document.getElementById('category-select');
     const menuListElement = document.getElementById('menu-list');
     const menuForm = document.getElementById('menu-form');
@@ -41,7 +38,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     categories.forEach(category => {
         const optionElement = document.createElement('option');
         optionElement.value = category.id;
-        optionElement.textContent = category[`category_name_${clients.language}`]; // 表示名を変更できます
+        optionElement.textContent = category[`admin_item_name`]; // 表示名を変更できます
         categorySelectElement.appendChild(optionElement);
     });
 
@@ -52,15 +49,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
 
-
+hideLoadingPopup();
 
 
     let draggedItem = null; // ドラッグ中の項目を保存する変数
     let isDragging = false; // ドラッグ状態を管理する変数
-
-
-
-
 
     function displayMenuItems(filteredMenus) {
     menuListElement.innerHTML = ''; // 既存のメニュー項目をクリア
@@ -71,10 +64,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         menuItemElement.textContent = menuItem[`menu_name_${clients.language}`];
         menuItemElement.dataset.id = menuItem.id;
         menuItemElement.draggable = true; // ドラッグ可能に設定
-
         // ドラッグが開始されたときのイベントリスナー
         menuItemElement.addEventListener('dragstart', () => {
-
             draggedItem = menuItemElement;
             isDragging = true; // ドラッグ中のフラグを設定
             setTimeout(() => {
@@ -91,13 +82,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             menuItemElement.style.backgroundColor = ''; // 背景色をリセット
             draggedItem = null;
             isDragging = false; // ドラッグ終了時にフラグをリセット
-
             // ドロップターゲットも背景色をリセット
             const highlightedItems = document.querySelectorAll('.menu-item');
             highlightedItems.forEach(item => {
                 item.style.backgroundColor = ''; // 全ての背景色をリセット
             });
-
             saveMenuOrder(filteredMenus); // 並べ替えた順序を保存
         });
 
@@ -157,8 +146,6 @@ function saveMenuOrder(filteredMenus) {
             display_order: index + 1 // 新しい順序を1から始める
         };
     });
-
-
     // サーバーへ並べ替えた順序を保存
     fetch(`${server}/orders/updateMenuOrder`, {
         method: 'POST',
@@ -188,6 +175,7 @@ function saveMenuOrder(filteredMenus) {
         document.getElementById('description_ja').value = menuItem.description_ja;
         document.getElementById('price').value = menuItem.price;
         document.getElementById('display_order').value = menuItem.display_order;
+        document.getElementById('menu_name_control').value = menuItem.admin_item_name;
         document.getElementById('stock_status').value = menuItem.stock_status ? "true" : "false";
 
         // Display options with delete functionality
@@ -196,7 +184,7 @@ function saveMenuOrder(filteredMenus) {
         menuOptions.forEach(option => {
         const liElement = document.createElement('li');
         liElement.classList.add('option-item');
-        liElement.textContent = `${option.option_name_en} (${option.additional_price})`;
+        liElement.textContent = `${option.option_name_pt} (${option.additional_price})`;
 
         const deleteButton = document.createElement('button');
         deleteButton.textContent = 'Deletar';
@@ -353,8 +341,6 @@ document.getElementById('add-new-menu').addEventListener('click', () => {
     // 右側のフォームを表示し、全てのフィールドをクリアする
     const menuForm = document.getElementById('menu-form');
     const optionsListElement = document.getElementById('options-list');
-
-
     menuForm.classList.add('active'); // フォームを表示
     document.getElementById('menu-category-new').style="display:block"
 
@@ -368,11 +354,9 @@ document.getElementById('add-new-menu').addEventListener('click', () => {
     document.getElementById('price').value = '';
     document.getElementById('display_order').value = '';
     document.getElementById('stock_status').checked = true;
-
-
+    document.getElementById('menu_name_control').value = ''
 
     const newCategorySelect = document.getElementById('new-category-select');
-
     // 既存のオプションをクリア
     newCategorySelect.innerHTML = '';
     console.log(clients.categories)
@@ -380,15 +364,11 @@ document.getElementById('add-new-menu').addEventListener('click', () => {
  clients.categories.forEach(category => {
      const optionElement = document.createElement('option');
      optionElement.value = category.id;
-     optionElement.textContent = category.category_name_en; // 表示名を設定
+     optionElement.textContent = category.admin_item_name; // 表示名を設定
      console.log(optionElement)
      newCategorySelect.appendChild(optionElement);
  });
-
-
 });
-
-
 
 document.getElementById('save-menu-item').addEventListener('click', async () => {
   console.log('menuUpdate')
@@ -405,9 +385,11 @@ document.getElementById('save-menu-item').addEventListener('click', async () => 
         description_ja: document.getElementById('description_ja').value,
         price: document.getElementById('price').value,
         display_order: document.getElementById('display_order').value,
-        stock_status: document.getElementById('stock_status').value === "true"
+        stock_status: document.getElementById('stock_status').value === "true",
+        admin_item_name:document.getElementById('menu_name_control').value
     };
     try {
+      showLoadingPopup()
         fetch(`${server}/orders/updates/menu`, {
             method: 'POST',
             headers: {
@@ -421,10 +403,12 @@ document.getElementById('save-menu-item').addEventListener('click', async () => 
           window.location.reload();
         })
         .catch(error => {
+          hideLoadingPopup()
           console.log(error)
           alert('erro no registro')
         });
     } catch (error) {
+      hideLoadingPopup()
       console.log(error)
         alert('Erro no registro');
     }
@@ -435,8 +419,6 @@ document.getElementById('save-menu-item').addEventListener('click', async () => 
 });
 
 async function newAddMenu(){
-  console.log('koko')
-  console.log(newFlug)
   const menuData = {
       user_id: clients.id,
       category_id: document.getElementById('new-category-select').value,
@@ -448,9 +430,11 @@ async function newAddMenu(){
       description_ja: document.getElementById('description_ja').value,
       price: document.getElementById('price').value,
       display_order: document.getElementById('display_order').value,
-      stock_status: document.getElementById('stock_status').value === "true"
+      stock_status: document.getElementById('stock_status').value === "true",
+      admin_item_name:document.getElementById('menu_name_control').value
   };
   try {
+     showLoadingPopup()
       fetch(`${server}/orders/create/menu`, {
           method: 'POST',
           headers: {
@@ -460,14 +444,17 @@ async function newAddMenu(){
       })
       .then(response => response.json())
       .then(menus => {
+         hideLoadingPopup()
         alert('Menu registrado com sucesso');
         window.location.reload();
       })
       .catch(error => {
+        hideLoadingPopup()
         console.log(error)
         alert('erro no registro')
       });
   } catch (error) {
+    hideLoadingPopup()
     console.log(error)
       alert('Erro no registro');
   }
@@ -481,21 +468,3 @@ function showCustomAlert(message) {
         alertBox.style.display = 'none';
     }, 1000); // 1秒間表示
 }
-
-
-
-// async function loadCategories() {
-//     const categories = await makerequest(`${server}/orders/getCategories?user_id=${clients.id}`);
-//     const categorySelect = document.getElementById('category-select');
-//     categorySelect.innerHTML = ''; // 既存の選択肢をクリア
-//     categories.forEach(category => {
-//         const optionElement = document.createElement('option');
-//         optionElement.value = category.id;
-//         optionElement.textContent = category.category_name_en; // 表示名を変更できます
-//         categorySelect.appendChild(optionElement);
-//     });
-// }
-
-// document.addEventListener('DOMContentLoaded', async () => {
-//     await loadCategories(); // カテゴリリストのロード
-// });
