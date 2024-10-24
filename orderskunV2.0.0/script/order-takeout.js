@@ -1,4 +1,7 @@
 const token = window.localStorage.getItem('token');
+if (!token) {
+   window.location.href = '../index.html';
+}
 const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
 const orderNamesContainer = document.getElementById('order-names-container');
 // const selectedItemsContainer = document.getElementById('selected-items');
@@ -29,9 +32,7 @@ document.getElementById('fullscreenButton').addEventListener('click', () => {
 
 });
 
-if (!decodedToken) {
-  window.location.href = '../index.html';
-}
+
 
 let orderList = {
   tableNo:9999,

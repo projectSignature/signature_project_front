@@ -1,4 +1,8 @@
  const token = window.localStorage.getItem('token');
+
+ if (!token) {
+    window.location.href = '../index.html';
+ }
  const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
 
 let selectOrders = ""
@@ -25,9 +29,7 @@ let selectFecharcaixa = false　//レジクローズのフラグ
 const caixaDate = document.getElementById('registerDate')
 caixaDate.valueAsDate = new Date();
 
-if (!decodedToken) {
-   window.location.href = '../index.html';
-}
+
 let clients ={
   id:decodedToken.userId, //クライアントid
   language:decodedToken.language, //クライアント言語

@@ -7,7 +7,6 @@ const pageToButtonMap = {
     'pos.html': 'pos-btn',
     'menuUpdate.html': 'menu-btn',
     'historypedidos.html': 'history-btn',
-    'logout.html': 'logout-btn',
     'orders.html':'pedido-client-btn',
     'comandas.html':'comanda-btn',
     'ordersTakeOut.html':'pedido-takeout-btn',

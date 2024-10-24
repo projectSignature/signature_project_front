@@ -1,4 +1,7 @@
 const token = window.localStorage.getItem('token');
+if (!token) {
+   window.location.href = '../index.html';
+}
 const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
 
 const currentTime = document.getElementById('current_time');
@@ -11,11 +14,7 @@ let userInfo ={
   username: 'RootsGrill',
   table_count: decodedToken.table_count, // Quantidade de mesas
   iat: 1727826129
-}
 
-if (!decodedToken) {
-  window.location.href = '../index.html';
-}
 
 // sessionStorage.setItem('userInfo', clients);
 

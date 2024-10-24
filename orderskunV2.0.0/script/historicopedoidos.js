@@ -1,9 +1,11 @@
 const token = window.localStorage.getItem('token');
-const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
 
-if (!decodedToken) {
+if (!token) {
    window.location.href = '../index.html';
 }
+const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
+
+
 let clients ={
   id:decodedToken.userId, //クライアントid
   language:decodedToken.language, //クライアント言語

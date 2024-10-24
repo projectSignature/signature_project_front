@@ -1,4 +1,7 @@
 const token = window.localStorage.getItem('token');
+if (!token) {
+   window.location.href = '../index.html';
+}
 const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
 
 const orderNamesContainer = document.getElementById('order-names-container');

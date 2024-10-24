@@ -1,10 +1,13 @@
 const token = window.localStorage.getItem('token');
-const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
 
 
-if (!decodedToken) {
-  window.location.href = '../index.html';
+
+if (!token) {
+  console.log('kokokni')
+   window.location.href = '../index.html';
 }
+
+const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
 
 let clients ={
   id:decodedToken.userId, //クライアントid
