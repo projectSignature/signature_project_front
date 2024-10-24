@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Menu Management</title>
+    <link rel="stylesheet" href="../style/loading-popup.css">
     <link rel="stylesheet" href="../style/pos.css">
     <style>
         body {
@@ -147,7 +148,8 @@
     display: none; /* デフォルトでは非表示 */
 }
 #menu-list{
-  width:90%
+  width:90%;
+  max-height: 70%
 }
 #menu-list div{
   width:90%
@@ -207,11 +209,14 @@
             <label for="menu_name_ja">Nome do menu (Japanese):</label>
             <input type="text" id="menu_name_ja">
 
-            <label for="description_en">Descrição(English):</label>
-            <textarea id="description_en"></textarea>
+            <label for="menu_name_ja">Nome de controle:</label>
+            <input type="text" id="menu_name_control">
 
             <label for="description_pt">Descrição(Portuguese):</label>
             <textarea id="description_pt"></textarea>
+
+            <label for="description_en">Descrição(English):</label>
+            <textarea id="description_en"></textarea>
 
             <label for="description_ja">Descrição(Japanese):</label>
             <textarea id="description_ja"></textarea>
@@ -232,13 +237,12 @@
             <input type="file" id="menu_image" accept="image/*">
             <h3>Options</h3>
             <ul id="options-list"></ul>
-
             <div id="add-option-form">
-                <input type="text" id="new-option-en" placeholder="Nome da opção (English)">
-                <input type="text" id="new-option-pt" placeholder="Nome da opção (Portuguese)">
-                <input type="text" id="new-option-ja" placeholder="Nome da opção (Japanese)">
-                <input type="number" id="new-option-price" placeholder="Valor" step="0.01">
-                <button id="add-option-btn">Add Option</button>
+              <input type="text" id="new-option-pt" placeholder="Nome da opção (Portuguese)">
+              <input type="text" id="new-option-en" placeholder="Nome da opção (English)">
+              <input type="text" id="new-option-ja" placeholder="Nome da opção (Japanese)">
+              <input type="number" id="new-option-price" placeholder="Valor" step="0.01">
+              <button id="add-option-btn">Add Option</button>
             </div>
             <div class="menu-actions" id="menu-category-new">
               <select id="new-category-select">
@@ -256,12 +260,16 @@
               <p>オーダーが確定されました。</p>
           </div>
         </div>
-        <div id="loading-popup" class="loading-popup" style="display: none;">
-            登録中...
+        <div id="loading-popup" class="loading-popup">
+          <div class="loading-container">
+              <div class="spinner"></div>
+              <div class="loading-text">await</div>
+          </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
+    <script src="../script/loding-popup.js"></script>
     <script src="../script/menu-management.js"></script>
     <script src="../script/common.js"></script>
     <script src="../../config.js"></script>
