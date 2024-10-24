@@ -1,5 +1,6 @@
-// const token = window.localStorage.getItem('token');
-// const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
+const token = window.localStorage.getItem('token');
+const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
+
 const orderNamesContainer = document.getElementById('order-names-container');
 // const selectedItemsContainer = document.getElementById('selected-items');
 const nameInput = document.getElementById('name-input');
@@ -24,7 +25,7 @@ document.getElementById('fullscreenButton').addEventListener('click', () => {
 
     // フルスクリーンボタンを非表示、解除ボタンを表示
     document.getElementById('fullscreenButton').style.display = 'none';
-    document.getElementById('exitFullscreenButton').style.display = 'block';
+    // document.getElementById('exitFullscreenButton').style.display = 'block';
 });
 
 document.getElementById('exitFullscreenButton').addEventListener('click', () => {
@@ -39,7 +40,7 @@ document.getElementById('exitFullscreenButton').addEventListener('click', () => 
     }
 
     // 解除ボタンを非表示、フルスクリーンボタンを表示
-    document.getElementById('fullscreenButton').style.display = 'block';
+    // document.getElementById('fullscreenButton').style.display = 'block';
     document.getElementById('exitFullscreenButton').style.display = 'none';
 });
 
@@ -58,7 +59,7 @@ const alertMessage = document.getElementById('alert-message');
 
 let orderList = {
   tableNo:'',
-  clienId:17,//ログイン処理完了後は動的に
+  clienId:decodedToken.userId,//ログイン処理完了後は動的に
   order:{
   },
   historyOrder:{
@@ -70,9 +71,7 @@ let userLanguage = 'pt'
 let categories = []; // カテゴリ情報を保存する配列
 
 document.addEventListener("DOMContentLoaded", async () => {
-const loadingPopup = document.getElementById('loading-popup');
-loadingPopup.innerText = 'await'
-loadingPopup.style="display:block"
+  showLoadingPopup()
 const saveTableNo = sessionStorage.getItem('saveTableNo')
     // テーブル番号が存在しない場合はデフォルト値を1に設定
     if (!saveTableNo) {
@@ -102,8 +101,8 @@ const saveTableNo = sessionStorage.getItem('saveTableNo')
     const orderCategories = document.getElementById('order-categories');
     const menuItemsContainer = document.getElementById('menu-items');
 
-    displayMenuItems(Categorys[0].id)
-    loadingPopup.style="display:none"
+    // displayMenuItems(Categorys[0].id)
+      hideLoadingPopup()
     // カテゴリボタンを格納する変数
     let currentSelectedButton = null;
     Categorys.forEach((category, index) => {
@@ -154,9 +153,16 @@ async function fetchPendingOrders() {
 
 
 function displayMenuItems(category) {
-const sortedData = MainData.menus
-    .filter(item => item.category_id === category)
-    .sort((a, b) => a.display_order - b.display_order);
+  const sortedData = MainData.menus
+      .filter(item => item.category_id === category)
+      .sort((a, b) => {
+          // stock_status が true のものを前にソート
+          if (a.stock_status !== b.stock_status) {
+              return a.stock_status ? -1 : 1;
+          }
+          // stock_status が同じ場合は display_order でソート
+          return a.display_order - b.display_order;
+      });
 menuItemsContainer.innerHTML = '';
 sortedData.forEach(item => {
     let div = document.createElement('div');
@@ -830,9 +836,7 @@ window.addEventListener('click', (event) => {
 // 確定ボタンのイベントリスナーを追加
 document.getElementById('confirm-order').addEventListener('click', async () => {
     const confirmButton = document.getElementById('confirm-order');
-    const loadingPopup = document.getElementById('loading-popup');
-    confirmButton.disabled = true; // ボタンを無効化
-    loadingPopup.style.display = 'block'; // ポップアップを表示
+        showLoadingPopup()
     try {
         if (orderList.clienId === "" || orderList.tableNo === "" || selectedName === "" || orderList.order[selectedName].length === 0) {
           console.log('nocart')
@@ -884,7 +888,7 @@ document.getElementById('confirm-order').addEventListener('click', async () => {
         return
     } finally {
         confirmButton.disabled = false;
-        loadingPopup.style.display = 'none'; // リクエスト完了後にポップアップを非表示
+            hideLoadingPopup()
     }
 });
 
@@ -951,20 +955,7 @@ document.getElementById('confirm-password-btn').addEventListener('click', () => 
         const isFullscreenButtonVisible = document.getElementById('fullscreenButton').style.display === 'flex';
         const isExitFullscreenButtonVisible = document.getElementById('exitFullscreenButton').style.display === 'flex';
 
-        // どちらが表示されているかを判断して切り替え
-        if (isFullscreenButtonVisible) {
-            // fullscreenButtonが表示されている場合
-            document.getElementById('fullscreenButton').style.display = 'none';
-            document.getElementById('exitFullscreenButton').style.display = 'flex';
-        } else if (isExitFullscreenButtonVisible) {
-            // exitFullscreenButtonが表示されている場合
-            document.getElementById('exitFullscreenButton').style.display = 'none';
-            document.getElementById('fullscreenButton').style.display = 'flex';
-        } else {
-            // どちらも表示されていない場合、デフォルトでfullscreenButtonを表示
-            document.getElementById('fullscreenButton').style.display = 'flex';
-            document.getElementById('exitFullscreenButton').style.display = 'none';
-        }
+      document.getElementById('exitFullscreenButton').style.display = 'block'
         // モーダルを閉じたときにボタンを非表示にするイベントリスナーを追加
         document.getElementById('table-number-modal').addEventListener('click', () => {
             document.getElementById('fullscreenButton').style.display = 'none';

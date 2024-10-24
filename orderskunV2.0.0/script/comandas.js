@@ -1,14 +1,14 @@
-// const token = window.localStorage.getItem('token');
-// // const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
-//
-//
-// // if (!decodedToken) {
-// //   // window.location.href = '../index.html';
-// }
+const token = window.localStorage.getItem('token');
+const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
+
+
+if (!decodedToken) {
+  window.location.href = '../index.html';
+}
 
 let clients ={
-  id:17, //クライアントid
-  language:'pt', //クライアント言語
+  id:decodedToken.userId, //クライアントid
+  language:decodedToken.language, //クライアント言語
   paytype:'',　//ユーザー支払い方法
   selectedOrder:"",　//選択オーダー
   printInfo:"",　//？？
@@ -19,15 +19,17 @@ let selectedCard = null;
 let MainData = null; // グローバルな変数として宣言
 
 document.addEventListener('DOMContentLoaded', async () => {
+    const orderContainer = document.getElementById('order-list');
+
     const updateData = async () => {
         // メニュー、カテゴリー、オープション表示
-        const loadingPopup = document.getElementById('loading-popup');
+        showLoadingPopup();
         MainData = await makerequest(`${server}/orders/getBasedata?user_id=${clients.id}`); // MainDataにデータを格納
         let pendingOrders = await fetchPendingOrders(clients.id);
         pendingOrders.sort((a, b) => {
             return new Date(a.pickup_time) - new Date(b.pickup_time);
         });
-        const orderContainer = document.getElementById('order-list');
+
         orderContainer.innerHTML = ''; // 前の注文カードをクリア
         pendingOrders.forEach(async order => {
           const {color,message} = await timeGet(order.pickup_time)
@@ -79,29 +81,31 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
             // カードをスライダー内に追加
             orderContainer.appendChild(orderCard);
-            loadingPopup.style.display = 'none'; // リクエスト完了後にポップアップを非表示
-        });
-
-        // イベントデリゲーションを使って、親要素にイベントリスナーを追加
-        orderContainer.addEventListener('click', function (event) {
-            if (event.target.classList.contains('serve-status')) {
-                const statusDiv = event.target;
-                const itemId = statusDiv.getAttribute('data-item-id');
-                const currentStatus = statusDiv.textContent.trim();
-                const newStatus = currentStatus === '✕' ? '〇' : '✕';
-                statusDiv.textContent = newStatus;
-                const newClass = newStatus === '✕' ? 'pending' : 'served';
-                statusDiv.classList.remove('pending', 'served');
-                statusDiv.classList.add(newClass);
-                updateStatus(itemId, newStatus);
-            }
+            hideLoadingPopup();
         });
     };
+
+    // イベントデリゲーションを使って、親要素にイベントリスナーを追加
+    orderContainer.addEventListener('click', function (event) {
+        if (event.target.classList.contains('serve-status')) {
+            const statusDiv = event.target;
+            const itemId = statusDiv.getAttribute('data-item-id');
+            const currentStatus = statusDiv.textContent.trim();
+            const newStatus = currentStatus === '✕' ? '〇' : '✕';
+            statusDiv.textContent = newStatus;
+            const newClass = newStatus === '✕' ? 'pending' : 'served';
+            statusDiv.classList.remove('pending', 'served');
+            statusDiv.classList.add(newClass);
+            updateStatus(itemId, newStatus);
+        }
+    });
 
     // 最初のデータ更新を実行
     await updateData();
     // 30秒ごとにデータ更新を実行
-   setInterval(updateData, 40000);
+    setInterval(updateData, 30000);
+
+
 
     function formatPrice(amount) {
         return `¥${parseFloat(amount).toLocaleString()}`;
@@ -177,6 +181,7 @@ async function fetchPendingOrders() {
             throw new Error('Failed to fetch pending orders');
         }
         const pendingOrders = await response.json();
+          hideLoadingPopup();
         console.log('Pending Orders:', pendingOrders);
         return pendingOrders;
     } catch (error) {

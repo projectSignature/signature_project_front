@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cash Register</title>
-    <link rel="stylesheet" href="../style/pos.css"> <!-- Link to your stylesheet -->
-    <link rel="stylesheet" href="../style/comanda.css"> <!-- Link to your stylesheet -->
+    <link rel="stylesheet" href="../style/loading-popup.css">
+    <link rel="stylesheet" href="../style/pos.css">
+    <link rel="stylesheet" href="../style/comanda.css">
+    <link rel="stylesheet" href="../style/appname.css">
 </head>
 <body>
     <header class="header">
@@ -16,10 +18,10 @@
        </div>
       </div>
       <div class="header-buttons">
-        <button class="header-btn nav-btn" id="pedido-admin-btn">Pedido<br>Admin</button>
+        <button class="header-btn nav-btn" id="pedido-admin-btn" >Pedido<br>Admin</button>
         <button class="header-btn nav-btn" id="pedido-client-btn">Pedido<br>tablet</button>
         <button class="header-btn nav-btn" id="pedido-takeout-btn">Pedido<br>takeout</button>
-        <button class="header-btn nav-btn" id="comanda-btn">Orders</button>
+        <button class="header-btn nav-btn" id="comanda-btn"style="background-color: orange">Orders</button>
           <button class="header-btn nav-btn" id="reserva-btn">Reservas</button>
           <button class="header-btn nav-btn" id="reserva-hist-btn">Reservas<br>(histórico)</button>
           <button class="header-btn nav-btn" id="pos-btn">POS</button>
@@ -31,13 +33,17 @@
     <div id="order-list"></div>
     <!-- アラーム音を再生するための <audio> タグ -->
 <audio id="alarmSound" src="../sound/orderin.mp3" preload="auto"></audio>
-<div id="loading-popup" class="loading-popup" style="display: none;">
-    登録中...
+<div id="loading-popup" class="loading-popup">
+  <div class="loading-container">
+      <div class="spinner"></div>
+      <div class="loading-text">await</div>
+  </div>
 </div>
 
 
 
-    <!-- <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
+    <script src="../script/loding-popup.js"></script>
     <script src="../../config.js"></script>
     <script src="../script/comandas.js"></script> <!-- Link to your JavaScript file -->
     <script src="../script/common.js"></script>

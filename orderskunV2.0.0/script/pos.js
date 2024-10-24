@@ -1,11 +1,11 @@
-// const token = window.localStorage.getItem('token');
-// const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
-// console.log(decodedToken)
+ const token = window.localStorage.getItem('token');
+ const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
+
 let selectOrders = ""
 let registerFlug = false
 const notRegisterInfo = document.getElementById('yet-regit-info')
 // 日付を今日の日付に設定
-document.getElementById("registerDate").valueAsDate = new Date();
+
 // モーダルを表示/非表示にするロジック
 const modal = document.getElementById("registerModal");
 const openModalBtn = document.getElementById("openModalBtn");
@@ -16,41 +16,41 @@ const menuList = document.getElementById('menu-list');
 const optionList = document.getElementById('option-list');
 const categoryFilters = document.getElementById('category-filters');
 const orderList = document.getElementById('order-nbefore-list');
-
+const loadingPopup = document.getElementById('loading-popup');
 let selectedMenuItem = null;  // 現在選択されているメニューアイテム
-let selectCategory = null;
+let selectCategory = null;   //選択されているカテゴリー
 let selectedOptions = [];  // 選択されたオプションを保存する配列
+let selectedCard = null;　//選択カード
+let selectFecharcaixa = false　//レジクローズのフラグ
+const caixaDate = document.getElementById('registerDate')
+caixaDate.valueAsDate = new Date();
 
-// if (!decodedToken) {
-//   // window.location.href = '../index.html';
-// }
+if (!decodedToken) {
+   window.location.href = '../index.html';
+}
 let clients ={
-  id:17, //クライアントiddecodedToken.userId
-  language:'pt', //クライアント言語decodedToken.language
+  id:decodedToken.userId, //クライアントid
+  language:decodedToken.language, //クライアント言語
   paytype:'',　//ユーザー支払い方法
   selectedOrder:"",　//選択オーダー
   printInfo:"",　//？？
   taxtType:"",　//税金区分
   registerInfo:"",
-  salesInfo:"",
-  //kubun:decodedToken.role,
-  table_count:17,
-  //takeout_enabled:decodedToken.takeout_enabled,
-  //uber_enabled:decodedToken.uber_enabled
+  salesInfo:"", //セールデータ
+  kubun:decodedToken.role,　//admin or operator
+  table_count:decodedToken.table_count,
+  takeout_enabled:decodedToken.takeout_enabled,
+  uber_enabled:decodedToken.uber_enabled
 }
-let selectedCard = null;
-let selectFecharcaixa = false
 
 document.addEventListener('DOMContentLoaded', async  () => {
-  console.log(clients.id)
-  const loadingPopup = document.getElementById('loading-popup');
+  showLoadingPopup()
   //メニュー、カテゴリー、オープション表示
   const MainData = await makerequest(`${server}/orders/getBasedata?user_id=${clients.id}`)
+  console.log(MainData)
   let pendingOrders = await fetchPendingOrders(clients.id);
   const registerData = await getRegisters(clients.id);
    await getOrdersbyPickupTime()
-   await console.log(clients)
-
    openModalBtn.onclick = function() {
      openCaixaModal()
    }
@@ -59,6 +59,7 @@ document.addEventListener('DOMContentLoaded', async  () => {
   if(pendingOrders.length===0){
     loadingPopup.style="display:none"
     showCustomAlert('não tem pedido pendente')
+    hideLoadingPopup();
     return
   }
   let ordersList = document.getElementById('orders-list');//未支払い枠エレメント
@@ -111,19 +112,24 @@ document.addEventListener('DOMContentLoaded', async  () => {
           selectedCard = orderCard;
           selectOrders=order
           displayOrderDetails(order);
-          // console.log(selectOrders)
       });
       ordersList.appendChild(orderCard);
-       loadingPopup.style="display:none"
+       hideLoadingPopup();
   });
 
   function displayOrderDetails(order) {
-      console.log(order.OrderItems);
+    if(order.payment_method==='cash'){
+      document.getElementById('cash-payment').classList.add('selected')
+    }
+    if(order.payment_method==='credit'){
+      document.getElementById('credit-payment').classList.add('selected')
+    }
+    if(order.payment_method==='other'){
+      document.getElementById('other-payment').classList.add('selected')
+    }
       clients.printInfo = order;
       orderItems.innerHTML = ''; // Clear previous items
       clients.selectedOrder = order.id;
-      console.log(order);
-
       // レシート用のデータを準備
       let receiptData = {
           items: [],
@@ -140,7 +146,6 @@ document.addEventListener('DOMContentLoaded', async  () => {
           } else {
               item.menu_name = "不明なメニュー"; // メニューが見つからない場合のデフォルト値
           }
-
           // オプション名を取得
           let disOption = "";
           const options = JSON.parse(item.options);
@@ -150,9 +155,7 @@ document.addEventListener('DOMContentLoaded', async  () => {
                   disOption += `${optionGt.option_name_pt}, `; // ポルトガル語のオプション名を追加
               }
           });
-
           item.option_names = disOption ? disOption.slice(0, -2) : ""; // 最後のカンマを削除して追加
-
           // レシート用のアイテム情報を追加
           receiptData.items.push({
               menu_name: item.menu_name,
@@ -164,7 +167,6 @@ document.addEventListener('DOMContentLoaded', async  () => {
           // 合計金額を計算
           receiptData.totalAmount += parseInt(item.total_price) ;//* item.quantity
       });
-
       // DOMにアイテムを表示
       order.OrderItems.forEach(item => {
           let li = document.createElement('li');
@@ -175,12 +177,10 @@ document.addEventListener('DOMContentLoaded', async  () => {
           `;
           orderItems.appendChild(li);
       });
-
       // 合計金額を表示
       totalAmountElement.textContent = `￥${Math.floor(receiptData.totalAmount).toLocaleString()}`;
         document.getElementById('tax-included-amount').textContent =`￥${Math.floor(receiptData.totalAmount).toLocaleString()}`
       updateChange(); // Initial calculation
-
       // レシート用のデータをclientsに保存
       clients.receiptData = receiptData;
   }
@@ -219,6 +219,7 @@ const paymentButtons = [cashPaymentButton, creditPaymentButton, otherPaymentButt
 // Update the paytype in the clients object
 function updatePayType(type) {
 clients.paytype = type;
+console.log(clients)
 }
 
 paymentButtons.forEach(button => {
@@ -244,14 +245,10 @@ button.addEventListener('click', () => {
  let selectedOrderBackup = null;
     // プラスボタンをクリックしたらモーダルを表示
     addOrderBtn.addEventListener('click', () => {
-      console.log(pendingOrders)
-      console.log(selctedCard)
-      console.log(addBeforeOrder)
       orderList.innerHTML=""
         if (selectedCard!=null) {
             // data-id 属性を取得
             const orderId = selectedCard.getAttribute('data-id');
-            console.log('Selected order ID:', orderId);
             selctedCard =orderId
             const selectedOrder = pendingOrders.find(order => order.id === orderId-0);
             selectedOrderBackup = JSON.parse(JSON.stringify(selectedOrder));  // バックアップを作成
@@ -280,7 +277,6 @@ button.addEventListener('click', () => {
         allButton.textContent = 'すべて';
         allButton.addEventListener('click', () => displayMenuItems('all'));
         categoryFilters.appendChild(allButton);
-        console.log(MainData )
         MainData.categories.forEach(category => {
             const categoryButton = document.createElement('button');
             categoryButton.textContent = category.admin_item_name;  // 日本語で表示
@@ -288,10 +284,8 @@ button.addEventListener('click', () => {
               if (selectCategory) {
                   selectCategory.classList.remove('selected');
               }
-
               categoryButton.classList.add('selected');
               selectCategory = categoryButton;
-
               displayMenuItems(category.id)
             });
             categoryFilters.appendChild(categoryButton);
@@ -306,8 +300,9 @@ let adicionarItem = null
         menuList.innerHTML = '';  // メニューリストをクリア
         const filteredItems = MainData.menus.filter(menu => categoryId === 'all' || menu.category_id === categoryId);
         filteredItems.forEach(menu => {
+          console.log(menu)
             const menuItemDiv = document.createElement('button');
-            menuItemDiv.textContent = menu.admin_item_name;  // 日本語で表示
+            menuItemDiv.textContent = `${menu.admin_item_name}￥${menu.price.split('.00')[0]}`;  // 管理名で表示
             menuItemDiv.classList.add('menu-item');
             menuList.appendChild(menuItemDiv);
             // メニューアイテムをクリックしたらオプションを表示
@@ -317,12 +312,10 @@ let adicionarItem = null
                   if (selectedMenuItem) {
                       selectedMenuItem.classList.remove('selected');
                   }
-
                   adicionarItem = {kubun:'add',id:null,order_id:selctedCard,menu_id:menu.id,menu_name:menu.admin_item_name,total_price:menu.price}
                   // 新しい選択を適用
                   menuItemDiv.classList.add('selected');
                   selectedMenuItem = menuItemDiv;  // 現在の選択を保存
-
                   displayMenuOptions(menu.id);  // オプションを表示
 
               });
@@ -343,14 +336,12 @@ let adicionarItem = null
                 optionItemDiv.textContent = option.option_name_pt;  // ポルトガル語のオプション名で表示
                 optionItemDiv.classList.add('option-item');
                 optionList.appendChild(optionItemDiv);
-
                 // オプションアイテムをクリックした時の処理
                 optionItemDiv.addEventListener('click', () => {
                     // ボタンに 'selected' クラスが既に付いているか確認
                     if (optionItemDiv.classList.contains('selected')) {
                         // 'selected' クラスが付いていた場合はクラスを削除
                         optionItemDiv.classList.remove('selected');
-
                         // addNewOption 配列から該当するオプションを削除
                         addNewOption = addNewOption.filter(opt => opt.menu_id !== option.menu_id);
                     } else {
@@ -364,7 +355,6 @@ let adicionarItem = null
                             additional_price: option.additional_price
                         });
                     }
-
                     console.log('Selected options:', addNewOption);  // 選択されたオプションを表示（デバッグ用）
                 });
             });
@@ -442,13 +432,18 @@ let adicionarItem = null
 
     // リストを表示する関数
     async function displayOrderItems(selectedOrder) {
+      let total_amount = 0
       const totalQuantity = selectedOrder.OrderItems.reduce((acc, item) => {
-          return acc + item.quantity;
+        if(item.kubun!='delete'){
+          total_amount += (item.total_price-0)
+          return acc + item.quantity
+        }else{
+          return acc
+        }
       }, 0);
-      const totalsAmount = formatPrice(selectedOrder.total_amount);
+      const totalsAmount = formatPrice(total_amount);
         document.getElementById('total-alter-order-count').innerText = `${totalQuantity} itens`;
         document.getElementById('total-alter-order-amount').innerText = `Valor total : ￥${parseFloat(totalsAmount).toLocaleString()}`;
-
         orderList.innerHTML = ''; // リストをクリア
         selectedOrder.OrderItems.forEach((item, index) => {
           let deleteMenu = false
@@ -460,22 +455,29 @@ let adicionarItem = null
 
             // アイテム名と金額
             const itemDetailsDiv = document.createElement('div');
+            const removeItemBtn = document.createElement('button');
+            removeItemBtn.dataset.itemIndex = index; // アイテムのインデックスを保持
+            removeItemBtn.textContent = '🗑️';
+            removeItemBtn.classList.add('remove-item')
             if(item.kubun==='add'){
               itemDetailsDiv.classList.add('adicionar-menu-novo')
+
               addNewFlug=true
             }else if(item.kubun==='delete'){
               deleteMenu = true
               itemDetailsDiv.classList.add('deletar-menu-da-lista')
+              removeItemBtn.textContent = '🔙';
+              removeItemBtn.classList.add('undo-remove-item');
             }
             itemDetailsDiv.innerHTML = `
                 <strong>${item.menu_name}</strong>-✕${item.quantity} ￥${parseFloat(item.item_price).toLocaleString()}
             `;
 
             // アイテム削除ボタンのロジック
-  const removeItemBtn = document.createElement('button');
-  removeItemBtn.textContent = '🗑️';
-  removeItemBtn.classList.add('remove-item');
-  removeItemBtn.dataset.itemIndex = index; // アイテムのインデックスを保持
+
+
+  // removeItemBtn.classList.add('remove-item');
+
 
   // アイテム削除の処理
   removeItemBtn.addEventListener('click', () => {
@@ -486,19 +488,20 @@ let adicionarItem = null
           }else{
             selectedOrder.OrderItems[index].kubun = 'add';
           }
-          itemDetailsDiv.classList.remove('deletar-menu-da-lista');
-          // ボタンを元に戻す
-          removeItemBtn.textContent = '🗑️';
-          removeItemBtn.classList.remove('undo-remove-item');
+          // itemDetailsDiv.classList.remove('deletar-menu-da-lista');
+          // // ボタンを元に戻す
+          // removeItemBtn.textContent = '🗑️';
+          // removeItemBtn.classList.remove('undo-remove-item');
       } else {
           // 削除フラグを立てる
           selectedOrder.OrderItems[index].kubun = 'delete';
           itemDetailsDiv.classList.add('deletar-menu-da-lista');
 
           // ボタンを「削除取り消し」に変更
-          removeItemBtn.textContent = '🔙';
-          removeItemBtn.classList.add('undo-remove-item');
+          // removeItemBtn.textContent = '🔙';
+          // removeItemBtn.classList.add('undo-remove-item');
       }
+      displayOrderItems(selectedOrder)
 
   });
             // アイテムの詳細表示エリアに削除ボタンを追加
@@ -533,8 +536,6 @@ let adicionarItem = null
             });
         });
     }
-
-
 // オプションを削除する関数
 function removeOption(itemIndex, optionIndex) {
     const options = JSON.parse(order.OrderItems[itemIndex].options);
@@ -542,8 +543,6 @@ function removeOption(itemIndex, optionIndex) {
     order.OrderItems[itemIndex].options = JSON.stringify(options); // 更新
     displayOrderItems(); // リストを再表示
 }
-
-
 // オプション削除ボタンのイベントリスナー
 document.addEventListener('click', (event) => {
     if (event.target.classList.contains('remove-option')) {
@@ -552,13 +551,11 @@ document.addEventListener('click', (event) => {
         removeOption(itemIndex, optionIndex);
     }
 });
-
 // オーダーを追加するボタンのイベント
 document.getElementById('save-add-menu').addEventListener('click', async () => {
-  loadingPopup.style = "display:block";
+  showLoadingPopup()
   try {
     console.log('Updated Order:', addBeforeOrder);
-
     // サーバーに更新を送信
     const response = await fetch(`${server}/orderskun/update/order/admin`, {
         method: 'POST',
@@ -572,8 +569,6 @@ document.getElementById('save-add-menu').addEventListener('click', async () => {
 
     if (response.ok) {
       const responseData = await response.json();  // サーバーからのレスポンスデータを取得
-      console.log('Response Data:', responseData);  // レスポンスデータを確認
-
       // レスポンスデータをpendingOrdersに反映
       const orderIndex = pendingOrders.findIndex(order => order.id === responseData.id);
       if (orderIndex !== -1) {
@@ -581,23 +576,20 @@ document.getElementById('save-add-menu').addEventListener('click', async () => {
       } else {
           pendingOrders.push(responseData);  // もし新規オーダーなら追加
       }
-
       showCustomAlert('Alteração feita com sucesso');  // 成功メッセージを表示
-
       // モーダルを閉じる
       selctedCard = null;
       document.getElementById('menuModal').style.display = "none";
-
       // 最新のオーダー情報を画面に反映（必要に応じて更新されたオーダー詳細を表示）
       displayOrderDetails(responseData);  // 関数にデータを渡して画面に反映
     } else {
       alert('Tivemos erro no registro');
     }
 
-    loadingPopup.style = "display:none";  // ローディングを非表示
+    hideLoadingPopup()
   } catch (e) {
     console.log(e);
-    loadingPopup.style = "display:none";  // エラーハンドリングでローディングを消す
+    hideLoadingPopup()
   }
 });
 
@@ -607,8 +599,6 @@ document.getElementById('close-menuModal').addEventListener('click', ()=>{
   document.getElementById('menuModal').style.display = "none";
   addBeforeOrder = null
   selctedCard = null
-  console.log(pendingOrders)
-  console.log(selectedOrderBackup)
   if (selectedOrderBackup) {
         // 元に戻す
         const orderIndex = pendingOrders.findIndex(order => order.id === selectedOrderBackup.id);
@@ -617,14 +607,16 @@ document.getElementById('close-menuModal').addEventListener('click', ()=>{
     }
 })
 
-
+caixaDate.addEventListener('change', async ()=>{
+  console.log('change')
+})
 })
 // });
 
 
 async function registeConfirm(){
+  showLoadingPopup()
   const loadingPopup = document.getElementById('loading-popup');
-
   if (!clients.selectedOrder) {
       alert('Seleciona uma comanda');
       return;
@@ -645,7 +637,6 @@ async function registeConfirm(){
     alert("Insira o valor recebido")
     return
   }
-  console.log(clients.selectedOrder)
   // Update the order in the database
   try {
 
@@ -661,36 +652,43 @@ async function registeConfirm(){
               order_status: 'pending'  // Update the status to 'confirmed'
           })
       });
-      console.log(response.status)
-
       if (response.status===200) {
           showCustomAlert("Registrado")
-           console.log(clients.selectedOrder)
-          // Remove the order card from the UI
           const orderCard = document.querySelector(`.selected-card[data-id="${clients.selectedOrder}"]`);
-         console.log('Found Order Card:', orderCard);
+
           if (orderCard) {
               // orderCard.remove();
           }
           // Optionally, you can clear the order details or reset the UI
           clearOrderDetails();
+          hideLoadingPopup()
       } else {
           alert('Erro no registro.');
+          hideLoadingPopup()
       }
   } catch (error) {
+      hideLoadingPopup()
       console.error('Error confirming payment:', error);
       alert('Erro no registro.');
   }
-  loadingPopup.style="display:none"
+
 }
 
 async function entregueConfirm(){
 
-  const loadingPopup = document.getElementById('loading-popup');
+if(clients.printInfo.order_type==='local'||clients.printInfo.order_type==='order'||clients.printInfo.order_type==='takeout'){
+  if(clients.printInfo.payment_method==='yet'&&clients.paytype===""){
+    alert('Este pedido não foi registrado a forma de pagamento ainda, selecione por favor')
+    return
+  }
+}
+if(clients.printInfo.order_type==='uber'||clients.printInfo.order_type==='demaekan'||clients.printInfo.order_type==='other'){
+  clients.paytype='other'
+}else{
+  clients.paytype = clients.printInfo.payment_method
+}
   // Update the order in the database
   try {
-
-    loadingPopup.style="display:block"
       const response = await fetch(`${server}/orderskun/updateConfirmd`, {
           method: 'POST',
           headers: {
@@ -698,17 +696,14 @@ async function entregueConfirm(){
           },
           body: JSON.stringify({
               order_id: clients.selectedOrder,
-              order_status: 'confirmed'  // Update the status to 'confirmed'
+              order_status: 'confirmed',  // Update the status to 'confirmed'
+              paymentType: clients.paytype
           })
       });
-      console.log(response.status)
-
       if (response.status===200) {
           showCustomAlert("Registrado")
-           console.log(clients.selectedOrder)
           // Remove the order card from the UI
           const orderCard = document.querySelector(`.selected-card[data-id="${clients.selectedOrder}"]`);
-         console.log('Found Order Card:', orderCard);
           if (orderCard) {
               orderCard.remove();
           }
@@ -718,8 +713,8 @@ async function entregueConfirm(){
           alert('Erro no registro.');
       }
   } catch (error) {
-      console.error('Error confirming payment:', error);
-      alert('Erro no registro.');
+    console.error('Error confirming payment:', error);
+    alert('Erro no registro.');
   }
   loadingPopup.style="display:none"
 }
@@ -882,6 +877,7 @@ document.getElementById('print-receipt').addEventListener('click', () => {
 
 
 document.getElementById('delete-order').addEventListener('click', () => {
+  showLoadingPopup()
     if (!clients.selectedOrder) {
         alert('Escolha uma comanda que gostaria de deletar');
         return;
@@ -910,8 +906,10 @@ document.getElementById('delete-order').addEventListener('click', () => {
             clients.selectedOrder=""
             document.getElementById('total-amount').innerText=0
             document.getElementById('order-items').innerHTML = ''
+            hideLoadingPopup()
         } else {
             return response.json().then(data => {
+              hideLoadingPopup()
                 throw new Error(data.message || 'Tivemos um erro');
             });
         }
@@ -1510,9 +1508,10 @@ function getCurrentDateTime() {
      document.getElementById('coin10').value = clients.registerInfo[0].coin_10
      document.getElementById('coin5').value = clients.registerInfo[0].coin_5
      document.getElementById('coin1').value = clients.registerInfo[0].coin_1
+
      calculateTotal()
      document.getElementById('registerBtn').style.display='none'
-     const inputs = document.querySelectorAll('#modal-left-input input');
+     const inputs = document.querySelectorAll('#coins-mother-div input, #bill-mother-div input, #total-caixa-input input');
 
       // すべての input 要素に readonly を設定
       inputs.forEach(input => {
@@ -1541,7 +1540,7 @@ function getCurrentDateTime() {
    const otherSale = document.getElementById('notregister-by-money').value
    const otherSaleCard = document.getElementById('noregister-by-card').value
 
-   document.getElementById('cashSales').innerText = `￥${clients.salesInfo.cash.total_amount.toLocaleString()}`
+    document.getElementById('cashSales').innerText = `￥${clients.salesInfo.cash.total_amount.toLocaleString()}`
    document.getElementById('creditSales').innerText = `￥${clients.salesInfo.credit.total_amount.toLocaleString()}`
    document.getElementById('otherSales').innerText = `￥${clients.salesInfo.other.total_amount.toLocaleString()}`
    document.getElementById('sale-yet-register').innerText = `￥${clients.salesInfo.yet.total_amount.toLocaleString()}`
@@ -1593,9 +1592,10 @@ function getCurrentDateTime() {
 }, 500);  // 500ミリ秒ごとに確認
 
 async function getRegisters(id){
-
+    showLoadingPopup()
+ const today = getJapanDate()
   // クエリパラメータとして日付を日本時間で送信
-  const url = `${server}/orderskun/registers?date=${encodeURIComponent(await nextDayfinshTimeGFet())}&clientsId=${id}`;
+  const url = `${server}/orderskun/registers?date=${today}&clientsId=${id}`;
   fetch(url, {
       method: 'GET',
       headers: {
@@ -1604,14 +1604,15 @@ async function getRegisters(id){
   })
   .then(response => response.json())
   .then(data => {
-    console.log(data)
       clients.registerInfo = data
       registerFlug = true
       if(clients.registerInfo.length===0){
         notRegisterInfo.style.display="block"
       }
+        hideLoadingPopup()
   })
   .catch(error => {
+    hideLoadingPopup()
       console.error('Error:', error);
   });
 
@@ -1649,6 +1650,7 @@ if (totalAmount === 0) {
 // 合計金額をオープン金額として追加
 data.totalAmount = totalAmount;
 // サーバーにデータを送信
+showLoadingPopup()
 fetch(`${server}/orderskun/registers/open`, {
     method: 'POST',
     headers: {
@@ -1658,9 +1660,11 @@ fetch(`${server}/orderskun/registers/open`, {
 })
 .then(response => response.json())
 .then(data => {
+  hideLoadingPopup()
     console.log('レジオープン登録完了:', data);
 })
 .catch(error => {
+  hideLoadingPopup()
     console.error('エラー:', error);
 });
 });
@@ -1697,6 +1701,7 @@ if (totalAmount === 0) {
 // 合計金額をオープン金額として追加
 data.totalAmount = totalAmount;
 // サーバーにデータを送信
+showLoadingPopup()
 fetch(`${server}/orderskun/registers/close`, {
     method: 'POST',
     headers: {
@@ -1708,9 +1713,10 @@ fetch(`${server}/orderskun/registers/close`, {
 .then(data => {
   alert('Registrado, bom descanço')
   modal.style.display = "none";
-    console.log('レジオープン登録完了:', data);
+  hideLoadingPopup()
 })
 .catch(error => {
+  hideLoadingPopup()
     console.error('エラー:', error);
 });
 });
@@ -1718,16 +1724,11 @@ fetch(`${server}/orderskun/registers/close`, {
 async function nextDayfinshTimeGFet(){
   // 現在のUTC時間を取得
   const nowUTC = new Date();
-
   // 日本時間に変換 (UTC+9)
   const nowJST = new Date(nowUTC.getTime() + (9 * 60 * 60 * 1000));
-
   // 翌日の午前5時を設定
   const nextDay5AMJST = new Date(nowJST);
   nextDay5AMJST.setDate(nowJST.getDate() + 1);  // 翌日
-  // nextDay5AMJST.setHours(5, 0, 0, 0);  // 午前5時
-  console.log(nextDay5AMJST)
-
   // 年・月・日・時刻をフォーマットして日本時間の文字列を作成
   const formattedDate = nextDay5AMJST.getFullYear() + '-' +
                         ('0' + (nextDay5AMJST.getMonth() + 1)).slice(-2) + '-' +
@@ -1739,8 +1740,11 @@ async function nextDayfinshTimeGFet(){
                         return formattedDate
 }
 
+
+
 async function getOrdersbyPickupTime(){
 // サーバーへのリクエスト
+showLoadingPopup()
 fetch(`${server}/orderskun/pickup-time?pickupTime=${encodeURIComponent(await nextDayfinshTimeGFet())}&clientsId=${clients.id}`, {
     method: 'GET',
     headers: {
@@ -1749,6 +1753,7 @@ fetch(`${server}/orderskun/pickup-time?pickupTime=${encodeURIComponent(await nex
 })
 .then(response => response.json())
 .then(data => {
+  hideLoadingPopup()
     if (data.length > 0) {
         console.log('Orders found:', data);
         // 支払い方法ごとの合計金額を保存するオブジェクト
@@ -1777,6 +1782,7 @@ fetch(`${server}/orderskun/pickup-time?pickupTime=${encodeURIComponent(await nex
     }
 })
 .catch(error => {
+  hideLoadingPopup()
     console.error('Error fetching orders by pickup time:', error);
 });
 

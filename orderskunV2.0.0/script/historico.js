@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function fetchReservations(startDate, endDate) {
-        showLoading();
+        showLoadingPopup();
 
         const userId = 17;
         const apiUrl = `${server}/reservations/daterange?startDate=${startDate}&endDate=${endDate}&user_id=${userId}`;
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(response => response.json())
             .then(data => {
               console.log(data)
-                hideLoading();
+                hideLoadingPopup();
 
                 if (data.success) {
                     allReservations = data.data; // Armazena todos os dados localmente
@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             })
             .catch(error => {
-                hideLoading();
+                hideLoadingPopup();
                 console.error('Erro:', error);
             });
     }

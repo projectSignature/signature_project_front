@@ -1,20 +1,21 @@
-// const token = window.localStorage.getItem('token');
-// const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
+const token = window.localStorage.getItem('token');
+const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
 
 const currentTime = document.getElementById('current_time');
 
-
+console.log(decodedToken)
 let userInfo ={
-  userId: 17,
+  id:decodedToken.userId, //クライアントid
+  language:decodedToken.language,
   email: 'rootsgrillhekinan@gmeil.com',
   username: 'RootsGrill',
-  table_count: 5, // Quantidade de mesas
+  table_count: decodedToken.table_count, // Quantidade de mesas
   iat: 1727826129
 }
 
-// if (!decodedToken) {
-//   // window.location.href = '../index.html';
-// }
+if (!decodedToken) {
+  window.location.href = '../index.html';
+}
 
 // sessionStorage.setItem('userInfo', clients);
 
@@ -53,13 +54,13 @@ window.addEventListener('click', (e) => {
     }
 });
 
-function showLoading() {
-    document.getElementById('loading-overlay').style.display = 'flex';
-}
-
-function hideLoading() {
-    document.getElementById('loading-overlay').style.display = 'none';
-}
+// function showLoading() {
+//     document.getElementById('loading-overlay').style.display = 'flex';
+// }
+//
+// function hideLoading() {
+//     document.getElementById('loading-overlay').style.display = 'none';
+// }
 
 function showNotification(message, type = 'success') {
     const notificationContainer = document.getElementById('notification-container');
@@ -188,18 +189,17 @@ function hasTimeConflict(newReservation, existingReservations) {
 }
 
 function createReservation() {
-    showLoading();
+    showLoadingPopup();
 
     const tableNumber = document.getElementById('create-table-number').value;
 
     if (tableNumber > tableCount) {
-        hideLoading();
+        hideLoadingPopup();
         alert(`Número de mesa não pode exceder ${tableCount}`, 'error');
         return;
     }
 
-    const url = 'https://squid-app-ug7x6.ondigitalocean.app/reservations/create';
-
+    const url = `${server}/reservations/create`;
     const reservationData = {
         user_id: userInfo.userId,
         reservation_date: document.getElementById('create-reservation-date').value,
@@ -211,7 +211,6 @@ function createReservation() {
         num_people: document.getElementById('create-num-people').value,
         remarks: document.getElementById('create-remarks').value || null
     };
-
     fetch(url, {
         method: 'POST',
         headers: {
@@ -226,7 +225,7 @@ function createReservation() {
         return response.json();
     })
     .then(data => {
-        hideLoading();
+        hideLoadingPopup();
         if (data.success) {
             showNotification(data.message, 'success');
             document.getElementById('create-reservation-modal').style.display = 'none';
@@ -236,7 +235,7 @@ function createReservation() {
         }
     })
     .catch(error => {
-        hideLoading();
+        hideLoadingPopup();
         showNotification(error.message, 'error');
         console.error('Erro ao criar a reserva:', error);
     });
@@ -246,9 +245,8 @@ const submitCreateReservationBtn = document.getElementById('submit-create-reserv
 submitCreateReservationBtn.addEventListener('click', createReservation);
 
 function deleteTable(reservationId) {
-    showLoading();
+    showLoadingPopup();
     const url = `${server}/reservations/delete/${reservationId}`;
-
     fetch(url, {
         method: 'DELETE',
     })
@@ -259,17 +257,14 @@ function deleteTable(reservationId) {
         return response.json();
     })
     .then(data => {
-        hideLoading();
+        hideLoadingPopup();
         if (data.success) {
             showNotification(data.message, 'success')
-
             const tableElement = document.querySelector(`.mesa[data-reservation-id="${reservationId}"]`);
             if (tableElement) {
                 tableElement.remove();
             }
-
             document.getElementById('mesa-modal').style.display = 'none';
-
             getTableData();
         }
     })
@@ -283,15 +278,12 @@ function deleteTable(reservationId) {
 function editTable(reservationId) {
     showLoading();
     const url = `${server}/reservations/update/${reservationId}`;
-
     const tableNumber = document.getElementById('modal-table-number').value;
-
     if (tableNumber > tableCount) {
         hideLoading();
         alert(`Número de mesa não pode exceder ${tableCount}`, 'error');
         return;
     }
-
     const updatedData = {
         user_id: userInfo.userId,
         reservation_date: document.getElementById('modal-reservation-date').value,
@@ -335,10 +327,9 @@ function editTable(reservationId) {
 }
 
 function getTableData() {
-    showLoading();
+    showLoadingPopup();
     console.log(`${server}/reservations?user_id=${userInfo.userId}&reservation_date=${japaneseDate}`)
     const url = `${server}/reservations?user_id=${userInfo.userId}&reservation_date=${japaneseDate}`;
-
     fetch(url)
         .then(response => {
             if (!response.ok) {
@@ -347,7 +338,7 @@ function getTableData() {
             return response.json();
         })
         .then(data => {
-            hideLoading();
+            hideLoadingPopup();
             if (data.success && data.data.length > 0) {
                 fillTableWithReservations(data.data);
                 fillReservationsTable(data.data);
@@ -356,7 +347,7 @@ function getTableData() {
             }
         })
         .catch(error => {
-            hideLoading();
+            hideLoadingPopup();
             console.error('Erro ao buscar os dados:', error);
         });
 }

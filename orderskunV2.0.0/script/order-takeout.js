@@ -1,5 +1,5 @@
-// const token = window.localStorage.getItem('token');
-// const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
+const token = window.localStorage.getItem('token');
+const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
 const orderNamesContainer = document.getElementById('order-names-container');
 // const selectedItemsContainer = document.getElementById('selected-items');
 const nameInput = document.getElementById('name-input');
@@ -29,13 +29,13 @@ document.getElementById('fullscreenButton').addEventListener('click', () => {
 
 });
 
-// if (!decodedToken) {
-//   // window.location.href = '../index.html';
-// }
+if (!decodedToken) {
+  window.location.href = '../index.html';
+}
 
 let orderList = {
   tableNo:9999,
-  clienId:17,
+  clienId:decodedToken.userId,
   order:{
   },
   historyOrder:{
@@ -50,40 +50,17 @@ let userLanguage = 'pt'
 let categories = []; // カテゴリ情報を保存する配列
 
 document.addEventListener("DOMContentLoaded", async () => {
-
-//   // "key" というキーに "value" という値を保存g676
-// orderList.tableNo = sessionStorage.setItem('orders-myTable', orderList.client);
-// console.log(orderList)
-    // テーブル番号が存在しない場合はデフォルト値を1に設定
-    // if (!orderList.tableNo) {
-    //     tableNumber = 1;
-    //     orderList.tableNo = 1
-    //     // localStorage.setItem('order-myTable', tableNumber);
-    // }
-    // document.getElementById('table-number').textContent =  orderList.tableNo
-    //メニューのデータを取得する
+    showLoadingPopup()
     const MainData = await makerequest(`${server}/orders/getBasedata?user_id=${orderList.clienId}`)
-    // const PendingData = await fetchPendingOrders()
-    // orderList.historyOrder = PendingData
-    // console.log(orderList)
-    // console.log(PendingData)
-    // if(PendingData){
-    //   for(let i=0;i<PendingData.length;i++){
-    //     addName(PendingData[i].order_name)
-    //   }
-    // }
-    console.log(MainData)
     //カテゴリーの順番を変える
     const Categorys = MainData.categories.filter(category => category.is_takeout === true);
     Categorys.sort((a, b) => a.display_order - b.display_order);
-    console.log(Categorys)
     const orderCategories = document.getElementById('order-categories');
     const menuItemsContainer = document.getElementById('menu-items');
-
     displayMenuItems(Categorys[0].id)
-
     // カテゴリボタンを格納する変数
     let currentSelectedButton = null;
+    hideLoadingPopup()
     Categorys.forEach((category, index) => {
     categories.push(category); // カテゴリ情報を配列に保存
     let button = document.createElement('button');
@@ -110,9 +87,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
 function displayMenuItems(category) {
-const sortedData = MainData.menus
-    .filter(item => item.category_id === category)
-    .sort((a, b) => a.display_order - b.display_order);
+  const sortedData = MainData.menus
+      .filter(item => item.category_id === category)
+      .sort((a, b) => {
+          // stock_status が true のものを前にソート
+          if (a.stock_status !== b.stock_status) {
+              return a.stock_status ? -1 : 1;
+          }
+          // stock_status が同じ場合は display_order でソート
+          return a.display_order - b.display_order;
+      });
 menuItemsContainer.innerHTML = '';
 sortedData.forEach(item => {
     let div = document.createElement('div');
@@ -239,7 +223,7 @@ sortedData.forEach(item => {
     }
 
     document.getElementById('confirm-order').addEventListener('click', async () => {
-      console.log('in')
+    showLoadingPopup()
          const confirmButton = document.getElementById('confirm-order');
         const loadingPopup = document.getElementById('loading-popup');
         confirmButton.disabled = true; // ボタンを無効化
@@ -268,12 +252,13 @@ sortedData.forEach(item => {
                     table_no: orderList.tableNo,
                     items: orderList.order[selectedName],
                     orderId:'',
-                    pickup_time: getJapanTime()  
+                    pickup_time: getJapanTime()
                 })
             });
             console.log(response)
 
             if (response.ok) {
+                hideLoadingPopup()
                 showCustomAlert(translations[userLanguage]["Pedido feito"]);
                 orderList.order[selectedName] = [];
                 selectedItemsContainer.innerHTML = ''; // リストをクリア
@@ -302,149 +287,12 @@ sortedData.forEach(item => {
         }, 1000); // 1秒間表示
     }
 
-//     function displayHalfHalfPizza(item) {
-//         // 味とエッジのオプションに分ける
-//         const sortedOptions = MainData.options.filter(opt => opt.menu_id === item.id);
-//         const pizzaFlavors = sortedOptions.filter(opt => !opt.option_name_pt.includes('Borda'));
-//         const pizzaEdges = sortedOptions.filter(opt => opt.option_name_pt.includes('Borda'));
-//
-//         const detailsContainer = document.createElement('div');
-//         detailsContainer.classList.add('item-details');
-//         detailsContainer.innerHTML = `
-//             <h2>Pizza meio a meio</h2>
-//             <div class="details-content-halfandhalf">
-//                 <div class="left-side" style="width: 45%; float: left;">
-//                     <p>${translations[userLanguage]["Sabor"]}</p>
-//                     <div id="flavor-options-list" class="options-list">
-//                         ${pizzaFlavors.map(flavor => `
-//                             <div class="flavor-item" data-id="${flavor.id}" data-price="${flavor.additional_price}">
-//                                 <span class="option-name">${flavor[`option_name_${userLanguage}`]}</span>
-//                                 <span class="option-price">+￥${Math.floor(flavor.additional_price)}</span>
-//                             </div>
-//                         `).join('')}
-//                     </div>
-//                 </div>
-//                 <div class="right-side" style="width: 45%; float: right;">
-//                     <p>${translations[userLanguage]["Borda"]}:</p>
-//                     <div id="edge-options-list" class="options-list">
-//                         <div class="edge-item selected" data-id="none" data-price="0">
-//                             <span class="option-name">Nenhuma</span>
-//                             <span class="option-price">+￥0</span>
-//                         </div>
-//                         ${pizzaEdges.map(edge => `
-//                             <div class="edge-item" data-id="${edge.id}" data-price="${edge.additional_price}">
-//                                 <span class="option-name">${edge[`option_name_${userLanguage}`]}</span>
-//                                 <span class="option-price">+￥${Math.floor(edge.additional_price)}</span>
-//                             </div>
-//                         `).join('')}
-//                     </div>
-//                 </div>
-//                 <div style="clear: both;"></div>
-//                 <div>
-//                     <div>
-//                     <p >${translations[userLanguage]["Quantidade"]}:</p>
-//                     </div>
-//                     <div class="quantity-selector">
-//                     <button id="decrease-quantity">-</button>
-//                     <input type="number" id="item-quantity" value="1" min="1">
-//                     <button id="increase-quantity">+</button>
-//                     </div>
-//                 </div>
-//                 <div>
-//                     <button id="add-to-cart" class="add-cancle-btn">${translations[userLanguage]["Adicionar no carrinho"]}</button>
-//                     <button id="back-button" class="add-cancle-btn">${translations[userLanguage]["Voltar"]}</button>
-//                 </div>
-//             </div>
-//         `;
-//         document.body.appendChild(detailsContainer);
-//         let selectedFlavorsPrice = 0;
-//         let selectedEdgePrice = 0; // 初期値は0（「無し」）
-//         let selectedFlavors = [];
-//         const itemPriceElement = document.getElementById('item-price');
-//         let basePrice = Math.floor(item.price);
-//         let selectedOptionsPrice = 0;
-//         let quantity = parseInt(document.getElementById('item-quantity').value);
-//         function updateTotalPrice() {
-//             const totalPrice = basePrice + selectedFlavorsPrice + selectedEdgePrice;
-//             // 価格表示を更新するロジックをここに追加可能
-//         }
-//
-//         document.querySelectorAll('.flavor-item').forEach(flavorDiv => {
-//             flavorDiv.addEventListener('click', () => {
-//                 if (flavorDiv.classList.contains('selected')) {
-//                     flavorDiv.classList.remove('selected');
-//                     const price = parseFloat(flavorDiv.getAttribute('data-price'));
-//                     selectedFlavorsPrice -= price;
-//                     selectedFlavors = selectedFlavors.filter(f => f !== flavorDiv.getAttribute('data-id'));
-//                 } else if (selectedFlavors.length < 2) {
-//                     flavorDiv.classList.add('selected');
-//                     const price = parseFloat(flavorDiv.getAttribute('data-price'));
-//                     selectedFlavorsPrice += price;
-//                     selectedFlavors.push(flavorDiv.getAttribute('data-id'));
-//                 } else {
-//                     alert(translations[userLanguage]["Só pode escolher 2 sabores."]);
-//                 }
-//                 updateTotalPrice();
-//             });
-//         });
-//
-//         document.getElementById('increase-quantity').addEventListener('click', () => {
-//             quantity = parseInt(document.getElementById('item-quantity').value) + 1;
-//             document.getElementById('item-quantity').value = quantity;
-//             updateTotalPrice();
-//         });
-//
-//         document.getElementById('decrease-quantity').addEventListener('click', () => {
-//             if (quantity > 1) {
-//                 quantity = parseInt(document.getElementById('item-quantity').value) - 1;
-//                 document.getElementById('item-quantity').value = quantity;
-//                 updateTotalPrice();
-//             }
-//         });
-//         document.querySelectorAll('.edge-item').forEach(edgeDiv => {
-//         edgeDiv.addEventListener('click', () => {
-//         document.querySelectorAll('.edge-item').forEach(ed => ed.classList.remove('selected'));
-//         edgeDiv.classList.add('selected');
-//         const price = parseFloat(edgeDiv.getAttribute('data-price'));
-//         selectedEdgePrice = price;  // 選択されたエッジの価格を設定
-//         updateTotalPrice();
-//     });
-// });
-//
-//
-//         document.getElementById('back-button').addEventListener('click', () => {
-//             document.body.removeChild(detailsContainer);
-//         });
-//
-//         // document.getElementById('add-to-cart').addEventListener('click', () => {
-//         //     // if (selectedFlavors.length < 2) {
-//         //     //     alert(translations[userLanguage]["Escolha 2 sabores antes de adicionar ao carrinho."]);
-//         //     //     return;
-//         //     // }
-//         //     const selectedOptions = selectedFlavors.map(flavorId => ({
-//         //         id: flavorId,
-//         //         additional_price: parseFloat(document.querySelector(`.flavor-item[data-id="${flavorId}"]`).getAttribute('data-price'))
-//         //     }));
-//         //     const selectedEdge = document.querySelector('.edge-item.selected');
-//         //     if (selectedEdge && selectedEdge.getAttribute('data-id') !== 'none') {
-//         //         selectedOptions.push({
-//         //             id: selectedEdge.getAttribute('data-id'),
-//         //             additional_price: parseFloat(selectedEdge.getAttribute('data-price'))
-//         //         });
-//         //     }
-//         //     addToSelectedItems(item, 1, selectedOptions);
-//         //     document.body.removeChild(detailsContainer);
-//         // });
-//     }
-
     function addToSelectedItems(item, quantity, selectedOptions) {
-
         // selectedName に対応する配列が存在しない場合、初期化
         if (!orderList.order[selectedName]) {
             orderList.order[selectedName] = [];
         }
         let totalPrice = (Math.floor(item.price) + selectedOptions.reduce((sum, opt) => sum + opt.additional_price, 0)) * quantity;
-
         // 既に同じ id と options を持つアイテムが存在するかチェック
         let existingItem = orderList.order[selectedName].find(orderItem => {
             return orderItem.id === item.id && JSON.stringify(orderItem.options) === JSON.stringify(selectedOptions);
@@ -560,15 +408,12 @@ sortedData.forEach(item => {
                updateOrderItemQuantity(index, quantity);
            }
        }
-
-
        // オーダーアイテムの数量を更新
        function updateOrderItemQuantity(index, quantity) {
            const item = orderList.order[selectedName][index];
            const basePrice = Math.floor(item.amount / item.quantity);
            item.quantity = quantity;
            item.amount = basePrice * quantity;
-
            // リストの表示を更新
            displayOrderForName(selectedName);
        }
@@ -578,7 +423,6 @@ sortedData.forEach(item => {
            // 変更を保存し、モーダルを閉じる
            document.getElementById('edit-order-modal').style.display = 'none';
        });
-
 
        function updateCategoryButtons() {
            const buttons = orderCategories.querySelectorAll('button');
@@ -711,9 +555,6 @@ sortedData.forEach(item => {
                              element.textContent = translations[lang][key];
                          }
                      });
-
-
-
            updateCategoryButtons()
            updateMenuItems()
        }
@@ -728,49 +569,12 @@ sortedData.forEach(item => {
         }
     });
 }
-
-
-
-
-
-
-
-// function addName(name) {
-//   console.log(name)
-//     if (!name || currentOrder[name]) {
-//         return; // 名前が空、または既に存在する場合は何もしない
-//     }
-//
-//     orderList.order[name] = [];
-//
-//     let nameDiv = document.createElement('div');
-//     nameDiv.textContent = name;
-//     nameDiv.addEventListener('click', () => {
-//         selectedName = name;
-//         displayOrderForName(name);
-//         updateActiveName(nameDiv);
-//     });
-//     orderNamesContainer.appendChild(nameDiv);
-//
-//     // 最初の名前をデフォルトで選択
-//     if (!selectedName) {
-//         selectedName = name;
-//         displayOrderForName(name);
-//         updateActiveName(nameDiv);
-//     }
-// }
-
 function displayOrderForName(name) {
-  console.log(name);
-  console.log(orderList.order[name])
-  console.log(orderList.order)
   selectedItemsContainer.innerHTML = ''; // 既存のリストをクリア
   orderList.order[name].forEach(item => {
-    console.log(item);
     let li = document.createElement('li');
     li.textContent = `${item.name} - ${item.quantity}✕ - ￥${item.amount}`;
     selectedItemsContainer.appendChild(li);
-
     // オプションを1行ずつ追加
     if (item.options && item.options.length > 0) {
       item.options.forEach(option => {
@@ -802,25 +606,9 @@ function addToOrder(item) {
     }
 }
 
-// // モーダルを表示する
-// showAddNameModalBtn.addEventListener('click', () => {
-//     modal.style.display = 'block';
-// });
-
 // モーダルを閉じる
 closeModalBtn.addEventListener('click', () => {
     modal.style.display = 'none';
-});
-
-// 名前を追加するボタンのイベントリスナー
-addNameBtn.addEventListener('click', () => {
-    const name = nameInput.value.trim();
-    if (name) {
-        addName(name);
-        addOrderName(name)
-        nameInput.value = ''; // インプットフィールドをクリア
-        modal.style.display = 'none'; // モーダルを閉じる
-    }
 });
 
 // モーダル外をクリックした場合にモーダルを閉じる
@@ -830,30 +618,7 @@ window.addEventListener('click', (event) => {
     }
 });
 
-// // アイテム選択時に呼ばれる関数
-// function displayItemDetails(item) {
-//     // ここに詳細画面を表示するロジックを追加
-//     addToOrder(item);
-// }
 
-
-// 確定ボタンのイベントリスナーを追加
-
-
-
-function addOrderName(orderName) {
-  // オーダー名が存在しない場合、オーダー名の初期化を行う
-  if (!orderList.order[orderName]) {
-    orderList.order[orderName] = []; // 空の配列を初期化
-  } else {
-
-  }
-}
-
-
-// document.getElementById('div-table-btn').addEventListener('click', () => {
-//     document.getElementById('password-modal').style.display = 'block';
-// });
 
 document.querySelectorAll('.close').forEach(closeBtn => {
     closeBtn.addEventListener('click', () => {

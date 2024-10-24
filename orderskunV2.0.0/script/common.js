@@ -16,6 +16,11 @@ const pageToButtonMap = {
     'reservationhistorico.html':'reserva-hist-btn'
 };
 
+document.getElementById('logout-btn').addEventListener('click',()=>{
+  window.localStorage.removeItem('token');
+  window.location.href = '../index.html';
+})
+
 document.addEventListener('DOMContentLoaded', function() {
     const navButtons = document.querySelectorAll('.header-btn');
 
@@ -45,3 +50,17 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+function getJapanDate() {
+    // 現在のUTC時間を取得
+    const now = new Date();
+    // 日本標準時 (JST) はUTC+9時間
+    const jstOffset = 9 * 60; // 9時間 * 60分 = 540分
+    // 日本時間のタイムスタンプを計算
+    const japanTime = new Date(now.getTime() + jstOffset * 60 * 1000);
+    // 年、月、日を取得
+    const year = japanTime.getUTCFullYear();
+    const month = (japanTime.getUTCMonth() + 1).toString().padStart(2, '0'); // 月は0から始まるので+1
+    const day = japanTime.getUTCDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}

@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Orders君</title>
+    <link rel="stylesheet" href="../style/appname.css">
+    <link rel="stylesheet" href="../style/loading-popup.css">
     <link rel="stylesheet" href="../style/order-takeou.css">
 </head>
 <body>
@@ -26,12 +28,18 @@
             </div>
             <aside>
                 <h2 id="list-title-h2" data-translate-key="Lista de pedidos">Lista de pedidos</h2>
-                <ul id="selected-items" style="height:330px; max-height: 330px">
+                <ul id="selected-items" style="height:300px; max-height: 300px">
                    <!-- 選択されたアイテムがここに表示される  -->
                 </ul>
                 <div id="total-amount">￥0</div>
                 <button id="confirm-order" data-translate-key="Confirmar pedido">Confirmar pedido</button>
                 <button id="edit-order" data-translate-key="Alterar o pedido">Alterar o pedido</button> <!-- 修正ボタンを追加 -->
+                <div class="logo-container">
+                  <div class="logo-text">
+                      <span class="orders-text">Orders</span>
+                      <span class="kun-text">君</span>
+                  </div>
+              </div>
             </aside>
             <!-- オーダー修正のためのモーダルウィンドウ -->
             <div id="edit-order-modal" class="modal">
@@ -80,15 +88,19 @@
                 </ul>
             </div>
         </div>
-      <div id="loading-popup" class="loading-popup" style="display: none;">
-          登録中...
-      </div>
-      <button id="fullscreenButton" style="">Enter Fullscreen</button>
     </main>
     </div>
+    <div id="loading-popup" class="loading-popup">
+      <div class="loading-container">
+          <div class="spinner"></div>
+          <div class="loading-text">await</div>
+      </div>
+    </div>
+    <button id="fullscreenButton" style="">Enter Fullscreen</button>
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
+    <script src="../script/loding-popup.js"></script>
     <script src="../../config.js"></script>
     <script src="../script/common.js"></script>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script> -->
     <script src="../script/order-takeout.js"></script>
 </body>
 </html>

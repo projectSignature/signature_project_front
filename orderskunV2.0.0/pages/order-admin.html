@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cash Register</title>
+    <link rel="stylesheet" href="../style/loading-popup.css">
     <link rel="stylesheet" href="../style/pos.css">
     <link rel="stylesheet" href="../style/orders-takeout.css">
     <link rel="stylesheet" href="../style/order.css">
+
 </head>
 <body>
     <header class="header" style="height:5rem!important">
@@ -17,10 +19,10 @@
   </div>
 </div>
 <div class="header-buttons">
-  <button class="header-btn nav-btn" id="pedido-admin-btn">Pedido<br>Admin</button>
-  <button class="header-btn nav-btn" id="pedido-client-btn">Pedido<br>tablet</button>
-  <button class="header-btn nav-btn" id="pedido-takeout-btn">Pedido<br>takeout</button>
-  <button class="header-btn nav-btn" id="comanda-btn">Orders</button>
+    <button class="header-btn nav-btn" id="pedido-admin-btn"style="background-color: orange">Pedido<br>Admin</button>
+    <button class="header-btn nav-btn" id="pedido-client-btn">Pedido<br>tablet</button>
+    <button class="header-btn nav-btn" id="pedido-takeout-btn">Pedido<br>takeout</button>
+    <button class="header-btn nav-btn" id="comanda-btn">Orders</button>
     <button class="header-btn nav-btn" id="reserva-btn">Reservas</button>
     <button class="header-btn nav-btn" id="reserva-hist-btn">Reservas<br>(histórico)</button>
     <button class="header-btn nav-btn" id="pos-btn">POS</button>
@@ -63,13 +65,13 @@
       </div>
     </div>
    </div>
-   <div id="loading-popup" class="loading-popup" style="">
+   <!-- <div id="loading-popup" class="loading-popup" style="">
        await...
-   </div>
+   </div> -->
    <div id="custom-alert" class="custom-alert">
      <div class="alert-content">
          <span class="checkmark">✓</span>
-         <p id="oder-successfully">オーダーが確定されました。</p>
+         <p id="oder-successfully">Pedido feito</p>
      </div>
  </div>
  <!-- 警告メッセージ用モーダルウィンドウ -->
@@ -81,8 +83,15 @@
          <button id="close-alert-btn">Fechar</button>
      </div>
  </div>
+ <div id="loading-popup" class="loading-popup">
+   <div class="loading-container">
+       <div class="spinner"></div>
+       <div class="loading-text">await</div>
+   </div>
+ </div>
 
-    <!-- <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
+    <script src="../script/loding-popup.js"></script>
     <script src="../../config.js"></script>
     <script src="../script/order-admin.js"></script> <!-- Link to your JavaScript file -->
     <script src="../script/common.js"></script>

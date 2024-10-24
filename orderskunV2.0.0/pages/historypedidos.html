@@ -5,10 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Menu Management</title>
-    <link rel="stylesheet" href="./pos.css">
+    <link rel="stylesheet" href="../style/pos.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="anonymous" />
-    <script src="./script.js" defer></script>
     <link rel="stylesheet" href="../style/reservation.css">
+    <link rel="stylesheet" href="../style/loading-popup.css">
 </head>
 
 <body>
@@ -30,7 +30,7 @@
             <button class="header-btn nav-btn" id="reserva-hist-btn">Reservas<br>(histórico)</button>
             <button class="header-btn nav-btn" id="pos-btn">POS</button>
             <button class="header-btn nav-btn" id="menu-btn">Menu</button>
-            <button class="header-btn nav-btn" id="history-btn">Histórico<br>pedidos</button>
+            <button class="header-btn nav-btn" id="history-btn"style="background-color: orange">Histórico<br>pedidos</button>
             <button class="header-btn nav-btn" id="logout-btn">Logout</button>
         </div>
         <!-- Menu Hambúrguer -->
@@ -64,8 +64,11 @@
             </div>
 
             <!-- Overlay de Loading -->
-            <div id="loading-overlay" class="overlay" style="display: none;">
-                <div id="loading-spinner" class="spinner"></div>
+            <div id="loading-popup" class="loading-popup">
+              <div class="loading-container">
+                  <div class="spinner"></div>
+                  <div class="loading-text">await</div>
+              </div>
             </div>
 
             <table class="reservation-table">
@@ -73,9 +76,15 @@
                     <tr>
                         <th>Id</th>
                         <th>Date</th>
-                        <th>Name</th>
-                        <th>Table</th>
-                        <th>Obs</th>
+                        <th>Tipo</th>
+                        <th>Nome</th>
+                        <th>Número da mesa</th>
+                        <th>status</th>
+                        <th>Forma de pagamento</th>
+                        <th>Valor</th>
+                        <th>Detalhes</th>
+                        <th>Ações</th>
+                        <th>Deletar</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -87,6 +96,18 @@
 
     <div class="pagination"></div>
 
+    <div id="modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="modal-title"></h2>
+        <div id="modal-body"></div>
+        <button id="modal-save-btn">保存</button>
+    </div>
+</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
+    <script src="../script/loding-popup.js"></script>
+    <script src="../../config.js"></script>
     <script src="../script/historicopedoidos.js"></script>
     <script src="../script/common.js"></script>
 </body>

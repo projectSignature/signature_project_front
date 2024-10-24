@@ -1,5 +1,23 @@
-// const token = window.localStorage.getItem('token');
-// const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
+const token = window.localStorage.getItem('token');
+const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
+
+if (!decodedToken) {
+   window.location.href = '../index.html';
+}
+let clients ={
+  id:decodedToken.userId, //クライアントid
+  language:decodedToken.language, //クライアント言語
+  paytype:'',　//ユーザー支払い方法
+  selectedOrder:"",　//選択オーダー
+  printInfo:"",　//？？
+  taxtType:"",　//税金区分
+  registerInfo:"",
+  salesInfo:"", //セールデータ
+  kubun:decodedToken.role,　//admin or operator
+  table_count:decodedToken.table_count,
+  takeout_enabled:decodedToken.takeout_enabled,
+  uber_enabled:decodedToken.uber_enabled
+}
 const seletOrderType = document.getElementById('take-or-uber')
 const menuItemsContainer = document.getElementById('center-div');
 const selectedItemsContainer = document.getElementById('list-order')
@@ -22,14 +40,14 @@ document.getElementById('tax8').classList.add('selected');
 //   // window.location.href = '../index.html';
 // }
 
-let clients ={
-  id:17, //クライアントid
-  language:'pt', //クライアント言語
-  paytype:'',　//ユーザー支払い方法
-  selectedOrder:"",　//選択オーダー
-  printInfo:"",　//？？
-  taxtType:""　//税金区分
-}
+// let clients ={
+//   id:17, //クライアントid
+//   language:'pt', //クライアント言語
+//   paytype:'',　//ユーザー支払い方法
+//   selectedOrder:"",　//選択オーダー
+//   printInfo:"",　//？？
+//   taxtType:""　//税金区分
+// }
 
 let orderList = {
   tableNo:1,
@@ -48,7 +66,6 @@ let selectedName = 9999
 
 window.onload = async function() {
   const orderCategories = document.getElementById('categories-div');
-  console.log(clients.id)
   if (!orderCategories) {
         console.error('orderCategories is null. Please check if the element with id "order-categories" exists.');
         return;
@@ -58,6 +75,7 @@ window.onload = async function() {
     const offset = now.getTimezoneOffset() * 60000;
     const localTime = new Date(now - offset).toISOString().slice(0, 16);
     pickupTimeElement.value = localTime;
+    showLoadingPopup()
   //メニュー、カテゴリー、オープション表示
   const MainData = await makerequest(`${server}/orders/getBasedata?user_id=${clients.id}`)
   const Categorys = MainData.categories.filter(category => category.is_takeout === selectType);
@@ -85,7 +103,7 @@ window.onload = async function() {
 
 
   orderCategories.appendChild(button);
-  loadingPopup.style="display:none"
+  hideLoadingPopup()
 });
 
 function displayMenuItems(category) {
