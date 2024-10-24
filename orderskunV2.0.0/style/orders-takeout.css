@@ -1,9 +1,12 @@
-#categories-div{
+.div-left{
   width:15%;
   border: 0.5px solid #333;
   border-radius: 10px;
   padding: 10px!important;
     height: 98%;
+}
+#categories-div{
+
 }
 .container{
   padding: 10px!important;
