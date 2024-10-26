@@ -471,6 +471,8 @@ document.getElementById('confirm-order').addEventListener('click', async () => {
             return;
         }
 
+        console.log(seletOrderType.value)
+
         // 日本時間のISOフォーマットを取得してサーバーに送信
         const formattedPickupTime = `${pickupTimeElement.value}:00.000Z`;
         const response = await fetch(`${server}/orderskun/confirm`, {
