@@ -471,14 +471,8 @@ document.getElementById('confirm-order').addEventListener('click', async () => {
             return;
         }
 
-
-        console.log(orderClient)
-        console.log(orderList.order[9999])
-
         // 日本時間のISOフォーマットを取得してサーバーに送信
         const formattedPickupTime = `${pickupTimeElement.value}:00.000Z`;
-
-
         const response = await fetch(`${server}/orderskun/confirm`, {
             method: 'POST',
             headers: {
@@ -496,7 +490,7 @@ document.getElementById('confirm-order').addEventListener('click', async () => {
         });
         if (response.ok) {
           const responseData = await response.json();
-            if(seletOrderType.value==="uber"||selectOrderType==="demaekan"){
+            if(seletOrderType.value==="uber"||seletOrderType.value==="demaekan"){
               await cupom(responseData.order.id)
             }
             showCustomAlert(translations[userLanguage]["Pedido feito"]);
