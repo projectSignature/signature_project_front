@@ -43,8 +43,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.log(order)
             let tableDisplay = '';
 
-            if(order.order_type==='urber'){
-              tableDisplay = `urber:${order.order_name}`
+            if(order.order_type==='uber'){
+              tableDisplay = `uber:${order.order_name}`
             }else if(order.order_type==='demaekan'){
               tableDisplay = `demaekan:${order.order_name}`
             }else if(order.order_type==='local'){
