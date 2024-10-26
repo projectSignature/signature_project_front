@@ -51,6 +51,8 @@ document.addEventListener('DOMContentLoaded', async () => {
               tableDisplay = `mesa:${order.order_name}`
             }else if(order.order_type==='outros'){
               tableDisplay = `outros:${order.order_name}`
+            }else if(order.order_type==='takeout'){
+              tableDisplay = `take out:${order.order_name}`
             }
             const orderCard = document.createElement('div');
             orderCard.classList.add('order-card');
