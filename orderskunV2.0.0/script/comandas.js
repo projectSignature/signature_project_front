@@ -40,13 +40,17 @@ document.addEventListener('DOMContentLoaded', async () => {
           const hours = pickupTime.getUTCHours(); // UTC時間で時間を取得
           const minutes = pickupTime.getUTCMinutes(); // UTC時間で分を取得
             playAlarmIfEnabled(order.alarm_enabled, order.id);
-            let tableDisplay = order.table_no;
-            if (tableDisplay == "9999") {
-                tableDisplay = "Takeout";
-            } else if (tableDisplay == "9998") {
-                tableDisplay = "Uber Eats";
-            } else {
-                tableDisplay = `Mesa:${tableDisplay} *${order.order_name}`;
+            console.log(order)
+            let tableDisplay = '';
+
+            if(order.order_type==='urber'){
+              tableDisplay = `urber:${order.order_name}`
+            }else if(order.order_type==='demaekan'){
+              tableDisplay = `demaekan:${order.order_name}`
+            }else if(order.order_type==='local'){
+              tableDisplay = `mesa:${order.order_name}`
+            }else if(order.order_type==='outros'){
+              tableDisplay = `outros:${order.order_name}`
             }
             const orderCard = document.createElement('div');
             orderCard.classList.add('order-card');
