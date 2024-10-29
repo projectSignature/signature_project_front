@@ -124,7 +124,8 @@ header {
   margin: auto;
   border-bottom: 1px dashed #333;  /* 下に点線を追加 */
   position: relative;
-  margin-top: 3rem
+  margin-top: 3rem;
+  padding-bottom:15px
 }
 .card-content {
 display: flex;

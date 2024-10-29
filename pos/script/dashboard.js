@@ -23,7 +23,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   fetchTotalSales()
   // fetchMonthlyExpenses()
   async function fetchTotalSales() {
-     console.log(userInfo)
       loadingIndicator.style.display = 'block';
       try {
           const response = await fetch(`${server}/pos/total-sales?user_id=${userInfo.id}`, {
@@ -37,17 +36,13 @@ document.addEventListener("DOMContentLoaded", async () => {
               throw new Error('データ取得に失敗しました');
           }
           const data = await response.json();  // レスポンスデータをJSONとしてパース
-
           // 総売上の表示
           document.getElementById('totalSales').textContent = `¥${parseFloat(data.totalSales).toLocaleString()}`;
-
           // ポルトガル語で省略した曜日を取得するための配列
           const weekdays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-
           // カードを`expensesChartContainer`に追加
           const expensesChartContainer = document.getElementById('expensesChartContainer');
           expensesChartContainer.innerHTML = '';  // 既存のカードをクリア
-
           // タイトル要素を作成
           const title = document.createElement('h3');
             title.textContent = 'Vendas por dia';
@@ -246,6 +241,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     function toggleDisplay(showElements, hideElements) {
     showElements.forEach(element => {
         element.style.display = 'block';
+        if(element.id==='card_income'){
+          document.getElementById('card_income').style.display = 'flex';
+          document.getElementById('card_income').style.alignItems = 'center'; // 中央揃え
+          document.getElementById('card_income').style.gap = '10px'; // h2とpの間隔を調整
+        }
     });
     hideElements.forEach(element => {
         element.style.display = 'none';
@@ -267,6 +267,7 @@ document.addEventListener("DOMContentLoaded", async () => {
      // レジ履歴データを取得し、表示する関数
      async function fetchAndDisplayRegisterHistory(startDate, endDate) {
          try {
+           loadingIndicator.style.display = 'block';
              const response = await fetch(`${server}/pos/register-history?start_date=${startDate}&end_date=${endDate}`, {
                  method: 'GET',
                  headers: {
@@ -276,6 +277,7 @@ document.addEventListener("DOMContentLoaded", async () => {
              });
 
              if (!response.ok) {
+               loadingIndicator.style.display = 'none';
                  throw new Error('データ取得に失敗しました');
              }
              const data = await response.json();
@@ -312,7 +314,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
              registerHistory.innerHTML = historyHtml;
          } catch (error) {
-             console.error('Error fetching register history:', error);
+           loadingIndicator.style.display = 'none';
+             // console.error('Error fetching register history:', error);
              alert('レジ履歴の取得中にエラーが発生しました');
          }
 
@@ -321,6 +324,7 @@ document.addEventListener("DOMContentLoaded", async () => {
    const listItems = settingsList.querySelectorAll('li');
    listItems.forEach(item => {
        item.addEventListener('click', async function () {
+         loadingIndicator.style.display = 'none';
            const rawSettingName = this.textContent.trim();
            const settingKey = settingMap[rawSettingName];
 
@@ -334,10 +338,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                        }
                    });
                    if (!response.ok) {
-                       throw new Error('メニュー取得に失敗しました');
+                     loadingIndicator.style.display = 'none';
+                       throw new Error('Erro no sistema');
                    }
                    const menuItems = await response.json();
-                   console.log(menuItems)
                    displayMenuItems(menuItems);
                } catch (error) {
                    console.error('メニュー取得エラー: ', error);
@@ -349,6 +353,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                modalTitle.textContent = rawSettingName;
                modalBody.innerHTML = generateModalContent(settingKey);
                settingsModal.style.display = 'block';
+
            } else {
                console.error('未対応の設定名: ' + rawSettingName);
            }
@@ -378,10 +383,10 @@ document.addEventListener("DOMContentLoaded", async () => {
            card.classList.add('menu-card');
            card.innerHTML = `
                <h3>${item.item_name} (${item.item_name_jp || 'N/A'})</h3>
-               <p>カテゴリ: ${item.category || 'N/A'} (${item.category_jp || 'N/A'})</p>
-               <p>価格: ¥${price.toFixed(2)}</p> <!-- 数値に変換された価格を表示 -->
-               <p>単位: ${item.unit}</p>
-               <p>${item.description || ''}</p>
+               <p>Categoria: ${item.category || 'N/A'} (${item.category_jp || 'N/A'})</p>
+               <p>Valor: ¥${price.toFixed(2)}</p> <!-- 数値に変換された価格を表示 -->
+               <p>Tipo: ${item.unit}</p>
+               <p>Discrição${item.description || ''}</p>
                <button class="edit-button">Alterar</button>
                <button class="delete-button">Deletar</button>
            `;
@@ -439,7 +444,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                <label for="isVisible">Mostrar na tela:</label>
                <input type="checkbox" id="isVisible" name="isVisible" checked><br>
 
-               <button type="submit">作成</button>
+               <button type="submit">Registrar</button>
            </form>
        `;
    }
@@ -464,7 +469,7 @@ function openCreateMenuModal() {
 
 // 新規メニューを作成する関数
 async function createNewMenu() {
-  console.log('sinnkimenu')
+loadingIndicator.style.display = 'block';
     const itemName = document.getElementById('itemName').value;
     const itemNameJp = document.getElementById('itemNameJp').value;
     const category = document.getElementById('category').value;
@@ -490,7 +495,6 @@ async function createNewMenu() {
     };
 
     try {
-      console.log(`${server}/pos/createmenuaddcolomun`)
         const response = await fetch(`${server}/pos/createmenuaddcolomun`, {
             method: 'POST',
             headers: {
@@ -502,6 +506,7 @@ async function createNewMenu() {
         });
 
         if (!response.ok) {
+          loadingIndicator.style.display = 'none';
            const errorData = await response.json();
            if (response.status === 400 && errorData.message.includes('Menu ID is already in use')) {
                alert('O código da balança já existe, verifique por favor。');
@@ -513,6 +518,7 @@ async function createNewMenu() {
         alert('Adicionado');
         settingsModal.style.display = 'none';
     } catch (error) {
+      loadingIndicator.style.display = 'none';
         console.error('erro: ', error);
         alert('Tivemos erro, tente novamente');
     }
@@ -530,17 +536,18 @@ async function createNewMenu() {
 // }
 
 // メニュー編集モーダルを開く関数
-function openEditMenuModal(item) {
-    modalTitle.textContent = 'メニュー編集';
-    modalBody.innerHTML = generateEditMenuForm(item); // 編集フォームを生成
-    settingsModal.style.display = 'block';
-}
+// function openEditMenuModal(item) {
+//     modalTitle.textContent = 'メニュー編集';
+//     modalBody.innerHTML = generateEditMenuForm(item); // 編集フォームを生成
+//     settingsModal.style.display = 'block';
+// }
 
 // メニューを削除する関数
 async function deleteMenuItem(id) {
-    if (!confirm('本当に削除しますか？')) return;
+    if (!confirm('Deseja deletar？')) return;
 
     try {
+      loadingIndicator.style.display = 'block';
         const response = await fetch(`${server}/pos/deletemenu/${id}`, {
             method: 'DELETE',
             headers: {
@@ -549,9 +556,10 @@ async function deleteMenuItem(id) {
             }
         });
         if (!response.ok) {
-            throw new Error('メニュー削除に失敗しました');
+
+            throw new Error('Tivemos erro no sistema');
         }
-        alert('メニューが削除されました');
+        alert('TIvemos erro no sistema');
         // 削除後にメニューを再取得して更新
         const updatedMenuResponse = await fetch(`${server}/pos/getmenu`, {
             method: 'GET',
@@ -562,7 +570,9 @@ async function deleteMenuItem(id) {
         });
         const updatedMenuItems = await updatedMenuResponse.json();
         displayMenuItems(updatedMenuItems);
+        loadingIndicator.style.display = 'none';
     } catch (error) {
+      loadingIndicator.style.display = 'none';
         console.error('削除エラー: ', error);
     }
 }
@@ -723,7 +733,7 @@ loadingIndicator.style.display = 'none';
            });
 
            if (!response.ok) {
-               throw new Error('データ取得に失敗しました');
+               throw new Error('Tivemos erro no sistema');
            }
            const data = await response.json();
            data.sort((a,b)=>{
@@ -736,7 +746,7 @@ loadingIndicator.style.display = 'none';
            });
         } catch (error) {
            console.error('Error fetching register history:', error);
-           alert('レジ履歴の取得中にエラーが発生しました');
+           alert('Tivemos erro no sistema');
        }
  loadingIndicator.style.display = 'none';
  };
@@ -771,45 +781,17 @@ loadingIndicator.style.display = 'none';
 
    // フィルターボタンをクリックしたときの動作
    document.getElementById('filterButton').addEventListener('click', async () => {
+     console.log('koko')
        const startDate = document.getElementById('startDate').value;
        const endDate = document.getElementById('endDate').value;
        if (!startDate || !endDate) {
-           alert('開始日と終了日を選択してください。');
+           alert('Selecione os dias');
            return;
        }
-       // レジ履歴データを取得
-       try {
-           const response = await fetch(`/pos/register-history?start_date=${startDate}&end_date=${endDate}`, {
-               method: 'GET',
-               headers: {
-                   'Authorization': `Bearer ${token}`,  // トークンをヘッダーに含める
-                   'Content-Type': 'application/json'
-               }
-           });
-           if (!response.ok) {
-               throw new Error('データ取得に失敗しました');
-           }
-           const data = await response.json();
-           // レジ履歴を表示
-           let historyHtml = '';
-           data.forEach(record => {
-               historyHtml += `<div>
-                   <p>レジID: ${record.register_id}</p>
-                   <p>開店時間: ${new Date(record.open_time).toLocaleString()}</p>
-                   <p>閉店時間: ${record.close_time ? new Date(record.close_time).toLocaleString() : '未閉店'}</p>
-                   <p>現金開始残高: ¥${parseFloat(record.cash_opening_balance).toLocaleString()}</p>
-                   <p>その他開始残高: ¥${parseFloat(record.other_opening_balance).toLocaleString()}</p>
-                   <p>現金終了残高: ¥${parseFloat(record.cash_closing_balance).toLocaleString()}</p>
-                   <p>その他終了残高: ¥${parseFloat(record.other_closing_balance).toLocaleString()}</p>
-                   <hr>
-               </div>`;
-           });
 
-           registerHistory.innerHTML = historyHtml;
-       } catch (error) {
-           console.error('Error fetching register history:', error);
-           alert('レジ履歴の取得中にエラーが発生しました');
-       }
+       fetchAndDisplayRegisterHistory(startDate,endDate)
+       loadingIndicator.style.display = 'none';
+
    });
 
 })
@@ -980,6 +962,110 @@ function createNewSaleCard(sale) {
     `;
     return card;
 }
+
+// メニュー編集フォームを生成する関数
+function generateEditMenuForm(item) {
+    return `
+        <form id="editMenuForm">
+            <label for="menuId">Menu ID (5桁):</label>
+            <input type="text" id="menuId" name="menuId" value="${item.menu_id}" pattern="\\d{5}" required title="5桁の数字を入力してください" disabled><br>
+
+            <label for="itemName">Nome(pt):</label>
+            <input type="text" id="itemName" name="itemName" value="${item.item_name}" required><br>
+
+            <label for="itemNameJp">Nome(jp):</label>
+            <input type="text" id="itemNameJp" name="itemNameJp" value="${item.item_name_jp || ''}"><br>
+
+            <label for="category">Categoria(pt):</label>
+            <input type="text" id="category" name="category" value="${item.category}" required><br>
+
+            <label for="categoryJp">Categoria(jp):</label>
+            <input type="text" id="categoryJp" name="categoryJp" value="${item.category_jp || ''}"><br>
+
+            <label for="price">Preço:</label>
+            <input type="number" id="price" name="price" step="0.01" value="${item.price}" required><br>
+
+            <label for="unit">kg ou peça?:</label>
+            <select id="unit" name="unit" required>
+                <option value="kg" ${item.unit === 'kg' ? 'selected' : ''}>kg</option>
+                <option value="peça" ${item.unit === 'peça' ? 'selected' : ''}>peça</option>
+            </select><br>
+
+            <label for="description">descrição:</label>
+            <textarea id="description" name="description">${item.description || ''}</textarea><br>
+
+            <label for="available">Estoque:</label>
+            <input type="checkbox" id="available" name="available" ${item.available ? 'checked' : ''}><br>
+
+            <label for="isVisible">Mostrar na tela:</label>
+            <input type="checkbox" id="isVisible" name="isVisible" ${item.isVisible ? 'checked' : ''}><br>
+
+            <button type="submit">Alterar</button>
+        </form>
+    `;
+}
+
+// メニュー編集モーダルを開く関数
+function openEditMenuModal(item) {
+
+    modalTitle.textContent = 'Alterar menu';
+    modalBody.innerHTML = generateEditMenuForm(item); // 編集フォームを生成
+    settingsModal.style.display = 'block';
+
+    // フォーム送信イベントの設定
+    const editMenuForm = document.getElementById('editMenuForm');
+    document.getElementById('savebtn-form').style.display="none"
+    editMenuForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        await updateMenuItem(item.id);
+    });
+}
+
+// メニューアイテムを更新する関数
+async function updateMenuItem(id) {
+    const itemName = document.getElementById('itemName').value;
+    const itemNameJp = document.getElementById('itemNameJp').value;
+    const category = document.getElementById('category').value;
+    const categoryJp = document.getElementById('categoryJp').value;
+    const price = parseFloat(document.getElementById('price').value);
+    const unit = document.getElementById('unit').value;
+    const description = document.getElementById('description').value;
+    const available = document.getElementById('available').checked;
+    const isVisible = document.getElementById('isVisible').checked;
+    const updatedMenuItem = {
+        item_name: itemName,
+        item_name_jp: itemNameJp,
+        category: category,
+        category_jp: categoryJp,
+        price: price,
+        unit: unit,
+        description: description,
+        available: available,
+        isVisible: isVisible
+    };
+
+    try {
+        const response = await fetch(`${server}/pos/updatemenucolumnAdd/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updatedMenuItem)
+        });
+
+        if (!response.ok) {
+            throw new Error('Falha no sistema');
+        }
+
+        alert('Feito com sucesso');
+        settingsModal.style.display = 'none';
+    } catch (error) {
+        console.error('更新エラー: ', error);
+        alert('Falha no sistema');
+    }
+}
+
 
 function showToast(message) {
     const toast = document.createElement('div');
