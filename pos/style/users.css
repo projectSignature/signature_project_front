@@ -73,6 +73,7 @@ body {
   font-weight: bold;
   transition: background 0.3s ease-in-out;
   margin-top: 10px;
+  height:1.5rem
 }
 
 #login-button:hover {
