@@ -20,6 +20,8 @@ let clients ={
   takeout_enabled:decodedToken.takeout_enabled,
   uber_enabled:decodedToken.uber_enabled
 }
+
+console.log(clients.id)
 const seletOrderType = document.getElementById('take-or-uber')
 const menuItemsContainer = document.getElementById('center-div');
 const selectedItemsContainer = document.getElementById('list-order')
@@ -81,8 +83,15 @@ window.onload = async function() {
   //メニュー、カテゴリー、オープション表示
   const MainData = await makerequest(`${server}/orders/getBasedata?user_id=${clients.id}`)
   const Categorys = MainData.categories.filter(category => category.is_takeout === selectType);
+  console.log(MainData)
+  console.log(Categorys)
+  if(Categorys.length===0){
+    alert('Não há menus registrados ainda')
+    hideLoadingPopup()
+  }
   Categorys.sort((a, b) => a.display_order - b.display_order);
   Categorys.forEach((category, index) => {
+    console.log(category)
   categories.push(category); // カテゴリ情報を配列に保存
   let button = document.createElement('button');
   button.textContent = category[`category_name_${userLanguage}`];
@@ -491,8 +500,11 @@ document.getElementById('confirm-order').addEventListener('click', async () => {
             })
         });
         if (response.ok) {
+          console.log('resp is ok')
           const responseData = await response.json();
+          console.log(seletOrderType.value)
             if(seletOrderType.value==="uber"||seletOrderType.value==="demaekan"){
+              console.log('insihi')
               await cupom(responseData.order.id)
             }
             showCustomAlert(translations[userLanguage]["Pedido feito"]);

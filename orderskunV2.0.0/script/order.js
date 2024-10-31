@@ -14,6 +14,13 @@ document.getElementById('close-alert-btn').addEventListener('click', () => {
     alertModal.style.display = 'none';
 });
 
+window.addEventListener('popstate', function(event) {
+    // 戻るボタンが押された時の処理
+    window.location.href = '../orders.html';
+    // 必要に応じて他の処理を実行
+});
+
+
 document.getElementById('fullscreenButton').addEventListener('click', () => {
     const docElement = document.documentElement;
     if (docElement.requestFullscreen) {
@@ -89,6 +96,7 @@ const saveTableNo = sessionStorage.getItem('saveTableNo')
     document.getElementById('table-number').textContent =  orderList.tableNo
     //メニューのデータを取得する
     const MainData = await makerequest(`${server}/orders/getBasedata?user_id=${orderList.clienId}`)
+    console.log(MainData)
     //未払いのオーダーが存在してるかチェックする
     const PendingData = await fetchPendingOrders()
 
@@ -173,11 +181,11 @@ sortedData.forEach(item => {
     // 在庫がない場合はsold-outクラスを追加し、表示を変更
     if (!item.stock_status) {
         div.classList.add('sold-out');
-        div.innerHTML = `<img src="../imagen/${item.id}.jpg" alt="${item.menu_name_pt}" style="width:20rem">
+        div.innerHTML = `<img src="${item.imagem_string}" alt="${item.menu_name_pt}" style="width:30rem">
                          <h3 data-id="${item.id}">${item[`menu_name_${userLanguage}`]}</h3>
                          <p>Sold Out</p>`;
     } else {
-        div.innerHTML = `<img src="../imagen/${item.id}.jpg" alt="${item.menu_name_pt}" style="width:20rem">
+        div.innerHTML = `<img src="${item.imagem_string}" alt="${item.menu_name_pt}" style="width:30rem">
                          <h3 data-id="${item.id}">${item[`menu_name_${userLanguage}`]}</h3>
                          <p>￥${Math.floor(item.price).toLocaleString()}</p>`;
         div.addEventListener('click', () => {

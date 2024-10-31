@@ -288,7 +288,7 @@ button {
 }
 
 .header-btn.active {
-    background-color: orange;
+    /* background-color: orange; */
     color: white; /* 文字色も変更 */
 }
 .menu-actions{
