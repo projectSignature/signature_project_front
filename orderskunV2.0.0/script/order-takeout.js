@@ -105,11 +105,11 @@ sortedData.forEach(item => {
     // 在庫がない場合はsold-outクラスを追加し、表示を変更
     if (!item.stock_status) {
         div.classList.add('sold-out');
-        div.innerHTML = `<img src="${item.imagem_string}" alt="${item.menu_name_pt}" style="width:30rem">
+        div.innerHTML = `<img src="${item.imagem_string}" alt="${item.menu_name_pt}" style="width:25rem">
                          <h3 data-id="${item.id}">${item[`menu_name_${userLanguage}`]}</h3>
                          <p>Sold Out</p>`;
     } else {
-        div.innerHTML = `<img src="${item.imagem_string}" alt="${item.menu_name_pt}" style="width:30rem">
+        div.innerHTML = `<img src="${item.imagem_string}" alt="${item.menu_name_pt}" style="width:25rem">
                          <h3 data-id="${item.id}">${item[`menu_name_${userLanguage}`]}</h3>
                          <p>￥${Math.floor(item.price).toLocaleString()}</p>`;
         div.addEventListener('click', () => {
@@ -130,7 +130,7 @@ sortedData.forEach(item => {
         detailsContainer.innerHTML = `
             <div class="details-content">
                 <div class="left-side">
-                    <img src="../imagen/${item.id}.jpg" alt="${item.name}" class="details-image">
+                    <img src="${item.imagem_string}" alt="${item.name}" class="details-image">
                     <h3>${item[`menu_name_${userLanguage}`]}</h3>
                     <p>${item[`description_${userLanguage}`] || ""}</p>
                     <p id="item-price">￥${Math.floor(item.price)}</p>
