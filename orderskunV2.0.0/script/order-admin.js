@@ -4,8 +4,6 @@ if (!token) {
    window.location.href = '../index.html';
 }
 const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
-
-
 let clients ={
   id:decodedToken.userId, //クライアントid
   language:decodedToken.language, //クライアント言語
@@ -21,7 +19,6 @@ let clients ={
   uber_enabled:decodedToken.uber_enabled
 }
 
-console.log(clients.id)
 const seletOrderType = document.getElementById('take-or-uber')
 const menuItemsContainer = document.getElementById('center-div');
 const selectedItemsContainer = document.getElementById('list-order')
@@ -83,20 +80,14 @@ window.onload = async function() {
   //メニュー、カテゴリー、オープション表示
   const MainData = await makerequest(`${server}/orders/getBasedata?user_id=${clients.id}`)
   //ユーザーが取り扱う商品のタイプを追加
-  console.log(clients.uber_enabled)
   let Categorys = MainData.categories.filter(category => category.is_takeout === selectType);
-  console.log(MainData)
-  console.log(Categorys)
   if(Categorys.length===0){
-    // alert('Não há menus registrados ainda')
     document.getElementById('take-or-uber').value = 'local';
      Categorys = MainData.categories.filter(category => category.is_takeout != selectType);
-
     hideLoadingPopup()
   }
   Categorys.sort((a, b) => a.display_order - b.display_order);
   Categorys.forEach((category, index) => {
-    console.log(category)
   categories.push(category); // カテゴリ情報を配列に保存
   let button = document.createElement('button');
   button.textContent = category[`category_name_${userLanguage}`];
@@ -162,17 +153,18 @@ seletOrderType.addEventListener('change', async () => {
 
 
 function displayMenuItems(category) {
-  console.log(category)
-const sortedData = MainData.menus
-    .filter(item => item.category_id === category)
-    .sort((a, b) => a.display_order - b.display_order);
+  console.log(MainData.menus)
+  const sortedData = MainData.menus
+      .filter(item => item.category_id === category)
+      .sort((a, b) => a.admin_item_name.localeCompare(b.admin_item_name));
+
 menuItemsContainer.innerHTML = '';
 console.log(sortedData)
 sortedData.forEach(item => {
     let div = document.createElement('div');
     div.classList.add('menu-item');
         div.innerHTML = `
-                         <h3 data-id="${item.id}">${item[`menu_name_${userLanguage}`]}</h3>
+                         <h3 data-id="${item.id}">${item.admin_item_name}</h3>
                          <p>￥${Math.floor(item.price).toLocaleString()}</p>`;
         div.addEventListener('click', () => {
           displayItemDetails(item)
