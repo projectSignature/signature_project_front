@@ -14,6 +14,7 @@ let clients ={
   options:"",
   categories:""
 }
+
 document.getElementById('menu-btn').style = "background-color:orange"
 let newFlug = false
 const loadingMessage = document.getElementById('loading-message');
@@ -39,7 +40,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     categories.forEach(category => {
         const optionElement = document.createElement('option');
         optionElement.value = category.id;
-        optionElement.textContent = category[`admin_item_name`]; // 表示名を変更できます
+        optionElement.textContent = category[`admin_item_name`];
         categorySelectElement.appendChild(optionElement);
     });
 
@@ -129,13 +130,11 @@ hideLoadingPopup();
     });
 }
 
-
 // 配列内のアイテムを入れ替える関数
 function swapMenuItems(menuArray, fromIndex, toIndex) {
     const [movedItem] = menuArray.splice(fromIndex, 1);
     menuArray.splice(toIndex, 0, movedItem);
 }
-
 
 // 並べ替え後に順序をサーバーに送信する関数
 function saveMenuOrder(filteredMenus) {
@@ -399,6 +398,7 @@ document.getElementById('save-menu-item').addEventListener('click', async () => 
             formData.append('menu_image', menuImageFile); // Adiciona a imagem como BLOB
             console.log(formData, 'formData')
             try {
+              showLoadingPopup();
                 const response = await fetch(`${server}/orders/updates/menu`, {
                     method: 'POST',
                     body: formData // Envia o FormData
@@ -406,12 +406,14 @@ document.getElementById('save-menu-item').addEventListener('click', async () => 
 
                 const menus = await response.json();
                 if (response.ok) {
+                  hideLoadingPopup();
                     alert('Menu alterado com sucesso');
                     window.location.reload();
                 } else {
                     throw new Error(menus.message || 'Erro no registro');
                 }
             } catch (error) {
+              hideLoadingPopup();
                 console.error(error);
                 alert('Erro no registro');
             }
@@ -444,18 +446,21 @@ async function newAddMenu() {
         formData.append('menuData', JSON.stringify(menuData)); // Adiciona os dados do menu
         formData.append('menu_image', menuImageFile); // Adiciona a imagem como BLOB
         try {
+          showLoadingPopup()
             const response = await fetch(`${server}/orders/create/menu`, {
                 method: 'POST',
                 body: formData // Envia o FormData
             });
             const menus = await response.json();
             if (response.ok) {
+              hideLoadingPopup()
                 alert('Menu alterado com sucesso');
                 window.location.reload();
             } else {
                 throw new Error(menus.message || 'Erro no registro');
             }
         } catch (error) {
+          hideLoadingPopup()
             console.error(error);
             alert('Erro no registro');
         }
