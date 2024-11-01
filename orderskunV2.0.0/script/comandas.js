@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         // メニュー、カテゴリー、オープション表示
         showLoadingPopup();
         MainData = await makerequest(`${server}/orders/getBasedata?user_id=${clients.id}`); // MainDataにデータを格納
+        console.log(MainData)
         let pendingOrders = await fetchPendingOrders(clients.id);
         pendingOrders.sort((a, b) => {
             return new Date(a.pickup_time) - new Date(b.pickup_time);
@@ -67,6 +68,19 @@ document.addEventListener('DOMContentLoaded', async () => {
             const orderItemsContainer = orderCard.querySelector('.order-items');
             order.OrderItems.forEach(item => {
                 const menuItemName = MainData.menus.filter(items => items.id === item.menu_id);
+
+
+
+
+
+
+
+
+
+
+
+
+
                 const options = JSON.parse(item.options).map(opt => {
                     const optionName = getOptionNameById(opt.id); // opt.idからオプション名を取得
                     return `${optionName}`;

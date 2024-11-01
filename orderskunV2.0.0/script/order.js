@@ -176,6 +176,7 @@ function displayMenuItems(category) {
       });
 menuItemsContainer.innerHTML = '';
 sortedData.forEach(item => {
+  console.log(item)
     let div = document.createElement('div');
     div.classList.add('menu-item');
     // 在庫がない場合はsold-outクラスを追加し、表示を変更

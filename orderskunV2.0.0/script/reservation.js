@@ -198,7 +198,7 @@ function createReservation() {
 
     const url = `${server}/reservations/create`;
     const reservationData = {
-        user_id: userInfo.userId,
+        user_id: userInfo.id,
         reservation_date: document.getElementById('create-reservation-date').value,
         reservation_start_time: document.getElementById('create-start-time').value,
         reservation_end_time: document.getElementById('create-end-time').value,
@@ -208,6 +208,7 @@ function createReservation() {
         num_people: document.getElementById('create-num-people').value,
         remarks: document.getElementById('create-remarks').value || null
     };
+    console.log(reservationData)
     fetch(url, {
         method: 'POST',
         headers: {
@@ -282,7 +283,7 @@ function editTable(reservationId) {
         return;
     }
     const updatedData = {
-        user_id: userInfo.userId,
+        user_id: userInfo.id,
         reservation_date: document.getElementById('modal-reservation-date').value,
         reservation_start_time: document.getElementById('modal-start-time').value,
         reservation_end_time: document.getElementById('modal-end-time').value,
@@ -325,8 +326,8 @@ function editTable(reservationId) {
 
 function getTableData() {
     showLoadingPopup();
-    console.log(`${server}/reservations?user_id=${userInfo.userId}&reservation_date=${japaneseDate}`)
-    const url = `${server}/reservations?user_id=${userInfo.userId}&reservation_date=${japaneseDate}`;
+    console.log(`${server}/reservations?user_id=${userInfo.id}&reservation_date=${japaneseDate}`)
+    const url = `${server}/reservations?user_id=${userInfo.id}&reservation_date=${japaneseDate}`;
     fetch(url)
         .then(response => {
             if (!response.ok) {

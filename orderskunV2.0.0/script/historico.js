@@ -1,3 +1,18 @@
+const token = window.localStorage.getItem('token');
+if (!token) {
+   window.location.href = '../index.html';
+}
+const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
+
+
+let userInfo ={
+  id:decodedToken.userId, //クライアントid
+  language:decodedToken.language,
+  table_count: decodedToken.table_count, // Quantidade de mesas
+  iat: 1727826129
+}
+
+
 document.addEventListener('DOMContentLoaded', () => {
     let allReservations = []; // Armazenar todas as reservas localmente
     const itemsPerPage = 10; // Limite de 10 itens por página
@@ -50,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function fetchReservations(startDate, endDate) {
         showLoadingPopup();
 
-        const userId = 17;
+        const userId = userInfo.id;
         const apiUrl = `${server}/reservations/daterange?startDate=${startDate}&endDate=${endDate}&user_id=${userId}`;
         console.log(apiUrl)
 

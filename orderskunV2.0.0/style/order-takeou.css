@@ -238,6 +238,7 @@ button {
     letter-spacing: 0.8px; /* 文字間を広げて高級感を演出 */
     text-align: center; /* 中央揃えで整った印象に */
     transition: color 0.3s ease; /* ホバー時の色変化にスムーズさを */
+    overflow: hidden;
 }
 
 .menu-item p {

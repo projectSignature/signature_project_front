@@ -55,7 +55,7 @@ document.getElementById('tax8').classList.add('selected');
 
 let orderList = {
   tableNo:1,
-  clienId:17,
+  clienId:clients.id,
   order:{
   },
   historyOrder:{
@@ -82,11 +82,16 @@ window.onload = async function() {
     showLoadingPopup()
   //メニュー、カテゴリー、オープション表示
   const MainData = await makerequest(`${server}/orders/getBasedata?user_id=${clients.id}`)
-  const Categorys = MainData.categories.filter(category => category.is_takeout === selectType);
+  //ユーザーが取り扱う商品のタイプを追加
+  console.log(clients.uber_enabled)
+  let Categorys = MainData.categories.filter(category => category.is_takeout === selectType);
   console.log(MainData)
   console.log(Categorys)
   if(Categorys.length===0){
-    alert('Não há menus registrados ainda')
+    // alert('Não há menus registrados ainda')
+    document.getElementById('take-or-uber').value = 'local';
+     Categorys = MainData.categories.filter(category => category.is_takeout != selectType);
+
     hideLoadingPopup()
   }
   Categorys.sort((a, b) => a.display_order - b.display_order);
@@ -118,6 +123,7 @@ window.onload = async function() {
 });
 
 seletOrderType.addEventListener('change', async () => {
+  console.log('opsion')
   orderCategories.innerHTML=""
     // selectType.value で選択された値を取得
     const isTakeout = seletOrderType.value === 'local' ? false :true ; // 値が "true" なら boolean true に変換

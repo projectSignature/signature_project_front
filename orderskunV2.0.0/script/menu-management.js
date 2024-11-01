@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Fetch categories, menus, and options
     const getData = await makerequest(`${server}/orders/getBasedata?user_id=${clients.id}`);
+    console.log(getData)
     const { categories, menus, options } = getData;
     loadingMessage.style.display = 'none';
     clients.options = options

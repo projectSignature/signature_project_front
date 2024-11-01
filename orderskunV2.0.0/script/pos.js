@@ -5,6 +5,8 @@
  }
  const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
 
+ console.log(decodedToken)
+
 let selectOrders = ""
 let registerFlug = false
 const notRegisterInfo = document.getElementById('yet-regit-info')
@@ -45,7 +47,8 @@ let clients ={
   kubun:decodedToken.role,　//admin or operator
   table_count:decodedToken.table_count,
   takeout_enabled:decodedToken.takeout_enabled,
-  uber_enabled:decodedToken.uber_enabled
+  uber_enabled:decodedToken.uber_enabled,
+  tax_use:decodedToken.tax_enabled
 }
 
 document.addEventListener('DOMContentLoaded', async  () => {
@@ -79,7 +82,8 @@ document.addEventListener('DOMContentLoaded', async  () => {
       let status = "Pronto"
       let styleColer ="background-color:#90EE90"
       let icon=""
-      tableDisplay = `${order.order_type}<br>${order.order_name}`;
+      let displayText = order.order_type==='local'? `${order.order_type} mesa:${order.table_no}`:order.order_type
+      tableDisplay = `${displayText}<br>${order.order_name}`;
       if(order.order_status==='pending'){
         status="Em preparo"
         styleColer='background-color:#FFCCCB'
@@ -87,9 +91,7 @@ document.addEventListener('DOMContentLoaded', async  () => {
       }else if(order.order_status==='prepared'){
         icon='<img src="../imagen/prepared.jpg">'
       }
-      console.log(order.payment_method)
       if(order.payment_method!="yet"){
-        console.log('paystatusin')
         icon+='<img src="../imagen/payed.jpg">'
       }
       let orderCard = document.createElement('div');
@@ -121,17 +123,22 @@ document.addEventListener('DOMContentLoaded', async  () => {
   function displayOrderDetails(order) {
     if(order.payment_method==='cash'){
       document.getElementById('cash-payment').classList.add('selected')
+      clients.paytype='cash'
     }
     if(order.payment_method==='credit'){
       document.getElementById('credit-payment').classList.add('selected')
+      clients.paytype='credit'
     }
     if(order.payment_method==='other'){
       document.getElementById('other-payment').classList.add('selected')
+      clients.paytype='other'
     }
     if(order.payment_method==='yet'){
+      const paymentButtons = [cashPaymentButton, creditPaymentButton, otherPaymentButton];
       paymentButtons.forEach(button => {
        button.classList.remove("selected")
       })
+      clients.paytype=''
     }
       clients.printInfo = order;
       orderItems.innerHTML = ''; // Clear previous items
@@ -185,13 +192,16 @@ document.addEventListener('DOMContentLoaded', async  () => {
       });
       // 合計金額を表示
       totalAmountElement.textContent = `￥${Math.floor(receiptData.totalAmount).toLocaleString()}`;
+      if(!clients.tax_use){
         document.getElementById('tax-included-amount').textContent =`￥${Math.floor(receiptData.totalAmount).toLocaleString()}`
+      }
       updateChange(); // Initial calculation
       // レシート用のデータをclientsに保存
       clients.receiptData = receiptData;
   }
     depositAmountElement.addEventListener('input', updateChange);
     function updateChange() {
+
       // if(clients.taxtType!=""){
         let deposit = parseInt(depositAmountElement.value) || 0;
         let total = parseInt(document.getElementById("tax-included-amount").textContent.replace(/[^\d]/g, '')) || 0;;
@@ -626,32 +636,31 @@ document.getElementById('close-menuModal').addEventListener('click', ()=>{
 
 
 async function registeConfirm(){
-  showLoadingPopup()
+
   const loadingPopup = document.getElementById('loading-popup');
   if (!clients.selectedOrder) {
       alert('Seleciona uma comanda');
       return;
   }
-  // if(clients.taxtType===""){
-  //   alert("Selecione o imposto")
+  // console.log(clients.depositAmount)
+  // if(clients.depositAmount===""){
+  //   console.log('nonononononon')
+  //   alert("Insira o vlor recebido")
   //   return
   // }
-  if(clients.depositAmount===""){
-    alert("Insira o vlor recebido")
-    return
-  }
   if(clients.paytype===""){
     alert("Selecione a forma de pagamento")
     return
   }
+  console.log(document.getElementById('deposit-amount').value)
   if(document.getElementById('deposit-amount').value===""||document.getElementById('deposit-amount').value-0===0){
     alert("Insira o valor recebido")
     return
   }
   // Update the order in the database
   try {
+showLoadingPopup()
 
-    loadingPopup.style="display:block"
       const response = await fetch(`${server}/orderskun/updatePayment`, {
           method: 'POST',
           headers: {
@@ -663,18 +672,10 @@ async function registeConfirm(){
               order_status: 'pending'  // Update the status to 'confirmed'
           })
       });
+      console.log(response.status)
       if (response.status===200) {
           showCustomAlert("Registrado")
-          paymentButtons.forEach(button => {
-           button.classList.remove("selected")
-          })
-
           const orderCard = document.querySelector(`.selected-card[data-id="${clients.selectedOrder}"]`);
-
-          if (orderCard) {
-              // orderCard.remove();
-          }
-          // Optionally, you can clear the order details or reset the UI
           clearOrderDetails();
           hideLoadingPopup()
       } else {
@@ -747,17 +748,37 @@ if(clients.printInfo.order_type==='uber'||clients.printInfo.order_type==='demaek
 
 // Function to clear the order details from the UI
 function clearOrderDetails() {
+    // 注文詳細のリセット
     document.getElementById('order-items').innerHTML = '';
     document.getElementById('total-amount').textContent = '0';
     document.getElementById('deposit-amount').value = '0';
     document.getElementById('change-amount').textContent = '0';
-    document.getElementById('tax-included-amount').textContent = '0'
-    clients.paytype = '';  // Reset the payment method
-    clients.depositAmount=""
-    selectedOrder = null;  // Reset the selected order
-    clients.selectedOrder =""
-    clients.taxtType=""
+    document.getElementById('tax-included-amount').textContent = '0';
+
+    // クライアントオブジェクトのリセット
+    clients.paytype = '';
+    clients.depositAmount = '';
+    clients.selectedOrder = '';
+    clients.taxtType = '';
+    clients.receiptData = '';
+
+    selectedOrder = null;
+
+    // 指定されたコンテナ内の特定のクラスをすべて削除
+    function removeClassFromElements(containerId, className) {
+        const container = document.getElementById(containerId);
+        const buttons = container.getElementsByClassName(className);
+        Array.from(buttons).forEach(button => {
+            button.classList.remove(className);
+        });
+    }
+
+    // payment-methods の selected クラスと tax-buttons の active-tax クラスを削除
+    removeClassFromElements('payment-methods', 'selected');
+    removeClassFromElements('tax-buttons', 'active-tax');
 }
+
+
 
 function showCustomAlert(message) {
     const alertBox = document.getElementById('custom-alert');
@@ -793,18 +814,39 @@ async function fetchPendingOrders() {
 document.addEventListener('DOMContentLoaded', function() {
     // 初期設定: ボタンのクリックイベントを追加
     document.getElementById('tax-8').addEventListener('click', function() {
+      if(!selectedCard){
+        alert('selecione o pedido')
+        return
+      }
         applyTax(8);
         selectTaxButton('tax-8');
         clients.taxtType = 8;
+        updateChange()
         // updateChangeAmount();
     });
 
     document.getElementById('tax-10').addEventListener('click', function() {
+      if(!selectedCard){
+        alert('selecione o pedido')
+        return
+      }
         applyTax(10);
         selectTaxButton('tax-10');
         clients.taxtType = 10;
+        updateChange()
         // updateChangeAmount();
     });
+    function updateChange() {
+      let depositAmountElement = document.getElementById('deposit-amount');//預入金額エレメント
+      let changeAmountElement = document.getElementById('change-amount');//お釣りエレメント
+      let taxIncluidAmountElent = document.getElementById('tax-included-amount');//税金込み総額エレメント
+      // if(clients.taxtType!=""){
+        let deposit = parseInt(depositAmountElement.value) || 0;
+        let total = parseInt(document.getElementById("tax-included-amount").textContent.replace(/[^\d]/g, '')) || 0;;
+        let change = deposit - total;
+        changeAmountElement.textContent = change >= 0 ? `¥${change.toLocaleString()}` : 0;
+      // }
+    }
 });
 
 // selectTaxButton関数を修正
@@ -813,48 +855,36 @@ function selectTaxButton(selectedButtonId) {
     const taxButtons = document.querySelectorAll('.tax-button');
     taxButtons.forEach(button => {
         button.classList.remove('active-tax');
-        console.log(`Removed active-tax from ${button.id}`); // 削除の確認用
     });
 
     // クリックされたボタンに active-tax クラスを追加
     const selectedButton = document.getElementById(selectedButtonId);
     if (selectedButton) {
         selectedButton.classList.add('active-tax');
-        console.log(`Added active-tax to ${selectedButtonId}`); // 追加の確認用
     }
 }
-
-
 let originalAmount = null; // 元の金額を保存する変数
-
-
-
-
-
 
 // 既存の applyTax 関数
 function applyTax(taxRate) {
     const totalAmountElement = document.getElementById('total-amount');
-
-    if (!originalAmount) {
+    // if (!originalAmount) {
         // ￥記号とカンマ、ピリオドを削除して数値に変換
-        const totalAmountText = totalAmountElement.textContent.replace(/[￥,.\s]/g, '');
+        const totalAmountText = selectOrders.total_amount
         originalAmount = parseFloat(totalAmountText);
-
-        console.log("Original Amount (after removing symbols):", originalAmount); // デバッグ用
-    }
+        // console.log("Original Amount (after removing symbols):", originalAmount); // デバッグ用
+    // }
 
     // 税額を計算
     const taxAmount = originalAmount * (taxRate / 100);
     const totalWithTax = Math.floor(originalAmount + taxAmount);
-
     // 手動でカンマ区切りを適用
     const finalFormattedTotalWithTax = totalWithTax.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-
     // // 整数値を表示
-    // document.getElementById('tax-included-amount').textContent = `¥${finalFormattedTotalWithTax}`;
+    document.getElementById('tax-included-amount').textContent = `¥${totalWithTax.toLocaleString()}`;
+    clients.receiptData.taxInclued = totalWithTax
     // 整数値を表示
-    document.getElementById('tax-included-amount').textContent = `${totalAmountElement.textContent}`;
+    // document.getElementById('tax-included-amount').textContent = `${totalAmountElement.textContent}`;
 }
 
 // 税率が適用される前の状態に戻すためのリセット関数
@@ -880,7 +910,6 @@ document.getElementById('logout-btn').addEventListener('click', () => {
 });
 
 document.getElementById('print-receipt').addEventListener('click', () => {
-  console.log('kokokni')
   recite();
 });
 
@@ -945,32 +974,47 @@ async function recite(nb, reciteAmount) {
       alert('Seleciona uma comanda');
       return;
   }
-  // if(clients.taxtType===""){
-  //   alert("Selecione o imposto")
-  //   return
-  // }
-  if(clients.depositAmount===""){
-    alert("Insira o vlor recebido")
+  if(clients.tax_use&&clients.taxtType===""){
+    alert("Selecione o imposto")
     return
   }
+  // if(clients.depositAmount===""){
+  //   alert("Insira o vlor recebido")
+  //   return
+  // }
   if(clients.paytype===""){
     alert("Selecione a forma de pagamento")
     return
   }
-
+  console.log(document.getElementById('deposit-amount').value)
   if(document.getElementById('deposit-amount').value===""||document.getElementById('deposit-amount').value-0===0){
     alert("Insira o valor recebido")
+    return
+  }
+  if((document.getElementById('deposit-amount').value-0)<clients.receiptData.taxInclued){
+    alert('O valor recebido está menor do que o valor com imposto')
     return
   }
 
   const troco = document.getElementById('change-amount').innerText
   const recebido = document.getElementById('deposit-amount').value
   const valorcomTax = document.getElementById('tax-included-amount').innerText
-
+  let valorINclusoTax = ''
+  if(clients.tax_use){
+    valorINclusoTax =clients.receiptData.taxInclued
+  }else{
+    valorINclusoTax =valorcomTax.split('￥')[1]
+  }
+  let valorSemTax = selectOrders.total_amount
+  if (valorSemTax.endsWith(".00")) {
+    valorSemTax = valorSemTax.slice(0, -3);
+}
 let row = `<div id="contentToPrint" class="print-content">
-  <div class="img-dicvs"><img src="../imagen/logo.png" width="100" class="setting-right-button" /></div>
+  <div class="img-dicvs">
+    ${decodedToken.receipt_logo_url ? `<img src="${decodedToken.receipt_logo_url}" width="100" class="setting-right-button" />` : ''}
+</div>
   <div class="adress-div">
-    <p>Roots Grill <br>〒475-0801 <br>愛知県碧南市相生町4-13 102号室<br>070-9166-0218</p>
+    <p>${decodedToken.receipt_display_name} <br>${decodedToken.receipt_postal_code} <br>${decodedToken.receipt_address}<br>${decodedToken.receipt_tel}</p>
   </div>
   <div class='display-center-div'>
     <p>${await getCurrentDateTime()} #${clients.receiptData.order_id}</p>
@@ -988,12 +1032,18 @@ let row = `<div id="contentToPrint" class="print-content">
       <div>小計</div>
       <div>￥${clients.receiptData.totalAmount.toLocaleString()}</div>
     </div>
+    ${decodedToken.tax_enabled ? `
+    <div class="azukari-amount-div">
+      <div>(${clients.taxtType}%対象：${valorSemTax}</div>
+      <div>消費税：${valorINclusoTax-valorSemTax})</div>
+    </div>`
+    :''}
 
   </div>
   <div class="dotted-line"></div>
   <div class="total-amount-div">
     <div>合計</div>
-    <div>￥${clients.receiptData.totalAmount.toLocaleString()}</div>
+    <div>￥${valorINclusoTax.toLocaleString()}</div>
   </div>
   <div class="total-amount-div">
     <div>お預り</div>
@@ -1005,14 +1055,6 @@ let row = `<div id="contentToPrint" class="print-content">
   </div>
   <div class="dotted-line"></div>
 </div>`;
-
-
-// <div class="azukari-amount-div">
-//   <div>外税</div>
-//   <div>15%</div>
-//   <div>￥40</div>
-// </div>
-//var printWindow = window.open('', '_blank');
 
 var printWindow = window.open('', '_blank');
 
@@ -1043,6 +1085,7 @@ printWindow.document.write(`
           background-color: black;
           -webkit-print-color-adjust: exact;
           color: white;
+          padding-left:10px
         }
         .img-dicvs {
           display: flex;
@@ -1096,21 +1139,17 @@ printWindow.document.write(`
 `);
 
 // 画像が正しく読み込まれるまで待機
-await new Promise(resolve => {
-  var img = new Image();
-  img.onload = resolve;
-  img.src = "../imagen/logo.png";
-});
-
-// 印刷を実行
+if (decodedToken.receipt_logo_url) {
+  await new Promise(resolve => {
+    const img = new Image();
+    img.onload = resolve;
+    img.src = decodedToken.receipt_logo_url;
+  });
+} else {
+  console.log("No image URL provided, skipping image load.");
+}
 printWindow.print();
-
-// 印刷が完了したらウィンドウを閉じる
 printWindow.close();
-
-// registeConfirm() を呼び出す
-await registeConfirm();
-
 }
 
 function getCurrentDateTime() {
@@ -1198,9 +1237,11 @@ function getCurrentDateTime() {
           <div class="contents-div">
            <p>Thanks for order</p>
           </div>
-          <div class="img-dicvs"><img src="../imagen/logo.png" width="100" class="setting-right-button" /></div>
+          <div class="img-dicvs">
+            ${decodedToken.receipt_logo_url ? `<img src="${decodedToken.receipt_logo_url}" width="100" class="setting-right-button" />` : ''}
+        </div>
           <div class="adress-div">
-            <p>Roots Grill <br>〒475-0801 <br>愛知県碧南市相生町4-13 102号室</p>
+          <p>${decodedToken.receipt_display_name} <br>${decodedToken.receipt_postal_code} <br>${decodedToken.receipt_address}<br>${decodedToken.receipt_tel}</p>
           </div>
         </div>`;
 
@@ -1301,11 +1342,16 @@ function getCurrentDateTime() {
         `);
 
         // 画像が正しく読み込まれるまで待機
-        await new Promise(resolve => {
-          var img = new Image();
-          img.onload = resolve;
-          img.src = "../imagen/logo.png";
-        });
+        // 画像が正しく読み込まれるまで待機
+        if (decodedToken.receipt_logo_url) {
+          await new Promise(resolve => {
+            const img = new Image();
+            img.onload = resolve;
+            img.src = decodedToken.receipt_logo_url;
+          });
+        } else {
+          console.log("No image URL provided, skipping image load.");
+        }
 
         // 印刷を実行
         printWindow.print();
@@ -1318,7 +1364,6 @@ function getCurrentDateTime() {
      document.getElementById('print-invoice').addEventListener('click',ryousyuso)
         async function ryousyuso() {
           if (!clients.receiptData) {
-              console.log("レシートデータがありません。");
               return;
           }
 
@@ -1326,14 +1371,14 @@ function getCurrentDateTime() {
               alert('Seleciona uma comanda');
               return;
           }
-          // if(clients.taxtType===""){
-          //   alert("Selecione o imposto")
-          //   return
-          // }
-          if(clients.depositAmount===""){
-            alert("Insira o vlor recebido")
+          if(clients.tax_use&&clients.taxtType===""){
+            alert("Selecione o imposto")
             return
           }
+          // if(clients.depositAmount===""){
+          //   alert("Insira o vlor recebido")
+          //   return
+          // }
           if(clients.paytype===""){
             alert("Selecione a forma de pagamento")
             return
@@ -1343,19 +1388,36 @@ function getCurrentDateTime() {
             alert("Insira o valor recebido")
             return
           }
+          if((document.getElementById('deposit-amount').value-0)<clients.receiptData.taxInclued){
+            alert('O valor recebido está menor do que o valor com imposto')
+            return
+          }
 
           const troco = document.getElementById('change-amount').innerText
           const recebido = document.getElementById('deposit-amount').value
           const valorcomTax = document.getElementById('tax-included-amount').innerText
+          let valorINclusoTax = ''
+          if(clients.tax_use){
+            valorINclusoTax =clients.receiptData.taxInclued
+          }else{
+            valorINclusoTax =valorcomTax.split('￥')[1]
+          }
+          let valorSemTax = selectOrders.total_amount
+          if (valorSemTax.endsWith(".00")) {
+            valorSemTax = valorSemTax.slice(0, -3);
+        }
+
         let row = `
 
           <div class="adress-div">
             <div class="titles-ryousyu">領 収 証</div>
             <div class="dotted-line">　　　　　　　　　　様</div>
-            <div class="dotted-line">￥${clients.receiptData.totalAmount.toLocaleString()}-</div>
+            <div class="dotted-line">￥${valorINclusoTax.toLocaleString()}-</div>
             <div class="coments-div">上記正に領収しました</div>
 
-            <div class="coments-div">Roots Grill〒475-0801愛知県碧南市相生町4-13 102号室</div>
+            <div class="coments-div">
+            ${decodedToken.receipt_display_name} ${decodedToken.receipt_postal_code} ${decodedToken.receipt_address}${decodedToken.receipt_tel}
+            </div>
           </div>
           <div class='display-center-div'>
             <p>${await getCurrentDateTime()} #${clients.receiptData.order_id}</p>
@@ -1370,9 +1432,15 @@ function getCurrentDateTime() {
             <p>御買上げ点数　　:${clients.receiptData.items.length}</p>
           </div>
           <div class="dotted-lines"></div>
+          ${decodedToken.tax_enabled ? `
+          <div class="azukari-amount-div">
+            <div>(${clients.taxtType}%対象：${valorSemTax}</div>
+            <div>消費税：${valorINclusoTax-valorSemTax})</div>
+          </div>`
+          :''}
           <div class="total-amount-div">
             <div>合計</div>
-            <div>￥${clients.receiptData.totalAmount.toLocaleString()}</div>
+            <div>￥${valorINclusoTax.toLocaleString()}</div>
           </div>
           <div class="azukari-amount-div">
             <div>お預り</div>
@@ -1500,8 +1568,7 @@ function getCurrentDateTime() {
         // 印刷が完了したらウィンドウを閉じる
         printWindow.close();
 
-        // registeConfirm() を呼び出す
-        await registeConfirm();
+        // await registeConfirm();
 
         }
 
@@ -1535,9 +1602,9 @@ function getCurrentDateTime() {
      document.getElementById('coin5').value = ''
      document.getElementById('coin1').value = ''
      document.getElementById('totalAmount').value = ''
-     inputs.forEach(input => {
-         input.setAttribute('readonly', false);
-     });
+             inputs.forEach(input => {
+            input.removeAttribute('readonly');
+        });
      document.getElementById('registerBtn').style.display='block'
    }
    if(clients.salesInfo){
