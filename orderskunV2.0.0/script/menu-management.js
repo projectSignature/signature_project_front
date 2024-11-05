@@ -387,43 +387,41 @@ document.getElementById('save-menu-item').addEventListener('click', async () => 
             stock_status: document.getElementById('stock_status').value === "true"
         };
 
-        // Captura a imagem do input file
         const menuImageInput = document.getElementById('menu_image');
-        const menuImageFile = menuImageInput.files[0]; // Pega o primeiro arquivo
+        const menuImageFile = menuImageInput.files[0];
+
+        const formData = new FormData();
+        formData.append('menuData', JSON.stringify(menuData)); // 常にmenuDataを追加
 
         if (menuImageFile) {
-            // Cria um FormData para enviar o arquivo junto com os dados do menu
-            const formData = new FormData();
-            formData.append('menuData', JSON.stringify(menuData)); // Adiciona os dados do menu
-            formData.append('menu_image', menuImageFile); // Adiciona a imagem como BLOB
-            console.log(formData, 'formData')
-            try {
-              showLoadingPopup();
-                const response = await fetch(`${server}/orders/updates/menu`, {
-                    method: 'POST',
-                    body: formData // Envia o FormData
-                });
+            formData.append('menu_image', menuImageFile); // 画像がある場合のみ追加
+        }
 
-                const menus = await response.json();
-                if (response.ok) {
-                  hideLoadingPopup();
-                    alert('Menu alterado com sucesso');
-                    window.location.reload();
-                } else {
-                    throw new Error(menus.message || 'Erro no registro');
-                }
-            } catch (error) {
-              hideLoadingPopup();
-                console.error(error);
-                alert('Erro no registro');
+        try {
+            showLoadingPopup();
+            const response = await fetch(`${server}/orders/updates/menu`, {
+                method: 'POST',
+                body: formData
+            });
+
+            const menus = await response.json();
+            if (response.ok) {
+                hideLoadingPopup();
+                alert('Menu alterado com sucesso');
+                window.location.reload();
+            } else {
+                throw new Error(menus.message || 'Erro no registro');
             }
-        } else {
-            alert('Por favor, selecione uma imagem.');
+        } catch (error) {
+            hideLoadingPopup();
+            console.error(error);
+            alert('Erro no registro');
         }
     } else {
         newAddMenu();
     }
 });
+
 
 async function newAddMenu() {
     const menuData = {
@@ -441,32 +439,35 @@ async function newAddMenu() {
     };
     const menuImageInput = document.getElementById('menu_image');
     const menuImageFile = menuImageInput.files[0]; // Pega o primeiro arquivo
+    const formData = new FormData();
+    formData.append('menuData', JSON.stringify(menuData)); // メニューデータは常に追加
+
     if (menuImageFile) {
-        const formData = new FormData();
-        formData.append('menuData', JSON.stringify(menuData)); // Adiciona os dados do menu
-        formData.append('menu_image', menuImageFile); // Adiciona a imagem como BLOB
-        try {
-          showLoadingPopup()
-            const response = await fetch(`${server}/orders/create/menu`, {
-                method: 'POST',
-                body: formData // Envia o FormData
-            });
-            const menus = await response.json();
-            if (response.ok) {
-              hideLoadingPopup()
-                alert('Menu alterado com sucesso');
-                window.location.reload();
-            } else {
-                throw new Error(menus.message || 'Erro no registro');
-            }
-        } catch (error) {
-          hideLoadingPopup()
-            console.error(error);
-            alert('Erro no registro');
-        }
-        console.log(menuData, 'menuData')
-        console.log(menuImageFile, 'menuImageFile')
+        formData.append('menu_image', menuImageFile); // 画像がある場合のみ追加
     }
+
+    try {
+        showLoadingPopup();
+        const response = await fetch(`${server}/orders/create/menu`, {
+            method: 'POST',
+            body: formData // フォームデータを送信
+        });
+        const menus = await response.json();
+        if (response.ok) {
+            hideLoadingPopup();
+            alert('Menu alterado com sucesso');
+            window.location.reload();
+        } else {
+            throw new Error(menus.message || 'Erro no registro');
+        }
+    } catch (error) {
+        hideLoadingPopup();
+        console.error(error);
+        alert('Erro no registro');
+    }
+    console.log(menuData, 'menuData');
+    console.log(menuImageFile, 'menuImageFile');
+
 }
 
 function showCustomAlert(message) {
