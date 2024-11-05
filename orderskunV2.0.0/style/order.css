@@ -106,9 +106,9 @@ header {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    width:8rem;
+    width:7rem;
     height:3rem;
-    font-size: 1em
+    font-size: 0.8em
 }
 
 #view-history {
