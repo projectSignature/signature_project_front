@@ -355,6 +355,9 @@ document.getElementById('add-new-menu').addEventListener('click', () => {
     document.getElementById('display_order').value = '';
     document.getElementById('stock_status').checked = true;
     document.getElementById('menu_name_control').value = ''
+    document.getElementById('options-list').style.display='none'
+    document.getElementById('add-option-form').style.display='none'
+    document.getElementById('optionsTitle').style.display='none'
 
     const newCategorySelect = document.getElementById('new-category-select');
     // 既存のオプションをクリア

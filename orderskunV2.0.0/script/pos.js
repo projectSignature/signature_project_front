@@ -1375,10 +1375,6 @@ function getCurrentDateTime() {
             alert("Selecione o imposto")
             return
           }
-          // if(clients.depositAmount===""){
-          //   alert("Insira o vlor recebido")
-          //   return
-          // }
           if(clients.paytype===""){
             alert("Selecione a forma de pagamento")
             return
@@ -1392,7 +1388,6 @@ function getCurrentDateTime() {
             alert('O valor recebido está menor do que o valor com imposto')
             return
           }
-
           const troco = document.getElementById('change-amount').innerText
           const recebido = document.getElementById('deposit-amount').value
           const valorcomTax = document.getElementById('tax-included-amount').innerText
@@ -1554,7 +1549,6 @@ function getCurrentDateTime() {
           </html>
         `
         );
-
         // 画像が正しく読み込まれるまで待機
         await new Promise(resolve => {
           var img = new Image();
@@ -1848,13 +1842,10 @@ async function nextDayfinshTimeGFet(){
                         return formattedDate
 }
 
-
-
 async function getOrdersbyPickupTime() {
     showLoadingPopup();
     const startDate = `${salesStart.value}:00.000Z`;  // UTC指定のため'Z'を追加
     const endDate = `${salesFinish.value}:59.999Z`;   // 23:59:59を設定
-
     try {
         // `await` を `fetch` の前に追加
         const response = await fetch(`${server}/orderskun/pickup-time/range?startDate=${startDate}&endDate=${endDate}&user_id=${clients.id}`, {
@@ -1863,13 +1854,9 @@ async function getOrdersbyPickupTime() {
                 'Content-Type': 'application/json'
             }
         });
-
         const data = await response.json();
         hideLoadingPopup();
-
         if (data.length > 0) {
-            console.log('Orders found:', data);
-
             // 支払い方法ごとの合計金額を保存するオブジェクト
             const paymentSummary = {
                 cash: { total_amount: 0, orders: [] },
@@ -1881,23 +1868,19 @@ async function getOrdersbyPickupTime() {
             // データをループして、支払い方法ごとに合計金額を計算
             data.forEach(order => {
                 const paymentMethod = order.payment_method;
-
                 // 該当する支払い方法にオーダーを追加し、金額を加算
                 if (paymentSummary[paymentMethod]) {
                     paymentSummary[paymentMethod].orders.push(order);
                     paymentSummary[paymentMethod].total_amount += parseFloat(order.total_amount);
                 }
             });
-
             // 結果を `clients.salesInfo` に保存
             clients.salesInfo = paymentSummary;
             console.log(clients.salesInfo);
-
             // ここでデータをフロントエンドのUIに表示するロジックを実装
         } else {
             console.log('No orders found for the given pickup time');
         }
-
     } catch (error) {
         hideLoadingPopup();
         console.error('Error fetching orders by pickup time:', error);

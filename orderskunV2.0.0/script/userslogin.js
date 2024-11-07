@@ -43,7 +43,13 @@ async function signin(payload) {
       const { token } = response.data.info;
       window.localStorage.setItem('token', token);
       hideLoading(); // Oculta o carregamento
-      window.location.href = './pages/pos.html'; // Redireciona para renda.html
+      console.log(response.data.info)
+      if(response.data.kubun==='operator'){
+        window.location.href = './pages/pos.html';
+      }else{
+        window.location.href = './pages/dashboard.html';
+      }
+      // window.location.href = './pages/pos.html'; // Redireciona para renda.html
     } else {
       errormessage = "Check username and password";
       document.getElementById("pass").value = "";

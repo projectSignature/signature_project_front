@@ -7,6 +7,7 @@
     <title>Menu Management</title>
     <link rel="stylesheet" href="../style/reservation.css">
     <link rel="stylesheet" href="../style/loading-popup.css">
+    <link rel="stylesheet" href="../style/common.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="../script/reservation.js" defer></script>
 </head>
@@ -50,7 +51,7 @@
             </div>
     </header>
 
-    <div class="container">
+    <div class="container-reservation">
         <!-- Data do dia atual -->
         <div class="left">
             <h2 id="current_time"></h2>
@@ -67,20 +68,22 @@
         <div class="right">
             <!-- Tabela de Reservas do Dia -->
             <h2>Reservas do Dia</h2>
-            <table class="reservation-tab-day">
-                <thead>
-                    <tr class="tab-dia-col">
-                        <th>ID</th>
-                        <th>Nome</th>
-                        <th>Mesa</th>
-                        <th>Quantidade</th>
-                        <th>Horário</th>
-                    </tr>
-                </thead>
-                <tbody id="reservas-dia-body">
-                    <!-- Conteúdo dinâmico das reservas será inserido aqui -->
-                </tbody>
-            </table>
+            <div class="table-mother-div">
+              <table class="reservation-tab-day">
+                  <thead>
+                      <tr class="tab-dia-col">
+                          <th>ID</th>
+                          <th>Nome</th>
+                          <th>Mesa</th>
+                          <th>Quantidade</th>
+                          <th>Horário</th>
+                      </tr>
+                  </thead>
+                  <tbody id="reservas-dia-body">
+                      <!-- Conteúdo dinâmico das reservas será inserido aqui -->
+                  </tbody>
+              </table>
+            </div>
         </div>
 
         <!-- Modal Criar Reserva -->

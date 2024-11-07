@@ -6,6 +6,7 @@
     <title>Menu Management</title>
     <link rel="stylesheet" href="../style/loading-popup.css">
     <link rel="stylesheet" href="../style/pos.css">
+    <link rel="stylesheet" href="../style/common.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -155,6 +156,12 @@
   width:90%
 }
 
+@media screen and (min-width: 700px) and (max-width: 1600px) {
+  .category-select{
+    width:15rem
+  }
+}
+
 
     </style>
 </head>
@@ -221,13 +228,13 @@
             <label for="description_ja">Descrição(Japanese):</label>
             <textarea id="description_ja"></textarea>
 
-            <label for="price">Price:</label>
+            <label for="price">Valor:</label>
             <input type="number" id="price" step="0.01">
 
             <label for="display_order" style="display: none">Display Order:</label>
             <input type="number"  style="display: none"id="display_order">
 
-            <label for="stock_status">Stock Status:</label>
+            <label for="stock_status">Status do estoque:</label>
             <select id="stock_status">
                 <option value="true">Em estoque</option>
                 <option value="false">Sem estoque</option>
@@ -235,14 +242,14 @@
 
             <label for="menu_image">Menu Image:</label>
             <input type="file" id="menu_image" accept="image/*">
-            <h3>Options</h3>
+            <h3 id="optionsTitle">Options</h3>
             <ul id="options-list"></ul>
             <div id="add-option-form">
               <input type="text" id="new-option-pt" placeholder="Nome da opção (Portuguese)">
               <input type="text" id="new-option-en" placeholder="Nome da opção (English)">
               <input type="text" id="new-option-ja" placeholder="Nome da opção (Japanese)">
               <input type="number" id="new-option-price" placeholder="Valor" step="0.01">
-              <button id="add-option-btn">Add Option</button>
+              <button id="add-option-btn">Adicionar opção</button>
             </div>
             <div class="menu-actions" id="menu-category-new">
               <select id="new-category-select">

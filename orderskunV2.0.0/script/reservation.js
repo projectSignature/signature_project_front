@@ -86,7 +86,7 @@ function showNotification(message, type = 'success') {
 function fillTableWithReservations(reservations) {
     const tableContainer = document.getElementById('mesas-container');
     tableContainer.innerHTML = ''; // Limpa qualquer conteúdo existente
-
+   console.log(reservations)
     // Ordena as reservas pelo número da mesa (table_number) em ordem crescente
     reservations.sort((a, b) => a.table_number - b.table_number);
 

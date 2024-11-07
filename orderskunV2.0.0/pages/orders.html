@@ -47,12 +47,21 @@
                 </ul>
                 <button id="confirm-order" data-translate-key="Confirmar pedido">Confirmar pedido</button>
                 <button id="edit-order" data-translate-key="Alterar">Alterar</button> <!-- 修正ボタンを追加 -->
-                <div class="logo-container">
-                  <div class="logo-text">
-                      <span class="orders-text">Orders</span>
-                      <span class="kun-text">君</span>
-                  </div>
-              </div>
+                <div class="logo-container" id="follow-us-window" onclick="openModal()">
+                  <img src='https://orders-image.sgp1.digitaloceanspaces.com/common/Follow.png'/>
+                </div>
+
+                <!-- Modal -->
+                <div id="socialModal" class="social-modal">
+                    <div class="social-modal-content">
+                        <span class="social-close" onclick="closeModal()">&times;</span>
+                        <div id="qr-container">
+                            <!-- QR images will be appended here -->
+                        </div>
+                    </div>
+                </div>
+
+
             </aside>
 
             <!-- 名前を追加するためのモーダルウィンドウ -->

@@ -113,7 +113,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     <td>${formattedDate}</td>
                     <td>${reservation.reservation_name}</td>
                     <td>${reservation.table_number}</td>
+                    <td>${reservation.num_people || 'Sem observações'}</td>
                     <td>${reservation.remarks || 'Sem observações'}</td>
+
                 `;
                 tbody.appendChild(tr);
             });

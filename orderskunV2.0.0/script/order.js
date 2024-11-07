@@ -38,6 +38,7 @@ document.getElementById('fullscreenButton').addEventListener('click', () => {
     // document.getElementById('exitFullscreenButton').style.display = 'block';
 });
 
+
 document.getElementById('exitFullscreenButton').addEventListener('click', () => {
     if (document.exitFullscreen) {
         document.exitFullscreen();
@@ -82,6 +83,13 @@ let categories = []; // カテゴリ情報を保存する配列
 
 document.addEventListener("DOMContentLoaded", async () => {
   showLoadingPopup()
+  console.log(decodedToken.facebook_url)
+  console.log(decodedToken.instagram_url)
+  if (decodedToken.facebook_url === null && decodedToken.instagram_url === null) {
+    console.log('in');
+    document.getElementById('follow-us-window').classList.add('hidden');
+    console.log(document.getElementById('socialModal').classList); // クラスの追加を確認
+}
 const saveTableNo = sessionStorage.getItem('saveTableNo')
     // テーブル番号が存在しない場合はデフォルト値を1に設定
     if (!saveTableNo) {
@@ -1161,3 +1169,46 @@ document.querySelector('#order-details-modal .close').addEventListener('click', 
 });
 
 });
+
+function openModal() {
+
+    // Define QR image URLs
+    const qrImages = {
+        facebook: decodedToken.facebook_url, // Replace with actual QR code URL
+        instagram: decodedToken.instagram_url // Replace with actual QR code URL
+    };
+
+  if(decodedToken.facebook_url===""||decodedToken.instagram_url===""){
+
+  }
+    // Get container
+    const qrContainer = document.getElementById("qr-container");
+    qrContainer.innerHTML = ''; // Clear any existing content
+
+    // Load images conditionally
+    for (let [platform, url] of Object.entries(qrImages)) {
+        const img = new Image();
+        img.src = url;
+        img.classList.add("qr-image");
+        img.alt = platform;
+
+        img.onload = function() {
+            qrContainer.appendChild(img);
+        };
+    }
+
+    // Show modal
+    document.getElementById("socialModal").style.display = "block";
+}
+
+function closeModal() {
+    document.getElementById("socialModal").style.display = "none";
+}
+
+// Close modal when clicked outside
+window.onclick = function(event) {
+    const modal = document.getElementById("socialModal");
+    if (event.target === modal) {
+        closeModal();
+    }
+};
