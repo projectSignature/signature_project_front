@@ -48,7 +48,7 @@ header img{
     align-items: center;
 }
 #card_income{
-  top: 20%;  /* グラフの上部に配置 */
+  top: 17%;  /* グラフの上部に配置 */
 }
 #expensesChartContainer {
   margin-top: 3px !important;
