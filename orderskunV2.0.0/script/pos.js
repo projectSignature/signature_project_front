@@ -51,6 +51,10 @@ let clients ={
   tax_use:decodedToken.tax_enabled
 }
 
+if(clients.id===1){
+  document.getElementById('print-invoice').style.display='none'
+}
+
 document.addEventListener('DOMContentLoaded', async  () => {
   showLoadingPopup()
   daysSet()
