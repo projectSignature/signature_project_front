@@ -105,6 +105,7 @@ document.addEventListener('DOMContentLoaded', async  () => {
           ${icon}
          </div>
        </div>`;
+
       orderCard.addEventListener('click', () => {
           if (selectedCard) {
               selectedCard.classList.remove('selected-card');
@@ -121,6 +122,11 @@ document.addEventListener('DOMContentLoaded', async  () => {
 
 
   function displayOrderDetails(order) {
+    const paymentButtons = [cashPaymentButton, creditPaymentButton, otherPaymentButton];
+    paymentButtons.forEach(button => {
+     button.classList.remove("selected")
+    })
+    clients.paytype=''
     if(order.payment_method==='cash'){
       document.getElementById('cash-payment').classList.add('selected')
       clients.paytype='cash'
@@ -133,16 +139,11 @@ document.addEventListener('DOMContentLoaded', async  () => {
       document.getElementById('other-payment').classList.add('selected')
       clients.paytype='other'
     }
-    if(order.payment_method==='yet'){
-      const paymentButtons = [cashPaymentButton, creditPaymentButton, otherPaymentButton];
-      paymentButtons.forEach(button => {
-       button.classList.remove("selected")
-      })
-      clients.paytype=''
-    }
+
       clients.printInfo = order;
       orderItems.innerHTML = ''; // Clear previous items
       clients.selectedOrder = order.id;
+
       // レシート用のデータを準備
       let receiptData = {
           items: [],
@@ -191,8 +192,10 @@ document.addEventListener('DOMContentLoaded', async  () => {
           orderItems.appendChild(li);
       });
       // 合計金額を表示
+      console.log(clients.tax_use)
       totalAmountElement.textContent = `￥${Math.floor(receiptData.totalAmount).toLocaleString()}`;
       if(!clients.tax_use){
+        console.log('tax対象')
         document.getElementById('tax-included-amount').textContent =`￥${Math.floor(receiptData.totalAmount).toLocaleString()}`
       }
       updateChange(); // Initial calculation
@@ -636,23 +639,16 @@ document.getElementById('close-menuModal').addEventListener('click', ()=>{
 
 
 async function registeConfirm(){
-
+  console.log(clients.printInfo)
   const loadingPopup = document.getElementById('loading-popup');
   if (!clients.selectedOrder) {
       alert('Seleciona uma comanda');
       return;
   }
-  // console.log(clients.depositAmount)
-  // if(clients.depositAmount===""){
-  //   console.log('nonononononon')
-  //   alert("Insira o vlor recebido")
-  //   return
-  // }
   if(clients.paytype===""){
     alert("Selecione a forma de pagamento")
     return
   }
-  console.log(document.getElementById('deposit-amount').value)
   if(document.getElementById('deposit-amount').value===""||document.getElementById('deposit-amount').value-0===0){
     alert("Insira o valor recebido")
     return
@@ -691,6 +687,7 @@ showLoadingPopup()
 }
 
 async function entregueConfirm(){
+  console.log(clients)
 
 if(clients.printInfo.order_type==='local'||clients.printInfo.order_type==='order'||clients.printInfo.order_type==='takeout'){
   if(clients.printInfo.payment_method==='yet'&&clients.paytype===""){
@@ -818,6 +815,10 @@ document.addEventListener('DOMContentLoaded', function() {
         alert('selecione o pedido')
         return
       }
+      if(!clients.tax_use){
+        selectTaxButton('tax-8');
+        return
+      }
         applyTax(8);
         selectTaxButton('tax-8');
         clients.taxtType = 8;
@@ -828,6 +829,10 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('tax-10').addEventListener('click', function() {
       if(!selectedCard){
         alert('selecione o pedido')
+        return
+      }
+      if(!clients.tax_use){
+        selectTaxButton('tax-10');
         return
       }
         applyTax(10);
@@ -1009,148 +1014,182 @@ async function recite(nb, reciteAmount) {
   if (valorSemTax.endsWith(".00")) {
     valorSemTax = valorSemTax.slice(0, -3);
 }
-let row = `<div id="contentToPrint" class="print-content">
-  <div class="img-dicvs">
-    ${decodedToken.receipt_logo_url ? `<img src="${decodedToken.receipt_logo_url}" width="100" class="setting-right-button" />` : ''}
-</div>
-  <div class="adress-div">
-    <p>${decodedToken.receipt_display_name} <br>${decodedToken.receipt_postal_code} <br>${decodedToken.receipt_address}<br>${decodedToken.receipt_tel}</p>
+
+if(clients.id===1){
+  clients.receiptData.taxtTypes=clients.taxtType
+  clients.receiptData.depositAmount = recebido
+  clients.receiptData.changeAmount=troco
+reciteBuonissimoOnly()
+}else{
+  let row = `<div id="contentToPrint" class="print-content">
+    <div class="img-dicvs">
+      ${decodedToken.receipt_logo_url ? `<img src="${decodedToken.receipt_logo_url}" width="100" class="setting-right-button" />` : ''}
   </div>
-  <div class='display-center-div'>
-    <p>${await getCurrentDateTime()} #${clients.receiptData.order_id}</p>
-  </div>
-  <div class="contents-div">
-  ${await generateReceiptItemsHTML()}
-  </div>
-  <div class="dotted-line"></div>
-  <div class="total-qt">
-    <div class="azukari-amount-div">
-      <div>御買上げ点数　　</div>
-      <div>${clients.receiptData.items.length}点</div>
+    <div class="adress-div">
+      <p>${decodedToken.receipt_display_name} <br>${decodedToken.receipt_postal_code} <br>${decodedToken.receipt_address}<br>${decodedToken.receipt_tel}</p>
     </div>
-    <div class="azukari-amount-div">
-      <div>小計</div>
-      <div>￥${clients.receiptData.totalAmount.toLocaleString()}</div>
+    <div class='display-center-div'>
+      <p>${await getCurrentDateTime()} #${clients.receiptData.order_id}</p>
     </div>
-    ${decodedToken.tax_enabled ? `
-    <div class="azukari-amount-div">
-      <div>(${clients.taxtType}%対象：${valorSemTax}</div>
-      <div>消費税：${valorINclusoTax-valorSemTax})</div>
-    </div>`
-    :''}
+    <div class="contents-div">
+    ${await generateReceiptItemsHTML()}
+    </div>
+    <div class="dotted-line"></div>
+    <div class="total-qt">
+      <div class="azukari-amount-div">
+        <div>御買上げ点数　　</div>
+        <div>${clients.receiptData.items.length}点</div>
+      </div>
+      <div class="azukari-amount-div">
+        <div>小計</div>
+        <div>￥${clients.receiptData.totalAmount.toLocaleString()}</div>
+      </div>
+      ${decodedToken.tax_enabled ? `
+      <div class="azukari-amount-div">
+        <div>(${clients.taxtType}%対象：${valorSemTax}</div>
+        <div>消費税：${valorINclusoTax-valorSemTax})</div>
+      </div>`
+      :''}
 
-  </div>
-  <div class="dotted-line"></div>
-  <div class="total-amount-div">
-    <div>合計</div>
-    <div>￥${valorINclusoTax.toLocaleString()}</div>
-  </div>
-  <div class="total-amount-div">
-    <div>お預り</div>
-  <div>￥${Number(recebido).toLocaleString()}</div>
-  </div>
-  <div class="total-amount-div">
-    <div>お釣り</div>
-    <div>${troco.toLocaleString()}</div>
-  </div>
-  <div class="dotted-line"></div>
-</div>`;
+    </div>
+    <div class="dotted-line"></div>
+    <div class="total-amount-div">
+      <div>合計</div>
+      <div>￥${valorINclusoTax.toLocaleString()}</div>
+    </div>
+    <div class="total-amount-div">
+      <div>お預り</div>
+    <div>￥${Number(recebido).toLocaleString()}</div>
+    </div>
+    <div class="total-amount-div">
+      <div>お釣り</div>
+      <div>${troco.toLocaleString()}</div>
+    </div>
+    <div class="dotted-line"></div>
+  </div>`;
 
-var printWindow = window.open('', '_blank');
+  var printWindow = window.open('', '_blank');
 
-// ウィンドウが正常に開けているか確認
-if (!printWindow) {
-  alert('A página foi bloqueata, verifique a configuração do google');
-  return; // 処理を終了します
+  // ウィンドウが正常に開けているか確認
+  if (!printWindow) {
+    alert('A página foi bloqueata, verifique a configuração do google');
+    return; // 処理を終了します
+  }
+
+  // 新しいウィンドウにコンテンツを書き込む
+  printWindow.document.write(`
+    <html>
+    <head>
+      <title id="title-print"></title>
+      <style>
+        @media print {
+          #body-testes {
+            width: 80mm;
+            height: 100mm !important;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: red !important;
+          }
+          .adress-div {
+            width: 100%;
+            height: 7rem;
+            background-color: black;
+            -webkit-print-color-adjust: exact;
+            color: white;
+            padding-left:10px
+          }
+          .img-dicvs {
+            display: flex;
+            justify-content: center;
+          }
+          .display-center-div {
+            display: flex;
+            justify-content: center;
+          }
+          .contents-div {
+            width: 100%;
+          }
+          .items-name {
+            text-align: left;
+          }
+          .details-iten {
+            width: 80%;
+            text-align: right;
+            margin-right: 1rem;
+          }
+          .dotted-line::before {
+            content: '';
+            display: block;
+            width: 100%;
+            height: 1px;
+            background-color: black;
+            background-image: repeating-linear-gradient(90deg, black, black 2px, transparent 2px, transparent 4px);
+            -webkit-print-color-adjust: exact;
+          }
+          .total-amount-div {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            font-size: 3vh;
+          }
+          .azukari-amount-div {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+          }
+          .total-qt {
+            margin-top: 1rem;
+          }
+        }
+      </style>
+    </head>
+    <body id="body-testes">
+      ${row}
+    </body>
+    </html>
+  `);
+
+  // 画像が正しく読み込まれるまで待機
+  if (decodedToken.receipt_logo_url) {
+    await new Promise(resolve => {
+      const img = new Image();
+      img.onload = resolve;
+      img.src = decodedToken.receipt_logo_url;
+    });
+  } else {
+    console.log("No image URL provided, skipping image load.");
+  }
+  printWindow.print();
+  printWindow.close();
 }
 
-// 新しいウィンドウにコンテンツを書き込む
-printWindow.document.write(`
-  <html>
-  <head>
-    <title id="title-print"></title>
-    <style>
-      @media print {
-        #body-testes {
-          width: 80mm;
-          height: 100mm !important;
-          margin: 0;
-          padding: 0;
-          overflow: hidden;
-          background-color: red !important;
-        }
-        .adress-div {
-          width: 100%;
-          height: 7rem;
-          background-color: black;
-          -webkit-print-color-adjust: exact;
-          color: white;
-          padding-left:10px
-        }
-        .img-dicvs {
-          display: flex;
-          justify-content: center;
-        }
-        .display-center-div {
-          display: flex;
-          justify-content: center;
-        }
-        .contents-div {
-          width: 100%;
-        }
-        .items-name {
-          text-align: left;
-        }
-        .details-iten {
-          width: 80%;
-          text-align: right;
-          margin-right: 1rem;
-        }
-        .dotted-line::before {
-          content: '';
-          display: block;
-          width: 100%;
-          height: 1px;
-          background-color: black;
-          background-image: repeating-linear-gradient(90deg, black, black 2px, transparent 2px, transparent 4px);
-          -webkit-print-color-adjust: exact;
-        }
-        .total-amount-div {
-          width: 100%;
-          display: flex;
-          justify-content: space-between;
-          font-size: 3vh;
-        }
-        .azukari-amount-div {
-          width: 100%;
-          display: flex;
-          justify-content: space-between;
-        }
-        .total-qt {
-          margin-top: 1rem;
-        }
-      }
-    </style>
-  </head>
-  <body id="body-testes">
-    ${row}
-  </body>
-  </html>
-`);
 
-// 画像が正しく読み込まれるまで待機
-if (decodedToken.receipt_logo_url) {
-  await new Promise(resolve => {
-    const img = new Image();
-    img.onload = resolve;
-    img.src = decodedToken.receipt_logo_url;
-  });
-} else {
-  console.log("No image URL provided, skipping image load.");
 }
-printWindow.print();
-printWindow.close();
+
+async function reciteBuonissimoOnly() {
+    // 例: clients が適切に定義されていると仮定
+
+    const receiptData = clients.receiptData; // 必要に応じて正しいスコープで定義
+
+    // フェッチ処理
+    const response = await fetch(`http://localhost:3100/orders/PrintRecite`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ receiptData }) // 正しい構造に修正
+    });
+
+    // レスポンス確認
+    if (!response.ok) {
+        console.error('Error in request:', response.statusText);
+    } else {
+        const data = await response.json();
+        console.log('Response:', data);
+    }
 }
+
 
 function getCurrentDateTime() {
             const now = new Date();
