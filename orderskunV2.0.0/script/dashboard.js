@@ -30,6 +30,8 @@ document.addEventListener("DOMContentLoaded", async () => {
    // 今日の日付を設定
    document.getElementById('salesFinish').value = `${year}-${month}-${day}`;
 
+   document.getElementById('serche-sales').addEventListener('click',getOrdersbyPickupTime)
+
 getOrdersbyPickupTime()
   // fetchTotalSales()
   async function getOrdersbyPickupTime() {
