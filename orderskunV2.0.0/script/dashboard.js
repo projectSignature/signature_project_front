@@ -9,12 +9,11 @@ let currentSaleId = ""
 // 新しい画像のパスを設定
 document.getElementById('logoImage').src = decodedToken.receipt_logo_url;
 document.addEventListener("DOMContentLoaded", async () => {
-  // const decodedToken = await jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
-  // console.log(decodedToken)
+
    userInfo.language = decodedToken.language;
-   userInfo.id = decodedToken.user_id;
+   userInfo.id = decodedToken.userId;
    userInfo.representativeName = decodedToken.username;
-   // userInfo.expense_id = token.expenses_get_id;
+   userInfo.email = decodedToken.email;
    nameSpan.innerText = decodedToken.username;
    userInfo.current_password = '';
    userInfo.password = '';
@@ -32,9 +31,6 @@ document.addEventListener("DOMContentLoaded", async () => {
    document.getElementById('salesFinish').value = `${year}-${month}-${day}`;
 
 getOrdersbyPickupTime()
-
-
-
   // fetchTotalSales()
   async function getOrdersbyPickupTime() {
       showLoadingPopup();
@@ -50,25 +46,21 @@ getOrdersbyPickupTime()
           });
           const data = await response.json();
           hideLoadingPopup();
-          console.log(data)
           if (data.length > 0) {
             const dailyTotals = {};
             let totalSum = 0; // 総合計
             data.forEach(order => {
                 // pickup_timeを日付形式に変換
                 const date = new Date(order.pickup_time).toISOString().slice(0, 10);
-
                 // total_amountを数値に変換して日ごとに集計
                 const amount = parseFloat(order.total_amount);
                 dailyTotals[date] = (dailyTotals[date] || 0) + amount;
-
                 // 総合計を計算
                 totalSum += amount;
                 });
                 document.getElementById('totalSales').textContent = `¥${parseFloat(totalSum).toLocaleString()}`
                 createCrdsBySale(dailyTotals)
                 createSalesChart(dailyTotals)
-
           } else {
               console.log('No orders found for the given pickup time');
           }
@@ -77,19 +69,12 @@ getOrdersbyPickupTime()
           console.error('Error fetching orders by pickup time:', error);
       }
   }
-
-
-
-
-
-
 })
 
 
 
 function createCrdsBySale(dailyTotals) {
   const cardContainer = document.getElementById('expensesChartContainer');
-
   // タイトル要素を作成してスタイルを設定
   const title = document.createElement('h3');
   title.textContent = 'Vendas por dia';
@@ -101,10 +86,8 @@ function createCrdsBySale(dailyTotals) {
   title.style.backgroundColor = '#333333';
   title.style.padding = '10px';
   title.style.borderRadius = '8px';
-
   // タイトルをコンテナに追加
   cardContainer.appendChild(title);
-
   // 曜日の配列
   const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
 
@@ -208,168 +191,25 @@ function createSalesChart(dailyTotals) {
     });
 }
 
-
-
-
-
-//
-//
-//   // fetchMonthlyExpenses()
-//   async function fetchTotalSales() {
-//       loadingIndicator.style.display = 'block';
-//       try {
-//           const response = await fetch(`${server}/pos/total-sales?user_id=${userInfo.id}`, {
-//               method: 'GET',
-//               headers: {
-//                   'Authorization': `Bearer ${token}`,  // トークンをヘッダーに含める
-//                   'Content-Type': 'application/json'
-//               }
-//           });
-//           if (!response.ok) {
-//               throw new Error('データ取得に失敗しました');
-//           }
-//           const data = await response.json();  // レスポンスデータをJSONとしてパース
-//           // 総売上の表示
-//           document.getElementById('totalSales').textContent = `¥${parseFloat(data.totalSales).toLocaleString()}`;
-//           // ポルトガル語で省略した曜日を取得するための配列
-//           const weekdays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-//           // カードを`expensesChartContainer`に追加
-//           const expensesChartContainer = document.getElementById('expensesChartContainer');
-//           expensesChartContainer.innerHTML = '';  // 既存のカードをクリア
-//           // タイトル要素を作成
-//           const title = document.createElement('h3');
-//             title.textContent = 'Vendas por dia';
-//             title.style.textAlign = 'center';
-//             title.style.marginBottom = '20px';
-//             title.style.color = '#ffffff';  // タイトルのテキストカラーを白に設定
-//             title.style.fontWeight = 'bold';
-//             title.style.fontSize = '1.5em'; // フォントサイズを大きくする
-//             title.style.backgroundColor = '#333333';  // 背景色をダークグレーに設定
-//             title.style.padding = '10px';
-//             title.style.borderRadius = '8px';  // 角を丸くする
-//
-//           // タイトルを`expensesChartContainer`に追加
-//           expensesChartContainer.appendChild(title);
-//           const cardContainer = document.createElement('div');
-//           cardContainer.className = 'card-container';  // 新しいdivにクラスを追加
-//
-//           expensesChartContainer.appendChild(cardContainer);
-//           data.dailySales.forEach(sale => {
-//               const date = new Date(sale.date);
-//               const month = date.getMonth() + 1;
-//               const day = date.getDate();
-//               const weekday = weekdays[date.getDay()];  // 曜日を取得
-//               const formattedDate = `${month}/${day} (${weekday})`;
-//
-//               // カード要素を作成
-//               const card = document.createElement('div');
-//               card.className = 'expense-card';
-//
-//               // カードの内容を設定
-//               card.innerHTML = `
-//                   <div class="expense-card-body">
-//                       <h5 class="expense-card-title">${formattedDate}</h5>
-//                       <p class="expense-card-text">¥${parseFloat(sale.total_sales).toLocaleString()}</p>
-//                   </div>
-//               `;
-//
-//               // カードを`expensesChartContainer`に追加
-//               cardContainer.appendChild(card);
-//           });
-//
-//
-//           // 日別売上の推移グラフを描画
-//           const labels = data.dailySales.map(sale => {
-//               const date = new Date(sale.date);  // 日付をパース
-//               const month = date.getMonth() + 1;  // 月を取得 (0ベースなので+1)
-//               const day = date.getDate();  // 日を取得
-//               const weekday = weekdays[date.getDay()];  // 曜日を取得
-//               return `${month}/${day} (${weekday})`;  // "MM/DD (曜日)"形式で返す
-//           });
-//
-//           const salesData = data.dailySales.map(sale => parseFloat(sale.total_sales));
-//           const ctx = document.getElementById('salesChart').getContext('2d');
-//           new Chart(ctx, {
-//               type: 'line',
-//               data: {
-//                   labels: labels,
-//                   datasets: [{
-//                       label: '',  // タイトルを空にして非表示にする
-//                       data: salesData,
-//                       backgroundColor: 'rgba(75, 192, 192, 0.2)',
-//                       borderColor: 'rgba(75, 192, 192, 1)',
-//                       borderWidth: 2,
-//                       fill: true,  // 塗りつぶしを有効にする
-//                       tension: 0.4,  // 曲線を滑らかにする
-//                   }]
-//               },
-//               options: {
-//                   plugins: {
-//                       legend: {
-//                           display: false  // 凡例を非表示にする
-//                       }
-//                   },
-//                   scales: {
-//                       x: {
-//                           grid: {
-//                               display: false  // X軸のグリッド線を非表示にする
-//                           },
-//                           ticks: {
-//                               display: true  // X軸のラベルは表示
-//                           }
-//                       },
-//                       y: {
-//                           beginAtZero: true,
-//                           grid: {
-//                               display: false  // Y軸のグリッド線を非表示にする
-//                           },
-//                           ticks: {
-//                               display: true  // Y軸のラベルは表示
-//                           }
-//                       }
-//                   },
-//                   elements: {
-//                       line: {
-//                           borderWidth: 3  // 線の太さを変更
-//                       },
-//                       point: {
-//                           radius: 4,  // データポイントのサイズを設定
-//                           backgroundColor: 'rgba(75, 192, 192, 1)',  // データポイントの色を設定
-//                       }
-//                   },
-//                   layout: {
-//                       padding: 10  // グラフ周囲に余白を追加
-//                   }
-//               }
-//           });
-//
-//           loadingIndicator.style.display = 'none';
-//
-//       } catch (error) {
-//           console.error('Error fetching sales data:', error);
-//           alert('売上データの取得中にエラーが発生しました');
-//       }
-//   }
-//
-//   // レジ履歴ボタンを取得とデータの取得
    const analistButton = document.querySelector('.button-container button:nth-child(1)')
 //    const salesButton = document.querySelector('.button-container button:nth-child(2)')
 //    const registerButton = document.querySelector('.button-container button:nth-child(3)')
-   const settingsButton = document.querySelector('.button-container button:nth-child(4)');
-//    const settingsList = document.getElementById('settingsList');
+   const settingsButton = document.querySelector('.button-container button:nth-child(2)');
+   const settingsList = document.getElementById('settingsList');
 //    const salesChartContainer = document.getElementById('salesChartContainer');
-//    const expensesChartContainer = document.getElementById('expensesChartContainer');
+   const expensesChartContainer = document.getElementById('expensesChartContainer');
 //    const registerFilter = document.getElementById('registerFilter');
 //    const registerHistory = document.getElementById('registerHistory');
    const totalincome = document.getElementById('card_income')
    const totalexpense = document.getElementById('card_expense')
    const salesContainer = document.getElementById('registerSalesHistory')
    const settingsModal = document.getElementById('settingsModal');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalBody = document.getElementById('modalBody');
-    const closeModal = document.querySelector('.modal .close');
-    const saveButton = document.getElementById('saveButton');
-    const personalSettings = document.getElementById('personalSettingsForm');
+   const modalTitle = document.getElementById('modalTitle');
+   const modalBody = document.getElementById('modalBody');
+   const closeModal = document.querySelector('.modal .close');
+   const saveButton = document.getElementById('saveButton');
+   const personalSettings = document.getElementById('personalSettingsForm');
+   const rangeDatasToAnalize = document.getElementById('range-serch-datas');
 //    // 今日の日付を取得
 //     const today = new Date();
 //     const yyyy = today.getFullYear();
@@ -386,7 +226,7 @@ function createSalesChart(dailyTotals) {
     // 分析ボタンのイベントリスナー
     analistButton.addEventListener('click', async() =>{
         toggleDisplay(
-            [salesChartContainer, expensesChartContainer, totalincome], // 表示する要素
+            [salesChartContainer, expensesChartContainer, totalincome,rangeDatasToAnalize], // 表示する要素
             [salesContainer, registerFilter, registerHistory, settingsList] // 非表示にする要素
         );
     });
@@ -419,32 +259,44 @@ function createSalesChart(dailyTotals) {
     settingsButton.addEventListener('click', function () {
         // 設定リストの表示/非表示を切り替える
         if (settingsList.style.display === 'none') {
-            toggleDisplay([settingsList], [salesChartContainer, expensesChartContainer, totalincome, salesContainer, registerFilter, registerHistory]);
+            toggleDisplay([settingsList], [salesChartContainer, expensesChartContainer, totalincome, salesContainer, registerFilter, registerHistory,rangeDatasToAnalize]);
         } else {
             settingsList.style.display = 'none';
         }
     });
 //
-//     settingsList.querySelector('li:first-child').addEventListener('click', function () {
-//         settingsList.style.display = 'none';
-//         // personalSettings.style.display = 'block';
-//     });
+    settingsList.querySelector('li:first-child').addEventListener('click', function () {
+        settingsList.style.display = 'none';
+        // personalSettings.style.display = 'block';
+    });
 //
 //
-    function toggleDisplay(showElements, hideElements) {
+function toggleDisplay(showElements, hideElements) {
     showElements.forEach(element => {
-      console.log(element)
-        element.style.display = 'block';
-        if(element.id==='card_income'){
+        console.log(element);
+
+        if (element.id === 'expensesChartContainer') {
+            // 一度 display を none にし、少し遅延を加えて flex に戻す
+            element.style.display = 'none';
+            setTimeout(() => {
+                element.style.display = 'flex';
+                element.style.justifyContent = 'center';
+                element.style.alignItems = 'center';
+            }, 10); // 適切な遅延時間を設定
+        }else if(element.id==='card_income'){
           document.getElementById('card_income').style.display = 'flex';
           document.getElementById('card_income').style.alignItems = 'center'; // 中央揃え
-          document.getElementById('card_income').style.gap = '10px'; // h2とpの間隔を調整
+          document.getElementById('card_income').style.gap = '10px'; // h2とpの間隔を調整)
+        }else {
+            element.style.display = 'block';
         }
     });
+
     hideElements.forEach(element => {
         element.style.display = 'none';
     });
 }
+
 //      // フィルターボタンをクリックしたときの動作
 //      document.getElementById('filterButton').addEventListener('click', async () => {
 //          const startDate = document.getElementById('startDate').value;
@@ -515,44 +367,44 @@ function createSalesChart(dailyTotals) {
 //
 //    };
 //
-//    const listItems = settingsList.querySelectorAll('li');
-//    listItems.forEach(item => {
-//        item.addEventListener('click', async function () {
-//          loadingIndicator.style.display = 'none';
-//            const rawSettingName = this.textContent.trim();
-//            const settingKey = settingMap[rawSettingName];
-//
-//            if (settingKey === 'menu') {
-//                try {
-//                    const response = await fetch(`${server}/pos/getmenu`, {
-//                        method: 'GET',
-//                        headers: {
-//                            'Authorization': `Bearer ${token}`,
-//                            'Content-Type': 'application/json'
-//                        }
-//                    });
-//                    if (!response.ok) {
-//                      loadingIndicator.style.display = 'none';
-//                        throw new Error('Erro no sistema');
-//                    }
-//                    const menuItems = await response.json();
-//                    displayMenuItems(menuItems);
-//                } catch (error) {
-//                    console.error('メニュー取得エラー: ', error);
-//                }
-//                return; // 以降の処理をスキップ
-//            }
-//
-//            if (settingKey) {
-//                modalTitle.textContent = rawSettingName;
-//                modalBody.innerHTML = generateModalContent(settingKey);
-//                settingsModal.style.display = 'block';
-//
-//            } else {
-//                console.error('未対応の設定名: ' + rawSettingName);
-//            }
-//        });
-//    });
+   const listItems = settingsList.querySelectorAll('li');
+   listItems.forEach(item => {
+       item.addEventListener('click', async function () {
+         loadingIndicator.style.display = 'none';
+           const rawSettingName = this.textContent.trim();
+           const settingKey = settingMap[rawSettingName];
+
+           if (settingKey === 'menu') {
+               try {
+                   const response = await fetch(`${server}/pos/getmenu`, {
+                       method: 'GET',
+                       headers: {
+                           'Authorization': `Bearer ${token}`,
+                           'Content-Type': 'application/json'
+                       }
+                   });
+                   if (!response.ok) {
+                     loadingIndicator.style.display = 'none';
+                       throw new Error('Erro no sistema');
+                   }
+                   const menuItems = await response.json();
+                   displayMenuItems(menuItems);
+               } catch (error) {
+                   console.error('メニュー取得エラー: ', error);
+               }
+               return; // 以降の処理をスキップ
+           }
+
+           if (settingKey) {
+               modalTitle.textContent = rawSettingName;
+               modalBody.innerHTML = generateModalContent(settingKey);
+               settingsModal.style.display = 'block';
+
+           } else {
+               console.error('未対応の設定名: ' + rawSettingName);
+           }
+       });
+   });
 //
 //    // メニュー一覧を表示する関数
 //    // メニュー一覧を表示する関数
@@ -772,9 +624,9 @@ function createSalesChart(dailyTotals) {
 // }
 //
 //
-//        closeModal.addEventListener('click', function () {
-//            settingsModal.style.display = 'none';
-//        });
+       closeModal.addEventListener('click', function () {
+           settingsModal.style.display = 'none';
+       });
 //
 //        window.addEventListener('click', function (event) {
 //            if (event.target == settingsModal) {
@@ -782,138 +634,137 @@ function createSalesChart(dailyTotals) {
 //            }
 //        });
 //
-//        function generateModalContent(settingKey) {
-//            switch (settingKey) {
-//                case 'personal_settings':
-//                    return `
-//                        <form id="personalSettingsForm">
-//                            <h2>mude o campo que deseja</h2>
-//                            <div class="form-group">
-//                                <label for="currentPassword">Senha atual:</label>
-//                                <input type="password" id="currentPassword" name="current_password" value="">
-//                            </div>
-//                            <div class="form-group">
-//                                <label for="password">Nova senha:</label>
-//                                <input type="password" id="password" name="password" value="">
-//                            </div>
-//                            <div class="form-group">
-//                                <label for="confirmPassword">Confirmar senha:</label>
-//                                <input type="password" id="confirmPassword" name="confirm_password" value="">
-//                            </div>
-//                            <div class="form-group">
-//                                <label for="email_form">email:</label>
-//                                <input type="text" id="form_email" name="email" value="${userInfo.email}">
-//                            </div>
-//                            <div class="form-group">
-//                                <label for="representativeName">Nome do representante:</label>
-//                                <input type="text" id="representativeName" name="representativeName" value="${nameSpan.innerText}">
-//                            </div>
-//                            <div class="form-group">
-//                                <label for="language">Idioma:</label>
-//                                <select id="language" name="language">
-//                                    <option value="pt" ${userInfo.language==='pt'?'selected':''}>Português</option>
-//                                    <option value="en" ${userInfo.language==='en'?'selected':''}>Inglês</option>
-//                                    <option value="ja" ${userInfo.language==='ja'?'selected':''}>Japonês</option>
-//                                </select>
-//                            </div>
-//                        </form>
-//                    `;
-//                case 'register_number':
-//                    return '<p>Formulário para Número do Caixa</p>';
-//                case 'cashier':
-//                    return '<p>Formulário para Responsável pelo Caixa</p>';
-//                default:
-//                    return '<p>Por favor, selecione uma opção de configuração.</p>';
-//            }
-//        }
-// //個人情報の変更エレメント
-//        const saveButtonForm = document.getElementById('saveButton');
-//        saveButtonForm.addEventListener('click', async function() {
-//            event.preventDefault();
-// // 現在表示されているフォームを動的に取得
-//     const currentForm = document.querySelector('form');
-//     if (!currentForm) {
-//         alert('Erro no sistema');
-//         return;
-//     }
-//  // フォームのデータを取得
-//     const formData = new FormData(currentForm);
-//   // データをJSON形式に変換し、変更があったフィールドのみ追加
-//   const data = {};
-//   for (let [key, value] of formData.entries()) {
-// // 変更があったかどうかをチェック (userInfo[key] が存在するか確認)
-//       if (userInfo[key] !== undefined && userInfo[key] !== value) {
-//         console.log(key)
-//         console.log(userInfo[key])
-//         console.log(value)
-// // パスワード関連のフィールドかどうかをチェック
-//           if (['current_password', 'password', 'confirm_password'].includes(key)) {
-//               const currentPass = document.getElementById('currentPassword').value.trim();
-//               const newPass = document.getElementById('password').value.trim();
-//               const confirmPass = document.getElementById('confirmPassword').value.trim();
-// // パスワード関連のフィールドのチェック
-//               if (currentPass === "" || newPass === "" || confirmPass === "") {
-//                   alert('Todos os campos de senha devem estar preenchidos.');
-//                   break;  // ループを抜ける
-//               } else if (newPass !== confirmPass) {
-//                   alert('A senha nova deve ser igual à confirmação.');
-//                   break;  // ループを抜ける
-//               }
-//           }
-//           data[key] = value;
-//       }
-//   }
-// //配列に変化が合ったか確認する
-//   if (Object.keys(data).length === 0) {
-//       alert('Nenhuma alteração foi feita.');
-//       return;  // 処理を終了
-//   }
-//     // user_id を userInfo.id から追加
-//     if (userInfo && userInfo.id) {
-//         data.user_id = userInfo.id;
-//     } else {
-//         alert('User ID não encontrado');
-//         return;
-//     }
-//     updateInformations(data)
-//     settingsModal.style.display = 'none';
-// });
+       function generateModalContent(settingKey) {
+           switch (settingKey) {
+               case 'personal_settings':
+                   return `
+                       <form id="personalSettingsForm">
+                           <h2>mude o campo que deseja</h2>
+                           <div class="form-group">
+                               <label for="currentPassword">Senha atual:</label>
+                               <input type="password" id="currentPassword" name="current_password" value="">
+                           </div>
+                           <div class="form-group">
+                               <label for="password">Nova senha:</label>
+                               <input type="password" id="password" name="password" value="">
+                           </div>
+                           <div class="form-group">
+                               <label for="confirmPassword">Confirmar senha:</label>
+                               <input type="password" id="confirmPassword" name="confirm_password" value="">
+                           </div>
+                           <div class="form-group">
+                               <label for="email_form">email:</label>
+                               <input type="text" id="form_email" name="email" value="${userInfo.email}">
+                           </div>
+                           <div class="form-group">
+                               <label for="representativeName">Nome do representante:</label>
+                               <input type="text" id="representativeName" name="representativeName" value="${nameSpan.innerText}">
+                           </div>
+                           <div class="form-group">
+                               <label for="language">Idioma:</label>
+                               <select id="language" name="language">
+                                   <option value="pt" ${userInfo.language==='pt'?'selected':''}>Português</option>
+                                   <option value="en" ${userInfo.language==='en'?'selected':''}>Inglês</option>
+                                   <option value="ja" ${userInfo.language==='ja'?'selected':''}>Japonês</option>
+                               </select>
+                           </div>
+                       </form>
+                   `;
+               case 'register_number':
+                   return '<p>Formulário para Número do Caixa</p>';
+               case 'cashier':
+                   return '<p>Formulário para Responsável pelo Caixa</p>';
+               default:
+                   return '<p>Por favor, selecione uma opção de configuração.</p>';
+           }
+       }
+//個人情報の変更エレメント
+       const saveButtonForm = document.getElementById('saveButton');
+       saveButtonForm.addEventListener('click', async function() {
+           event.preventDefault();
+// 現在表示されているフォームを動的に取得
+    const currentForm = document.querySelector('form');
+    if (!currentForm) {
+        alert('Erro no sistema');
+        return;
+    }
+ // フォームのデータを取得
+    const formData = new FormData(currentForm);
+  // データをJSON形式に変換し、変更があったフィールドのみ追加
+  const data = {};
+  for (let [key, value] of formData.entries()) {
+// 変更があったかどうかをチェック (userInfo[key] が存在するか確認)
+      if (userInfo[key] !== undefined && userInfo[key] !== value) {
+        console.log(key)
+        console.log(userInfo[key])
+        console.log(value)
+// パスワード関連のフィールドかどうかをチェック
+          if (['current_password', 'password', 'confirm_password'].includes(key)) {
+              const currentPass = document.getElementById('currentPassword').value.trim();
+              const newPass = document.getElementById('password').value.trim();
+              const confirmPass = document.getElementById('confirmPassword').value.trim();
+// パスワード関連のフィールドのチェック
+              if (currentPass === "" || newPass === "" || confirmPass === "") {
+                  alert('Todos os campos de senha devem estar preenchidos.');
+                  break;  // ループを抜ける
+              } else if (newPass !== confirmPass) {
+                  alert('A senha nova deve ser igual à confirmação.');
+                  break;  // ループを抜ける
+              }
+          }
+          data[key] = value;
+      }
+  }
+//配列に変化が合ったか確認する
+  if (Object.keys(data).length === 0) {
+      alert('Nenhuma alteração foi feita.');
+      return;  // 処理を終了
+  }
+    // user_id を userInfo.id から追加
+    if (userInfo && userInfo.id) {
+        data.id = userInfo.id;
+    } else {
+        alert('User ID não encontrado');
+        return;
+    }
+    updateInformations(data)
+    settingsModal.style.display = 'none';
+});
 //
-// async function updateInformations(dataobject){
-//   loadingIndicator.style.display = 'block';
-//   try {
-//       // APIエンドポイントにPOSTリクエストを送信
-//       const response = await fetch(`${server}/pos/updateSettings`, {
-//           method: 'POST',
-//           headers: {
-//               'Content-Type': 'application/json'
-//           },
-//           body: JSON.stringify(dataobject)
-//       });
-//
-//       if (response.status===200) {
-//         nameSpan.innerText = document.getElementById('representativeName').value
-//         userInfo.representativeName = document.getElementById('representativeName').value
-//         userInfo.email = document.getElementById('form_email').value
-//         userInfo.current_password = document.getElementById('currentPassword').value
-//         userInfo.password = document.getElementById('password').value
-//         userInfo.confirm_password = document.getElementById('confirmPassword').value
-//
-//           const result = await response.json();
-//           console.log('保存成功:', result);
-//           alert('Feito com sucesso');
-//       }else if(response.status===401){
-//         alert('Senha atual incorreta');
-//       } else {
-//           console.error('保存失敗:', response.status);
-//           alert('Tivemos erro no registro');
-//       }
-//   } catch (error) {
-//       console.error('エラー発生:', error);
-//       alert('Tivemos erro no registro');
-//   }
-// loadingIndicator.style.display = 'none';
-// }
+async function updateInformations(dataobject){
+  try {
+    console.log(dataobject)
+      // APIエンドポイントにPOSTリクエストを送信
+      const response = await fetch(`${server}/orderskun/updateSettings`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(dataobject)
+      });
+
+      if (response.status===200) {
+        nameSpan.innerText = document.getElementById('representativeName').value
+        userInfo.representativeName = document.getElementById('representativeName').value
+        userInfo.email = document.getElementById('form_email').value
+        userInfo.current_password = document.getElementById('currentPassword').value
+        userInfo.password = document.getElementById('password').value
+        userInfo.confirm_password = document.getElementById('confirmPassword').value
+          const result = await response.json();
+          console.log('保存成功:', result);
+          alert('Feito com sucesso');
+      }else if(response.status===401){
+        alert('Senha atual incorreta');
+      } else {
+          console.error('保存失敗:', response.status);
+          alert('Tivemos erro no registro');
+      }
+  } catch (error) {
+      console.error('エラー発生:', error);
+      alert('Tivemos erro no registro');
+  }
+
+}
 //
 //    async function fetchAndDisplaySalesHistory(startDate, endDate) {
 //      loadingIndicator.style.display = 'block';
@@ -1335,9 +1186,7 @@ function createSalesChart(dailyTotals) {
 // }
 //
 //
-// function closeModal() {
-//   document.getElementById('updateModal').style.display = "none";
-// }
+
 //
 // function saveChanges() {
 //   loadingIndicator.style.display = 'block';
@@ -1378,8 +1227,8 @@ function createSalesChart(dailyTotals) {
 // }
 //
 // // 設定項目を言語ごとにマッピング
-// const settingMap = {
-//     'Configurações pessoais': 'personal_settings', // ポルトガル語
+const settingMap = {
+    'Configurações pessoais': 'personal_settings', // ポルトガル語
 //     'Número do caixa': 'register_number',          // ポルトガル語
 //     'Responsável pelo caixa': 'cashier',           // ポルトガル語
 //     'Menu':'menu',
@@ -1387,4 +1236,4 @@ function createSalesChart(dailyTotals) {
 //     'レジ番号': 'register_number',                // 日本語
 //     'レジ担当者': 'cashier',               // 日本語
 //     'メニュー':'menu'
-// };
+};
