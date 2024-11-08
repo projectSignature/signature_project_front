@@ -6,8 +6,6 @@ body {
     width: 100%;
     overflow: hidden;
     font-size: 0.9em;
-    height: 100%;
-    padding-bottom: 15px
 }
 
 
@@ -16,13 +14,10 @@ header {
     overflow: hidden;
     background-color: #333333;
     color: white;
-    height:3rem;
+
     text-align: center;
     display: flex;
-    justify-content: space-around;
-}
-header img{
-  width:3rem !important
+    justify-content: space-between;
 }
 .container {
     padding: 2px;
@@ -47,21 +42,14 @@ header img{
     align-items: center;
 }
 #card_income{
-  top: 30%;  /* グラフの上部に配置 */
+  top: 19%;  /* グラフの上部に配置 */
 }
 #expensesChartContainer {
   margin-top: 3px !important;
-  height: 40vh;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-
+  height: 50vh;
+  overflow: hidden;
   /* background-color: yellow */
 
-}
-#expensesChartContainer h3{
-  width:20rem!important;
-  height: 2rem!important
 }
 .card-container{
   /* padding: 20px 0px; */
@@ -89,8 +77,6 @@ header img{
     justify-content: center;
     background-image: linear-gradient(135deg, #6dd5ed 0%, #2193b0 100%);
     color: #333;
-    height:2.5rem;
-    margin-top:2px
 }
 
 .expense-card:hover {
@@ -135,13 +121,11 @@ header img{
 
 .chart-container {
   width: 100%;
-  height:13rem;
   margin: auto;
   border-bottom: 1px dashed #333;  /* 下に点線を追加 */
   position: relative;
-  margin-top: 1rem;
-  padding-bottom:15px;
-  overflow-y: auto
+  margin-top: 3rem;
+  padding-bottom:15px
 }
 .card-content {
 display: flex;
@@ -158,7 +142,7 @@ font-weight: bold!important;
 font-size: 20px!important; /* p のサイズを h2 に合わせて調整 */
 }
 .logo-container{
-
+    width:30%;
     overflow: hidden;
 }
 .header-right{
@@ -174,10 +158,10 @@ font-size: 20px!important; /* p のサイズを h2 に合わせて調整 */
 }
 .button-container {
   width:100%;
-  display: flex;
-  justify-content: space-around;
-  background-color: #007BFF;
-  padding: 2px 0;
+    display: flex;
+    justify-content: space-around;
+    background-color: #007BFF;
+    padding: 10px 0;
 }
 
 .button-container button {
@@ -185,7 +169,7 @@ font-size: 20px!important; /* p のサイズを h2 に合わせて調整 */
     background-color: #0056b3;
     color: white;
     border: none;
-    padding: 2px;
+    padding: 15px;
     border-radius: 8px;
     font-size: 0.8em;
     cursor: pointer;
@@ -398,7 +382,14 @@ align-items: center;
 justify-content: space-between;
 }
 
-
+.register-card-header h3 {
+margin: 0;
+font-size: 1.2em;
+color: #333;
+display: flex;
+align-items: center;
+gap: 10px;
+}
 
 .register-card-header .time-info {
 font-size: 0.9em;
@@ -865,47 +856,4 @@ width: 100%;
 .checkbox_addMEnu{
   width:5rem;
   height: 2rem
-}
-.receita-data-input-mother-div {
-    display: flex;
-    gap: 15px; /* 要素間の間隔 */
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    background-color: #f9f9f9; /* 背景色 */
-    border-radius: 10px; /* 角を丸く */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* ボックスシャドウ */
-}
-
-.receita-data-input-mother-div input[type="date"] {
-    padding: 8px 12px;
-    border: 1px solid #ccc; /* 枠線 */
-    border-radius: 5px;
-    font-size: 20px;
-    color: #333;
-    background-color: #fff;
-    transition: border-color 0.3s; /* ホバー時のアニメーション */
-
-    /* フォーカスしたときのスタイル */
-    outline: none;
-}
-
-.receita-data-input-mother-div input[type="date"]:focus {
-    border-color: #007bff; /* フォーカス時の枠線色 */
-}
-
-#serche-sales {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 5px;
-    background-color: #007bff; /* ボタンの背景色 */
-    color: #fff;
-    font-size: 1em;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s; /* ホバー時のアニメーション */
-}
-
-#serche-sales:hover {
-    background-color: #0056b3; /* ホバー時の背景色 */
 }
