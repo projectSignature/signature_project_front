@@ -1190,6 +1190,33 @@ async function reciteBuonissimoOnly() {
     }
 }
 
+async function ryousyushoBuonissimoOnly() {
+    // 例: clients が適切に定義されていると仮定
+
+    const receiptData = clients.receiptData; // 必要に応じて正しいスコープで定義
+
+    // フェッチ処理
+    const response = await fetch(`http://localhost:3100/orders/printRyousyusho`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ receiptData }) // 正しい構造に修正
+    });
+
+    // レスポンス確認
+    if (!response.ok) {
+        console.error('Error in request:', response.statusText);
+    } else {
+        const data = await response.json();
+        console.log('Response:', data);
+    }
+}
+
+
+
+
+
 
 function getCurrentDateTime() {
             const now = new Date();
@@ -1441,6 +1468,12 @@ function getCurrentDateTime() {
             valorSemTax = valorSemTax.slice(0, -3);
         }
 
+        if(clients.id===1){
+          clients.receiptData.taxtTypes=clients.taxtType
+          clients.receiptData.depositAmount = recebido
+          clients.receiptData.changeAmount=troco
+        ryousyushoBuonissimoOnly()
+      }else{
         let row = `
 
           <div class="adress-div">
@@ -1602,6 +1635,12 @@ function getCurrentDateTime() {
         printWindow.close();
 
         // await registeConfirm();
+      }
+
+
+
+
+
 
         }
 
