@@ -1,0 +1,126 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    color:red;
+    overflow: hidden;
+    height: 100%;
+}
+header{
+  width: 100%;
+  height:2rem;
+  display: flex;
+  overflow: hidden;
+  padding: 2px
+}
+#language-switcher{
+  width: 35%;
+  display: flex;
+  justify-content:  space-between;
+}
+#language-switcher img{
+  width: 25%
+}
+
+.container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+}
+
+.title {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    color: #333;
+}
+
+/* カテゴリーボタンをタブスタイルに */
+.category-buttons {
+    display: flex;
+    justify-content: space-around;
+    overflow-x: auto;
+    background-color: #007BFF;
+    padding: 10px 5px;
+    border-radius: 25px;
+}
+
+.category-buttons button {
+    flex: 1;
+    padding: 8px 12px;
+    margin: 0 5px;
+    border: none;
+    background-color: #007BFF;
+    color: #fff;
+    font-size: 0.85rem;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    white-space: nowrap;
+}
+
+.category-buttons button.selected-category {
+    background-color: #ffffff;
+    color: #007BFF;
+    font-weight: bold;
+}
+
+.category-buttons button:hover {
+    background-color: #0056b3;
+}
+
+.menu-items-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    padding-top: 20px;
+    height: calc(100vh - 4rem); /* headerの高さ分を差し引いた高さを設定 */
+    overflow-y: auto; /* Y軸方向のみスクロール可能に */
+}
+
+.menu-item {
+    background-color: #fff;
+    width: 45%;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.2s;
+}
+
+.menu-item:hover {
+    transform: scale(1.03);
+}
+
+.menu-item img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.menu-item h3 {
+    margin: 8px 0 5px;
+    font-size: 1rem;
+    color: #333;
+}
+
+.menu-item p {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.sold-out {
+    opacity: 0.6;
+}
+
+.sold-out p {
+    color: #d9534f;
+    font-weight: bold;
+}
