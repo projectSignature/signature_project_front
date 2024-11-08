@@ -14,18 +14,20 @@ body {
 }
 header{
   width: 100%;
-  height:2rem;
+  height:3rem;
   display: flex;
+  justify-content: space-between;
   overflow: hidden;
   padding: 2px
 }
 #language-switcher{
-  width: 35%;
+  width: 30%;
   display: flex;
   justify-content:  space-between;
 }
 #language-switcher img{
-  width: 25%
+  width: 33%;
+  height:auto
 }
 
 .container {
@@ -138,4 +140,30 @@ h1 {
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
+}
+
+/* セレクトメニューのスタイリッシュなデザイン */
+#takeout-select {
+    padding: 2px 5px;
+    font-size: 0.9rem;
+    text-align: center;
+    color: #007BFF;
+    border: 2px solid #007BFF;
+    border-radius: 5px;
+    background-color: #ffffff;
+    outline: none;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    margin-right: 5px;
+    margin-left: 15px
+}
+
+#takeout-select:hover {
+    background-color: #007BFF;
+    color: #ffffff;
+}
+
+#takeout-select option {
+    background-color: #ffffff;
+    color: #007BFF;
 }
