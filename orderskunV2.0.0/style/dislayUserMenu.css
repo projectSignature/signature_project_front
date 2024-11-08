@@ -124,3 +124,18 @@ header{
     color: #d9534f;
     font-weight: bold;
 }
+
+h1 {
+    font-size: 3em;
+    color: #34495e;
+    font-weight: bold;
+    font-family: 'Georgia', serif;
+    text-align: center;
+    opacity: 0;
+    animation: fadeIn 2s ease-in forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
