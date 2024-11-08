@@ -174,10 +174,10 @@ font-size: 20px!important; /* p のサイズを h2 に合わせて調整 */
 }
 .button-container {
   width:100%;
-    display: flex;
-    justify-content: space-around;
-    background-color: #007BFF;
-    padding: 10px 0;
+  display: flex;
+  justify-content: space-around;
+  background-color: #007BFF;
+  padding: 2px 0;
 }
 
 .button-container button {
@@ -185,7 +185,7 @@ font-size: 20px!important; /* p のサイズを h2 に合わせて調整 */
     background-color: #0056b3;
     color: white;
     border: none;
-    padding: 15px;
+    padding: 2px;
     border-radius: 8px;
     font-size: 0.8em;
     cursor: pointer;
