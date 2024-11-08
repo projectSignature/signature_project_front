@@ -77,6 +77,7 @@ getOrdersbyPickupTime()
 
 function createCrdsBySale(dailyTotals) {
   const cardContainer = document.getElementById('expensesChartContainer');
+  cardContainer.innerHTML=""
   // タイトル要素を作成してスタイルを設定
   const title = document.createElement('h3');
   title.textContent = 'Vendas por dia';
@@ -118,7 +119,14 @@ function createCrdsBySale(dailyTotals) {
   });
 }
 
+let salesChart;  // グローバル変数として定義
+
 function createSalesChart(dailyTotals) {
+    // 既に存在するグラフがある場合、破棄する
+    if (salesChart) {
+        salesChart.destroy();
+    }
+
     // 曜日の配列
     const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
 
@@ -137,8 +145,8 @@ function createSalesChart(dailyTotals) {
     // Canvas要素のコンテキストを取得
     const ctx = document.getElementById('salesChart').getContext('2d');
 
-    // グラフを生成
-    new Chart(ctx, {
+    // グラフを生成し、グローバル変数に格納
+    salesChart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: labels,
@@ -192,6 +200,7 @@ function createSalesChart(dailyTotals) {
         }
     });
 }
+
 
    const analistButton = document.querySelector('.button-container button:nth-child(1)')
 //    const salesButton = document.querySelector('.button-container button:nth-child(2)')
