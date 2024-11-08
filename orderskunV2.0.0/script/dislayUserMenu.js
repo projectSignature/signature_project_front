@@ -1,33 +1,53 @@
+
+
+
+
 document.addEventListener('DOMContentLoaded', async () => {
-  const users = [,"Buonissimo",,,,,,,,,,,,,,,,"Roots Grill"]
     const urlParams = new URLSearchParams(window.location.search);
-    const clientId = urlParams.get('clientId') || 1; // URLからclientIdを取得、無ければ1をデフォルトに
-    let userLanguage = 'pt'; // 初期言語設定（日本語）
+    const clientId = urlParams.get('clientId') || 0;
+    let userLanguage = 'pt';
+    let MainData = {};
+    let currentSelectedButton = null;
     const categories = [];
-    let selectedName = null;
-    document.getElementById('userTitle').innerText = users[clientId]
-
-    // データ取得と初期表示設定
-    const MainData = await makerequest(`${server}/orders/getBasedata?user_id=${clientId}`);
-    const Categorys = MainData.categories.filter(category => category.is_takeout === false);
-    Categorys.sort((a, b) => a.display_order - b.display_order);
-
     const orderCategories = document.getElementById('order-categories');
     const menuItemsContainer = document.getElementById('menu-items');
-    let currentSelectedButton = null;
+    const header = document.querySelector('header');
+    const users = [,"Buonissimo",,,,,,,,,,,,,,,,"Roots Grill"]
+    document.getElementById('userTitle').innerText = users[clientId]
 
-    // 言語切り替えボタンのイベントリスナーを設定
-    document.querySelectorAll('.language-icon').forEach(icon => {
-        icon.addEventListener('click', () => {
-            userLanguage = icon.dataset.lang; // データ属性から選択された言語を取得
-            renderCategories(); // カテゴリーとメニューを再レンダリング
+    const translations = {
+        'ja': { local: '店内', takeout: 'テイクアウト' },
+        'pt': { local: 'refeição local', takeout: 'takeout' },
+        'en': { local: 'Dine-in', takeout: 'Takeout' }
+    };
+
+    MainData = await makerequest(`${server}/orders/getBasedata?user_id=${clientId}`);
+    const hasTakeout = MainData.categories.some(category => category.is_takeout === true);
+
+    let takeoutFilter = 'local';
+    let selectElement;
+
+    if (hasTakeout) {
+        selectElement = document.createElement('select');
+        selectElement.id = 'takeout-select';
+        updateSelectOptions(); // 初回のオプション設定
+        selectElement.addEventListener('change', () => {
+            takeoutFilter = selectElement.value;
+            updateCategories();
         });
-    });
+        header.insertBefore(selectElement, document.getElementById('language-switcher'));
+    }
 
-    // カテゴリーボタンとメニュー項目をレンダリング
-    function renderCategories() {
-        orderCategories.innerHTML = ''; // カテゴリーボタンをクリア
-        Categorys.forEach((category, index) => {
+    updateCategories();
+
+    function updateCategories() {
+        orderCategories.innerHTML = '';
+        const filteredCategories = MainData.categories.filter(category =>
+            takeoutFilter === 'takeout' ? category.is_takeout === true : category.is_takeout === false
+        );
+        filteredCategories.sort((a, b) => a.display_order - b.display_order);
+
+        filteredCategories.forEach((category, index) => {
             let button = document.createElement('button');
             button.textContent = category[`category_name_${userLanguage}`];
 
@@ -49,6 +69,24 @@ document.addEventListener('DOMContentLoaded', async () => {
             orderCategories.appendChild(button);
         });
     }
+
+    // 言語変更に応じてセレクトメニューのオプションも更新
+    function updateSelectOptions() {
+        if (selectElement) {
+            selectElement.innerHTML = `
+                <option value="local">${translations[userLanguage].local}</option>
+                <option value="takeout">${translations[userLanguage].takeout}</option>
+            `;
+        }
+    }
+
+    document.querySelectorAll('.language-icon').forEach(icon => {
+        icon.addEventListener('click', () => {
+            userLanguage = icon.getAttribute('data-lang');
+            updateCategories();
+            updateSelectOptions(); // セレクトメニューのラベルを翻訳
+        });
+    });
 
     function displayMenuItems(categoryId) {
         const sortedData = MainData.menus
@@ -74,7 +112,4 @@ document.addEventListener('DOMContentLoaded', async () => {
             menuItemsContainer.appendChild(div);
         });
     }
-
-    // 初期表示のカテゴリーレンダリング
-    renderCategories();
 });
