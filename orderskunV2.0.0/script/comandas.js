@@ -36,6 +36,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         orderContainer.innerHTML = ''; // 前の注文カードをクリア
         pendingOrders.forEach(async order => {
+          console.log(order.table_no)
           const {color,message} = await timeGet(order.pickup_time)
           const pickupTime = new Date(order.pickup_time);
           const hours = pickupTime.getUTCHours(); // UTC時間で時間を取得
@@ -45,15 +46,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             let tableDisplay = '';
 
             if(order.order_type==='uber'){
-              tableDisplay = `uber:${order.order_name}`
+              tableDisplay = `uber<br>№:${order.order_name}`
             }else if(order.order_type==='demaekan'){
-              tableDisplay = `demaekan:${order.order_name}`
+              tableDisplay = `demaekan<br>№:${order.order_name}`
             }else if(order.order_type==='local'){
-              tableDisplay = `mesa:${order.order_name}`
+              tableDisplay = `mesa:${order.table_no}<br> nome:${order.order_name}`
             }else if(order.order_type==='outros'){
-              tableDisplay = `outros:${order.order_name}`
+              tableDisplay = `outros<br>${order.order_name}`
             }else if(order.order_type==='takeout'){
-              tableDisplay = `take out:${order.order_name}`
+              tableDisplay = `take out<br>nome:${order.order_name}`
             }
             const orderCard = document.createElement('div');
             orderCard.classList.add('order-card');
@@ -61,7 +62,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <h3>${tableDisplay}</h3>
                 <div class="order-time-div" style="background-color: ${color} !important;"><span>Pickup time: ${hours}:${minutes}</span></div>
                 <div class="order-time-div" style="background-color: ${color} !important;"><span>${message}</span></div>
-                <p>Valor: ${formatPrice(order.total_amount)}</p>
+                <p class="valor-p">Valor: ${formatPrice(order.total_amount)}</p>
                 <div class="order-items"></div>
             `;
 
