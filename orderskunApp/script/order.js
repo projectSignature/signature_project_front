@@ -3,7 +3,6 @@ if (!token) {
    window.location.href = '../index.html';
 }
 const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
-
 const orderNamesContainer = document.getElementById('order-names-container');
 // const selectedItemsContainer = document.getElementById('selected-items');
 const nameInput = document.getElementById('name-input');
@@ -70,7 +69,7 @@ const alertMessage = document.getElementById('alert-message');
 
 let orderList = {
   tableNo:'',
-  clienId:decodedToken.userId,//ログイン処理完了後は動的に
+  clienId:decodedToken.restaurant_id,//ログイン処理完了後は動的に
   order:{
   },
   historyOrder:{
@@ -104,7 +103,6 @@ const saveTableNo = sessionStorage.getItem('saveTableNo')
     document.getElementById('table-number').textContent =  orderList.tableNo
     //メニューのデータを取得する
     const MainData = await makerequest(`${server}/orders/getBasedata?user_id=${orderList.clienId}`)
-    console.log(MainData)
     //未払いのオーダーが存在してるかチェックする
     const PendingData = await fetchPendingOrders()
 
