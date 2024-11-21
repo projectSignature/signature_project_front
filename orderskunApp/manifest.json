@@ -1,7 +1,7 @@
 {
   "name": "Orders君",
   "short_name": "orders",
-  "start_url": "/index.html",
+  "start_url": "/signature-project-front/orderskunApp/index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#000000",
