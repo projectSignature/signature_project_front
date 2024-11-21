@@ -43,9 +43,10 @@ async function signin(payload) {
       const { token } = response.data.info;
       window.localStorage.setItem('token', token);
       hideLoading(); // Oculta o carregamento
-      console.log(response.data.info)
       if(response.data.kubun==='operator'){
         window.location.href = './pages/pos.html';
+      }else if(response.data.kubun==='other'){
+        window.location.href = './pages/orders.html';
       }else{
         window.location.href = './pages/dashboard.html';
       }
