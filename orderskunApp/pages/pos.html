@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cash Register</title>
+    <link rel="stylesheet" href="../style/pos.css"> <!-- Link to your stylesheet -->
+    <link rel="stylesheet" href="../style/loading-popup.css">
+    <link rel="stylesheet" href="../style/common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+      <div class="logo-container">
+        <div class="logo-text">
+            <span class="orders-text">Orders</span>
+            <span class="kun-text">君</span>
+        </div>
+    </div>
+<div class="header-buttons">
+  <button class="header-btn nav-btn" id="pedido-admin-btn">Pedido<br>Admin</button>
+  <button class="header-btn nav-btn" id="pedido-client-btn">Pedido<br>tablet</button>
+  <button class="header-btn nav-btn" id="pedido-takeout-btn">Pedido<br>takeout</button>
+  <button class="header-btn nav-btn" id="comanda-btn">Orders</button>
+    <button class="header-btn nav-btn" id="reserva-btn">Reservas</button>
+    <button class="header-btn nav-btn" id="reserva-hist-btn">Reservas<br>(histórico)</button>
+    <button class="header-btn nav-btn" id="pos-btn"style="background-color: orange">POS</button>
+    <button class="header-btn nav-btn" id="menu-btn">Menu</button>
+    <button class="header-btn nav-btn" id="history-btn">Histórico<br>pedidos</button>
+    <button class="header-btn nav-btn" id="logout-btn">Logout</button>
+
+</div>
+    </header>
+    <div class="container">
+      <div class="left-panel">
+        <h2>
+            Comandas não pagas
+
+        </h2>
+        <div id="orders-list">
+            <!-- Cards with pending orders will be generated here -->
+        </div>
+      </div>
+        <div class="center-panel">
+            <h2>Detalhes da comanda
+              <button id="addOrderBtn" class="add-btn">
+                  <i class="fas fa-plus"></i>
+              </button></h2>
+            <ul id="order-items">
+                <!-- Order items will be listed here -->
+            </ul>
+        </div>
+        <!-- メニュー表を表示するためのモーダル -->
+        <!-- メニュー表を表示するためのモーダル   <span class="close">&times;</span>-->
+    <div id="menuModal" class="modal-add-menu">
+      <div id="quantity-input" style="display: none;">
+        <div class="quantity-buttons">
+            <button class="quantity-btn active" data-value="1" >1</button>
+            <button class="quantity-btn" data-value="2">2</button>
+            <button class="quantity-btn" data-value="3">3</button>
+            <button class="quantity-btn" data-value="4">4</button>
+            <button class="quantity-btn" data-value="5">5</button>
+        </div>
+        <div class="manual-input">
+            <label for="item-quantity">Quanitdade:</label>
+            <input type="number" id="item-quantity" min="1" max="99" value="1">
+        </div>
+        <button id="confirm-quantity-btn">Confirmar</button>
+    </div>
+
+        <div class="modal-content-add-menu" id="modal-update-order-mother">
+
+            <div>
+              <h2>Adcionar item</h2>
+            </div>
+           <div class="add-menu-child-div">
+            <!-- カテゴリーフィルターボタン -->
+            <div id="category-filters">
+                <!-- カテゴリーボタンがここに生成される -->
+            </div>
+
+            <!-- メニュー一覧 -->
+            <div id="menu-list">
+                <!-- ここにメニューアイテムが表示される -->
+            </div>
+
+            <!-- オプション表示エリア -->
+            <div id="option-list">
+                <!-- ここに選択されたメニューのオプションが表示される -->
+            </div>
+            <div class="add-btn-first">
+              <button id="add-for-new-list">Adicionar</button>
+            </div>
+            <div class="now-oreder-list">
+             <div id="order-nbefore-list">
+
+             </div>
+             <div class="add-or-cancel-btn">
+               <button id="save-add-menu">Salvar</button>
+               <button id="close-menuModal">Cancelar</button>
+             </div>
+             <div class="total-add-menu-display">
+               <div><span class="total-ammount" id="total-alter-order-count"></span></div>
+               <div><span class="total-ammount" id="total-alter-order-amount"></span></div>
+             </div>
+            </div>
+          </div>
+        </div>
+    </div>
+        <div class="right-panel">
+    <h2>Pagamento</h2>
+
+    <!-- ボタンと入力フィールド -->
+    <div class="register-caixa-btn">
+      <input id="yet-regit-info" value="Caixa não registrado" readonly style="display:none"/>
+      <button id="openModalBtn">Status do caixa</button>
+    </div>
+
+    <!-- モーダル -->
+    <div id="registerModal" class="modal" style="display: none;">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+
+        <!-- モーダルを左右に分ける -->
+        <div id="modal-left-input"class="modal-left">
+          <h2 id="left-title-regist-casher">Registro do caixa</h2>
+
+          <!-- デフォルトの日付 -->
+          <label>data:</label>
+          <input type="date" id="registerDate" value="" />
+
+          <!-- 札の入力 -->
+          <div class="input-section" id="bill-mother-div">
+            <h3>notas</h3>
+
+            <label>5,000:</label>
+            <input type="number" id="bill5000" min="0" value="0" /><br />
+            <label>1,000:</label>
+            <input type="number" id="bill1000" min="0" value="0" /><br />
+          </div>
+
+          <!-- コインの入力 -->
+          <div class="input-section" id="coins-mother-div">
+            <h3>moedas</h3>
+            <label>500:</label>
+            <input type="number" id="coin500" min="0" value="0" /><br />
+            <label>100:</label>
+            <input type="number" id="coin100" min="0" value="0" /><br />
+            <label>50:</label>
+            <input type="number" id="coin50" min="0" value="0" /><br />
+            <label>10:</label>
+            <input type="number" id="coin10" min="0" value="0" /><br />
+            <label>5:</label>
+            <input type="number" id="coin5" min="0" value="0" /><br />
+            <label>1:</label>
+            <input type="number" id="coin1" min="0" value="0" /><br />
+          </div>
+
+          <!-- レジオープン金額 -->
+          <div class="total-section" id="total-caixa-input">
+            <h3>Total do valor do caixa</h3>
+            <input type="text" id="totalAmount" value="0" readonly />
+          </div>
+
+          <button id="registerBtn">Registrar</button>
+        </div>
+
+        <!-- 右側：結果表示部分 -->
+        <div class="modal-right">
+          <h2>receita do dia</h2>
+          <div class="receita-data-input-mother-div">
+              <input type="datetime-local" id="salesStart" value="" />
+              <input type="datetime-local" id="salesFinish" value="" />
+              <input type="button" id="serche-sales" value="Serch"/>
+          </div>
+
+          <div class="result-section">
+            <label>Vendas dinheiro:</label>
+            <span id="cashSales">￥0</span>
+          </div>
+          <div class="result-section">
+            <label>Vendas cartão:</label>
+            <span id="creditSales">￥0</span>
+          </div>
+          <div class="result-section">
+            <label>Vendas outras:</label>
+            <span id="otherSales">￥0</span>
+          </div>
+          <div class="result-section">
+            <label>Vendas não registradas:</label>
+            <span id="sale-yet-register">￥0</span>
+          </div>
+
+          <div class="result-section">
+            <label>vendas não registradas(dinheiro):</label>
+            <input id="notregister-by-money"placeholder="insira o valor" value=0 />
+          </div>
+
+          <div class="result-section">
+            <label>vendas não registradas(cartão):</label>
+            <input id="noregister-by-card" placeholder="insira o valor" value=0 />
+          </div>
+          <div class="result-section">
+            <label>Total de vendas:</label>
+            <input id="total-vendas"placeholder="" value=0 />
+          </div>
+          <div class="result-section">
+            <label>anotações:</label>
+            <input id="anotacoes" class="input-field" placeholder="Click to expand">
+          </div>
+          <div id="saldo-final" class="result-section">
+            <label>saldo :</label>
+            <span id="totalBalance">￥0</span>
+          </div>
+          <button id="calculation-again">Calcular novamente</button>
+          <!-- レジクローズボタン -->
+          <button id="inserirMonys">Inserir valores</button>
+          <button id="closeRegisterBtn">Fechar o caixa</button>
+        </div>
+      </div>
+    </div>
+    <div id="tax-buttons">
+      <button id="tax-8" class="tax-button">8% Tax</button>
+      <button id="tax-10" class="tax-button">10% Tax</button>
+    </div>
+    <div id="payment-summary">
+    <p>Valor (Sem imposto): <span id="total-amount">0</span></p>
+    <p>Valor (Com imposto): <span id="tax-included-amount">0</span></p>
+    <p>Recebido: <input type="number" id="deposit-amount" value="0"></p>
+    <p>Troco: <span id="change-amount">0</span></p>
+</div>
+
+    <div id="payment-methods">
+        <button  class="cfm-btns" id="cash-payment" class="payment-method">Dinheiro</button>
+        <button  class="cfm-btns" id="credit-payment" class="payment-method">Cartão</button>
+        <button  class="cfm-btns" id="other-payment" class="payment-method">Outros</button>
+    </div>
+    <div class="cupon-btn" style="display:flex;justify-content: space-around">
+    <button class="cfm-btns" id="print-receipt">Imprimir Recibo</button>
+    <button class="cfm-btns" id="print-invoice">Imprimir Ryoshusho</button>
+    <button class="cfm-btns" id="print-cupom">Imprimir Cupom</button>
+  </div>
+    <button class="cfm-btns-second" id="confirm-payment">Confirmar pagamento</button>
+    <button class="cfm-btns-second" id="confirm-ptakes">Colocar como entregue</button>
+    <button class="cfm-btns-second" id="delete-order">Cancelar pedido</button>
+</div>
+<div id="custom-alert" class="custom-alert">
+  <div class="alert-content">
+      <span class="checkmark">✓</span>
+      <p>オーダーが確定されました。</p>
+  </div>
+</div>
+<div id="loading-popup" class="loading-popup">
+  <div class="loading-container">
+      <div class="spinner"></div>
+      <div class="loading-text">await</div>
+  </div>
+</div>
+
+
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
+    <script src="../script/loding-popup.js"></script>
+    <script src="../../config.js"></script>
+    <script src="../script/pos.js"></script> <!-- Link to your JavaScript file -->
+    <script src="../script/common.js"></script>
+</body>
+</html>
