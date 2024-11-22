@@ -45,8 +45,10 @@ async function signin(payload) {
       hideLoading(); // Oculta o carregamento
       if(response.data.kubun==='operator'){
         window.location.href = './pages/pos.html';
-      }else if(response.data.kubun==='other'){
+      }else if(response.data.kubun==='diner_in'){
         window.location.href = './pages/orders.html';
+      }else if(response.data.kubun==='takeout'){
+        window.location.href = './pages/ordersTakeOut.html';
       }else{
         window.location.href = './pages/dashboard.html';
       }
