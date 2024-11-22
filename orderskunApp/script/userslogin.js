@@ -45,7 +45,7 @@ async function signin(payload) {
       hideLoading(); // Oculta o carregamento
       if(response.data.kubun==='operator'){
         window.location.href = './pages/pos.html';
-      }else if(response.data.kubun==='diner_in'){
+      }else if(response.data.kubun==='dine_in'){
         window.location.href = './pages/orders.html';
       }else if(response.data.kubun==='takeout'){
         window.location.href = './pages/ordersTakeOut.html';
