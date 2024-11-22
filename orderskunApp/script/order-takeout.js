@@ -36,7 +36,7 @@ document.getElementById('fullscreenButton').addEventListener('click', () => {
 
 let orderList = {
   tableNo:9999,
-  clienId:decodedToken.userId,
+  clienId:decodedToken.restaurant_id,
   order:{
   },
   historyOrder:{
