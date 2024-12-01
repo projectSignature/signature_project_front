@@ -1,54 +1,73 @@
 
-// let accessmainserver = 'https://squid-app-ug7x6.ondigitalocean.app'　　//メインサーバーのチェックアクセス先]
-let accessmainserver = 'http://localhost:3000'
+// let server = 'https://squid-app-ug7x6.ondigitalocean.app'　　//メインサーバーのチェックアクセス先]
+
 let userInfo = {
-  proccessNumber:0
+  proccessNumber:0 //支出登録を選択してる状態
 }
+let userCategories = []
 let dt = document.getElementById("calender-input")
+const dataTypeSelect = document.getElementById('dataTypeSelect')
+const categoryContainer = document.getElementById('categorysdiv');
+// let despesaSelect = document.getElementById('dataTypeSelect')
 
 // jwt-decodeをCDNから読み込む場合
 // HTMLファイル内に <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script> を追加します。
 
 // トークンをlocalStorageから取得
 const token = window.localStorage.getItem('token');
+console.log()
 // const loadingIndicator = document.getElementById('loading-indicator');
 document.getElementById('input-button').style="background-color:#333"
 
-document.getElementById("input-button").addEventListener('click',()=>{
-  window.location.href = '../pages/main.html'; // Redireciona para renda.html
-});
-document.getElementById("history-button").addEventListener('click',()=>{
-  window.location.href = '../pages/history.html'; // Redireciona para renda.html
-});
-document.getElementById("analysis-button").addEventListener('click',()=>{
-  window.location.href = '../pages/analysis.html'; // Redireciona para renda.html
-});
-document.getElementById("submit-button").addEventListener('click',()=>{
-  window.location.href = '../pages/monthdataConfirm.html'; // Redireciona para renda.html
-});
-document.getElementById("settings-button").addEventListener('click',()=>{
-  window.location.href = '../pages/settingpgs.html'; // Redireciona para renda.html
-});
 
+// let dataTypeSelect = document.getElementById('dataTypeSelect')
+dataTypeSelect.addEventListener('change',()=>{
+  console.log(userInfo)
+  if(userInfo.proccessNumber ===1){
+    userInfo.proccessNumber =0
+    populateCategoryCards(userInfo.Masterdespesas)
+    populateSupplierOptions(userInfo.MsFornecedor)
 
-// トークンをデコードしてペイロードを取得
-if (token) {
-  loadingIndicator.style.display = 'flex';
-    dayChange()
-    const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
-     userInfo.language = decodedToken.language
-     userInfo.id = decodedToken.userId
-     console.log(userInfo)
-     translatePage(userInfo.language)
-     fetchMasterData(token)
-    // 言語情報を使ってフロントエンドのロジックを実装
-    // 例えば、言語情報に基づいてUIを変更するなど
-    var today = new Date();
-    let yyyy = today.getFullYear();
-    let mm = ("0"+(today.getMonth()+1)).slice(-2);
-    let dd = ("00" + today.getDate()).slice(-2);
-    dt.value = `${yyyy}-${mm}-${dd}`
+    document.getElementById('div4').innerText = translations[userInfo.language].supplier
+  }else{
+    userInfo.proccessNumber =1
+    populateCategoryCards(userInfo.Mastervendas)
+    populateSupplierOptions(userInfo.MsClients)
+    document.getElementById('div4').innerText = translations[userInfo.language].fonte
+  }
+
+})
+function creatsSelectsDataType(){
+  return `
+            <option value="despesa" selected>${translations[userInfo.language].despesas}</option>
+            <option value="renda">${translations[userInfo.language].income}</option>
+            `
+            // <option value="transferencia">${translations[userInfo.language].transfer}</option>
 }
+pageload()
+async function pageload(){
+  if (token) {
+    showLoadingPopup();
+      const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
+       userInfo.language = decodedToken.language
+       userInfo.id = decodedToken.userId
+       userInfo.name = decodedToken.clientNmae
+       userInfo.email = decodedToken.email
+       await translatePage(userInfo.language)
+       await fetchMasterData(token)
+      // 言語情報を使ってフロントエンドのロジックを実装
+      // 例えば、言語情報に基づいてUIを変更するなど
+      var today = new Date();
+      let yyyy = today.getFullYear();
+      let mm = ("0"+(today.getMonth()+1)).slice(-2);
+      let dd = ("00" + today.getDate()).slice(-2);
+      dt.value = `${yyyy}-${mm}-${dd}`
+      dataTypeSelect.innerHTML = creatsSelectsDataType()
+      hideLoadingPopup();
+  }
+}
+// トークンをデコードしてペイロードを取得
+
 
 async function makerequest(url) {
     const response = await fetch(url);
@@ -59,9 +78,8 @@ async function makerequest(url) {
 }
 
 async function fetchMasterData(token) {
-    console.log('Token:', token); // トークンを確認
     try {
-        const url = `${accessmainserver}/keirikun/masterdata/get`;
+        const url = `${server}/keirikun/masterdata/get`;
         const response = await fetch(url, {
             method: 'GET',
             headers: {
@@ -69,16 +87,19 @@ async function fetchMasterData(token) {
                 'Content-Type': 'application/json'
             }
         });
-
-        const data = await response.json();
-
         if (response.ok) {
+          const data = await response.json();
+          console.log(data)
+          userInfo.Masterdespesas = data.data.userCategories.filter(item => item.type_data === 0)
+          userInfo.Mastervendas = data.data.userCategories.filter(item => item.type_data === 1)
+          userInfo.MsClients = data.data.suppliers.filter(item => item.kubun === 1)
+          userInfo.MsFornecedor = data.data.suppliers.filter(item => item.kubun === 0)
             // マスターデータを処理
-            userInfo.suppliers = data.data;
-            console.log('Master data:', data.data);
-            populateSupplierOptions(data.data.suppliers); //サプライヤーのセレクトを生成
-            populateCategoryCards(data.data.userCategories, userInfo.language);
-            loadingIndicator.style.display = 'none';
+            userInfo.suppliers = data.data.suppliers;
+            sessionStorage.setItem('keirikunUser', JSON.stringify(userInfo));
+            populateSupplierOptions(userInfo.MsFornecedor); //サプライヤーのセレクトを生成
+            populateCategoryCards(userInfo.Masterdespesas);
+            // loadingIndicator.style.display = 'none';
         } else {
             alert('マスターデータの取得に失敗しました');
         }
@@ -102,8 +123,8 @@ function populateSupplierOptions(suppliers) {
     });
 }
 
-function populateCategoryCards(userCategories, language) {
-    const categoryContainer = document.getElementById('categorysdiv');
+function populateCategoryCards(userCategories) {
+    console.log(userCategories)
     // 既存のカードをクリア
     categoryContainer.innerHTML = '';
 
@@ -117,12 +138,12 @@ function populateCategoryCards(userCategories, language) {
 
         const icon = document.createElement('img');
         icon.src = `../image/${category.m_category.icon_number}.svg`;
-        icon.alt = category.m_category[`category_name_${language}`];
+        icon.alt = category.m_category[`category_name_${userInfo.language}`];
         card.appendChild(icon);
 
         const name = document.createElement('div');
         name.className = 'category-name';
-        name.textContent = category.m_category[`category_name_${language}`];
+        name.textContent = category.m_category[`category_name_${userInfo.language}`];
         card.appendChild(name);
         categoryContainer.appendChild(card);
 
@@ -142,10 +163,7 @@ function populateCategoryCards(userCategories, language) {
             // 選択したカテゴリのIDをuserInfo.selectCategoryに格納する
             const categoryId = card.getAttribute('data-category-id');
             userInfo.selectCategory = categoryId;
-
-            console.log('Selected Category ID:', userInfo.selectCategory);
         });
-        console.log(selectedCard)
     });
 }
 
@@ -241,6 +259,7 @@ function translatePages(language) {
         "income": document.getElementById("syunyu-select"),
         "transfer": document.getElementById("transfer-select"),
         "date": document.getElementById("div0"),
+        "typedt": document.getElementById('type-mother'),
         "supplier": document.getElementById("div4"),
         "method": document.getElementById("div2"),
         "amount": document.getElementById("div3"),
@@ -274,39 +293,43 @@ function translatePages(language) {
 
 async function soubetsuProcess(){
   console.log('soubetus')
+
   userInfo.proccessNumber===0?sendData():sendSyunyu()
+
 
 }
 
 async function sendSyunyu() {
     const date = document.getElementById('calender-input').value;
-    // const client = document.getElementById('Clients-options').value; // クライアント選択
+    const supplierSelect = document.getElementById('Suppliers-options');
     const method = document.getElementById('pay-select').value;
     const amount = document.getElementById('value-input').value;
     const memo = document.getElementById('memo-pay').value || ''; // メモは必須ではない
-    const category = userInfo.selectCategory;
+    const categoryId = userInfo.selectCategory;
     // 必須フィールドのチェック
-    if (!date || !amount || !category) {
+    if (!date || !amount || !categoryId) {
         alert('必要なフィールドが入力されていません');
         return;
     }
-    const geTclients = userInfo.suppliers.clients.find(supplier => supplier.client_id === userInfo.selectClient-0);
-    const clients = geTclients.client_name
-    // データの準備
-    const data = {
-        date,
-        method,
-        amount,
-        memo,
-        category,
-        userId: userInfo.id,
-        clients
-    };
 
+    const geTclients = userInfo.MsClients.find(supplier => supplier.supplier_id-0 === supplierSelect.value-0);
+    const clients = geTclients.supplier_name + `${geTclients.supplier_name}(${supplierSelect.value})`
+    const data = {
+        userId:userInfo.id,
+        date: date,
+        supplier: clients,
+        method: method,
+        amount: amount,
+        memo: memo,
+        category: categoryId,
+        kubun:1
+
+    };
 
     // データの送信
     try {
-        const response = await fetch(`${accessmainserver}/keirikun/data/regist/income`, {
+      showLoadingPopup()
+        const response = await fetch(`${server}/keirikun/data/regist/expenses`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -319,11 +342,13 @@ async function sendSyunyu() {
 
         if (result.success) {
             await swallSuccess()
-            resetForm()
+            await resetForm()
+            hideLoadingPopup()
         } else {
             alert('マスターデータの取得に失敗しました');
         }
     } catch (error) {
+      hideLoadingPopup()
         console.error('Error sending income data:', error);
         // await swalError(); // エラーメッセージの表示
     }
@@ -338,10 +363,10 @@ async function sendData() {
     const amount = document.getElementById('value-input').value;
     const memo = document.getElementById('memo-pay').value;
     const categoryId = userInfo.selectCategory;
-    console.log(categoryId)
+
     // 必須項目のチェック
     if (!amount) {
-        alert(translations[userInfo.language]['senterAmount']);
+        alert(translations[userInfo.language].enterAmount);
         return;
     }
     if (!categoryId) {
@@ -353,29 +378,20 @@ async function sendData() {
         return;
     }
 
-    console.log(userInfo.suppliers.suppliers)
-
-    const supplier = userInfo.suppliers.suppliers.find(supplier => supplier.supplier_id === document.getElementById('Suppliers-options').value-0);
-    console.log(supplier)
-
-
-
-   console.log('supplier is '+ supplier)
+    const supplier = userInfo.suppliers.find(supplier => supplier.supplier_id === document.getElementById('Suppliers-options').value-0);
     const data = {
         userId:userInfo.id,
         date: date,
-        supplier: supplier.supplier_name,
+        supplier: `${supplier.supplier_name}(${document.getElementById('Suppliers-options').value-0})`,
         method: method,
         amount: amount,
         memo: memo,
         category: categoryId,
-
+        kubun:0
     };
-
-    console.log('Data to be sent:', data); // 送信するデータをログ出力
-
     try {
-        const response = await fetch(`${accessmainserver}/keirikun/data/regist/expenses`, {
+      showLoadingPopup()
+        const response = await fetch(`${server}/keirikun/data/regist/expenses`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -385,10 +401,10 @@ async function sendData() {
         });
 
         const result = await response.json();
-
         if (response.ok) {
-            swallSuccess()
+            await swallSuccess()
             resetForm()
+            hideLoadingPopup()
         } else {
             alert(translations[userInfo.language]['dataSendFail']);
         }
@@ -397,7 +413,6 @@ async function sendData() {
         alert(translations[userInfo.language]['dataSendError']);
     }
 }
-
 
 async function kanmaReplase(){
   let data = document.getElementById('value-input')
@@ -410,19 +425,6 @@ async function kanmaReplase(){
  }
    //return `￥${kanmaAns}`
 };
-
- function dayChange(data){
-  let date = new Date(dt.value.split("-")[0], dt.value.split("-")[1]-1, dt.value.split("-")[2]);
-  if(data==2){
-    date.setDate(date.getDate() + 1)
-  }else{
-    date.setDate(date.getDate() - 1)
-  }
-  let dM = (("0" + (date.getMonth()+1)).slice(-2))
-  let dd = (("0" + date.getDate()).slice(-2))
-  dt.value = `${date.getFullYear()}-${dM}-${dd}`
-}
-
 
 
 // Add custom CSS for the toast

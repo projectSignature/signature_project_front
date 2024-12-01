@@ -1,587 +1,843 @@
-const urlDev = global.urlApi;
-let workerid = sessionStorage.getItem("id");
 
-//--------------------------------------------------------------------------------------------->
+// let accessmainserver = 'https://squid-app-ug7x6.ondigitalocean.app'　　//メインサーバーのチェックアクセス先]
+let accessmainserver = 'http://localhost:3000'
 
-const changeGrafic = document.querySelector('#change-grafic');
-changeGrafic.addEventListener('click', (e) => {
+let currentEditId = null; // 編集中のレコードIDを保持
 
-    const historyArea = document.querySelector('.aba-history');
-    const graficArea = document.querySelector('#grafic-area');
-    const historyValue = window.getComputedStyle(historyArea).display;
-    const graficValue = window.getComputedStyle(graficArea).display;
-    const calenderArea = document.querySelector('#change-calender');
+const token = window.localStorage.getItem('token');
+// const loadingIndicator = document.getElementById('loading-indicator');
+document.getElementById('history-button').style="background-color:#333"
+// let dataTypeSelect = document.getElementById('dataTypeSelect')
 
-
-
-    if (historyValue == 'flex' || calenderArea == 'flex') {
-        document.querySelector('.aba-history').style.display = 'none';
-        document.querySelector('.aba-calender').style.display = 'none';
-        document.querySelector('#grafic-area').style.display = 'flex';
-        document.querySelector('#grafic-area-pie').style.display = 'flex';
-
-    } else {
-        document.querySelector('#grafic-area').style.display = 'none';
-        document.querySelector('.aba-calender').style.display = 'none';
-        document.querySelector('#grafic-area-pie').style.display = 'none';
-        document.querySelector('.aba-history').style.display = 'flex';
-    }
-});
-
-const changeCalender = document.querySelector('#change-calender');
-changeCalender.addEventListener('click', (e) => {
-
-    const historyArea = document.querySelector('.aba-history');
-    const graficArea = document.querySelector('#grafic-area');
-    const calenderArea = document.querySelector('#change-calender');
-    const historyValue = window.getComputedStyle(historyArea).display;
-    const graficValue = window.getComputedStyle(graficArea).display;
+    // すべてのボタンを取得
+    // const buttons = document.querySelectorAll('.header-buttons .header-button');
+    // // クラスを変更する（ループで処理）
+    // buttons.forEach((button, index) => {
+    //   console.log(button)
+    //   if(button.id==='history-button'){
+    //     button.style="background-color:#333"
+    //   }else{
+    //
+    //   }
+    //     // 既存のクラスを削除し、新しいクラスを追加
+    //     button.className = `header-button updated-class-${index + 1}`;
+    // });
 
 
+// // 関数を実行してクラスを変更
+// updateButtonClasses();
+// const usersInfo = sessionStorage.getItem('keirikunUser')
+// console.log(usersInfo.Masterdespesas)
+const userInfo = JSON.parse(sessionStorage.getItem('keirikunUser'));
+pageload()
+async function pageload(){
+  if (token) {
+      showLoadingPopup();
+      // const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
+      // console.log(decodedToken)
+      // userInfo.id=decodedToken.userId
+      // userInfo.language=decodedToken.language
+      //  userInfo.language = decodedToken.language
+      //  userInfo.id = decodedToken.userId
+       getMasterData()
+       await translatePage(userInfo.language)
+       await setDateInputs()
+       await fetchMasterData(token)
+     hideLoadingPopup();
+  }
+}
 
-    if (historyValue == 'flex' || graficValue == 'flex') {
-        document.querySelector('#grafic-area').style.display = 'none';
-        document.querySelector('.aba-history').style.display = 'none';
-        document.querySelector('#grafic-area-pie').style.display = 'none';
-        document.querySelector('.aba-calender').style.display = 'flex';
+async function getMasterData(){
+  const url = `${accessmainserver}/keirikun/masterdata/get`;
+  const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+      }
+  });
 
-    } else {
-        document.querySelector('#grafic-area').style.display = 'none';
-        document.querySelector('.aba-calender').style.display = 'none';
-        document.querySelector('#grafic-area-pie').style.display = 'none';
-        document.querySelector('.aba-history').style.display = 'flex';
-    }
-});
+  if (response.ok) {
+    const data = await response.json();
+    userInfo.clients = data.data.clients
+    userInfo.suppliers = data.data.suppliers
+    userInfo.userCategories = data.data.userCategories
 
-//----------buscar dados de despesas e rendas------------->
-function getAllData(nuFilter) {
-    fetch(`${urlDev}/expenses/${nuFilter}/${workerid}`)
-        .then((x) => x.json())
-        .then((res) => {
-            const element = document.querySelector('.history-area');
-            element.innerHTML = '';
-
-
-            res.forEach((dado) => {
-                addCard(dado);
-
-
-            });
-            sessionStorage.setItem('csv', JSON.stringify(res));
-        })
+  }
+}
+// トークンをデコードしてペイロードを取得
+const getStartOfMonth = () => {
+    const today = new Date();
+    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    // ローカルのYYYY-MM-DD形式に変換
+    return startOfMonth.getFullYear() + '-' + String(startOfMonth.getMonth() + 1).padStart(2, '0') + '-' + String(startOfMonth.getDate()).padStart(2, '0');
+};
+// 当月の最終日を取得する関数
+const getEndOfMonth = () => {
+    const today = new Date();
+    const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    // ローカルのYYYY-MM-DD形式に変換
+    return endOfMonth.getFullYear() + '-' + String(endOfMonth.getMonth() + 1).padStart(2, '0') + '-' + String(endOfMonth.getDate()).padStart(2, '0');
+};
+// 入力フィールドに日付を設定する関数
+const setDateInputs = () => {
+    const startDateInput = document.getElementById('startDate');
+    const endDateInput = document.getElementById('endDate');
+    // 初日と最終日をそれぞれ設定
+    startDateInput.value = getStartOfMonth();  // 当月の初日
+    endDateInput.value = getEndOfMonth();      // 当月の最終日
 };
 
-getAllData(1);
-
-//------------add card----------------->
-function addCard(data) {
-    const element = document.querySelector('.history-area');
-
-    let novoCard = `      <ul class="new-card">
-  <li><span>ID: </span><span>${data.id}</span></li>
-  <li><span>NAME: </span><span>${data.name}</span></li>
-  <li><span>DATA_REGISTER: </span><span>${data.data_register}</span></li>
-  <li><span>METHOD: </span><span>${data.method}</span></li>
-  <li><span>VALUE_MONEY: </span><span>${data.value_money}</span></li>
-  <li><span>CATEGORY: </span><span>${data.category}</span></li>
-  <li><span>STATUS: </span><span>${data.status}</span></li>
-  <li><span>MEMO: </span><span>${data.memo}</span></li>
-</ul>`;
-
-    element.insertAdjacentHTML('beforeend', novoCard);
-
-};
-
-const inputArray = JSON.parse(sessionStorage.getItem('csv'));
-
-// Create a new array with the desired format
-const arr = [["id", "name", "valor", "cat"]];
-
-try{
-    const data1 = inputArray.map(item => {
-
-    arr.push([item.id, item.name, parseInt(item.value_money.replace(/[￥,]/g, '')), item.category]);
-
-});
-}catch(err) {
-    
+async function makerequest(url) {
+    const response = await fetch(url);
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
 }
 
+async function fetchMasterData(token) {
+  try {
+          const token = localStorage.getItem('token'); // ログイン時のトークンを取得
+          const startDate = document.getElementById('startDate').value
+          const endDate = document.getElementById('endDate').value
+          console.log(startDate)
+          console.log(endDate)
+          if (!token) {
+              console.error('Authentication token is missing');
+              return;
+          }
+          showLoadingPopup();
+          const response = await fetch(`${accessmainserver}/keirikun/data/history?startDate=${startDate}&endDate=${endDate}`, {
+              method: 'GET',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}` // トークンをヘッダーに含める
+              }
+          });
+          const data = await response.json();
+          if (response.ok) {
+              if (data.success) {
+                  console.log('History data:', data.records); // 成功時のデータ
+                  displayRecords(data.records); // データを表示するための関数を呼び出し
+                  userInfo.history = data.records
+              } else {
+                  console.error('Error fetching data:', data.message);
+              }
+          } else {
 
-///==============================================>
-// Função para converter os dados em formato XLSX
-function converterParaXLSX(data) {
-    const worksheet = XLSX.utils.aoa_to_sheet(data);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'dados');
-    const xlsxContent = XLSX.write(workbook, { type: 'array' });
-    const blob = new Blob([xlsxContent], { type: 'application/octet-stream' });
-    return URL.createObjectURL(blob);
+              console.error('Failed to fetch financial history:', data.message);
+          }
+          hideLoadingPopup();
+      } catch (error) {
+        hideLoadingPopup();
+          console.error('Fetch error:', error);
+      }
 }
-
-// Função para baixar o arquivo XLSX
-function baixarXLSX(xlsxContent, format) {
-    const link = document.createElement('a');
-    link.href = xlsxContent;
-    link.setAttribute('download', `dados.${format}`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
-
-// Evento do botão para salvar o arquivo XLSX
-document.getElementById('xlsx').addEventListener('click', function () {
-    const xlsxContent = converterParaXLSX(arr);
-    baixarXLSX(xlsxContent, "xlsx");
-});
-// Evento do botão para salvar o arquivo XLSX
-document.getElementById('csv').addEventListener('click', function () {
-    const xlsxContent = converterParaXLSX(arr);
-    baixarXLSX(xlsxContent, "csv");
-});
+// カードを作成して表示する関数
+   function displayRecords(records) {
+     console.log(userInfo)
+       const container = document.getElementById('cardContainer');
+       container.innerHTML = '';  // コンテナをクリア
+       records.forEach(record => {
+         console.log(records)
+         console.log(userInfo)
+         let category
+         if(record.income===null){
+           category = userInfo.Masterdespesas.find(category => category.category_id === record.party_code-0);
+         }else{
+           category = userInfo.Mastervendas.find(category => category.category_id === record.party_code-0);
+         }
 
 
+           const card = document.createElement('div');
+           card.classList.add('card');
+           // カードの背景色を収入・支出で分ける
+           if (record.income) {
+               card.classList.add('income');
+           } else if (record.expense) {
+               card.classList.add('expense');
+           }
 
-//calendario js-------------------------------->
-const dadosPorDia = {};
+           // カードの内容
+           const description = record.description.split(' 内容:')[0].replace('取引先:', '').split('(')[0];  // 取引先名
+           const amount = record.income ? `${translations[userInfo.language]['income']}: ¥${Number(record.income).toLocaleString()}`
+           : `${translations[userInfo.language]['despesas']}: ¥${Number(record.expense).toLocaleString()}`;
+           card.innerHTML = `
+              <div class="card-icon">
+                  <img src="https://orders-image.sgp1.digitaloceanspaces.com/keirikun/${record.party_code}.svg" alt="Category Icon">
+                  <span class="icon-label">${category.m_category[`category_name_${userInfo.language}`]}</span> <!-- カテゴリ名を表示 -->
+              </div>
+              <h3>${description}</h3>
+              <p>${record.description.split(' 内容:')[1]}</p>
+              <p>${amount}</p>
+              <div class="actions">
+                  <button class="btn edit ${record.confirmed ? "no-visible" : ''}" onclick="editRecord(${record.id})">${translations[userInfo.language]["update"]}</button>
+                  <button class="btn delete ${record.confirmed ? "no-visible" : ''}" onclick="deleteRecord(${record.id})">${translations[userInfo.language]["delete"]}</button>
+                  <span class="confirmed-span ${record.confirmed ? "" : 'no-visible'}" style="color:red">※${translations[userInfo.language]["registrado"]}</span>
+              </div>
+          `;
 
-// Função para adicionar os dados de renda e despesa para cada dia
-function adicionarDadosPorDia(data) {
-    let dataFormatada = data.data_register;
-    let valorRenda = data.model === 'renda' ? data.value_money : '';
-    if (valorRenda !== '') {
-        valorRenda = Number(valorRenda.replace('￥', '').replace(',', '.')).toFixed(2);
-    }
+           container.appendChild(card);
+       });
+   }
 
-    let valorDespesa = data.model === 'despesa' ? data.value_money : '';
-    if (valorDespesa !== '') {
-        valorDespesa = Number(valorDespesa.replace('￥', '').replace(',', '.'));
+   function editRecord(id) {
+       const record = userInfo.history.find(record => record.id === id);
+       if (!record) {
+           alert("レコードが見つかりません");
+           return;
+       }
+       // 編集モーダルにデータを設定
+       let names = record.description.split(' 内容:')[0].replace('取引先:', '');
+       if(record.income===null){
+         populateSupplierOptions(names)
+         document.getElementById('modal-kubun').innerText = translations[userInfo.language]['supplier']
+       }else{
 
-    }
+       }
+       const income = record.income ? Number(record.income) : null;
+       const expense = record.expense ? Number(record.expense) : null;
+       const editAmountElement = document.getElementById('editAmount-modal');
+       if (income) {
+       editAmountElement.value = `￥${income.toLocaleString()}`;
+         } else if (expense) {
 
-    if (dadosPorDia.hasOwnProperty(dataFormatada)) {
-        if (!isNaN(valorRenda)) {
-            dadosPorDia[dataFormatada].renda += Number(valorRenda);
-        }
-        if (!isNaN(valorDespesa)) {
-            dadosPorDia[dataFormatada].despesa += Number(valorDespesa);
-        }
-    } else {
-        dadosPorDia[dataFormatada] = { renda: Number(valorRenda), despesa: Number(valorDespesa) };
-    }
+             editAmountElement.value = `￥${expense.toLocaleString()}`;
+         } else {
+             editAmountElement.value = '￥0';
+         }
 
-}
+       document.getElementById('editMemo').value = record.description.split(' 内容:')[1];
+       document.getElementById('pay-select').value = record.payment_method;
+       // 編集中のIDを保持
+       currentEditId = id;
 
-inputArray.forEach(adicionarDadosPorDia);
+       createMaster(record.party_code)
+       // モーダルを表示
+       document.getElementById('editModal-history').style.display = 'flex';
+   }
+
+   async function createMaster(selectKamoku) {
+       const selectSupp = document.getElementById("category-modal"); // select要素を取得
+       const masterDespesas = userInfo.Masterdespesas; // Masterdespesasを取得
+
+       // 既存のオプションをクリア
+       selectSupp.innerHTML = '';
+
+       // Masterdespesasをループ
+       masterDespesas.forEach(despesa => {
+         console.log(despesa)
+           // <option>要素を作成
+           const option = document.createElement('option');
+           option.value = despesa.m_category.identification_id; // 値をcategory_idに設定
+           option.textContent = despesa.m_category.category_name_pt; // 表示名をカテゴリ名に設定
+           if((despesa.category_id-0)===(selectKamoku-0)){
+             option.selected = true
+           }
+           // <select>に追加
+           selectSupp.appendChild(option);
+       });
+
+       console.log('Options added to modal-kamoku');
+   }
 
 
-// Variável para armazenar a data atual do calendário
-let dataAtual = new Date();
+   async function deleteRecord(recordId) {
+    // 確認ダイアログ
+    const confirmed = confirm(translations[userInfo.language]['deleteCOnfirmedData']);
+    if (!confirmed) return;
 
-// Função para calcular o total de renda e despesa por dia
-function calcularTotais() {
-    const totalRendaElement = document.getElementById('total-renda');
-    const totalDespesaElement = document.getElementById('total-despesa');
-
-    // Obtém o valor atual dos totais
-    let totalRenda = 0;
-    let totalDespesa = 0;
-
-    // Itera pelos dados de cada dia e atualiza os totais
-    for (const data in dadosPorDia) {
-        if (dadosPorDia.hasOwnProperty(data)) {
-            totalRenda += dadosPorDia[data].renda;
-            totalDespesa += dadosPorDia[data].despesa;
-        }
-    }
-
-    // Atualiza o conteúdo no DOM
-    totalRendaElement.textContent = totalRenda;
-    totalDespesaElement.textContent = totalDespesa;
-}
-
-// Função para criar o calendário
-function criarCalendario() {
-    const calendarElement = document.getElementById('calendar');
-    const mesAtualElement = document.getElementById('mes-atual');
-
-    // Limpa o conteúdo do calendário
-    calendarElement.innerHTML = '';
-
-    // Define o primeiro dia do mês atual
-    const primeiroDiaDoMes = new Date(dataAtual.getFullYear(), dataAtual.getMonth(), 1);
-    const ultimoDiaDoMes = new Date(dataAtual.getFullYear(), dataAtual.getMonth() + 1, 0);
-
-    // Define o cabeçalho com o mês e ano atual
-    mesAtualElement.textContent = primeiroDiaDoMes.toLocaleDateString(undefined, {
-        month: 'long',
-        year: 'numeric',
-    });
-
-    // Cria uma tabela para o calendário
-    const table = document.createElement('table');
-    const headerRow = table.insertRow();
-    const diasDaSemana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-
-    // Cria o cabeçalho da tabela com os dias da semana
-    diasDaSemana.forEach(dia => {
-        const cell = document.createElement('th');
-        cell.textContent = dia;
-        headerRow.appendChild(cell);
-    });
-
-    // Cria a primeira linha do calendário
-    const primeiraSemana = table.insertRow();
-    primeiraSemana.className = 'week';
-
-    // Adiciona células vazias para preencher a primeira semana
-    let primeiroDiaSemana = new Date(primeiroDiaDoMes);
-    while (primeiroDiaSemana.getDay() > 0) {
-        const cell = document.createElement('td');
-        cell.textContent = '';
-        primeiraSemana.appendChild(cell);
-        primeiroDiaSemana.setDate(primeiroDiaSemana.getDate() - 1);
-    }
-
-    // Cria células para os dias do mês
-    let data = new Date(primeiroDiaSemana);
-    while (data <= ultimoDiaDoMes) {
-        if (data.getDay() === 0) {
-            // Cria uma nova linha para cada semana (domingo)
-            const weekRow = table.insertRow();
-            weekRow.className = 'week';
-        }
-
-        // Cria a célula para o dia atual
-        const cell = document.createElement('td');
-        cell.textContent = data.getDate();
-
-        // Verifica se há dados para esse dia
-        const dataFormatada = data.toISOString().split('T')[0];
-        if (dadosPorDia.hasOwnProperty(dataFormatada)) {
-            // Adicione estilos para mostrar renda e despesa nessa célula, se desejar
-            cell.classList.add('com-dados');
-        }
-
-        // Adicione eventos de clique nas células (opcional)
-        cell.addEventListener('click', () => {
-            // Exibir os detalhes de renda e despesa para o dia clicado
-            if (dadosPorDia.hasOwnProperty(dataFormatada)) {
-                const detalhes = dadosPorDia[dataFormatada];
-                alert(`Renda: ${detalhes.renda}\nDespesa: ${detalhes.despesa}`);
-            } else {
-                alert('Sem dados para este dia.');
-            }
+    try {
+        // サーバーに DELETE リクエストを送信
+        showLoadingPopup();
+        const response = await fetch(`${accessmainserver}/keirikun/financial-records-delete/${recordId}`, {
+            method: 'DELETE'
         });
 
-        // Adicione a célula à linha da semana atual
-        const semanaAtual = table.querySelector('.week:last-child');
-        if (semanaAtual) {
-            semanaAtual.appendChild(cell);
+        if (response.ok) {
+            // ローカルデータを更新
+            userInfo.history = userInfo.history.filter(record => record.id !== recordId);
+
+            // レコードを再描画
+            displayRecords(userInfo.history);
+            alert(translations[userInfo]['dataDeleted']);
+        } else {
+            const errorData = await response.json();
+            alert(translations[userInfo]['errorMessage']);
         }
-
-        // Avança para o próximo dia
-        data.setDate(data.getDate() + 1);
-    }
-
-    // Adicione a tabela ao elemento do calendário
-    calendarElement.appendChild(table);
-}
-
-
-
-
-
-// Função para navegar para o mês anterior
-function mesAnterior() {
-    dataAtual.setMonth(dataAtual.getMonth() - 1);
-    criarCalendario();
-    calcularTotais();
-}
-
-// Função para navegar para o próximo mês
-function mesSeguinte() {
-    dataAtual.setMonth(dataAtual.getMonth() + 1);
-    criarCalendario();
-    calcularTotais();
-}
-
-// Cria o calendário e calcula os totais ao carregar a página
-criarCalendario();
-calcularTotais();
-
-//--------------graficos---------------------------------->
-function alterGrafic() {
-    const element1 = document.querySelector(".myChart");
-    const element2 = document.querySelector(".myChart2");
-
-    const grafico1 = window.getComputedStyle(element1).display;
-    const grafico2 = window.getComputedStyle(element2).display;
-
-    if (grafico1 === 'block') {
-        element1.style.display = 'none';
-        element2.style.display = 'block';
-        document.querySelector('.btn-chart').innerText = 'Renda';
-    } else {
-        element1.style.display = 'block';
-        element2.style.display = 'none';
-        document.querySelector('.btn-chart').innerText = 'Despesa';
+        hideLoadingPopup();
+    } catch (error) {
+        hideLoadingPopup();
+        console.error("Error deleting record:", error);
+        alert(translations[userInfo]['errorMessage']);
     }
 }
 
 
 
 
-const arrRenda = inputArray
-    .filter((valor) => valor.model === 'renda' && valor.value_money !== undefined)
-    .map((valor) => parseFloat(valor.value_money.replace(/[￥]/g, '')));
+   function closeEditModal() {
+       document.getElementById('editModal-history').style.display = 'none';
+   }
+
+//変更モーダル　金額要素の変更があった時にフォマットを指定(￥〇,〇〇〇)
+   document.getElementById('editAmount-modal').addEventListener('input', function (event) {
+    const inputElement = event.target;
+
+    // 既存の値から "￥" を取り除き数値に変換
+    let rawValue = inputElement.value.replace(/[^\d]/g, ''); // 数字以外を除去
+    if (!rawValue) {
+        inputElement.value = ''; // 空欄のまま
+        return;
+    }
+
+    // 数値をロケール形式に変換
+    const formattedValue = Number(rawValue).toLocaleString();
+
+    // "￥" を付けて再設定
+    inputElement.value = `￥${formattedValue}`;
+});
 
 
+   function populateSupplierOptions(names) {
+       console.log(names);
+       const selectElement = document.getElementById('editDescription'); // <select>要素を取得
 
-const arrRendaData = inputArray
-    .filter((valor) => valor.model === 'renda' && valor.data_register !== undefined)
-    .map((valor) => valor.data_register.replace(/[￥,]/g, ''));
+       // <select>要素を一旦クリア（必要に応じて）
+       selectElement.innerHTML = '';
+
+       // suppliers配列をループ
+       console.log(userInfo.suppliers);
+       userInfo.suppliers.forEach(supplier => {
+           const option = document.createElement('option'); // <option>要素を作成
+           option.value = supplier.id; // 値を設定
+           option.textContent = supplier.supplier_name; // 表示テキストを設定
+           if (supplier.supplier_name === names.split('(')[0] ){
+               option.selected = true;
+           }
+           selectElement.appendChild(option); // <select>に追加
+       });
+   }
 
 
-const arrDespesa = inputArray
-    .filter((valor) => valor.model === 'despesa' && valor.value_money !== undefined)
-    .map((valor) => parseFloat(valor.value_money.replace(/[￥]/g, '')));
+   async function saveChanges() {
+       const selectElement = document.getElementById('editDescription');
+       const selectedValue = selectElement.value;
+       const selectedText = selectElement.options[selectElement.selectedIndex].text;
+       const newPaymentMethod = document.getElementById('pay-select').value
+       const newCategorie = document.getElementById('category-modal').value
+       const amount = parseFloat(
+    document.getElementById('editAmount-modal').value.replace(/[￥,]/g, '')
+);
+       const memo = document.getElementById('editMemo').value;
 
-const arrDespesaData = inputArray
-    .filter((valor) => valor.model === 'despesa' && valor.data_register !== undefined)
-    .map((valor) => valor.data_register.replace(/[￥,]/g, ''));
+       if (isNaN(amount) ){
+           alert("すべての必須フィールドを正しく入力してください。");
+           return;
+       }
 
-Chart.register(ChartDataLabels); //register do plugin
+       // 編集対象のレコードを更新
+       const record = userInfo.history.find(record => record.id === currentEditId);
+       if (record) {
+         console.log(record)
+         try {
+           showLoadingPopup()
+                      const updatedRecord = {
+                        description: `取引先:${selectedText}(${selectedValue}) 内容:${memo}`,
+                        income: record.income ? amount : undefined,
+                        expense: record.expense ? amount : undefined,
+                        payment_method:newPaymentMethod,
+                        party_code:newCategorie
+                      };
+                    const response = await fetch(`${accessmainserver}/keirikun/financial-records/${record.id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(updatedRecord)
+                    });
 
+                    if (response.ok) {
+                        const result = await response.json();
+                        console.log('Update successful:', result);
 
+                        // ローカルデータを更新
+                        record.description = updatedRecord.description;
+                        record.income = updatedRecord.income || record.income;
+                        record.expense = updatedRecord.expense || record.expense;
+                        record.party_code = updatedRecord.party_code,
+                        record.payment_method = updatedRecord.payment_method
 
-async function graficoDespesa() {
-    const dados = await fetch(`${urlDev}/estatistics/despesa/${workerid}`).then((x) => x.json());
-    const datas = dados.message.map((item) => item.data);
-    const valores = dados.message.map((item) => item.total_por_dia);
+                        // モーダルを閉じる
+                        closeEditModal();
 
-    //graficos 02
-    var xValues = datas;
-    var yValues = valores;
-    const barColors = yValues.map(() => getRandomColor());
-
-    new Chart("myChart2", {
-        type: "line",
-        data: {
-            labels: xValues,
-            datasets: [{
-                backgroundColor: barColors,
-                borderColor: "#ff6928",
-                data: yValues
-            }]
-        },
-        options: {
-            maintainAspectRatio: false,
-            plugins: {
-                datalabels: {
-                    //start datalabel
-                    color: "#fff",
-                    anchor: "end",
-                    align: "end",
-                    offset: -10,
-                    font: {
-                        size: 14,
-                    },
-                },
-                legend: {
-                    display: false,
-                },
-                title: {
-                    display: true,
-                    text: "Despesas",
-                    color: "#fff",
-                    font: {
-                        size: 15,
-                    },
-                    padding: {
-                        top: 10,
-                        bottom: 30
+                        // レコードを再描画
+                        displayRecords(userInfo.history);
+                    } else {
+                        const error = await response.json();
+                        console.error('Server error:', error);
+                        alert('更新に失敗しました: ' + error.error);
                     }
-                },
-            },
+                    hideLoadingPopup()
+                } catch (error) {
+                    console.error('Error updating record:', error);
+                    hideLoadingPopup()
+                    alert('エラーが発生しました。もう一度お試しください。');
+                }
 
 
-        }
-    });
 
-    //graficos 04
-    new Chart("myChart4", {
-        type: "pie",
-        data: {
-            labels: xValues,
-            datasets: [{
-                backgroundColor: barColors,
-                hoverOffset: 4,
-                data: yValues
-            }]
-        },
-        options: {
-            maintainAspectRatio: false,
-            plugins: {
-                datalabels: null,
-                legend: {
-                    display: false,
-                },
-                title: {
-                    display: true,
-                    text: "Despesas",
-                    color: "#fff",
-                    font: {
-                        size: 15,
-                    },
-                    padding: {
-                        top: 10,
-                        bottom: 30
-                    }
-                },
-            },
-
-        }
-    });
-
-};
-
-graficoDespesa();
-
-async function graficoRenda() {
-    const dados = await fetch(`${urlDev}/estatistics/renda/${workerid}`).then((x) => x.json());
-    const datas = dados.message.map((item) => item.data);
-    const valores = dados.message.map((item) => item.total_por_dia);
+           // record.description = `取引先:${selectedText}(${selectedValue}) 内容:${memo}`;
+           // if (record.income) {
+           //     record.income = amount;
+           // } else if (record.expense) {
+           //     record.expense = amount;
+           // }
+       }
 
 
-    //graficos 01
-    var xValues = datas;
-    var yValues = valores;
-    const barColors = yValues.map(() => getRandomColor());
+       // モーダルを閉じる
+       closeEditModal();
 
-    new Chart("myChart", {
-        type: "line",
-        data: {
-            labels: xValues,
-            datasets: [{
-                backgroundColor: barColors,
-                borderColor: "purple",
-                data: yValues,
-            }]
-        },
-        options: {
-            maintainAspectRatio: false,
-            plugins: {
-                datalabels: {
-                    //start datalabel
-                    color: "#fff",
-                    anchor: "end",
-                    align: "end",
-                    offset: -10,
-                    font: {
-                        size: 14,
-                    },
-                },
-                legend: {
-                    display: false,
-                },
-                title: {
-                    display: true,
-                    text: "Rendas",
-                    color: "#fff",
-                    font: {
-                        size: 15,
-                    },
-                    padding: {
-                        top: 10,
-                        bottom: 30
-                    }
-                },
+       // レコードを再描画
+       displayRecords(userInfo.history);
+   }
 
-            },
-            scales: {
-                /*     x: {
-                        grid: {
-                            color: '#fff' // Cor da grade no eixo x
-                        }
-                    }, */
-                /*   y: {
-                      grid: {
-                          color: '#fff' // Cor da grade no eixo y
-                      }
-                  } */
+
+// function populateSupplierOptions() {
+//     const supplierSelect = document.getElementById('editDescription');
+//     // 既存のオプションをクリア
+//     supplierSelect.innerHTML = '';
+//     // サプライヤーリストをループしてオプションを生成
+//     userInfo.suppliers.forEach(supplier => {
+//         const option = document.createElement('option');
+//         option.value = supplier.supplier_id;
+//         option.textContent = supplier.supplier_name;
+//         supplierSelect.appendChild(option);
+//     });
+// }
+
+function populateCategoryCards(userCategories) {
+    console.log(userCategories)
+    // 既存のカードをクリア
+    categoryContainer.innerHTML = '';
+
+    // 選択されたカードを保持する変数
+    let selectedCard = null;
+    // カテゴリーリストをループしてカードを生成
+    userCategories.forEach(category => {
+        const card = document.createElement('div');
+        card.className = 'category-card';
+        card.setAttribute('data-category-id', category.m_category.identification_id); // カテゴリIDをデータ属性に設定
+
+        const icon = document.createElement('img');
+        icon.src = `../image/${category.m_category.icon_number}.svg`;
+        icon.alt = category.m_category[`category_name_${userInfo.language}`];
+        card.appendChild(icon);
+
+        const name = document.createElement('div');
+        name.className = 'category-name';
+        name.textContent = category.m_category[`category_name_${userInfo.language}`];
+        card.appendChild(name);
+        categoryContainer.appendChild(card);
+
+        // カードクリックイベントを追加
+        card.addEventListener('click', function () {
+            // すでに選択されているカードの色を元に戻す
+            if (selectedCard) {
+                selectedCard.style.backgroundColor = '';
+                selectedCard.classList.remove('selected'); // 既存のselectedクラスを削除
             }
 
-        }
+            // 新しく選択したカードの色を変更する
+            card.style.backgroundColor = '#FFDAB9';
+            card.classList.add('selected'); // 新しくselectedクラスを追加
+            selectedCard = card;
+
+            // 選択したカテゴリのIDをuserInfo.selectCategoryに格納する
+            const categoryId = card.getAttribute('data-category-id');
+            userInfo.selectCategory = categoryId;
+        });
     });
+}
 
-    //graficos 03
-    new Chart("myChart3", {
-        type: "pie",
-        data: {
-            labels: xValues,
-            datasets: [{
-                backgroundColor: barColors,
-                hoverOffset: 4,
-                data: yValues
-            }]
-        },
-        options: {
-            maintainAspectRatio: false,
-            plugins: {
-                datalabels: null,
-                legend: {
-                    display: false,
-                },
-                title: {
-                    display: true,
-                    text: "Renda",
-                    color: "#fff",
-                    font: {
-                        size: 15,
-                    },
-                    padding: {
-                        top: 10,
-                        bottom: 30
-                    }
-                },
-            },
+function populateClientCards(clients, language) {
+    const clientContainer = document.getElementById('categorysdiv');
+    // 既存のカードをクリア
+    clientContainer.innerHTML = '';
+    // 選択されたカードを保持する変数
+    let selectedCard = null;
+    // クライアントリストをループしてカードを生成
+    console.log(userInfo.suppliers.clients)
+    userInfo.suppliers.clients.forEach(client => {
+        const card = document.createElement('div');
+        card.className = 'client-card';
+        card.setAttribute('data-client-id', client.id); // クライアントIDをデータ属性に設定
+        card.setAttribute('data-category-id', 511); // 科目IDをデータ属性に設定（固定）
 
-        }
+        const icon = document.createElement('img');
+        icon.src = `../image/client-icon.svg`; // クライアント用のアイコン（適宜変更）
+        icon.alt = client.client_name; // クライアント名をaltテキストに設定
+        card.appendChild(icon);
+
+        const name = document.createElement('div');
+        name.className = 'client-name';
+        name.textContent = client.client_name; // クライアント名を表示
+        card.appendChild(name);
+        clientContainer.appendChild(card);
+        // カードクリックイベントを追加
+        card.addEventListener('click', function () {
+            // すでに選択されているカードの色を元に戻す
+            if (selectedCard) {
+                selectedCard.style.backgroundColor = '';
+                selectedCard.classList.remove('selected'); // 既存のselectedクラスを削除
+            }
+            // 新しく選択したカードの色を変更する
+            card.style.backgroundColor = '#FFDAB9';
+            card.classList.add('selected'); // 新しくselectedクラスを追加
+            selectedCard = card;
+            // 選択したクライアントのIDと固定の科目IDをuserInfo.selectCategoryに格納する
+            const clientId = card.getAttribute('data-client-id');
+            const categoryId = card.getAttribute('data-category-id');
+            userInfo.selectClient = clientId;
+            userInfo.selectCategory = categoryId;
+
+            console.log('Selected Client ID:', userInfo.selectClient);
+            console.log('Selected Category ID:', userInfo.selectCategory);
+            console.log(selectedCard)
+        });
     });
+}
 
-
-};
-
-graficoRenda();
-
-
-
-
-
-
-function getRandomColor() {
-    const letters = "0123456789ABCDEF";
-    let color = "#";
-    for (let i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
+function resetForm() {
+    document.getElementById('memo-pay').value = '';
+    document.getElementById('value-input').value = '';
+    const categoryContainer = document.getElementById('categorysdiv');
+    const selectedCard = categoryContainer.querySelector('.client-card.selected');
+    if (selectedCard) {
+        selectedCard.style.backgroundColor = '';
+        selectedCard.classList.remove('selected');
     }
-    return color;
+    const selectedCardClient = categoryContainer.querySelector('.client-card selected');
+    if (selectedCardClient) {
+        selectedCardClient.style.backgroundColor = '';
+        selectedCardClient.classList.remove('selected');
+    }
+    userInfo.selectClient = null;
+    userInfo.selectCategory = null;
+}
+
+
+function translatePage(language) {
+    const elements = document.querySelectorAll('[data-translate]');
+    elements.forEach(el => {
+        const key = el.getAttribute('data-translate');
+        if (translations[language] && translations[language][key]) {
+            if (el.tagName.toLowerCase() === 'input' || el.tagName.toLowerCase() === 'textarea') {
+                el.value = translations[language][key];
+            } else {
+                el.textContent = translations[language][key];
+            }
+        }
+    });
+    translatePages(language)
 }
 
 
 
+function translatePages(language) {
+    const elementsToTranslate = {
+        // "title": document.querySelector('header h1'),
+        "history": document.getElementById("historybutton"),
+        "expense": document.getElementById("keihi-select"),
+        "income": document.getElementById("syunyu-select"),
+        "transfer": document.getElementById("transfer-select"),
+        "date": document.getElementById("div0"),
+        "typedt": document.getElementById('type-mother'),
+        "supplier": document.getElementById("div4"),
+        "method": document.getElementById("div2"),
+        "amount": document.getElementById("div3"),
+        "memo": document.getElementById("div1"),
+        "register": document.getElementById("input1"),
+        "balance": document.getElementById("wallet-balance"),
+        "bank_balance": document.getElementById("bank-balance"),
+        "from": document.querySelector("#from-account option[value='']"),
+        "to": document.querySelector("#to-account option[value='']"),
+        "register_transfer": document.querySelector(".regist-button input[value='Registrar']"),
+        "update":document.getElementById('edit-title'),
+        "amount":document.getElementById('modal-amount'),
+        "memo":document.getElementById('modal-memo'),
+        "save":document.getElementById('modal-save-butoom'),
+        "category":document.getElementById('modal-kamoku'),
+        "paymethod":document.getElementById('modal-how-pay')
+    };
+    for (const key in elementsToTranslate) {
+        if (elementsToTranslate[key]) {
+            if (elementsToTranslate[key].tagName === 'INPUT' && elementsToTranslate[key].type === 'button') {
+                elementsToTranslate[key].value = translations[language][key];
+            } else {
+                elementsToTranslate[key].textContent = translations[language][key];
+            }
+        }
+    }
+    // pay-selectのオプションを生成
+    const paySelect = document.getElementById("pay-select");
+    if (paySelect) {
+        paySelect.innerHTML = `
+            <option value="cash">${translations[language].cash}</option>
+            <option value="bank">${translations[language].bank}</option>
+            <option value="credit">${translations[language].credit}</option>
+        `;
+    }
+}
+
+async function soubetsuProcess(){
+  console.log('soubetus')
+  userInfo.proccessNumber===0?sendData():sendSyunyu()
+
+}
+
+async function sendSyunyu() {
+    const date = document.getElementById('calender-input').value;
+    const supplierSelect = document.getElementById('Suppliers-options');
+    const method = document.getElementById('pay-select').value;
+    const amount = document.getElementById('value-input').value;
+    const memo = document.getElementById('memo-pay').value || ''; // メモは必須ではない
+    const categoryId = userInfo.selectCategory;
+    // 必須フィールドのチェック
+    if (!date || !amount || !categoryId) {
+        alert('必要なフィールドが入力されていません');
+        return;
+    }
+    console.log(userInfo)
+    console.log(supplierSelect.value)
+    const geTclients = userInfo.MsClients.find(supplier => supplier.supplier_id-0 === supplierSelect.value-0);
+    console.log(geTclients)
+    const clients = geTclients.supplier_name + `${geTclients.supplier_name}(${supplierSelect.value})`
+    // データの準備
+    // const data = {
+    //     date,
+    //     method,
+    //     amount,
+    //     memo,
+    //     category,
+    //     userId: userInfo.id,
+    //     clients,
+    //     kubun:1
+    // };
+
+    const data = {
+        userId:userInfo.id,
+        date: date,
+        supplier: clients,
+        method: method,
+        amount: amount,
+        memo: memo,
+        category: categoryId,
+        kubun:1
+
+    };
 
 
 
-document.querySelector('#btn-home').addEventListener('click', () => {
-    location.href = "../index.html";
-})
+    // データの送信
+    try {
+        const response = await fetch(`${accessmainserver}/keirikun/data/regist/expenses`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${window.localStorage.getItem('token')}`
+            },
+            body: JSON.stringify(data)
+        });
 
-function quit() {
-    sessionStorage.removeItem('id');
-    sessionStorage.removeItem('name');
+        const result = await response.json();
 
-    window.location = "../../../views/loginadminrst.html";
+        if (result.success) {
+            await swallSuccess()
+            resetForm()
+        } else {
+            alert('マスターデータの取得に失敗しました');
+        }
+    } catch (error) {
+        console.error('Error sending income data:', error);
+        // await swalError(); // エラーメッセージの表示
+    }
+}
+
+
+async function sendData() {
+    // const token = window.localStorage.getItem('token'); // トークンを取得
+    const date = document.getElementById('calender-input').value;
+    // const supplier = document.getElementById('Suppliers-options').value;
+    const method = document.getElementById('pay-select').value;
+    const amount = document.getElementById('value-input').value;
+    const memo = document.getElementById('memo-pay').value;
+    const categoryId = userInfo.selectCategory;
+    console.log(categoryId)
+    // 必須項目のチェック
+    if (!amount) {
+        alert(translations[userInfo.language].enterAmount);
+        return;
+    }
+    if (!categoryId) {
+        alert(translations[userInfo.language]['selectCategory']);
+        return;
+    }
+    if (!memo) {
+        alert(translations[userInfo.language]['senterMemo']);
+        return;
+    }
+
+    const supplier = userInfo.suppliers.find(supplier => supplier.supplier_id === document.getElementById('Suppliers-options').value-0);
+
+    const data = {
+        userId:userInfo.id,
+        date: date,
+        supplier: `${supplier.supplier_name}(${document.getElementById('Suppliers-options').value-0})`,
+        method: method,
+        amount: amount,
+        memo: memo,
+        category: categoryId,
+        kubun:0
+
+    };
+
+    console.log('Data to be sent:', data); // 送信するデータをログ出力
+
+    try {
+        const response = await fetch(`${accessmainserver}/keirikun/data/regist/expenses`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` // トークンをヘッダーに含める
+            },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            swallSuccess()
+            resetForm()
+        } else {
+            alert(translations[userInfo.language]['dataSendFail']);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert(translations[userInfo.language]['dataSendError']);
+    }
+}
+
+
+async function kanmaReplase(){
+  let data = document.getElementById('value-input')
+  if(data.value.length==1&&data.value!="￥"){
+    data.value = ("￥" + data.value)
+  }else{
+   let numberAns = (data.value.slice( 1 )).replace(/[^0-9]/g, "");
+   kanmaAns = numberAns.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
+   data.value = `￥${kanmaAns}`
+ }
+   //return `￥${kanmaAns}`
 };
+
+//  function dayChange(data){
+//   let date = new Date(dt.value.split("-")[0], dt.value.split("-")[1]-1, dt.value.split("-")[2]);
+//   if(data==2){
+//     date.setDate(date.getDate() + 1)
+//   }else{
+//     date.setDate(date.getDate() - 1)
+//   }
+//   let dM = (("0" + (date.getMonth()+1)).slice(-2))
+//   let dd = (("0" + date.getDate()).slice(-2))
+//   dt.value = `${date.getFullYear()}-${dM}-${dd}`
+// }
+
+
+
+// Add custom CSS for the toast
+const style = document.createElement('style');
+style.innerHTML = `
+  .colored-toast {
+    background-color: #f4f6f9;
+    border: 1px solid #dcdcdc;
+    color: #333;
+    font-family: 'Arial', sans-serif;
+    font-size: 14px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    animation: slideIn 0.5s ease-out, slideOut 0.5s ease-in 2.5s;
+  }
+
+  @keyframes slideIn {
+    from {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideOut {
+    from {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+  }
+
+  .swal2-title {
+    font-weight: bold;
+  }
+
+  .swal2-html-container {
+    margin-top: 10px;
+  }
+
+  .swal2-icon {
+    font-size: 20px;
+  }
+
+  .swal2-icon.swal2-success {
+    border-color: #28a745;
+  }
+`;
+document.head.appendChild(style);
+
+function switchToIncomeMode() {
+    document.getElementById('div4').textContent = translations[userInfo.language].client; // クライアントに切り替え
+    populateClientCards(); // 収入のカテゴリーカードを生成
+    document.getElementById('supplieres-top-div').style = 'display:none'
+    userInfo.proccessNumber = 1
+}
+
+function switchToExpensesMode() {
+    document.getElementById('div4').textContent = translations[userInfo.language].supplier; // クライアントに切り替え
+    populateCategoryCards(userInfo.suppliers.userCategories,userInfo.language)
+    document.getElementById('supplieres-top-div').style = 'display:flex'
+    userInfo.proccessNumber = 0
+}
+
+// // 切り替えボタンのイベントリスナー
+// document.getElementById('syunyu-select').addEventListener('click', switchToIncomeMode);
+// document.getElementById('keihi-select').addEventListener('click', switchToExpensesMode);
+
+
+// JavaScript部分をkaikei.jsに追加
+
+function highlightButton(buttonId) {
+    const buttons = document.querySelectorAll('.top-button');
+    buttons.forEach(button => {
+        if (button.id === buttonId) {
+            button.style.backgroundColor = 'orange'; // 選択されたボタンの色を変更
+        } else {
+            button.style.backgroundColor = ''; // 他のボタンの色を元に戻す
+        }
+    });
+}

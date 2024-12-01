@@ -8,7 +8,6 @@ let isLoading = false; // Variável para controlar o estado de carregamento
 document.getElementById("login-bottom").addEventListener("click", login_check);
 //ログイン情報の確認をする処理、IDが空白かどうか、その後PASSがくうはくかどうか、TRUEの場合Swal処理
 async function login_check(user, password) {
-  console.log('in');
   user = document.getElementById("user").value; //ユーザー名
   password = document.getElementById("pass").value; //パスワード
 
@@ -49,7 +48,6 @@ async function signin(payload) {
       const { token } = response.data.info;
       window.localStorage.setItem('token', token);
       hideLoading(); // Oculta o carregamento
-      alert('Conectado com sucesso'); // Mensagem de sucesso
       window.location.href = './pages/main.html'; // Redireciona para renda.html
     } else {
       errormessage = "Check username and password";
@@ -89,7 +87,7 @@ function showLoading() {
   isLoading = true;
   var modal = document.getElementById("loadingModal");
   var span = document.getElementsByClassName("close")[0];
-  document.getElementById("modalText").innerText = "Carregando...";
+  document.getElementById("modalText").innerText = "wait...";
   modal.style.display = "block";
   span.onclick = function() {
     modal.style.display = "none";
