@@ -1,203 +1,131 @@
-html{
-overflow-y: auto;
-      height: 100%;
-}
-body {
-  height: 100%;
-  margin: 0;
-}
-
-header{
-  width:100%;
-  height:6%;
-  background-color: #FF6928;
-  display: flex;
-  justify-content:center;
-  align-items:  center;
-  overflow:hidden;
-}
-
-
-h1{
-  font-size: 1.5em
-}
-.settings-container {
-    max-width: 600px;
-    margin: 2px auto;
-    padding: 20px;
-    background: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+/* 設定リスト全体のスタイル */
+.settings-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
     border-radius: 8px;
+    overflow: hidden;
 }
 
-h1, h2 {
-    text-align: center;
-    margin-bottom: 3px;
+/* リストアイテムのスタイル */
+.settings-list li {
+    padding: 15px 20px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
+/* アイコンのスタイル */
+.settings-list li i {
+    margin-right: 15px;
+    font-size: 1.4em;
+    color: #007BFF;
+    transition: color 0.3s ease;
+}
+
+/* 最後のリストアイテムのボーダーを除去 */
+.settings-list li:last-child {
+    border-bottom: none;
+}
+
+/* リストアイテムのホバー効果 */
+.settings-list li:hover {
+    background-color: #007BFF;
+    color: white;
+    transform: translateX(5px);
+}
+
+/* リストアイテムをホバーしたときのアイコンの色 */
+.settings-list li:hover i {
+    color: white;
+}
 .form-group {
     margin-bottom: 15px;
 }
 
-label {
+.form-group label {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
 }
 
-input, select {
+.form-group input,
+.form-group select {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
+    padding: 8px;
+    border: 1px solid #ccc;
     border-radius: 4px;
-    font-size: 16px;
 }
 
-button, .btn {
-    width: 100%;
-    padding: 10px;
-    background-color: #28a745;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    cursor: pointer;
-    margin-top: 10px;
-}
-
-button:hover, .btn:hover {
-    background-color: #218838;
-}
-
-/* Modal Styles */
+/* モーダルの基本スタイル */
 .modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgb(0, 0, 0);
-    background-color: rgba(0, 0, 0, 0.4);
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+  padding-top: 60px;
 }
 
 .modal-content {
-    background-color: #fefefe;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 500px;
-    border-radius: 8px;
+  background-color: #fefefe;
+  margin: 5% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  align-items: center; /* 中央に配置 */
 }
 
 .close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
 }
 
 .close:hover,
 .close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+.savebtn-form{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.savebtn-form button {
+  width: 7rem;
+  height: 2.5rem; /* 高さを少し大きく */
+  background: linear-gradient(135deg, #ff7e5f, #feb47b); /* グラデーション */
+  border: none;
+  border-radius: 25px; /* 角丸 */
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 立体感を出すシャドウ */
+  transition: all 0.3s ease; /* スムーズなアニメーション */
 }
 
-.header-buttons {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    /* background-color: #333; */
-    padding: 10px;
-}
-.header-button span{
-  font-size: 0.8em
+.savebtn-form button:hover {
+  background: linear-gradient(135deg, #feb47b, #ff7e5f); /* ホバー時に逆グラデーション */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* ホバー時にシャドウを強調 */
+  transform: translateY(-2px); /* ホバー時に浮かび上がる */
 }
 
-.header-button {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 14px;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 5rem;
-    text-align: center;
-    height: 100%
+.savebtn-form button:active {
+  background: linear-gradient(135deg, #ff6b6b, #ff8e72); /* アクティブ時の色 */
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); /* アクティブ時は少し押し込む */
+  transform: translateY(0); /* 押した時は元に戻す */
 }
-
-.header-button i {
-
-    margin-bottom: 1px;
-}
-
-.header-button:hover {
-    color: #FFDAB9;
-}
-#loading-indicator {
-     display: none;
-     position: fixed;
-     left: 50%;
-     top: 50%;
-     transform: translate(-50%, -50%);
-     padding: 1rem 2rem;
-     background: rgba(0, 0, 0, 0.8);
-     color: #fff;
-     border-radius: 5px;
-     font-size: 1.2rem;
-     z-index: 1000;
-     display: flex;
-     align-items: center;
-     justify-content: center;
- }
-
- .spinner {
-     border: 4px solid rgba(255, 255, 255, 0.3);
-     border-radius: 50%;
-     border-top: 4px solid #fff;
-     width: 24px;
-     height: 24px;
-     animation: spin 1s linear infinite;
-     margin-right: 10px;
- }
-
- @keyframes spin {
-     0% { transform: rotate(0deg); }
-     100% { transform: rotate(360deg); }
- }
-
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-.form-container {
-           display: none;
-           border: 1px solid #ccc;
-           padding: 20px;
-           margin-top: 20px;
-       }
-
-       #delete-button {
-           background-color: #ff0000; /* 背景色を赤に変更 */
-           color: #ffffff; /* 文字色を白に変更 */
-           border: none; /* ボーダーを削除 */
-           padding: 10px 20px; /* パディングを追加 */
-           cursor: pointer; /* カーソルをポインターに変更 */
-           font-size: 16px; /* フォントサイズを変更 */
-           border-radius: 5px; /* ボーダーの角を丸くする */
-       }
-
-       #delete-button:hover {
-           background-color: #cc0000; /* ホバー時の背景色を変更 */
-       }

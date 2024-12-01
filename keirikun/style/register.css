@@ -13,6 +13,14 @@ body {
   margin-bottom: 20px;
   color: white;
 }
+#language-select{
+  width:10rem;
+  height:3rem;
+  text-align: center;
+  margin-left: 5px;
+  font-size: 16px;
+  border-radius: 10px
+}
 
 .container {
   background-color: #606468;
@@ -40,6 +48,7 @@ body {
 .container input[type="text"],
 .container input[type="password"],
 .container input[type="email"],
+/* .container input[type="inboisu"], */
 .container select {
   width: 100%;
   padding: 10px;

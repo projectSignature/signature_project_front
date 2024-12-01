@@ -1,8 +1,10 @@
 html{
+  width:100%;
 overflow-y: auto;
       height: 100%;
 }
 body {
+  width:100%;
   height: 100%;
   margin: 0;
 }
@@ -49,6 +51,12 @@ header{
 .header-button:hover {
     color: #FFDAB9;
 }
+.main-container{
+  width:97%;
+  overflow-x: hidden !important;
+  padding: 5px;
+  margin-top: 5px
+}
 #loading-indicator {
      display: none;
      position: fixed;
@@ -80,41 +88,140 @@ header{
     color: #ccc;
 }
 
-.filter-container {
-    max-width: 800px;
-    margin: 20px auto;
+.filter-container-analist {
+    /* width: 100%; */
+    /* margin: 20px auto; */
     padding: 10px;
-    background: #fff;
+    background: #333;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around!important;
     align-items: center;
+    color:#FFFF
+}
+.filter-container-analist div{
+  /* width:30% */
 }
 
-.filter-container label {
+.filter-container-analist label {
     font-size: 16px;
     font-weight: bold;
 }
 
-.filter-container input,
-.filter-container button {
+
+.filter-container-analist input,
+.filter-container-analist button {
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 16px;
 }
+.filter-year-div{
+  width:20%;
+}
+.filter-year-div select{
+  font-size: 20px;
+  padding:4px
+}
+.syunyu-sisyutsu-div{
+  width: 45%!important;
+ margin-left: 15px
+}
 
-.chart-container {
-    max-width: 800px;
+
+.card-container {
+    width: 80%;
     margin: 10px auto;
     padding: 20px;
     background: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
+    overflow: hidden;
+    /* background-color: orange !important */
+}
+.syunyu-sisyutsu-div-flex{
+  display: flex !important;
+  width:100% !important;
+
 }
 
 canvas {
     width: 100% !important;
     height: auto !important;
+}
+.card{
+ width: 75%
+}
+.details-container{
+  position: absolute;
+  top:60px;
+  width:100%;
+
+  background-color: white;
+  overflow-y: auto;
+
+}
+#data-list{
+  height:280px;
+  overflow-y: auto;
+  display:flex;
+  justify-content: space-around;
+  width: 100%
+}
+.expenses-mother-div{
+  width:100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.expenses-mother-div div{
+  width: 40%;
+  margin-top: 3px
+}
+#chartContainer {
+    display: flex; /* 横並びに配置 */
+    flex-wrap: wrap; /* 折り返しを許可 */
+    justify-content: center; /* 中央揃え */
+    align-items: center; /* 垂直方向で中央揃え */
+    gap: 30px; /* グラフ間のスペースを広げる */
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    /* background-color: pink */
+}
+
+#chartContainer canvas {
+    max-width: 250px; /* グラフの最大サイズ */
+    width: 100%; /* レスポンシブ調整 */
+    height: auto; /* アスペクト比を維持 */
+}
+
+.chart-legend {
+    text-align: center; /* 中央揃え */
+    margin-top: 10px;
+    font-size: 14px;
+    color: #333;
+}
+
+#detailsContainer {
+    margin: 0 auto;
+    width: 100%; /* 中央揃え */
+    max-width: 800px; /* 最大幅を設定 */
+}
+
+#detailsTitle {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.card-expenses, .card-income {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    margin-bottom: 10px;
+    width: 100%; /* レスポンシブに対応 */
 }
