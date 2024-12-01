@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <link rel="stylesheet" href="../style/kaikei.css">
+    <link rel="stylesheet" href="../style/loading-popup.css">
 </head>
 
 <body class="bg-dark">
@@ -35,11 +36,22 @@
               </button>
           </div>
       </header>
-      <div id="loading-indicator">
+      <div id="overlay"></div>
+
+      <!-- <div id="loading-indicator">
         <div class="spinner"></div>
         Loading...
-    </div>
+    </div> -->
     <div class="main-div">
+        <div class="div-comon-division-common">
+          <div class="date-div-span" id="type-mother">Tipo</div>
+          <div class="right-div-add"></div>
+          <div id="select-type-data-mother-div" class="center-colomn-div">
+            <select id="dataTypeSelect">
+            </select>
+         </div>
+
+        </div>
         <div class="div-comon-division-common">
             <div class="date-div-span" id="div0">日付</div>
             <div class="right-div-add" onclick="dayChange(1)"><</div>
@@ -110,13 +122,22 @@
         </div>
     </div>
 
+    <div id="loading-popup" class="loading-popup">
+      <div class="loading-container">
+          <div class="spinner"></div>
+          <div class="loading-text">await</div>
+      </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
     <script src="../script/swal.js"></script>
+    <script src="../script/loding-popup.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
     <script src="../script/translations.js"></script>
     <script src="../script/common.js"></script>
     <script src="../script/kaikei.js"></script>
+    <script src='../script/page-buttons.js'></script>
 </body>
 
 </html>

@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keirikun</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="../style/kaikei.css">
+    <link rel="stylesheet" href="../style/loading-popup.css">
+    <link rel='stylesheet' href='../style/analysis.css'>
+</head>
+<body>
+    <header>
+        <div class="header-buttons">
+            <button class="header-button" id="input-button">
+                <i class="fas fa-pencil-alt"></i>
+                <span data-translate="input" id="register-input"></span>
+            </button>
+            <button class="header-button" id="history-button">
+                <i class="fas fa-list"></i>
+                <span data-translate="history" id="history-btn"></span>
+            </button>
+            <button class="header-button" id="analysis-button">
+                <i class="fas fa-chart-bar"></i>
+                <span data-translate="analysis" id="analist-btn"></span>
+            </button>
+            <button class="header-button" id="submit-button">
+                <i class="fas fa-file-upload"></i>
+                <span data-translate="finalizeData" id="date-confirm-btn"></span>
+            </button>
+            <button class="header-button" id="settings-button">
+                <i class="fas fa-cogs"></i>
+                <span data-translate="settings" id="setting-btn"></span>
+            </button>
+        </div>
+    </header>
+    <div class="main-container">
+        <div class="filter-container-analist">
+            <div class="filter-year-div">
+              <label for="year-select" id="year-select-title"></label>
+              <select id="year-select">
+                  <!-- JavaScriptで動的に年を追加 -->
+              </select>
+            </div>
+            <div class="syunyu-sisyutsu-div">
+              <div class='syunyu-sisyutsu-div-flex'>
+                <div><label id="sousyunyu-label"></label></div>
+                <div><span id="syunyu-label"></span></div>
+              </div>
+              <div class='syunyu-sisyutsu-div-flex'>
+               <div><label id="sisyutus-label"></label></div>
+               <div><span id="sisyutsu-label"></span></div>
+            </div>
+            </div>
+            <div style="margin-left: 30px">
+              <label id="lucro-title"></label>
+              <span id="rieki-span"></span>
+            </div>
+          </div>
+        </div>
+        <div id="cardContainer" class="card-container"></div>
+        <div id="detailsContainer" class="details-container" style="display: none;">
+          <h2 id="detailsTitle"></h2>
+          <div id="chartContainer">
+          </div>
+          <!-- <div id="data-list">
+              <div id="left-list"></div>
+              <div id="right-list"></div>
+          </div> -->
+        </div>
+
+
+
+
+
+        <div id="loading-popup" class="loading-popup">
+          <div class="loading-container">
+              <div class="spinner"></div>
+              <div class="loading-text">await</div>
+          </div>
+        </div>
+    </div>
+    <script src="../script/swal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+    <script src="../script/loding-popup.js"></script>
+    <script src="../script/translations.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
+    <script src="../script/common.js"></script>
+    <script src='../script/page-buttons.js'></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const totalTag = document.getElementById('syunyu-label')
+        const totalExpens = document.getElementById('sisyutsu-label')
+        const lucroTag = document.getElementById('rieki-span')
+        let accessmainserver = 'http://localhost:3000';
+        const annualSummaryEndpoint = `${accessmainserver}/keirikun/annual-summary`;
+        const categorySummaryEndpoint = `${accessmainserver}/keirikun/category-summary/`;
+        const userInfo = JSON.parse(sessionStorage.getItem('keirikunUser'));
+        console.log(userInfo)
+        document.getElementById('analysis-button').style = "background-color:#333";
+        // 初期化関数
+        function initializePage() {
+            // userInfoが存在しない場合はエラー処理
+            if (!userInfo) {
+                console.error("User info not found in session storage.");
+                window.location.href = '../login.html'; // ログインページにリダイレクト
+                return;
+            }
+            // 翻訳処理を実行
+            translatePages(userInfo);
+            // ボタンイベントの設定
+            // 年セレクトとデータ取得
+            const currentYear = new Date().getFullYear();
+            populateYearSelect(currentYear);
+            fetchMonthlySummary(currentYear);
+        }
+        // 翻訳処理
+        function translatePages(userInfo) {
+            if (userInfo.language && translations && translations[userInfo.language]) {
+                document.getElementById('sousyunyu-label').innerText = translations[userInfo.language]['income'];
+                document.getElementById('register-input').innerText = translations[userInfo.language]['input'];
+                document.getElementById('history-btn').innerText = translations[userInfo.language]['history'];
+                document.getElementById('analist-btn').innerText = translations[userInfo.language]['analysis'];
+                document.getElementById('date-confirm-btn').innerText = translations[userInfo.language]['finalizeData'];
+                document.getElementById('setting-btn').innerText = translations[userInfo.language]['settings'];
+                document.getElementById('year-select-title').innerText = translations[userInfo.language]['selecionarAno'];
+                document.getElementById('sisyutus-label').innerText = translations[userInfo.language]['despesas'];
+                document.getElementById('lucro-title').innerText = translations[userInfo.language]['lucro']
+            } else {
+                console.error("Translations or language data not found.");
+            }
+        }
+
+        // 年選択肢を生成
+        function populateYearSelect(currentYear) {
+            const select = document.getElementById('year-select');
+            select.innerHTML = ''; // 既存の選択肢をクリア
+            for (let year = currentYear - 5; year <= currentYear + 5; year++) {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                if (year === currentYear) {
+                    option.selected = true;
+                }
+                select.appendChild(option);
+            }
+        }
+        // 年度データを取得
+        async function fetchMonthlySummary(year) {
+            try {
+                showLoadingPopup();
+                const response = await fetch(`${annualSummaryEndpoint}?year=${year}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    const sortedData = data.records.sort((a, b) => a.month - b.month);
+                    displayMonthlyCards(sortedData);
+                } else {
+                    console.error('Failed to fetch monthly summary:', data.message);
+                }
+                hideLoadingPopup();
+            } catch (error) {
+                console.error('Error fetching monthly summary:', error);
+            }
+        }
+        // 月別カードを作成して表示
+        function displayMonthlyCards(records) {
+            const container = document.getElementById('cardContainer');
+
+            container.innerHTML = '';
+            let totalIncome = 0
+            let totalExpense = 0
+            records.forEach(record => {
+                const card = document.createElement('div');
+                totalIncome += record.total_income-0
+                totalExpense += record.total_expense-0
+                card.className = 'card';
+                card.innerHTML = `
+                    <h3>${record.month} 月</h3>
+                    <p>${translations[userInfo.language]['income']}: ¥${record.total_income === null ? '0' : parseFloat(record.total_income).toLocaleString()}</p>
+                    <p>${translations[userInfo.language]['despesas']}: ¥${record.total_expense === null ? '0' : parseFloat(record.total_expense).toLocaleString()}</p>
+                `;
+                card.addEventListener('click', () => fetchCategorySummary(record.month));
+                container.appendChild(card);
+            });
+            totalTag.innerText = `￥${totalIncome.toLocaleString()}`
+            totalExpens.innerText = `￥${totalExpense.toLocaleString()}`
+            lucroTag.innerText = totalIncome > totalExpense
+              ? `￥${(totalIncome - totalExpense).toLocaleString()}`
+              : `-￥${(totalExpense - totalIncome).toLocaleString()}`;
+
+            console.log(totalIncome)
+        }
+        // 詳細データを取得して表示
+        async function fetchCategorySummary(month) {
+            const year = document.getElementById('year-select').value;
+            try {
+              console.log(`${categorySummaryEndpoint}${year}/${month}/${userInfo.id}`)
+                const response = await fetch(`${categorySummaryEndpoint}${year}/${month}/${userInfo.id}`);
+
+                const data = await response.json();
+
+                if (data.success) {
+                    displayCategoryDetails(year, month, data.records);
+                } else {
+                    console.error('Failed to fetch category summary:', data.message);
+                }
+            } catch (error) {
+                console.error('Error fetching category summary:', error);
+            }
+        }
+        function displayCategoryDetails(year, month, records) {
+            const detailsContainer = document.getElementById('detailsContainer');
+            const detailsTitle = document.getElementById('detailsTitle');
+
+            const chartContainer = document.getElementById('chartContainer'); // グラフ用のコンテナ
+
+            // グラフを初期化
+            chartContainer.innerHTML = `
+                <canvas id="incomeChart"></canvas>
+                <div class="expenses-mother-div" id="right-list"></div>
+
+                <canvas id="expenseChart"></canvas>
+                <div class="expenses-mother-div" id="left-list"></div>
+            `;
+
+            const leftDiv = document.getElementById('left-list'); // 支出用
+            const rightDiv = document.getElementById('right-list'); // 収入用
+
+            // タイトルの設定
+            let titleText;
+            switch (userInfo.language) {
+                case 'en':
+                    titleText = `Details for ${month}/${year}`;
+                    break;
+                case 'pt':
+                    titleText = `Detalhes de ${month}/${year}`;
+                    break;
+                default:
+                    titleText = `${year} 年 ${month} 月の詳細`;
+            }
+            detailsTitle.textContent = titleText;
+
+            // リストを初期化
+            leftDiv.innerHTML = '';
+            rightDiv.innerHTML = '';
+
+            // カテゴリごとの収入・支出データをまとめる
+            const incomeSummary = {};
+            const expenseSummary = {};
+            records.forEach(record => {
+                let myKamoku;
+                if (record.total_income === null) {
+                    myKamoku = userInfo.Masterdespesas.filter(f => f.category_id == record.party_code);
+                } else {
+                    myKamoku = userInfo.Mastervendas.filter(f => f.category_id == record.party_code);
+                }
+                const categoryName = myKamoku[0].m_category[`category_name_${userInfo.language}`];
+
+                // 支出の場合
+                if (record.total_income === null) {
+                    if (!expenseSummary[categoryName]) {
+                        expenseSummary[categoryName] = 0;
+                    }
+                    expenseSummary[categoryName] += parseFloat(record.total_expense || 0);
+
+                    // カードを追加
+                    const listItem = document.createElement('div');
+                    listItem.className = 'card-expenses';
+                    listItem.innerHTML = `
+                        <p>科目: ${categoryName}</p>
+                        <p>支出: ¥${parseFloat(record.total_expense).toLocaleString()}</p>
+                    `;
+                    leftDiv.appendChild(listItem);
+                }
+
+                // 収入の場合
+                if (record.total_income !== null) {
+                    if (!incomeSummary[categoryName]) {
+                        incomeSummary[categoryName] = 0;
+                    }
+                    incomeSummary[categoryName] += parseFloat(record.total_income || 0);
+                    // カードを追加
+                    const listItem = document.createElement('div');
+                    listItem.className = 'card-income';
+                    listItem.innerHTML = `
+                        <p>科目: ${categoryName}</p>
+                        <p>収入: ¥${parseFloat(record.total_income).toLocaleString()}</p>
+                    `;
+                    rightDiv.appendChild(listItem);
+                }
+            });
+            // グラフ用のデータ準備
+            const incomeLabels = Object.keys(incomeSummary);
+            const incomeData = Object.values(incomeSummary);
+            const expenseLabels = Object.keys(expenseSummary);
+            const expenseData = Object.values(expenseSummary);
+            // Chart.js プラグインを登録
+          Chart.register(ChartDataLabels);
+
+          // 収入グラフを描画
+          const incomeCtx = document.getElementById('incomeChart').getContext('2d');
+          new Chart(incomeCtx, {
+    type: 'doughnut',
+    data: {
+        labels: incomeLabels,
+        datasets: [{
+            label: '収入',
+            data: incomeData,
+            backgroundColor: ['#36A2EB', '#4BC0C0', '#9966FF', '#FFCE56', '#FF9F40'],
+            borderColor: '#fff',
+            borderWidth: 2
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: {
+                position: 'bottom',
+            },
+            datalabels: {
+                color: '#fff', // ラベルの色
+                font: {
+                    size: 14, // ラベルのフォントサイズ
+                    weight: 'bold'
+                },
+                formatter: (value, context) => {
+                    const label = context.chart.data.labels[context.dataIndex];
+                    return `${label}: ${value}`; // ラベル名と値を表示
+                }
+            }
+        },
+        cutout: '60%' // ドーナツ中央の穴サイズ
+    },
+    plugins: [{
+        id: 'centerText',
+        beforeDraw: (chart) => {
+            const { width, height } = chart;
+            const ctx = chart.ctx;
+            const total = chart.data.datasets[0].data.reduce((acc, val) => acc + val, 0);
+
+            // テキストのスタイル設定
+            ctx.save();
+            ctx.font = 'bold 18px Arial'; // フォントサイズと種類
+            ctx.fillStyle = '#000'; // テキストの色
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            // 中心に合計値を描画
+            ctx.fillText(`￥${total.toLocaleString()}`, width / 2, height / 2);
+            ctx.restore();
+        }
+    }]
+});
+          // 支出グラフを描画
+          const expenseCtx = document.getElementById('expenseChart').getContext('2d');
+          new Chart(expenseCtx, {
+              type: 'doughnut',
+              data: {
+                  labels: expenseLabels,
+                  datasets: [{
+                      label: '支出',
+                      data: expenseData,
+                      backgroundColor: ['#FF6384', '#FF9F40', '#36A2EB', '#9966FF', '#FFCE56'],
+                      borderColor: '#fff',
+                      borderWidth: 2
+                  }]
+              },
+              options: {
+                  responsive: true,
+                  maintainAspectRatio: true,
+                  plugins: {
+                      legend: {
+                          position: 'bottom',
+                      },
+                      datalabels: {
+                          color: '#000', // ラベルの色（黒に設定）
+                          font: {
+                              size: 12,
+                              weight: 'bold',
+                          },
+                          anchor: 'end',
+                          align: 'end',
+                          offset: 10,
+                          formatter: (value, context) => {
+                              const label = context.chart.data.labels[context.dataIndex];
+                              return `${label}: ${value.toLocaleString()}`;
+                          },
+                          display: (context) => {
+                              // ラベル表示の優先順位を設定
+                              const value = context.dataset.data[context.dataIndex];
+                              const total = context.dataset.data.reduce((acc, val) => acc + val, 0);
+                              const percentage = (value / total) * 100;
+
+                              // 特定の条件を満たす場合のみ表示（例: 割合が5%以上）
+                              return percentage > 5;
+                          }
+                      }
+                  },
+                  cutout: '60%' // ドーナツ中央の穴サイズ
+              },
+              plugins: [{
+                  id: 'centerText',
+                  beforeDraw: (chart) => {
+                      const { width, height } = chart;
+                      const ctx = chart.ctx;
+                      const total = chart.data.datasets[0].data.reduce((acc, val) => acc + val, 0);
+
+                      // テキストのスタイル設定
+                      ctx.save();
+                      ctx.font = 'bold 18px Arial'; // フォントサイズと種類
+                      ctx.fillStyle = '#000'; // テキストの色
+                      ctx.textAlign = 'center';
+                      ctx.textBaseline = 'middle';
+
+                      // 中心に合計値を描画
+                      ctx.fillText(`￥${total.toLocaleString()}`, width / 2, height / 2);
+                      ctx.restore();
+                  }
+              }]
+          });
+            // 詳細セクションを表示
+            detailsContainer.style.display = 'block';
+        }
+        // 初期化関数の呼び出し
+        initializePage();
+    });
+    </script>
+</body>
+</html>

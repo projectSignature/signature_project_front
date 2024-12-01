@@ -2,12 +2,14 @@
 <html lang="ja-JP">
 
 <head>
-    <meta charset="utf-8">
+    <meta charset="utf-8" >
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../style/kaikei.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
-    <title>履歴 - Keirikun</title>
+    <link rel="stylesheet" href="../style/kaikei.css">
+    <link rel="stylesheet" href="../style/loading-popup.css">
+    <link rel="stylesheet" href="../style/history.css">
 </head>
 
 <body class="bg-dark">
@@ -35,72 +37,58 @@
               </button>
           </div>
       </header>
-      <div id="loading-indicator">
+    <div id="registerFilter">
+        <!-- <label for="startDate">開始日: </label> -->
+        <input type="date" id="startDate">
+        <label for="endDate">～</label>
+        <input type="date" id="endDate">
+        <button id="filterButton">buscar</button>
+    </div>
+    <div class="card-container" id="cardContainer">
+    <!-- カードがここに挿入されます -->
+  </div>
+  <div id="loading-popup" class="loading-popup">
+    <div class="loading-container">
         <div class="spinner"></div>
-        Loading...
+        <div class="loading-text">await</div>
     </div>
-    <div class="filter-container">
-      <div>
-         <input type="month" class="calender-input" id="filter-date" value="" />
-       </div>
+  </div>
 
-       <!-- <div>
-        <select id="filter-category" class="calender-input">
-            <option value="">すべての科目</option>
-        </select>
-      </div> -->
-    </div>
-    <div class="btn-select-expense-income">
-      <input type="button" id="btn-income-select" value="収入" onclick="toggleButton('btn-income-select')" data-translate="income"/>
-      <input type="button" id="btn-expense-select" value="支出" onclick="toggleButton('btn-expense-select')" data-translate="expense"/>
-    </div>
-    <div class="main-div">
-        <div id="history-container" class="history-container"></div>
+  <div id="editModal-history" class="modal-history">
+    <div class="modal-content">
+        <span class="close" onclick="closeEditModal()">&times;</span>
+        <h3 id="edit-title">編集</h3>
+        <form id="editForm">
+          <label for="editDescription" id="modal-kamoku">科目:</label>
+          <select type="text" id="category-modal" required></select>
 
-    <div id="edit-form" class="edit-form">
-      <h2 data-translate="editFormTitle">編集フォーム</h2>
-      <input type="hidden"  id="edit-id">
-      <div>
-        <label for="edit-date" data-translate="date">日付:</label>
-        <input type="date" id="edit-date">
-      </div>
-      <div>
-        <label for="edit-amount" data-translate="amount">金額:</label>
-        <input type="text" id="edit-amount">
-      </div>
-      <div>
-        <label for="edit-memo" data-translate="memo">メモ:</label>
-        <input type="text" id="edit-memo" readonly>
-      </div>
-      <div class="edit-form-btn-div">
-        <button onclick="updateRecord()" data-translate="update">更新</button>
-        <button onclick="deleteRecord()" data-translate="delete">削除</button>
-        <button onclick="cancelEdit()" data-translate="cancel">キャンセル</button>
-      </div>
+            <label for="editDescription" id="modal-kubun">仕入れ先または販売先:</label>
+            <select type="text" id="editDescription" required></select>
+
+            <label for="editAmount" id="modal-amount">金額:</label>
+            <input type="text" id="editAmount-modal" required>
+
+            <label for="editDescription" id="modal-how-pay">支払い方法:</label>
+            <select type="text" id="pay-select" required></select>
+
+            <label for="editMemo" id="modal-memo">メモ:</label>
+            <textarea id="editMemo" rows="3"></textarea>
+
+            <button type="button" onclick="saveChanges()" id="modal-save-butoom">保存</button>
+        </form>
     </div>
+</div>
+
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
     <script src="../script/swal.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
+    <script src="../script/loding-popup.js"></script>
     <script src="../script/translations.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
     <script src="../script/common.js"></script>
-    <script src="../script/historyExpenses.js"></script>
-    <script>
-    document.addEventListener('DOMContentLoaded', function () {
-          const filterDateInput = document.getElementById('filter-date');
-          filterDateInput.value = new Date().toISOString().slice(0, 7);
-          if (filterDateInput) {
-              filterDateInput.addEventListener('change', function () {
-                  console.log('change-data');
-                  fetchHistoryData(window.localStorage.getItem('token'));
-              });
-          } else {
-              console.log('Element not found');
-          }
-          const token = window.localStorage.getItem('token');
-          fetchHistoryData(token);
-      });
-    </script>
+    <script src="../script/history.js"></script>
+    <script src='../script/page-buttons.js'></script>
 </body>
 
 </html>
