@@ -1,12 +1,15 @@
 
-// let accessmainserver = 'https://squid-app-ug7x6.ondigitalocean.app'　　//メインサーバーのチェックアクセス先]
-let accessmainserver = 'http://localhost:3000'
+// let window.global.urlApi = 'https://squid-app-ug7x6.ondigitalocean.app'　　//メインサーバーのチェックアクセス先]
+// let window.global.urlApi = 'http://localhost:3000'
 
 let currentEditId = null; // 編集中のレコードIDを保持
 
 const token = window.localStorage.getItem('token');
 // const loadingIndicator = document.getElementById('loading-indicator');
 document.getElementById('history-button').style="background-color:#333"
+const filterButton = document.getElementById('filterButton')
+
+filterButton.addEventListener('click',fetchMasterData)
 // let dataTypeSelect = document.getElementById('dataTypeSelect')
 
     // すべてのボタンを取得
@@ -48,7 +51,7 @@ async function pageload(){
 }
 
 async function getMasterData(){
-  const url = `${accessmainserver}/keirikun/masterdata/get`;
+  const url = `${window.global.urlApi}/keirikun/masterdata/get`;
   const response = await fetch(url, {
       method: 'GET',
       headers: {
@@ -108,7 +111,7 @@ async function fetchMasterData(token) {
               return;
           }
           showLoadingPopup();
-          const response = await fetch(`${accessmainserver}/keirikun/data/history?startDate=${startDate}&endDate=${endDate}`, {
+          const response = await fetch(`${window.global.urlApi}/keirikun/data/history?startDate=${startDate}&endDate=${endDate}`, {
               method: 'GET',
               headers: {
                   'Content-Type': 'application/json',
@@ -251,7 +254,7 @@ async function fetchMasterData(token) {
     try {
         // サーバーに DELETE リクエストを送信
         showLoadingPopup();
-        const response = await fetch(`${accessmainserver}/keirikun/financial-records-delete/${recordId}`, {
+        const response = await fetch(`${window.global.urlApi}/keirikun/financial-records-delete/${recordId}`, {
             method: 'DELETE'
         });
 
@@ -350,7 +353,7 @@ async function fetchMasterData(token) {
                         payment_method:newPaymentMethod,
                         party_code:newCategorie
                       };
-                    const response = await fetch(`${accessmainserver}/keirikun/financial-records/${record.id}`, {
+                    const response = await fetch(`${window.global.urlApi}/keirikun/financial-records/${record.id}`, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json'
@@ -643,7 +646,7 @@ async function sendSyunyu() {
 
     // データの送信
     try {
-        const response = await fetch(`${accessmainserver}/keirikun/data/regist/expenses`, {
+        const response = await fetch(`${window.global.urlApi}/keirikun/data/regist/expenses`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -707,7 +710,7 @@ async function sendData() {
     console.log('Data to be sent:', data); // 送信するデータをログ出力
 
     try {
-        const response = await fetch(`${accessmainserver}/keirikun/data/regist/expenses`, {
+        const response = await fetch(`${window.global.urlApi}/keirikun/data/regist/expenses`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

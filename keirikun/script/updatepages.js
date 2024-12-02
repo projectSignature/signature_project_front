@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             console.log('送信開始:', dataObject);
             // 実際のAPIエンドポイントを使用してデータを送信
-            const response = await fetch(`${server}/keirikun/updateSettings`, {
+            const response = await fetch(`${window.global.urlApi}/keirikun/updateSettings`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
