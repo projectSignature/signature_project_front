@@ -81,6 +81,7 @@
         </div>
     </div>
     <script src="../script/swal.js"></script>
+    <script src="../script/config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
     <script src="../script/loding-popup.js"></script>
@@ -93,14 +94,15 @@
         const totalTag = document.getElementById('syunyu-label')
         const totalExpens = document.getElementById('sisyutsu-label')
         const lucroTag = document.getElementById('rieki-span')
-        let accessmainserver = 'http://localhost:3000';
-        const annualSummaryEndpoint = `${accessmainserver}/keirikun/annual-summary`;
-        const categorySummaryEndpoint = `${accessmainserver}/keirikun/category-summary/`;
+        const annualSummaryEndpoint = `${window.global.urlApi}/keirikun/annual-summary`;
+        const categorySummaryEndpoint = `${window.global.urlApi}/keirikun/category-summary/`;
         const userInfo = JSON.parse(sessionStorage.getItem('keirikunUser'));
         console.log(userInfo)
         document.getElementById('analysis-button').style = "background-color:#333";
         // 初期化関数
         function initializePage() {
+          console.log(window.global)
+          console.log(window.global.urlApi)
             // userInfoが存在しない場合はエラー処理
             if (!userInfo) {
                 console.error("User info not found in session storage.");
@@ -150,6 +152,7 @@
         async function fetchMonthlySummary(year) {
             try {
                 showLoadingPopup();
+                console.log(`${annualSummaryEndpoint}?year=${year}`)
                 const response = await fetch(`${annualSummaryEndpoint}?year=${year}`);
                 const data = await response.json();
 

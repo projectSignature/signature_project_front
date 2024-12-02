@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ja-JP">
-
 <head>
     <meta charset="utf-8" >
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -11,7 +10,6 @@
     <link rel="stylesheet" href="../style/loading-popup.css">
     <link rel="stylesheet" href="../style/history.css">
 </head>
-
 <body class="bg-dark">
   <header>
           <div class="header-buttons">
@@ -53,7 +51,6 @@
         <div class="loading-text">await</div>
     </div>
   </div>
-
   <div id="editModal-history" class="modal-history">
     <div class="modal-content">
         <span class="close" onclick="closeEditModal()">&times;</span>
@@ -61,28 +58,22 @@
         <form id="editForm">
           <label for="editDescription" id="modal-kamoku">科目:</label>
           <select type="text" id="category-modal" required></select>
-
             <label for="editDescription" id="modal-kubun">仕入れ先または販売先:</label>
             <select type="text" id="editDescription" required></select>
-
             <label for="editAmount" id="modal-amount">金額:</label>
             <input type="text" id="editAmount-modal" required>
-
             <label for="editDescription" id="modal-how-pay">支払い方法:</label>
             <select type="text" id="pay-select" required></select>
-
             <label for="editMemo" id="modal-memo">メモ:</label>
             <textarea id="editMemo" rows="3"></textarea>
-
             <button type="button" onclick="saveChanges()" id="modal-save-butoom">保存</button>
         </form>
     </div>
 </div>
-
-
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
     <script src="../script/swal.js"></script>
+    <script src="../script/config.js"></script>
     <script src="../script/loding-popup.js"></script>
     <script src="../script/translations.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
