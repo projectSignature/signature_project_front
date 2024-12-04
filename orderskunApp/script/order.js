@@ -19,6 +19,10 @@ window.addEventListener('popstate', function(event) {
     // 必要に応じて他の処理を実行
 });
 
+document.getElementById('update').addEventListener('click', function () {
+    location.reload(); // ページをリロード
+});
+
 
 document.getElementById('fullscreenButton').addEventListener('click', () => {
     const docElement = document.documentElement;
