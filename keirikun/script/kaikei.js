@@ -79,7 +79,7 @@ async function makerequest(url) {
 
 async function fetchMasterData(token) {
     try {
-        const url = `${server}/keirikun/masterdata/get`;
+        const url = `${window.global.urlApi}/keirikun/masterdata/get`;
         const response = await fetch(url, {
             method: 'GET',
             headers: {
