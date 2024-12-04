@@ -1,4 +1,6 @@
-let accessmainserver = global.urlApi;
+let accessmainserver = window.global.urlApi
+
+console.log(window.global.urlApi)
 
 let user;
 let password;

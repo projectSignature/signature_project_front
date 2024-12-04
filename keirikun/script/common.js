@@ -1,6 +1,6 @@
 const loadingIndicator = document.getElementById('loading-indicator');
 
-//let server = 'http://localhost:3000'
+
 
 
 async function swallSuccess(){

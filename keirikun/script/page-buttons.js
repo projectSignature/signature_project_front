@@ -8,7 +8,7 @@ document.getElementById("analysis-button").addEventListener('click',()=>{
   window.location.href = '../pages/analist.html'; // Redireciona para renda.html
 });
 document.getElementById("submit-button").addEventListener('click',()=>{
-  window.location.href = '../pages/monthdataConfirm.html'; // Redireciona para renda.html
+  alert(translations[userInfo.language]['notAccessPage'])
 });
 document.getElementById("settings-button").addEventListener('click', () => {
     window.location.href = '../pages/manegerpage.html';
