@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Orders君</title>
   <link rel="stylesheet" type="text/css" href="./style/users.css" />
+  <link rel="stylesheet" type="text/css" href="./style/dynamicModal.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
@@ -37,6 +38,16 @@
     </div>
   </div>
 
+  <!-- MODAL DINÂMICO -->
+ <div class="dynamic-modal-overlay" id="dynamicModal">
+   <div class="dynamic-modal-content" id="dynamicModalContent">
+     <h2 id="dynamicModalTitle">Título</h2>
+     <p id="dynamicModalMessage">Aqui vai a mensagem</p>
+     <button class="dynamic-btn-close" id="dynamicModalClose">Fechar</button>
+   </div>
+ </div>
+
+
   <!-- Janela modal de carregamento -->
   <div id="loadingModal" class="modal">
     <div class="modal-content">
@@ -47,6 +58,8 @@
 
   <!-- configs -->
   <script src="./config.js"></script>
+  <script src="./script/netCheck.js"></script>
+  <script src="./script/dynamicModal.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script src="./script/userslogin.js"></script>
 </body>
