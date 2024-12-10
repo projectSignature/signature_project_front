@@ -15,7 +15,7 @@ const categoryContainer = document.getElementById('categorysdiv');
 
 // トークンをlocalStorageから取得
 const token = window.localStorage.getItem('token');
-console.log()
+
 // const loadingIndicator = document.getElementById('loading-indicator');
 document.getElementById('input-button').style="background-color:#333"
 
@@ -492,6 +492,18 @@ function switchToExpensesMode() {
     populateCategoryCards(userInfo.suppliers.userCategories,userInfo.language)
     document.getElementById('supplieres-top-div').style = 'display:flex'
     userInfo.proccessNumber = 0
+}
+
+function dayChange(data){
+ let date = new Date(dt.value.split("-")[0], dt.value.split("-")[1]-1, dt.value.split("-")[2]);
+ if(data==2){
+   date.setDate(date.getDate() + 1)
+ }else{
+   date.setDate(date.getDate() - 1)
+ }
+ let dM = (("0" + (date.getMonth()+1)).slice(-2))
+ let dd = (("0" + date.getDate()).slice(-2))
+ dt.value = `${date.getFullYear()}-${dM}-${dd}`
 }
 
 // // 切り替えボタンのイベントリスナー
