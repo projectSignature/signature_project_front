@@ -152,8 +152,8 @@
         async function fetchMonthlySummary(year) {
             try {
                 showLoadingPopup();
-                console.log(`${annualSummaryEndpoint}?year=${year}`)
-                const response = await fetch(`${annualSummaryEndpoint}?year=${year}`);
+
+                const response = await fetch(`${annualSummaryEndpoint}?year=${year}&id=${userInfo.id}`);
                 const data = await response.json();
 
                 if (data.success) {
@@ -170,7 +170,6 @@
         // 月別カードを作成して表示
         function displayMonthlyCards(records) {
             const container = document.getElementById('cardContainer');
-
             container.innerHTML = '';
             let totalIncome = 0
             let totalExpense = 0
@@ -193,17 +192,13 @@
               ? `￥${(totalIncome - totalExpense).toLocaleString()}`
               : `-￥${(totalExpense - totalIncome).toLocaleString()}`;
 
-            console.log(totalIncome)
         }
         // 詳細データを取得して表示
         async function fetchCategorySummary(month) {
             const year = document.getElementById('year-select').value;
             try {
-              console.log(`${categorySummaryEndpoint}${year}/${month}/${userInfo.id}`)
                 const response = await fetch(`${categorySummaryEndpoint}${year}/${month}/${userInfo.id}`);
-
                 const data = await response.json();
-
                 if (data.success) {
                     displayCategoryDetails(year, month, data.records);
                 } else {
@@ -216,20 +211,25 @@
         function displayCategoryDetails(year, month, records) {
             const detailsContainer = document.getElementById('detailsContainer');
             const detailsTitle = document.getElementById('detailsTitle');
-
             const chartContainer = document.getElementById('chartContainer'); // グラフ用のコンテナ
 
-            // グラフを初期化
+            // グラフを初期化 (クローズボタンも追加)
             chartContainer.innerHTML = `
+                <button id="closeButton" class="close-button">&times;</button>
                 <canvas id="incomeChart"></canvas>
                 <div class="expenses-mother-div" id="right-list"></div>
-
                 <canvas id="expenseChart"></canvas>
                 <div class="expenses-mother-div" id="left-list"></div>
             `;
 
+            const closeButton = document.getElementById('closeButton');
             const leftDiv = document.getElementById('left-list'); // 支出用
             const rightDiv = document.getElementById('right-list'); // 収入用
+
+            // クローズボタンのクリックイベント
+            closeButton.addEventListener('click', () => {
+                detailsContainer.style.display = 'none'; // detailsContainerを非表示
+            });
 
             // タイトルの設定
             let titleText;
@@ -267,8 +267,6 @@
                         expenseSummary[categoryName] = 0;
                     }
                     expenseSummary[categoryName] += parseFloat(record.total_expense || 0);
-
-                    // カードを追加
                     const listItem = document.createElement('div');
                     listItem.className = 'card-expenses';
                     listItem.innerHTML = `
@@ -284,7 +282,6 @@
                         incomeSummary[categoryName] = 0;
                     }
                     incomeSummary[categoryName] += parseFloat(record.total_income || 0);
-                    // カードを追加
                     const listItem = document.createElement('div');
                     listItem.className = 'card-income';
                     listItem.innerHTML = `
@@ -294,139 +291,79 @@
                     rightDiv.appendChild(listItem);
                 }
             });
+
             // グラフ用のデータ準備
             const incomeLabels = Object.keys(incomeSummary);
             const incomeData = Object.values(incomeSummary);
             const expenseLabels = Object.keys(expenseSummary);
             const expenseData = Object.values(expenseSummary);
-            // Chart.js プラグインを登録
-          Chart.register(ChartDataLabels);
 
-          // 収入グラフを描画
-          const incomeCtx = document.getElementById('incomeChart').getContext('2d');
-          new Chart(incomeCtx, {
-    type: 'doughnut',
-    data: {
-        labels: incomeLabels,
-        datasets: [{
-            label: '収入',
-            data: incomeData,
-            backgroundColor: ['#36A2EB', '#4BC0C0', '#9966FF', '#FFCE56', '#FF9F40'],
-            borderColor: '#fff',
-            borderWidth: 2
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        plugins: {
-            legend: {
-                position: 'bottom',
-            },
-            datalabels: {
-                color: '#fff', // ラベルの色
-                font: {
-                    size: 14, // ラベルのフォントサイズ
-                    weight: 'bold'
+            Chart.register(ChartDataLabels);
+
+            // 収入グラフの描画
+            const incomeCtx = document.getElementById('incomeChart').getContext('2d');
+            new Chart(incomeCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: incomeLabels,
+                    datasets: [{
+                        label: '収入',
+                        data: incomeData,
+                        backgroundColor: ['#36A2EB', '#4BC0C0', '#9966FF', '#FFCE56', '#FF9F40'],
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    }]
                 },
-                formatter: (value, context) => {
-                    const label = context.chart.data.labels[context.dataIndex];
-                    return `${label}: ${value}`; // ラベル名と値を表示
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        datalabels: {
+                            color: '#fff',
+                            font: { size: 14, weight: 'bold' },
+                            formatter: (value, context) => `${context.chart.data.labels[context.dataIndex]}: ${value}`
+                        }
+                    },
+                    cutout: '60%'
                 }
-            }
-        },
-        cutout: '60%' // ドーナツ中央の穴サイズ
-    },
-    plugins: [{
-        id: 'centerText',
-        beforeDraw: (chart) => {
-            const { width, height } = chart;
-            const ctx = chart.ctx;
-            const total = chart.data.datasets[0].data.reduce((acc, val) => acc + val, 0);
+            });
 
-            // テキストのスタイル設定
-            ctx.save();
-            ctx.font = 'bold 18px Arial'; // フォントサイズと種類
-            ctx.fillStyle = '#000'; // テキストの色
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
+            // 支出グラフの描画
+            const expenseCtx = document.getElementById('expenseChart').getContext('2d');
+            new Chart(expenseCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: expenseLabels,
+                    datasets: [{
+                        label: '支出',
+                        data: expenseData,
+                        backgroundColor: ['#FF6384', '#FF9F40', '#36A2EB', '#9966FF', '#FFCE56'],
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        datalabels: {
+                            color: '#000',
+                            font: { size: 12, weight: 'bold' },
+                            anchor: 'end',
+                            align: 'end',
+                            formatter: (value, context) => `${context.chart.data.labels[context.dataIndex]}: ${value.toLocaleString()}`,
+                            display: (context) => (context.raw / context.dataset.data.reduce((acc, val) => acc + val, 0)) * 100 > 5
+                        }
+                    },
+                    cutout: '60%'
+                }
+            });
 
-            // 中心に合計値を描画
-            ctx.fillText(`￥${total.toLocaleString()}`, width / 2, height / 2);
-            ctx.restore();
-        }
-    }]
-});
-          // 支出グラフを描画
-          const expenseCtx = document.getElementById('expenseChart').getContext('2d');
-          new Chart(expenseCtx, {
-              type: 'doughnut',
-              data: {
-                  labels: expenseLabels,
-                  datasets: [{
-                      label: '支出',
-                      data: expenseData,
-                      backgroundColor: ['#FF6384', '#FF9F40', '#36A2EB', '#9966FF', '#FFCE56'],
-                      borderColor: '#fff',
-                      borderWidth: 2
-                  }]
-              },
-              options: {
-                  responsive: true,
-                  maintainAspectRatio: true,
-                  plugins: {
-                      legend: {
-                          position: 'bottom',
-                      },
-                      datalabels: {
-                          color: '#000', // ラベルの色（黒に設定）
-                          font: {
-                              size: 12,
-                              weight: 'bold',
-                          },
-                          anchor: 'end',
-                          align: 'end',
-                          offset: 10,
-                          formatter: (value, context) => {
-                              const label = context.chart.data.labels[context.dataIndex];
-                              return `${label}: ${value.toLocaleString()}`;
-                          },
-                          display: (context) => {
-                              // ラベル表示の優先順位を設定
-                              const value = context.dataset.data[context.dataIndex];
-                              const total = context.dataset.data.reduce((acc, val) => acc + val, 0);
-                              const percentage = (value / total) * 100;
-
-                              // 特定の条件を満たす場合のみ表示（例: 割合が5%以上）
-                              return percentage > 5;
-                          }
-                      }
-                  },
-                  cutout: '60%' // ドーナツ中央の穴サイズ
-              },
-              plugins: [{
-                  id: 'centerText',
-                  beforeDraw: (chart) => {
-                      const { width, height } = chart;
-                      const ctx = chart.ctx;
-                      const total = chart.data.datasets[0].data.reduce((acc, val) => acc + val, 0);
-
-                      // テキストのスタイル設定
-                      ctx.save();
-                      ctx.font = 'bold 18px Arial'; // フォントサイズと種類
-                      ctx.fillStyle = '#000'; // テキストの色
-                      ctx.textAlign = 'center';
-                      ctx.textBaseline = 'middle';
-
-                      // 中心に合計値を描画
-                      ctx.fillText(`￥${total.toLocaleString()}`, width / 2, height / 2);
-                      ctx.restore();
-                  }
-              }]
-          });
-            // 詳細セクションを表示
             detailsContainer.style.display = 'block';
         }
+
         // 初期化関数の呼び出し
         initializePage();
     });
