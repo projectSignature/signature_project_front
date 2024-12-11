@@ -43,12 +43,113 @@
         <div class="spinner"></div>
         Loading...
     </div> -->
-            <div id="settingsList" style="">
-                <ul class="settings-list">
-                  <li id="configs"><i class="fas fa-user-cog"></i> Configurações pessoais</li>
-                  <!-- <li><i class="fas fa-user"></i> Responsável pelo caixa</li> -->
-                </ul>
+    <div id="settingsList">
+<ul class="settings-list">
+<li id="configs"><i class="fas fa-user-cog"></i> Configurações pessoais</li>
+<li id="addSupplierBtn"><i class="fas fa-truck"></i>Fonecedores</li>
+<li id="addClientBtn"><i class="fas fa-user"></i>clientes</li>
+</ul>
+</div>
+
+<!-- 仕入れ先モーダル -->
+<div id="supplierModalUnique" class="modal-unique">
+    <div class="modal-content-unique">
+        <span class="close-unique" id="closeSupplierModalBtn">&times;</span>
+        <h2>仕入れ先の追加</h2>
+        <form id="supplierFormUnique">
+            <div class="form-group">
+                <label for="supplier_name_unique">仕入れ先名</label>
+                <input type="text" id="supplier_name_unique" name="supplier_name" required>
             </div>
+
+            <div class="form-group">
+                <label for="supplier_address_unique">住所</label>
+                <input type="text" id="supplier_address_unique" name="supplier_address">
+            </div>
+
+            <div class="form-group">
+                <label for="supplier_phone_unique">電話番号</label>
+                <input type="text" id="supplier_phone_unique" name="supplier_phone">
+            </div>
+
+            <div class="form-group">
+                <label for="supplier_contact_person_unique">連絡先の担当者</label>
+                <input type="text" id="supplier_contact_person_unique" name="supplier_contact_person">
+            </div>
+
+            <button type="submit">登録</button>
+            <button type="button" id="showSupplierListBtn" class="list-display-btn">リスト表示</button>
+        </form>
+
+        <div id="supplierListContainer" class="list-container"></div>
+    </div>
+</div>
+
+<!-- 収入先モーダル -->
+<div id="clientModalUnique" class="modal-unique">
+    <div class="modal-content-unique">
+        <span class="close-unique" id="closeClientModalBtn">&times;</span>
+        <h2>収入先の追加</h2>
+        <form id="clientFormUnique">
+            <div class="form-group">
+                <label for="client_name_unique">収入先名</label>
+                <input type="text" id="client_name_unique" name="supplier_name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="client_address_unique">住所</label>
+                <input type="text" id="client_address_unique" name="supplier_address">
+            </div>
+
+            <div class="form-group">
+                <label for="client_phone_unique">電話番号</label>
+                <input type="text" id="client_phone_unique" name="supplier_phone">
+            </div>
+
+            <div class="form-group">
+                <label for="client_contact_person_unique">連絡先の担当者</label>
+                <input type="text" id="client_contact_person_unique" name="supplier_contact_person">
+            </div>
+
+            <button type="submit">登録</button>
+            <button type="button" id="showClientListBtn" class="list-display-btn">リスト表示</button>
+        </form>
+
+        <div id="clientListContainer" class="list-container"></div>
+    </div>
+</div>
+
+<!-- 編集モーダル -->
+<div id="editModal" class="modal-unique">
+    <div class="modal-content-unique">
+        <span class="close-unique" id="closeEditModalBtn">&times;</span>
+        <h2>情報の変更</h2>
+        <form id="editFormUnique">
+            <input type="hidden" id="editIdUnique" name="id">
+            <div class="form-group">
+                <label for="edit_name_unique">名前</label>
+                <input type="text" id="edit_name_unique" name="name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="edit_address_unique">住所</label>
+                <input type="text" id="edit_address_unique" name="address">
+            </div>
+
+            <div class="form-group">
+                <label for="edit_phone_unique">電話番号</label>
+                <input type="text" id="edit_phone_unique" name="phone">
+            </div>
+
+            <div class="form-group">
+                <label for="edit_contact_person_unique">連絡先の担当者</label>
+                <input type="text" id="edit_contact_person_unique" name="contact_person">
+            </div>
+
+            <button type="submit">変更を保存</button>
+        </form>
+    </div>
+</div>
 
             <div id="settingsModal" class="modal" style="display: none;">
                 <div class="modal-content">
