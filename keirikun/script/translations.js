@@ -1,5 +1,6 @@
 const translations = {
     en: {
+        name:'name',
         input: 'Input',
         history: 'History',
         analysis: 'Analysis',
@@ -60,10 +61,24 @@ const translations = {
         confirmPassword: "Confirm Password",
         email: "Email",
         representativeName: "Representative Name",
-        language: "Language"
-
+        language: "Language",
+        addSupplier: 'Add Supplier',
+        supplierName: 'Supplier Name',
+        contactPerson: 'Contact Person',
+        addClient: 'Add Client',
+        clientName: 'Client Name',
+        address: 'adress',
+        phoneNumber:'phoneNumber',
+        passNeed:'All password fields are required.',
+        noChangeContents:'No changes were made.',
+        notId:'User ID not found.',
+        listbuton:'display list',
+        necesarryfild:'This field is required.',
+        notNecesarryFild:'This field is optional.',
+        deleteConfirm:'Are you sure you want to delete this?'
     },
     ja: {
+        name:'名前',
         input: '入力',
         history: '履歴',
         analysis: '解析',
@@ -124,9 +139,24 @@ const translations = {
         confirmPassword: "パスワードの確認",
         email: "メールアドレス",
         representativeName: "代表者名",
-        language: "言語"
+        language: "言語",
+        addSupplier: '仕入れ先の追加',
+        supplierName: '仕入れ先名',
+        contactPerson: '連絡先担当者',
+        addClient: '収入先の追加',
+        clientName: '収入先名',
+        address:'住所',
+        phoneNumber:'電話番号',
+        passNeed:'パスワードフィールドはすべて必須です',
+        noChangeContents:'変更はありません',
+        notId:'ユーザーIDが見つかりません',
+        listbuton:'リスト表示',
+        necesarryfild:'必須項目です',
+        notNecesarryFild:'オプション項目です',
+        deleteConfirm:'本当に削除しますか？'
     },
     pt: {
+        name:'nome',
         input: 'Registrar',
         history: 'Histórico',
         analysis: 'Análise',
@@ -187,6 +217,20 @@ const translations = {
         confirmPassword: "Confirmar senha",
         email: "Email",
         representativeName: "Nome do representante",
-        language: "Idioma"
+        language: "Idioma",
+        addSupplier: 'Adicionar Fornecedor',
+        supplierName: 'Nome do Fornecedor',
+        contactPerson: 'Pessoa de Contato',
+        addClient: 'Adicionar Cliente',
+        clientName: 'Nome do Cliente',
+        address:'Endereço',
+        phoneNumber:'Telefone',
+        passNeed:'Todos os campos de senha são obrigatórios.',
+        noChangeContents:'Nenhuma alteração foi feita.',
+        notId:'ID de usuário não encontrado.',
+        listbuton:'Visualizar lista',
+        necesarryfild:'Este campo é obrigatório.',
+        notNecesarryFild:'Este campo é opcional.',
+        deleteConfirm:'Tem certeza de que deseja excluir isso?'
     }
 };
