@@ -45,18 +45,20 @@
     color: white;
 }
 .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 .form-group label {
     display: block;
-    margin-bottom: 5px;
+    font-size: 14px;
     font-weight: bold;
+    margin-bottom: 5px;
+    color: #333;
 }
 
 .form-group input,
 .form-group select {
-    width: 100%;
+    width: 90%;
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -82,7 +84,7 @@
   margin: 5% auto;
   padding: 20px;
   border: 1px solid #888;
-  width: 80%;
+  width: 75%;
   align-items: center; /* 中央に配置 */
 }
 
@@ -128,4 +130,145 @@
   background: linear-gradient(135deg, #ff6b6b, #ff8e72); /* アクティブ時の色 */
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); /* アクティブ時は少し押し込む */
   transform: translateY(0); /* 押した時は元に戻す */
+}
+
+.modal-unique {
+    display: none;
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content-unique {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 70%;
+    border-radius: 10px;
+}
+
+.close-unique {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-unique:hover,
+.close-unique:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+button[type="submit"] {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+button[type="submit"]:hover {
+    background-color: #45a049;
+}
+.list-display-btn{
+  width:100%;
+  padding: 5px 10px;
+    font-size: 16px;
+    background-color: #2196F3;
+    border: none;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 5px
+}
+
+/* General styles for list items */
+.list-item {
+    background-color: #ffffff; /* White background */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
+    margin-bottom: 15px; /* Space between list items */
+    padding: 20px; /* Internal padding for spacing */
+    display: flex; /* Flex layout for alignment */
+    justify-content: space-between; /* Space between content and buttons */
+    align-items: center; /* Vertically align items */
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; /* Smooth transitions */
+    border-left: 5px solid #36a2eb; /* Left border color for a modern touch */
+}
+
+.list-item:hover {
+    transform: translateY(-3px); /* Lift on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Stronger shadow on hover */
+}
+
+.list-item p {
+    margin: 0 0 8px 0; /* Spacing between texts */
+    font-size: 16px; /* Font size */
+    color: #333; /* Text color */
+    font-weight: 500; /* Slightly bold text */
+}
+
+.list-item:last-child p {
+    margin-bottom: 0; /* Remove bottom margin for the last paragraph */
+}
+
+.list-item button {
+    background-color: #ff4d4f; /* Red delete button */
+    color: #fff; /* White text color */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    padding: 10px 15px; /* Padding for button */
+    font-size: 14px; /* Font size */
+    font-weight: bold; /* Bold text */
+    cursor: pointer; /* Pointer cursor */
+    transition: background-color 0.3s ease-in-out; /* Smooth transition */
+}
+
+.list-item button:hover {
+    background-color: #e63946; /* Darker red on hover */
+}
+
+.list-item button:active {
+    transform: scale(0.95); /* Slight shrink on click */
+}
+
+.list-item button.delete-btn {
+    background-color: #ff4d4f; /* Initial color for delete button */
+}
+
+.list-item button.delete-btn:hover {
+    background-color: #e63946; /* Hover color for delete button */
+}
+
+.list-item-content {
+    flex-grow: 1; /* Take up available space */
+    padding-right: 20px; /* Space to the right for buttons */
+}
+
+.list-item p span {
+    font-weight: bold; /* Bold for labels */
+    color: #555; /* Slightly gray color for the label */
+}
+
+@media (max-width: 768px) {
+    .list-item {
+        flex-direction: column; /* Stack items vertically on small screens */
+        align-items: flex-start; /* Align items to the start */
+    }
+
+    .list-item button {
+        margin-top: 10px; /* Space for button */
+        width: 100%; /* Full width on small screens */
+    }
 }
