@@ -134,16 +134,7 @@ header img{
   display: flex;
   justify-content:  center;
 }
-.regist-button input {
-    width: 40%;
-    height: 90%;
-    background-color: #6927FF;
-    color: white;
-    text-align: center;
-    cursor: pointer;
-    border-radius: 10px;
-    font-size: 3vh;
-}
+.regist-button input
 .category-select-button{
   width:30%;
   height:4rem;

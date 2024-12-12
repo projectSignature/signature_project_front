@@ -38,3 +38,9 @@
     color: #ffffff;
     text-align: center;
 }
+
+.message-div{
+  display: none;
+  position: absolute;
+  top:50%
+}
