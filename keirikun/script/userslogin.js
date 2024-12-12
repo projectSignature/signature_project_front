@@ -30,9 +30,7 @@ async function login_check(user, password) {
 }
 
 async function signin(payload) {
-
   // axios.post(`${urlBase}/noauth/signin`, payload, {
-  console.log(`${window.global.urlApi}/noauth/signin`)
   axios.post(`${window.global.urlApi}/noauth/signin`, payload, {
     headers: {
       'Content-Type': 'application/json'

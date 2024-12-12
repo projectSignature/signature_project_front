@@ -62,7 +62,7 @@ async function pageload(){
       let dd = ("00" + today.getDate()).slice(-2);
       dt.value = `${yyyy}-${mm}-${dd}`
       dataTypeSelect.innerHTML = creatsSelectsDataType()
-      hideLoadingPopup();
+      // hideLoadingPopup();
   }
 }
 // トークンをデコードしてペイロードを取得

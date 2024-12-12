@@ -8,6 +8,7 @@ const token = window.localStorage.getItem('token');
 // const loadingIndicator = document.getElementById('loading-indicator');
 document.getElementById('history-button').style="background-color:#333"
 const filterButton = document.getElementById('filterButton')
+const messageDiv = document.getElementById('data.records')
 
 filterButton.addEventListener('click',fetchMasterData)
 // let dataTypeSelect = document.getElementById('dataTypeSelect')
@@ -122,8 +123,16 @@ async function fetchMasterData(token) {
           if (response.ok) {
               if (data.success) {
                   console.log('History data:', data.records); // 成功時のデータ
-                  displayRecords(data.records); // データを表示するための関数を呼び出し
-                  userInfo.history = data.records
+                  if(data.records.length!=0){
+                    console.log(data)
+                    displayRecords(data.records); // データを表示するための関数を呼び出し
+                    userInfo.history = data.records
+
+                  }else{
+                    messageDiv.style.display='block'
+                    messageDiv.innerText='n:ao ha datas'
+                  }
+
               } else {
                   console.error('Error fetching data:', data.message);
               }
