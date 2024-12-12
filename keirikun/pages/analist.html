@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Keirikun</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
     <link rel="stylesheet" href="../style/kaikei.css">
-    <link rel="stylesheet" href="../style/loading-popup.css">
     <link rel='stylesheet' href='../style/analysis.css'>
+    <link rel="stylesheet" href="../style/loading-popup.css">
 </head>
 <body>
     <header>
@@ -52,9 +53,9 @@
                <div><span id="sisyutsu-label"></span></div>
             </div>
             </div>
-            <div style="margin-left: 30px">
-              <label id="lucro-title"></label>
-              <span id="rieki-span"></span>
+            <div style="margin-left: 5px">
+              <div><label id="lucro-title"></label></div>
+              <div><span id="rieki-span"></span></div>
             </div>
           </div>
         </div>
@@ -63,23 +64,13 @@
           <h2 id="detailsTitle"></h2>
           <div id="chartContainer">
           </div>
-          <!-- <div id="data-list">
-              <div id="left-list"></div>
-              <div id="right-list"></div>
-          </div> -->
         </div>
-
-
-
-
-
         <div id="loading-popup" class="loading-popup">
           <div class="loading-container">
               <div class="spinner"></div>
               <div class="loading-text">await</div>
           </div>
         </div>
-    </div>
     <script src="../script/swal.js"></script>
     <script src="../script/config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -101,11 +92,8 @@
         document.getElementById('analysis-button').style = "background-color:#333";
         // 初期化関数
         function initializePage() {
-          console.log(window.global)
-          console.log(window.global.urlApi)
             // userInfoが存在しない場合はエラー処理
             if (!userInfo) {
-                console.error("User info not found in session storage.");
                 window.location.href = '../login.html'; // ログインページにリダイレクト
                 return;
             }
@@ -152,7 +140,6 @@
         async function fetchMonthlySummary(year) {
             try {
                 showLoadingPopup();
-
                 const response = await fetch(`${annualSummaryEndpoint}?year=${year}&id=${userInfo.id}`);
                 const data = await response.json();
 
@@ -191,6 +178,9 @@
             lucroTag.innerText = totalIncome > totalExpense
               ? `￥${(totalIncome - totalExpense).toLocaleString()}`
               : `-￥${(totalExpense - totalIncome).toLocaleString()}`;
+              lucroTag.style.color=totalIncome > totalExpense? `blue`:`red`
+
+
 
         }
         // 詳細データを取得して表示
