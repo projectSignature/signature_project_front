@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thailand Trip Planner</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+
+            color: #333;
+           height: 100%;
+           overflow: hidden;
+
+        }
+        html{
+          height: 100%;
+        }
+        header {
+          height:5%;
+            background: linear-gradient(45deg, #007BFF, #0056b3);
+            color: white;
+            text-align: center;
+        }
+        .container {
+            margin: 20px auto;
+            max-width: 1200px;
+            padding: 0 20px;
+            height: 80%;
+            overflow-y: auto;
+
+        }
+        .schedule {
+            margin-bottom: 2rem;
+            background: linear-gradient(45deg, #fff, #f0f0f0);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+        .day-header {
+            background-color: #007BFF;
+            color: white;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        .slideshow-container {
+            position: relative;
+            max-width: 100%;
+            margin: auto;
+            overflow: hidden;
+            border-radius: 12px;
+        }
+        .slides {
+            display: none;
+        }
+        .slideshow-container img {
+            width: 100%;
+            border-radius: 10px;
+        }
+        .upload-section {
+            margin-top: 2rem;
+            text-align: center;
+        }
+        .upload-section input[type="file"] {
+            display: none;
+        }
+        .upload-section label {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .illustration {
+            text-align: center;
+            margin: 2rem 0;
+        }
+        .illustration img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>タイ旅行日記</h1>
+    </header>
+
+    <div class="container">
+        <!-- Day 1 Schedule -->
+        <div class="schedule">
+            <div class="day-header">【Day 1】12/26関空→バンコク</div>
+            <p><strong>ﾊﾟｳﾛ家出発</strong>：02：30</p>
+            <p><strong>陳家出発</strong>：03：00</p>
+            <p><strong>関空着</strong>：06：30</p>
+            <p><strong>フライト1</strong> VJ829 - 関空(KIX)→シンガポール(SGN), 出発09:30　到着13:30</p>
+            <p><strong>座席：</strong>18A,18B,18C,18D,18E</p>
+            <p><strong>予約番号：</strong>FP4WQ6,679VVM</p>
+            <p><strong>フライト2</strong> VJ805 - シンガポール(SGN)→バンコク(BKK), 出発17:35 到着19:05</p>
+            <p><strong>座席</strong>指定無し</p>
+            <p><strong>予約番号：</strong>FP4WQ6,679VVM</p>
+            <p><strong>空港－ホテル:</strong>ミニバス（プライベート予約　出発：19:10 到着:19:44</p>
+            <p><strong>予約番号：</strong>94102226　Tianjin OUYA Automobile Rental Service</p>
+            <p><strong>ホテル名：</strong>Siam Champs Elyseesi Unique Hotel</p>
+            <p><strong>ホテル滞在期間：</strong>12月26日から12月29日</p>
+            <p><strong>ホテル住所：</strong>160 Ratchadamnoenklang Tai Road, Bowonniwet, Pranakhon, Phra Nakhon, 10200 Bangkok, Tailandia</p>
+            <p><strong>予約番号：</strong>4649445063</p>
+        </div>
+
+        <!-- Day 2 Schedule -->
+        <div class="schedule">
+            <div class="day-header">【Day 2】12/27バンコク滞在</div>
+            <p>フリー、特に計画なし</p>
+        </div>
+
+        <!-- Day 3 Schedule -->
+        <div class="schedule">
+            <div class="day-header">【Day 3】12/28バンコク滞在</div>
+            <p><strong>クルーザーディナー：</strong>19:30-21:30</p>
+            <p><strong>予約番号：</strong>BK617010490064279</p>
+            <p><strong>住所：</strong>ASIATIQUE The Riverfront at Warehouse #7,2194 Charoen krung Rd, Wat Phraya Krai, Bang Kho Laem, Bangkok, 10120</p>
+        </div>
+        <!-- Day 4 Schedule -->
+        <div class="schedule">
+            <div class="day-header">【Day 4】12/29バンコク滞在→プーケット移動</div>
+            <p><strong>チェックアウト</strong>12：00</p>
+            <p><strong>昼間フリー</strong>特に予定なし</p>
+            <p><strong>フライト3</strong> DD534 - バンコク(BKK)→プーケット(HKT), 出発19:15 到着20:35</p>
+            <p><strong>座席：</strong>指定無し</p>
+            <p><strong>予約番号：</strong>ATL7NA,1691AK</p>
+        </div>
+
+        <!-- Day 5 Schedule -->
+        <div class="schedule">
+            <div class="day-header">【Day 5】12/30プーケット滞在</div>
+            <p><strong>島めぐり(終日)</strong>　時間未定(前日連絡あり)</p>
+            <p><strong>予約番号：</strong>3512201</p>
+        </div>
+
+        <!-- Day 5 Schedule -->
+        <div class="schedule">
+            <div class="day-header">【Day 6】12/31プーケット滞在</div>
+            <p>フリー、特に計画なし</p>
+
+        </div>
+        <!-- Day 5 Schedule -->
+        <div class="schedule">
+            <div class="day-header">【Day 7】1/1プーケット滞在</div>
+            <p>フリー、特に計画なし</p>
+        </div>
+        <!-- Day 5 Schedule -->
+        <div class="schedule">
+            <div class="day-header">【Day 8】1/2プーケット→日本</div>
+            <p><strong>チェックアウト</strong>12：00</p>
+            <p><strong>フライト4</strong> MU2082 - プーケット(HKT)→XIANYANG(XIY), 出発00:05 到着06:05</p>
+            <p><strong>座席：</strong>46A,46B,46C,46J,46K</p>
+            <p><strong>予約番号：</strong>NW3ZT1,MVL7DS</p>
+            <p><strong>フライト5</strong> MU2231 - XIANYANG(XIY)→SHANGHAI(PVG), 出発13:30 到着15:50</p>
+            <p><strong>座席：</strong>指定無し</p>
+            <p><strong>予約番号：</strong>NW3ZT1,MVL7DS</p>
+            <p><strong>フライト6</strong> MU729 - SHANGHAI(PVG)→関空(KIX), 出発18:05 到着21:00</p>
+            <p><strong>座席：</strong>67H,67G,67F,67D,67J</p>
+            <p><strong>予約番号：</strong>NW3ZT1,MVL7DS</p>
+            <p><strong>関空出発</strong>：22:00</p>
+            <p><strong>陳家着</strong>：02:30</p>
+            <p><strong>ﾊﾟｳﾛ家着</strong>：03:00</p>
+        </div>
+        <!-- Image Upload Section -->
+        <div class="upload-section">
+            <h2>Upload Images</h2>
+            <form action="/upload" method="POST" enctype="multipart/form-data">
+                <label for="image">Choose file</label>
+                <input type="file" id="image" name="image" accept="image/*">
+                <button type="submit">Upload</button>
+            </form>
+        </div>
+
+    </div>
+
+    <script>
+        let slideIndex = 0;
+        const showSlides = () => {
+            const slides = document.querySelectorAll(".slides");
+            slides.forEach((slide, index) => {
+                slide.style.display = (index === slideIndex) ? "block" : "none";
+            });
+            slideIndex = (slideIndex + 1) % slides.length;
+            setTimeout(showSlides, 3000);
+        };
+        showSlides();
+    </script>
+</body>
+</html>
