@@ -141,6 +141,76 @@
            border-radius: 5px;
            font-size: 1.2em
         }
+        .gallery-button {
+           position: absolute;
+           bottom: 20px;
+           right: 20px;
+           background-color: #007BFF;
+           color: white;
+           border: none;
+           padding: 15px 20px;
+           border-radius: 50px;
+           font-size: 1rem;
+           font-weight: bold;
+           cursor: pointer;
+           box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+           transition: background-color 0.3s, transform 0.2s ease-in-out;
+       }
+       .gallery-button:hover {
+           background-color: #0056b3;
+           transform: scale(1.1);
+       }
+
+       /* モーダルのスタイル */
+.modal {
+    display: none; /* 初期状態で非表示 */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8); /* 背景の半透明 */
+    z-index: 1000;
+    overflow-y: auto; /* 縦方向スクロールを有効化 */
+}
+
+/* モーダル内のコンテンツ */
+.modal-content {
+    margin: 50px auto;
+    padding: 20px;
+    max-width: 90%; /* 画面幅に対応 */
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+/* 閉じるボタン */
+.close-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    border-radius: 50%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.close-button:hover {
+    background: #b02a37;
+}
+
+/* 画像リスト */
+.image-list img {
+    width: 90%; /* モーダル内での画像幅を調整 */
+    margin: 20px auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
     </style>
 </head>
 <body>
@@ -233,24 +303,185 @@
         </div>
         <!-- Image Upload Section -->
         <div class="upload-section">
-            <h2>アップロード</h2>
-            <form action="/upload" method="POST" enctype="multipart/form-data">
-                <input type="file" id="image" name="image" accept="image/*">
-                <input type="date" id="date" name="date">
-                <textarea id="comment" name="comment" placeholder="コメントを入力してください..."></textarea>
-                <button type="submit">保存</button>
-            </form>
-        </div>
+              <h2>アップロード</h2>
+              <form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data">
+                  <input type="file" id="image" name="image" accept="image/*" required>
+                  <input type="date" id="date" name="date" required>
+                  <textarea id="comment" name="comment" placeholder="コメントを入力してください..." ></textarea>
+                  <button type="submit">保存</button>
+              </form>
+          </div>
+      </div>
+      <div id="notification" style="display: none;"></div>
+      <button class="gallery-button" onclick="openModal()">ギャラリー</button>
+
+      <!-- モーダル -->
+   <div id="galleryModal" class="modal">
+       <div class="modal-content">
+           <button class="close-button" onclick="closeModal()">×</button>
+           <div class="image-list" id="imageList">
+               <!-- 画像リストを動的に挿入 -->
+           </div>
+       </div>
+   </div>
+
 
     </div>
 
     <script>
+    document.addEventListener('DOMContentLoaded', () => {
+   // 今日の日付を取得してフォーマット
+   const today = new Date().toISOString().split('T')[0];
+   document.getElementById('date').value = today;
 
-    // 今日の日付を取得してフォーマット
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('date').value = today;
+   // フォーム送信イベント
+   const uploadForm = document.getElementById('uploadForm');
+   if (uploadForm) {
+       uploadForm.addEventListener('submit', async (e) => {
+           e.preventDefault(); // デフォルトのフォーム送信を防止
+           console.log('フォームが送信されました');
+
+           const formData = new FormData();
+           formData.append('image', document.getElementById('image').files[0]);
+           formData.append('date', document.getElementById('date').value);
+           formData.append('comment', document.getElementById('comment').value);
+
+           try {
+               const response = await fetch('https://squid-app-ug7x6.ondigitalocean.app/tairyokou/upload', {
+                   method: 'POST',
+                   body: formData,
+               });
+
+               const result = await response.json();
+               if (response.ok) {
+                   showNotification('アップロード成功: ' + result.message, 'success');
+
+                   // フォーム内容をクリア
+                   uploadForm.reset();
+
+                   // 日付フィールドを今日の日付にリセット
+                   document.getElementById('date').value = today;
+               } else {
+                   showNotification('エラー: ' + result.error, 'error');
+               }
+           } catch (error) {
+               console.error('アップロード中にエラーが発生しました:', error);
+               showNotification('アップロード中にエラーが発生しました', 'error');
+           }
+       });
+   } else {
+       console.error('uploadFormが見つかりません');
+   }
+
+   // 通知を表示する関数
+   function showNotification(message, type) {
+       const notification = document.getElementById('notification');
+       notification.textContent = message;
+       notification.style.display = 'block';
+       notification.style.position = 'fixed';
+       notification.style.bottom = '20px';
+       notification.style.right = '20px';
+       notification.style.padding = '10px 20px';
+       notification.style.borderRadius = '8px';
+       notification.style.fontSize = '16px';
+       notification.style.color = 'white';
+       notification.style.zIndex = '1000';
+       notification.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.1)';
+
+       if (type === 'success') {
+           notification.style.backgroundColor = '#28a745'; // 緑
+       } else {
+           notification.style.backgroundColor = '#dc3545'; // 赤
+       }
+
+       // 1秒後に通知を消す
+       setTimeout(() => {
+           notification.style.display = 'none';
+       }, 1000);
+   }
+});
+
+// モーダルを開く
+// モーダルを開く
+async function openModal() {
+    const modal = document.getElementById('galleryModal');https://squid-app-ug7x6.ondigitalocean.app
+    modal.style.display = 'block'; // モーダルを表示
+
+    try {
+        // サーバーから全ての画像を取得
+        const response = await fetch('https://squid-app-ug7x6.ondigitalocean.app/tairyokou/images');
+        const data = await response.json();
+
+        const imageList = document.getElementById('imageList');
+        imageList.innerHTML = ''; // 初期化
+
+        if (response.ok) {
+            // 日付ごとに画像を分類
+            const imagesByDate = {};
+            data.images.forEach(image => {
+                if (!imagesByDate[image.date]) {
+                    imagesByDate[image.date] = [];
+                }
+                imagesByDate[image.date].push(image);
+            });
+
+            // 日付ごとにコンテナを作成
+            for (const [date, images] of Object.entries(imagesByDate)) {
+                const dateContainer = document.createElement('div');
+                dateContainer.style.marginBottom = '30px';
+
+                const dateHeader = document.createElement('h3');
+                dateHeader.textContent = date;
+                dateHeader.style.color = '#007BFF';
+
+                const imageContainer = document.createElement('div');
+                imageContainer.style.display = 'flex';
+                imageContainer.style.gap = '10px';
+                imageContainer.style.overflowX = 'auto';
+
+                images.forEach(image => {
+                    const imgWrapper = document.createElement('div');
+                    imgWrapper.style.flexShrink = '0';
+
+                    const img = document.createElement('img');
+                    img.src = image.image_url;
+                    img.alt = image.comment || 'No comment';
+                    img.style.width = '200px';
+                    img.style.borderRadius = '8px';
+
+                    const caption = document.createElement('p');
+                    caption.textContent = image.comment || 'No comment';
+                    caption.style.textAlign = 'center';
+                    caption.style.color = '#555';
+                    caption.style.fontSize = '0.9rem';
+
+                    imgWrapper.appendChild(img);
+                    imgWrapper.appendChild(caption);
+                    imageContainer.appendChild(imgWrapper);
+                });
+
+                dateContainer.appendChild(dateHeader);
+                dateContainer.appendChild(imageContainer);
+                imageList.appendChild(dateContainer);
+            }
+        } else {
+            imageList.innerHTML = `<p>${data.message || 'エラーが発生しました'}</p>`;
+        }
+    } catch (error) {
+        console.error('画像取得中にエラーが発生しました:', error);
+        const imageList = document.getElementById('imageList');
+        imageList.innerHTML = '<p>画像を取得できませんでした。</p>';
+    }
+}
+
+// モーダルを閉じる
+function closeModal() {
+    const modal = document.getElementById('galleryModal');
+    modal.style.display = 'none'; // モーダルを非表示
+}
 
 
     </script>
+
 </body>
 </html>
