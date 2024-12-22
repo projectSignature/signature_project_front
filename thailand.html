@@ -20,10 +20,19 @@
           height: 100%;
         }
         header {
-          height:5%;
+          height:7%;
             background: linear-gradient(45deg, #007BFF, #0056b3);
             color: white;
             text-align: center;
+            display:  flex;
+            overflow: hidden;
+            justify-content: center;
+        }
+        header h1{
+          margin:0
+        }
+        header img{
+          height: 100%
         }
         .container {
             margin: 20px auto;
@@ -87,11 +96,60 @@
             height: auto;
             border-radius: 10px;
         }
+        .upload-section {
+            margin-top: 2rem;
+            text-align: center;
+            background: #ffffff;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+        .upload-section input[type="file"], .upload-section input[type="date"], .upload-section textarea {
+            margin-top: 1rem;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .upload-section input {
+            display: inline-block;
+            padding: 10px 20px;
+            /* background-color: #007BFF; */
+            /* color: white; */
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .upload-section label:hover {
+            background-color: #0056b3;
+        }
+        textarea {
+            width: 80%;
+            height: 100px;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            transition: border-color 0.3s ease;
+        }
+        textarea:focus {
+            border-color: #007BFF;
+        }
+        .upload-section button{
+          background-color: #007BFF;
+           color: white;
+           width:8rem;
+           margin-top: 10px;
+           border-radius: 5px;
+           font-size: 1.2em
+        }
     </style>
 </head>
 <body>
     <header>
-        <h1>タイ旅行日記</h1>
+      <div><img src='https://orders-image.sgp1.digitaloceanspaces.com/Thailand/taikoki.png'/></div>
+
+        <div><h1>タイ旅行日記</h1></div>
+        <div><img src='https://orders-image.sgp1.digitaloceanspaces.com/Thailand/taizou.png'/></div>
+
     </header>
 
     <div class="container">
@@ -175,27 +233,24 @@
         </div>
         <!-- Image Upload Section -->
         <div class="upload-section">
-            <h2>Upload Images</h2>
+            <h2>アップロード</h2>
             <form action="/upload" method="POST" enctype="multipart/form-data">
-                <label for="image">Choose file</label>
                 <input type="file" id="image" name="image" accept="image/*">
-                <button type="submit">Upload</button>
+                <input type="date" id="date" name="date">
+                <textarea id="comment" name="comment" placeholder="コメントを入力してください..."></textarea>
+                <button type="submit">保存</button>
             </form>
         </div>
 
     </div>
 
     <script>
-        let slideIndex = 0;
-        const showSlides = () => {
-            const slides = document.querySelectorAll(".slides");
-            slides.forEach((slide, index) => {
-                slide.style.display = (index === slideIndex) ? "block" : "none";
-            });
-            slideIndex = (slideIndex + 1) % slides.length;
-            setTimeout(showSlides, 3000);
-        };
-        showSlides();
+
+    // 今日の日付を取得してフォーマット
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('date').value = today;
+
+
     </script>
 </body>
 </html>
