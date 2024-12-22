@@ -585,12 +585,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-    function escapeToYahoo() {
-      // history.replaceState(null, null, '/'); // 現在の履歴を空ページに置き換え
-      localStorage.removeItem('authKey');
-           window.location.href = 'https://www.yahoo.co.jp';
+ function escapeToYahoo() {
+    // ログイン情報を削除
+    localStorage.removeItem('authKey');
 
-       }
+    // 現在のページを履歴から削除してリダイレクト
+    history.replaceState(null, '', '/blank'); // 空ページなどを履歴に設定
+    window.location.href = 'https://www.yahoo.co.jp';
+}
 
 
 
