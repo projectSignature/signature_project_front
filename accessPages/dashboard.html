@@ -595,6 +595,15 @@ document.addEventListener('DOMContentLoaded', () => {
 }
 
 
+        document.addEventListener('DOMContentLoaded', () => {
+    const authKey = localStorage.getItem('authKey');
+    if (!authKey) {
+        // 未認証の場合、ログインページにリダイレクト
+        window.location.href = './login.html';
+    }
+});
+
+
 
 
 
