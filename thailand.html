@@ -115,6 +115,7 @@
             padding: 10px 20px;
             /* background-color: #007BFF; */
             /* color: white; */
+            font-size: 1.5em
             border-radius: 8px;
             cursor: pointer;
             transition: background-color 0.3s ease;
@@ -123,23 +124,25 @@
             background-color: #0056b3;
         }
         textarea {
-            width: 80%;
-            height: 100px;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            transition: border-color 0.3s ease;
-        }
-        textarea:focus {
-            border-color: #007BFF;
-        }
+          width: 80%;
+          height: 100px;
+          padding: 10px;
+          border-radius: 8px;
+          border: 1px solid #ccc;
+          font-size: 16px; /* フォントサイズを16pxに設定 */
+          transition: border-color 0.3s ease;
+      }
+      textarea:focus {
+          border-color: #007BFF;
+          outline: none; /* フォーカス時のアウトラインを非表示 */
+      }
         .upload-section button{
           background-color: #007BFF;
            color: white;
            width:8rem;
            margin-top: 10px;
            border-radius: 5px;
-           font-size: 1.2em
+           font-size: 1.5em
         }
         .gallery-button {
            position: absolute;
