@@ -26,12 +26,7 @@ var today = new Date();  //今日
 var selectlanguage
 let plan = ""
 let valor = ""
-//language = 0
-//gymid = 5
-//gymname ="Paulo"
 
-
-console.log(gymid)
 
 document.getElementById("birthday_year").addEventListener("change", birthday_date_get)
 document.getElementById("birthday_month").addEventListener("change", birthday_date_get)
@@ -43,7 +38,7 @@ if (token == 567) {
   paymentDiv.style.display = 'none';
   graduacaoDiv.style.display = 'none';
 }else if(token==""||token==null){
-//  window.location = `https://squid-app-ug7x6.ondigitalocean.app/signature-project-front`
+  window.location = `https://squid-app-ug7x6.ondigitalocean.app/signature-project-front`
 }
 //document.getElementById("cheap").addEventListener("click", familyplan)
 let stxt1 = ["Seja bem-vindo　\n",]
