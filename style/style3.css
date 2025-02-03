@@ -1,5 +1,5 @@
 html{
-overflow-y: hidden;
+overflow: hidden;
 height: 100%;
 }
 
@@ -16,6 +16,7 @@ background-color: #222222;
 display: flex;
 align-items: center;
 }
+
 #gym-name{
 color:white;
 position: absolute;
@@ -45,6 +46,7 @@ background-color: #555555;
 width:12%;
 padding-top: 20px;
 color:white;
+height:95%
 }
 #menubar-title{
 font-weight: bold;
@@ -80,7 +82,9 @@ height:15%;
 width:100%;
 display: flex;
 align-items: center;
-
+}
+#image-title{
+  width: 250px!important
 }
 .right-first-div{
 width: 32%;
@@ -367,7 +371,10 @@ margin-left:10px;
 
 #menubar{
 width: 12%;
-height:600px;
+display: flex;
+flex-wrap: wrap;
+justify-content: space-around;
+/* height:600px; */
 }
 #add_member_div{
 padding-left: 0;
@@ -408,6 +415,9 @@ display: block;
 margin-top: 2px;
 text-align: center;
 align-items: center;
+}
+.menu-div img{
+  width:30px
 }
 
 .title-bottons{
@@ -456,7 +466,7 @@ display:none;
 }
 #menubar{
 width:100%;
-height:50px;
+/* height:50px; */
 display: block;
 flex-wrap: nowrap;
 padding-top: 0px;
