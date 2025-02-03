@@ -17,14 +17,16 @@
             background: url('https://source.unsplash.com/1600x900/?dojo,martial-arts') no-repeat center center/cover;
         }
         .login-container {
-            background-color:#333;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.5);
-            text-align: center;
-            color: white;
-            font-family: 'Noto Serif JP', serif;
-        }
+          position: relative; /* これを追加 */
+          background-color: #333;
+          padding: 30px;
+          border-radius: 10px;
+          box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.5);
+          text-align: center;
+          color: white;
+          font-family: 'Noto Serif JP', serif;
+          width: 300px; /* ロゴとの相対配置を安定させるため固定幅 */
+      }
         .login-container h1 {
             margin-bottom: 20px;
             font-size: 24px;
@@ -51,14 +53,34 @@
         .login-button:hover {
             background: #ff5252;
         }
-        .login-container img {
+
+
+      .login-container img {
           position: absolute;
-          top:36%;
-          left:58%;
-          width: 200px; /* ロゴサイズ調整 */
-          display: block;
-          margin: 0 auto 20px;
+          top: 18%; /* 親要素（.login-container）を基準に */
+          left: 85%;
+          transform: translateX(-50%); /* 水平中央配置 */
+          width: 120px; /* ロゴサイズ */
       }
+
+      @keyframes logoAppear {
+    0% {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.login-container img {
+  
+    opacity: 0; /* 最初は非表示 */
+    animation: logoAppear 1s ease-out forwards;
+}
+
+
 
     </style>
 </head>
