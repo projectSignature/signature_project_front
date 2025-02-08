@@ -75,7 +75,12 @@ const translations = {
         listbuton:'display list',
         necesarryfild:'This field is required.',
         notNecesarryFild:'This field is optional.',
-        deleteConfirm:'Are you sure you want to delete this?'
+        deleteConfirm:'Are you sure you want to delete this?',
+        other:'other',
+        withdraw: 'Withdraw',
+        deposit: 'Deposit',
+        lend: 'Lend',
+        borrow: 'Borrow'
     },
     ja: {
         name:'名前',
@@ -153,7 +158,12 @@ const translations = {
         listbuton:'リスト表示',
         necesarryfild:'必須項目です',
         notNecesarryFild:'オプション項目です',
-        deleteConfirm:'本当に削除しますか？'
+        deleteConfirm:'本当に削除しますか？',
+        other:'他の登録',
+        withdraw: '銀行から引き出し',
+        deposit: '銀行預け',
+        lend: '貸し',
+        borrow: '借り'
     },
     pt: {
         name:'nome',
@@ -231,6 +241,11 @@ const translations = {
         listbuton:'Visualizar lista',
         necesarryfild:'Este campo é obrigatório.',
         notNecesarryFild:'Este campo é opcional.',
-        deleteConfirm:'Tem certeza de que deseja excluir isso?'
+        deleteConfirm:'Tem certeza de que deseja excluir isso?',
+        other:'Outros',
+        withdraw: 'Saque',
+        deposit: 'Depósito',
+        lend: 'Empréstimo',
+        borrow: 'Dívida'
     }
 };

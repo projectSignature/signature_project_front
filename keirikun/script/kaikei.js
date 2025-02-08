@@ -21,27 +21,41 @@ document.getElementById('input-button').style="background-color:#333"
 
 
 // let dataTypeSelect = document.getElementById('dataTypeSelect')
-dataTypeSelect.addEventListener('change',()=>{
-  console.log(userInfo)
-  if(userInfo.proccessNumber ===1){
-    userInfo.proccessNumber =0
-    populateCategoryCards(userInfo.Masterdespesas)
-    populateSupplierOptions(userInfo.MsFornecedor)
-    document.getElementById('div4').innerText = translations[userInfo.language].supplier
-  }else{
-    userInfo.proccessNumber =1
-    populateCategoryCards(userInfo.Mastervendas)
-    populateSupplierOptions(userInfo.MsClients)
-    document.getElementById('div4').innerText = translations[userInfo.language].fonte
-  }
+dataTypeSelect.addEventListener('change', () => {
+  console.log(userInfo);
 
-})
+  switch (dataTypeSelect.value) {
+    case 'despesa':
+      userInfo.proccessNumber = 0;
+      populateCategoryCards(userInfo.Masterdespesas);
+      populateSupplierOptions(userInfo.MsFornecedor);
+      document.getElementById('div4').innerText = translations[userInfo.language].supplier;
+      break;
+
+    case 'renda':
+      userInfo.proccessNumber = 1;
+      populateCategoryCards(userInfo.Mastervendas);
+      populateSupplierOptions(userInfo.MsClients);
+      document.getElementById('div4').innerText = translations[userInfo.language].fonte;
+      break;
+
+    case 'outros':
+      userInfo.proccessNumber = 2; // 新しいプロセス番号を設定
+      populateOutrosCards(userInfo.Masteroutros); // "outros" 用のデータを表示
+      // populateSupplierOptions(userInfo.MsOthers); // "outros" 用のサプライヤー情報を表示
+      document.getElementById('div4').innerText = translations[userInfo.language].outros;
+      break;
+
+    default:
+      console.error('未対応のデータタイプです: ', dataTypeSelect.value);
+  }
+});
 function creatsSelectsDataType(){
   return `
             <option value="despesa" selected>${translations[userInfo.language].despesas}</option>
             <option value="renda">${translations[userInfo.language].income}</option>
+            <option value="outros">${translations[userInfo.language].other}</option>
             `
-            // <option value="transferencia">${translations[userInfo.language].transfer}</option>
 }
 pageload()
 async function pageload(){
@@ -54,7 +68,6 @@ async function pageload(){
        userInfo.email = decodedToken.email
        await translatePage(userInfo.language)
        await fetchMasterData(token)
-      // 言語情報を使ってフロントエンドのロジックを実装
       // 例えば、言語情報に基づいてUIを変更するなど
       var today = new Date();
       let yyyy = today.getFullYear();
@@ -62,7 +75,7 @@ async function pageload(){
       let dd = ("00" + today.getDate()).slice(-2);
       dt.value = `${yyyy}-${mm}-${dd}`
       dataTypeSelect.innerHTML = creatsSelectsDataType()
-     hideLoadingPopup();
+      hideLoadingPopup();
   }
 }
 // トークンをデコードしてペイロードを取得
@@ -123,10 +136,10 @@ function populateSupplierOptions(suppliers) {
 }
 
 function populateCategoryCards(userCategories) {
-    console.log(userCategories)
     // 既存のカードをクリア
     categoryContainer.innerHTML = '';
-
+    document.getElementById('supplieres-top-div').style.display='flex'
+    document.getElementById('payinfo').style.display='flex'
     // 選択されたカードを保持する変数
     let selectedCard = null;
     // カテゴリーリストをループしてカードを生成
@@ -153,7 +166,6 @@ function populateCategoryCards(userCategories) {
                 selectedCard.style.backgroundColor = '';
                 selectedCard.classList.remove('selected'); // 既存のselectedクラスを削除
             }
-
             // 新しく選択したカードの色を変更する
             card.style.backgroundColor = '#FFDAB9';
             card.classList.add('selected'); // 新しくselectedクラスを追加
@@ -165,6 +177,65 @@ function populateCategoryCards(userCategories) {
         });
     });
 }
+
+function populateOutrosCards() {
+
+  document.getElementById('supplieres-top-div').style.display='none'
+  document.getElementById('payinfo').style.display='none'
+  // document.getElementById('')
+    // 既存のカードをクリア
+    categoryContainer.innerHTML = '';
+
+    // カードデータを定義
+    const outrosCategories = [
+        { id: 'withdraw', name: translations[userInfo.language].withdraw, icon: 'https://orders-image.sgp1.digitaloceanspaces.com/clients/keirikun/hikidasu.png' },
+        { id: 'deposit', name: translations[userInfo.language].deposit, icon: 'https://orders-image.sgp1.digitaloceanspaces.com/clients/keirikun/azukeru.png' },
+        { id: 'lend', name: translations[userInfo.language].lend, icon: 'https://orders-image.sgp1.digitaloceanspaces.com/clients/keirikun/kasu.png' },
+        { id: 'borrow', name: translations[userInfo.language].borrow, icon: 'https://orders-image.sgp1.digitaloceanspaces.com/clients/keirikun/kariru.png' }
+    ];
+
+    // 選択されたカードを保持する変数
+    let selectedCard = null;
+
+    // カテゴリーリストをループしてカードを生成
+    outrosCategories.forEach(category => {
+        const card = document.createElement('div');
+        card.className = 'category-card';
+        card.setAttribute('data-category-id', category.id); // カテゴリIDをデータ属性に設定
+
+        const icon = document.createElement('img');
+        icon.src = `${category.icon}`;
+        icon.alt = category.name;
+        card.appendChild(icon);
+
+        const name = document.createElement('div');
+        name.className = 'category-name';
+        name.textContent = category.name;
+        card.appendChild(name);
+
+        categoryContainer.appendChild(card);
+
+        // カードクリックイベントを追加
+        card.addEventListener('click', function () {
+            // すでに選択されているカードの色を元に戻す
+            if (selectedCard) {
+                selectedCard.style.backgroundColor = '';
+                selectedCard.classList.remove('selected'); // 既存のselectedクラスを削除
+            }
+            // 新しく選択したカードの色を変更する
+            card.style.backgroundColor = '#FFDAB9';
+            card.classList.add('selected'); // 新しくselectedクラスを追加
+            selectedCard = card;
+
+            // 選択したカテゴリのIDをuserInfo.selectCategoryに格納する
+            const categoryId = card.getAttribute('data-category-id');
+            userInfo.selectCategory = categoryId;
+
+            console.log(userInfo.selectCategory)
+        });
+    });
+}
+
 
 function populateClientCards(clients, language) {
     const clientContainer = document.getElementById('categorysdiv');
@@ -291,7 +362,14 @@ function translatePages(language) {
 }
 
 async function soubetsuProcess(){
-  userInfo.proccessNumber===0?sendData():sendSyunyu()
+  if(userInfo.proccessNumber===0){
+    sendData()
+  }else if(userInfo.proccessNumber===1){
+    sendSyunyu()
+  }else{
+    sendOthers()
+  }
+  // userInfo.proccessNumber===0?sendData():sendSyunyu()
 }
 
 async function sendSyunyu() {
@@ -407,6 +485,69 @@ async function sendData() {
         console.error('Error:', error);
         alert(translations[userInfo.language]['dataSendError']);
     }
+}
+
+async function sendOthers(){
+  const date = document.getElementById('calender-input').value;
+  // const supplier = document.getElementById('Suppliers-options').value;
+  // const method = document.getElementById('pay-select').value;
+  const amount = document.getElementById('value-input').value;
+  const memo = document.getElementById('memo-pay').value;
+  const categoryId = userInfo.selectCategory;
+  let endPonit = ''
+
+  let kubun = 0
+  if(categoryId==='withdraw'){
+    kubun=0
+    endPonit=`otherImportantRegister`
+  }else if(categoryId==='deposit'){
+    kubun=1
+    endPonit=`otherImportantRegister`
+  }else if(categoryId==='lend'){
+      kubun=2
+    endPonit=`RegisterShakinOrKari`
+  }else{
+    kubun=3
+    endPonit=`RegisterShakinOrKari`
+  }
+
+  const data = {
+      userId:userInfo.id,
+      date: date,
+      amount: amount,
+      kubun:kubun,
+      memo:memo
+  };
+
+
+
+  try {
+    showLoadingPopup()
+      const response = await fetch(`${server}/keirikun/data/regist/${endPonit}`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}` // トークンをヘッダーに含める
+          },
+          body: JSON.stringify(data)
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+          await swallSuccess()
+          resetForm()
+          hideLoadingPopup()
+      } else {
+          // alert(translations[userInfo.language]['dataSendFail']);
+      }
+  } catch (error) {
+      console.error('Error:', error);
+      alert(translations[userInfo.language]['dataSendError']);
+  }
+
+
+
+
 }
 
 async function kanmaReplase(){

@@ -152,8 +152,7 @@ async function fetchMasterData(token) {
        const container = document.getElementById('cardContainer');
        container.innerHTML = '';  // コンテナをクリア
        records.forEach(record => {
-         console.log(records)
-         console.log(userInfo)
+         console.log(record)
          let category
          if(record.income===null){
            category = userInfo.Masterdespesas.find(category => category.category_id === record.party_code-0);
@@ -180,7 +179,7 @@ async function fetchMasterData(token) {
                   <img src="https://orders-image.sgp1.digitaloceanspaces.com/keirikun/${record.party_code}.svg" alt="Category Icon">
                   <span class="icon-label">${category.m_category[`category_name_${userInfo.language}`]}</span> <!-- カテゴリ名を表示 -->
               </div>
-              <h3>${description}</h3>
+              <h3>${description}(${record.id})</h3>
               <p>${record.description.split(' 内容:')[1]}</p>
               <p>${amount}</p>
               <div class="actions">
