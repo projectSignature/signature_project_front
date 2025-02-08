@@ -11,38 +11,12 @@ const filterButton = document.getElementById('filterButton')
 const messageDiv = document.getElementById('data.records')
 
 filterButton.addEventListener('click',fetchMasterData)
-// let dataTypeSelect = document.getElementById('dataTypeSelect')
 
-    // すべてのボタンを取得
-    // const buttons = document.querySelectorAll('.header-buttons .header-button');
-    // // クラスを変更する（ループで処理）
-    // buttons.forEach((button, index) => {
-    //   console.log(button)
-    //   if(button.id==='history-button'){
-    //     button.style="background-color:#333"
-    //   }else{
-    //
-    //   }
-    //     // 既存のクラスを削除し、新しいクラスを追加
-    //     button.className = `header-button updated-class-${index + 1}`;
-    // });
-
-
-// // 関数を実行してクラスを変更
-// updateButtonClasses();
-// const usersInfo = sessionStorage.getItem('keirikunUser')
-// console.log(usersInfo.Masterdespesas)
 const userInfo = JSON.parse(sessionStorage.getItem('keirikunUser'));
 pageload()
 async function pageload(){
   if (token) {
       showLoadingPopup();
-      // const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
-      // console.log(decodedToken)
-      // userInfo.id=decodedToken.userId
-      // userInfo.language=decodedToken.language
-      //  userInfo.language = decodedToken.language
-      //  userInfo.id = decodedToken.userId
        getMasterData()
        await translatePage(userInfo.language)
        await setDateInputs()
@@ -105,8 +79,7 @@ async function fetchMasterData(token) {
           const token = localStorage.getItem('token'); // ログイン時のトークンを取得
           const startDate = document.getElementById('startDate').value
           const endDate = document.getElementById('endDate').value
-          console.log(startDate)
-          console.log(endDate)
+
           if (!token) {
               console.error('Authentication token is missing');
               return;
@@ -122,12 +95,9 @@ async function fetchMasterData(token) {
           const data = await response.json();
           if (response.ok) {
               if (data.success) {
-                  console.log('History data:', data.records); // 成功時のデータ
                   if(data.records.length!=0){
-                    console.log(data)
                     displayRecords(data.records); // データを表示するための関数を呼び出し
                     userInfo.history = data.records
-
                   }else{
                     messageDiv.style.display='block'
                     messageDiv.innerText='n:ao ha datas'
@@ -148,19 +118,18 @@ async function fetchMasterData(token) {
 }
 // カードを作成して表示する関数
    function displayRecords(records) {
-     console.log(userInfo)
        const container = document.getElementById('cardContainer');
        container.innerHTML = '';  // コンテナをクリア
        records.forEach(record => {
-         console.log(record)
+         if(record.party_code-0===189||record.party_code-0===999||record.party_code-0===327){
+           return
+         }
          let category
          if(record.income===null){
            category = userInfo.Masterdespesas.find(category => category.category_id === record.party_code-0);
          }else{
            category = userInfo.Mastervendas.find(category => category.category_id === record.party_code-0);
          }
-
-
            const card = document.createElement('div');
            card.classList.add('card');
            // カードの背景色を収入・支出で分ける
@@ -179,7 +148,8 @@ async function fetchMasterData(token) {
                   <img src="https://orders-image.sgp1.digitaloceanspaces.com/keirikun/${record.party_code}.svg" alt="Category Icon">
                   <span class="icon-label">${category.m_category[`category_name_${userInfo.language}`]}</span> <!-- カテゴリ名を表示 -->
               </div>
-              <h3>${description}(${record.id})</h3>
+              <h3>${description}</h3>
+              <p>${record.record_date}(${record.id})</p>
               <p>${record.description.split(' 内容:')[1]}</p>
               <p>${amount}</p>
               <div class="actions">
