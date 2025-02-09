@@ -243,6 +243,9 @@
             const incomeSummary = {};
             const expenseSummary = {};
             records.forEach(record => {
+              if(record.party_code-0===189||record.party_code-0===999||record.party_code-0===327){
+                return
+              }
                 let myKamoku;
                 if (record.total_income === null) {
                     myKamoku = userInfo.Masterdespesas.filter(f => f.category_id == record.party_code);
@@ -260,8 +263,8 @@
                     const listItem = document.createElement('div');
                     listItem.className = 'card-expenses';
                     listItem.innerHTML = `
-                        <p>科目: ${categoryName}</p>
-                        <p>支出: ¥${parseFloat(record.total_expense).toLocaleString()}</p>
+                        <p>${categoryName}</p>
+                        <p>¥${parseFloat(record.total_expense).toLocaleString()}</p>
                     `;
                     leftDiv.appendChild(listItem);
                 }
@@ -275,8 +278,8 @@
                     const listItem = document.createElement('div');
                     listItem.className = 'card-income';
                     listItem.innerHTML = `
-                        <p>科目: ${categoryName}</p>
-                        <p>収入: ¥${parseFloat(record.total_income).toLocaleString()}</p>
+                        <p>${categoryName}</p>
+                        <p> ¥${parseFloat(record.total_income).toLocaleString()}</p>
                     `;
                     rightDiv.appendChild(listItem);
                 }
@@ -309,6 +312,13 @@
                     maintainAspectRatio: true,
                     plugins: {
                         legend: { position: 'bottom' },
+                        title: {
+                           display: true,
+                           text: translations[userInfo.language]["income"], // ここにタイトルを設定
+                           font: { size: 16, weight: 'bold' },
+                           color: '#333',
+                           padding: { top: 10, bottom: 10 }
+                       },
                         datalabels: {
                             color: '#fff',
                             font: { size: 14, weight: 'bold' },
@@ -338,6 +348,13 @@
                     maintainAspectRatio: true,
                     plugins: {
                         legend: { position: 'bottom' },
+                        title: {
+                           display: true,
+                           text: translations[userInfo.language]["despesas"], // ここにタイトルを設定
+                           font: { size: 16, weight: 'bold' },
+                           color: '#333',
+                           padding: { top: 10, bottom: 10 }
+                       },
                         datalabels: {
                             color: '#000',
                             font: { size: 12, weight: 'bold' },
