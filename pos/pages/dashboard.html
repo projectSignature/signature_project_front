@@ -45,7 +45,20 @@
         <canvas id="salesChart"></canvas>
     </div>
 
-    <div class="chart-container" id="expensesChartContainer">
+    <div class="chart-container" >
+      <div class="selects-container">
+      <select class="select-type" id="select-type-sales" onchange="changeSalesView()">
+        <option value=0>Vendas por dia</option>
+        <option value=1>Vendas por mês</option>
+      </select>
+      <select class="yearselect" id="selectYear">
+        <option value=2024>2024</option>
+        <option value=2025>2025</option>
+
+      </select>
+      <div id="expensesChartContainer">
+
+      </div>
         <!-- <canvas id="expensesChart"></canvas> -->
     </div>
 
