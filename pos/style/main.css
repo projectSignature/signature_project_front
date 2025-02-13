@@ -857,3 +857,28 @@ width: 100%;
   width:5rem;
   height: 2rem
 }
+
+.select-type{
+  width: 70%;
+  text-align: center;
+  margin-bottom: 10px;
+  font-size: 15px;
+  height: 3rem;
+  border-radius: 5px;
+  background-color: #333;
+  color:#FFF
+}
+.selects-container{
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-content: space-around;
+}
+.yearselect{
+  width: 20%;
+  height: 3rem;
+  border-radius: 5px;
+  background-color: #333;
+  color:#FFF;
+    font-size: 15px;
+}
