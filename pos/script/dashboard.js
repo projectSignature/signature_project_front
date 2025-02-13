@@ -3,6 +3,13 @@ console.log(token)
 let nameSpan = document.getElementById('spn-representative')
 let userInfo={}
 let currentSaleId = ""
+ const year = document.getElementById('selectYear')
+ year.value='2025'
+
+year.addEventListener('change', function () {
+    fetchTotalSales()
+});
+
 
 
 
@@ -22,141 +29,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   fetchTotalSales()
   // fetchMonthlyExpenses()
-  async function fetchTotalSales() {
-      loadingIndicator.style.display = 'block';
-      try {
-          const response = await fetch(`${server}/pos/total-sales?user_id=${userInfo.id}`, {
-              method: 'GET',
-              headers: {
-                  'Authorization': `Bearer ${token}`,  // トークンをヘッダーに含める
-                  'Content-Type': 'application/json'
-              }
-          });
-          if (!response.ok) {
-              throw new Error('データ取得に失敗しました');
-          }
-          const data = await response.json();  // レスポンスデータをJSONとしてパース
-          // 総売上の表示
-          document.getElementById('totalSales').textContent = `¥${parseFloat(data.totalSales).toLocaleString()}`;
-          // ポルトガル語で省略した曜日を取得するための配列
-          const weekdays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-          // カードを`expensesChartContainer`に追加
-          const expensesChartContainer = document.getElementById('expensesChartContainer');
-          expensesChartContainer.innerHTML = '';  // 既存のカードをクリア
-          // タイトル要素を作成
-          const title = document.createElement('h3');
-            title.textContent = 'Vendas por dia';
-            title.style.textAlign = 'center';
-            title.style.marginBottom = '20px';
-            title.style.color = '#ffffff';  // タイトルのテキストカラーを白に設定
-            title.style.fontWeight = 'bold';
-            title.style.fontSize = '1.5em'; // フォントサイズを大きくする
-            title.style.backgroundColor = '#333333';  // 背景色をダークグレーに設定
-            title.style.padding = '10px';
-            title.style.borderRadius = '8px';  // 角を丸くする
-
-          // タイトルを`expensesChartContainer`に追加
-          expensesChartContainer.appendChild(title);
-          const cardContainer = document.createElement('div');
-          cardContainer.className = 'card-container';  // 新しいdivにクラスを追加
-
-          expensesChartContainer.appendChild(cardContainer);
-          data.dailySales.forEach(sale => {
-              const date = new Date(sale.date);
-              const month = date.getMonth() + 1;
-              const day = date.getDate();
-              const weekday = weekdays[date.getDay()];  // 曜日を取得
-              const formattedDate = `${month}/${day} (${weekday})`;
-
-              // カード要素を作成
-              const card = document.createElement('div');
-              card.className = 'expense-card';
-
-              // カードの内容を設定
-              card.innerHTML = `
-                  <div class="expense-card-body">
-                      <h5 class="expense-card-title">${formattedDate}</h5>
-                      <p class="expense-card-text">¥${parseFloat(sale.total_sales).toLocaleString()}</p>
-                  </div>
-              `;
-
-              // カードを`expensesChartContainer`に追加
-              cardContainer.appendChild(card);
-          });
 
 
-          // 日別売上の推移グラフを描画
-          const labels = data.dailySales.map(sale => {
-              const date = new Date(sale.date);  // 日付をパース
-              const month = date.getMonth() + 1;  // 月を取得 (0ベースなので+1)
-              const day = date.getDate();  // 日を取得
-              const weekday = weekdays[date.getDay()];  // 曜日を取得
-              return `${month}/${day} (${weekday})`;  // "MM/DD (曜日)"形式で返す
-          });
 
-          const salesData = data.dailySales.map(sale => parseFloat(sale.total_sales));
-          const ctx = document.getElementById('salesChart').getContext('2d');
-          new Chart(ctx, {
-              type: 'line',
-              data: {
-                  labels: labels,
-                  datasets: [{
-                      label: '',  // タイトルを空にして非表示にする
-                      data: salesData,
-                      backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                      borderColor: 'rgba(75, 192, 192, 1)',
-                      borderWidth: 2,
-                      fill: true,  // 塗りつぶしを有効にする
-                      tension: 0.4,  // 曲線を滑らかにする
-                  }]
-              },
-              options: {
-                  plugins: {
-                      legend: {
-                          display: false  // 凡例を非表示にする
-                      }
-                  },
-                  scales: {
-                      x: {
-                          grid: {
-                              display: false  // X軸のグリッド線を非表示にする
-                          },
-                          ticks: {
-                              display: true  // X軸のラベルは表示
-                          }
-                      },
-                      y: {
-                          beginAtZero: true,
-                          grid: {
-                              display: false  // Y軸のグリッド線を非表示にする
-                          },
-                          ticks: {
-                              display: true  // Y軸のラベルは表示
-                          }
-                      }
-                  },
-                  elements: {
-                      line: {
-                          borderWidth: 3  // 線の太さを変更
-                      },
-                      point: {
-                          radius: 4,  // データポイントのサイズを設定
-                          backgroundColor: 'rgba(75, 192, 192, 1)',  // データポイントの色を設定
-                      }
-                  },
-                  layout: {
-                      padding: 10  // グラフ周囲に余白を追加
-                  }
-              }
-          });
-
-          loadingIndicator.style.display = 'none';
-
-      } catch (error) {
-          console.error('Error fetching sales data:', error);
-          alert('売上データの取得中にエラーが発生しました');
-      }
-  }
 
   // レジ履歴ボタンを取得とデータの取得
    const analistButton = document.querySelector('.button-container button:nth-child(1)')
@@ -605,7 +480,6 @@ async function deleteMenuItem(id) {
                            <div class="form-group">
                                <label for="confirmPassword">Confirmar senha:</label>
                                <input type="password" id="confirmPassword" name="confirm_password" value="">
-                           </div>
                            <div class="form-group">
                                <label for="email_form">email:</label>
                                <input type="text" id="form_email" name="email" value="${userInfo.email}">
@@ -1181,6 +1055,208 @@ function deleteItem(index) {
   // 再度モーダルを表示して、変更を反映
   showUpdateModal(currentSale);
   loadingIndicator.style.display = 'none';
+}
+
+let salesChart = null;
+
+let tgtData = ""
+
+async function fetchTotalSales() {
+    loadingIndicator.style.display = 'block';
+
+    try {
+        const response = await fetch(`${server}/pos/total-sales/Byyear?user_id=${userInfo.id}&year=${year.value}`, {
+        // const response = await fetch(`${server}/pos/total-sales?user_id=${userInfo.id}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,  // トークンをヘッダーに含める
+                'Content-Type': 'application/json'
+            }
+        });
+        if (!response.ok) {
+            throw new Error('データ取得に失敗しました');
+        }
+        const data = await response.json();  // レスポンスデータをJSONとしてパース
+        // 総売上の表示
+
+        tgtData = data
+
+
+//         const option = document.createElement('select')
+//         const options = `<select class="select-type" id="select-type-sales" onchange="changeSalesView()">
+//   <option value=0>Vendas por dia</option>
+//   <option value=1>Vendas por mês</option>
+// </select>`
+//
+//          expensesChartContainer.innerHTML = options
+
+ createData()
+
+
+    } catch (error) {
+        console.error('Error fetching sales data:', error);
+        alert('売上データの取得中にエラーが発生しました');
+    }
+}
+
+function createData(){
+  const data = tgtData
+  document.getElementById('totalSales').textContent = `¥${parseFloat(data.totalSales).toLocaleString()}`;
+  // ポルトガル語で省略した曜日を取得するための配列
+  const weekdays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+  // カードを`expensesChartContainer`に追加
+  const expensesChartContainer = document.getElementById('expensesChartContainer');
+  expensesChartContainer.innerHTML = '';  // 既存のカードをクリア
+  // タイトル要素を作成
+
+ const cardContainer = document.createElement('div');
+ cardContainer.className = 'card-container';  // 新しいdivにクラスを追加
+
+ expensesChartContainer.appendChild(cardContainer);
+
+
+ const selectType = document.getElementById('select-type-sales')
+ let labels
+ let salesData
+ if(selectType.value-0===0){
+   data.dailySales.forEach(sale => {
+       const date = new Date(sale.date);
+       const month = date.getMonth() + 1;
+       const day = date.getDate();
+       const weekday = weekdays[date.getDay()];  // 曜日を取得
+       const formattedDate = `${month}/${day} (${weekday})`;
+
+       // 日別売上の推移グラフを描画
+        labels = data.dailySales.map(sale => {
+           const date = new Date(sale.date);  // 日付をパース
+           const month = date.getMonth() + 1;  // 月を取得 (0ベースなので+1)
+           const day = date.getDate();  // 日を取得
+           const weekday = weekdays[date.getDay()];  // 曜日を取得
+           return `${month}/${day} (${weekday})`;  // "MM/DD (曜日)"形式で返す
+       });
+
+
+        salesData = data.dailySales.map(sale => parseFloat(sale.total_sales));
+
+       // カード要素を作成
+       const card = document.createElement('div');
+       card.className = 'expense-card';
+
+       // カードの内容を設定
+       card.innerHTML = `
+           <div class="expense-card-body">
+               <h5 class="expense-card-title">${formattedDate}</h5>
+               <p class="expense-card-text">¥${parseFloat(sale.total_sales).toLocaleString()}</p>
+           </div>
+       `;
+
+       // カードを`expensesChartContainer`に追加
+       cardContainer.appendChild(card);
+   });
+ }else{
+   // 月ごとの売上合計を集計
+   const monthlySales = data.dailySales.reduce((acc, item) => {
+       const month = item.date.substring(0, 7); // YYYY-MMを取得
+       acc[month] = (acc[month] || 0) + item.total_sales;
+       return acc;
+   }, {});
+
+
+
+   // const salesContainer = document.getElementById('sales-container');
+
+Object.entries(monthlySales).forEach(([month, total]) => {
+    // console.log(month)
+    // labelss.push(month)
+    const card = document.createElement('div');
+    card.className = 'expense-card';
+
+    // カードの内容を設定
+    card.innerHTML = `
+        <div class="expense-card-body">
+            <h5 class="expense-card-title">${month}</h5>
+            <p class="expense-card-text">¥${total.toLocaleString()}</p>
+        </div>
+    `;
+
+   cardContainer.appendChild(card);
+});
+
+labels = Object.keys(monthlySales); // YYYY-MM のラベル
+salesData = Object.values(monthlySales); // 売上合計
+
+ }
+
+
+
+if (salesChart) {
+     salesChart.destroy();
+ }
+
+
+
+
+ const ctx = document.getElementById('salesChart').getContext('2d');
+salesChart =  new Chart(ctx, {
+     type: 'line',
+     data: {
+         labels: labels,
+         datasets: [{
+             label: '',  // タイトルを空にして非表示にする
+             data: salesData,
+             backgroundColor: 'rgba(75, 192, 192, 0.2)',
+             borderColor: 'rgba(75, 192, 192, 1)',
+             borderWidth: 2,
+             fill: true,  // 塗りつぶしを有効にする
+             tension: 0.4,  // 曲線を滑らかにする
+         }]
+     },
+     options: {
+         plugins: {
+             legend: {
+                 display: false  // 凡例を非表示にする
+             }
+         },
+         scales: {
+             x: {
+                 grid: {
+                     display: false  // X軸のグリッド線を非表示にする
+                 },
+                 ticks: {
+                     display: true  // X軸のラベルは表示
+                 }
+             },
+             y: {
+                 beginAtZero: true,
+                 grid: {
+                     display: false  // Y軸のグリッド線を非表示にする
+                 },
+                 ticks: {
+                     display: true  // Y軸のラベルは表示
+                 }
+             }
+         },
+         elements: {
+             line: {
+                 borderWidth: 3  // 線の太さを変更
+             },
+             point: {
+                 radius: 4,  // データポイントのサイズを設定
+                 backgroundColor: 'rgba(75, 192, 192, 1)',  // データポイントの色を設定
+             }
+         },
+         layout: {
+             padding: 10  // グラフ周囲に余白を追加
+         }
+     }
+ });
+
+ loadingIndicator.style.display = 'none';
+}
+
+function changeSalesView(){
+  console.log('1233')
+  fetchTotalSales()
 }
 
 // 設定項目を言語ごとにマッピング
