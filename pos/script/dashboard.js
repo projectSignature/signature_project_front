@@ -1,5 +1,11 @@
 const token = JSON.parse(window.localStorage.getItem('user'));
-console.log(token)
+
+
+   if(!token){
+     window.location.href = './pages/dashboard.html';
+   }
+
+
 const element = document.querySelector('.selects-container-for-pc');
 let nameSpan = document.getElementById('spn-representative')
 let userInfo={}
