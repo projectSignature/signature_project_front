@@ -37,7 +37,8 @@ const translations = {
         cancle:"cancel",
         passCheck:"New password and confirm password do not match",
         register_partner:"Partner",
-        supplier_exist:'Already registered, please check'
+        supplier_exist:'Already registered, please check',
+        online:'online'
     },
     ja: {
         input: '入力',
@@ -77,7 +78,11 @@ const translations = {
         cancel:"キャンセル",
         passCheck:"新しいパスワードと確認パスワードが一致しません",
         register_partner:"取引先・販売先",
-        supplier_exist:'登録済みです、確認してください'
+        supplier_exist:'登録済みです、確認してください',
+        online:'オンライン',
+        chatSui:'売り上げ推移グラフ',
+        chatByTypa:'支払い方法別売上推移',
+        chatByHour:'時間帯別売上（ピークタイム分析）'
     },
     pt: {
         input: 'Registrar',
@@ -117,6 +122,10 @@ const translations = {
         cancel:"Cancelar",
         passCheck:"Verifique a senha nova com a senha de confirmação",
         register_partner:"Parceiros",
-        supplier_exist:"Já está registrado, por favor verifique"
+        supplier_exist:"Já está registrado, por favor verifique",
+        online:'online',
+        chatSui:'Gráfico de Tendência de Vendas',
+        chatByTypa:'Vendas por Método de Pagamento',
+        chatByHour:'Vendas por Faixa Horária'
     }
 };
