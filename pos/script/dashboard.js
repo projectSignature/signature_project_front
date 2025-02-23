@@ -1,11 +1,5 @@
 const token = JSON.parse(window.localStorage.getItem('user'));
-
 console.log(token)
-   if(!token){
-     window.location.href = './pages/dashboard.html';
-   }
-
-
 const element = document.querySelector('.selects-container-for-pc');
 let nameSpan = document.getElementById('spn-representative')
 let userInfo={}
@@ -17,6 +11,9 @@ year.addEventListener('change', function () {
     fetchTotalSales()
 });
 
+   if(!token||token===null||token===undefined){
+     window.location.href = './pages/dashboard.html';
+   }
 
 
 
@@ -32,6 +29,8 @@ year.addEventListener('change', function () {
    userInfo.password = '';
    userInfo.confirm_password = '';
    userInfo.email = token.username
+
+
 
 
 
