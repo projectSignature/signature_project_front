@@ -15,27 +15,37 @@
     <div class="logo-container">
         <img src="../imagen/logo.png" alt="Logo"/>
     </div>
+     <input type="button" class="mobile-pdf" id="mobile-pdf" value="Exportar PDF" onclick="outputPDFMobile()" />
     <div class="header-right">
         <span id="spn-representative">User name</span>
     </div>
 </header>
 
-<div class="button-container">
-    <button>
-        <i class="fas fa-chart-line"></i> análise
-    </button>
-    <button>
-        <i class="fas fa-wallet"></i> faturamento
-    </button>
-    <button>
-        <i class="fas fa-cash-register"></i> histórico<br> de caixa
-    </button>
-    <button>
-        <i class="fas fa-cog"></i> configuração
-    </button>
-</div>
+
 
 <div class="container">
+  <div class="button-container">
+      <button class="">
+          <i class="fas fa-chart-line"></i> análise
+      </button>
+      <button  class="no-display-pc">
+          <i class="fas fa-wallet"></i> faturamento
+      </button>
+      <button>
+          <i class="fas fa-cash-register"></i> histórico<br> de caixa
+      </button>
+      <button class=configuration-btn>
+          <i class="fas fa-cog"></i> configuração
+      </button>
+      <button class="edit-menu-bypc" onclick="editMenuByPC()">
+          <i class="fas fa-cog"></i> Editar menu
+      </button>
+      <button class="edit-menu-bypc" onclick="editConfig()">
+          <i class="fas fa-cog"></i> configuração
+      </button>
+  </div>
+
+
     <!-- 既存のカードとグラフ -->
     <div class="card" id="card_income">
         <h2>Total:</h2>
@@ -46,20 +56,63 @@
     </div>
 
     <div class="chart-container" >
-      <div class="selects-container">
-      <select class="select-type" id="select-type-sales" onchange="changeSalesView()">
-        <option value=0>Vendas por dia</option>
-        <option value=1>Vendas por mês</option>
-      </select>
-      <select class="yearselect" id="selectYear">
-        <option value=2024>2024</option>
-        <option value=2025>2025</option>
+      <div class="selects-container" id="selects-byday-or-month">
+        <select class="select-type" id="select-type-sales" onchange="changeSalesView()">
+          <option value=0>Vendas por dia</option>
+          <option value=1>Vendas por mês</option>
+        </select>
+        <select class="yearselect" id="selectYear">
+          <option value=2024>2024</option>
+          <option value=2025>2025</option>
+        </select>
+        <div id="expensesChartContainer">
+        </div>
+      </div>
 
-      </select>
-      <div id="expensesChartContainer">
+      <div class="selects-container-for-pc">
+       <div class="select-dtas">
+         <input type="button" value="Exportar PDF" onclick="outputPDF()" />
+         <label>Do dia</label>
+         <input type="date" id="start-day">
+         <label> Ate</label>
+         <input type="date"id="finish-day">
+         <button onclick="sertchNewFilter()">Buscar</button>
+       </div>
+       <div id="under-container"class="under-container">
+         <div class="hitorico-container" id="hitorico-container">
+         </div>
+
+        <div class="chart-rank-container" id="chart-rank-container">
+          <div class="chart-under">
+            <div class="card_income-bypc" id="card_income-bypc">
+                <h2>Total:</h2>
+                <p id="totalSales-bypc">¥0</p>
+            </div>
+            <div class="chart-container" id="salesChartContainer-bypc">
+                <canvas id="salesChart-bypc"></canvas>
+            </div>
+          </div>
+          <div class="rank-div-container">
+            <div id="sales-type-container">
+
+            </div>
+            <div id="torendo-container">
+            </div>
+        </div>
+       </div>
+       <div class="summary-container"  id="rank-divs">
 
       </div>
-        <!-- <canvas id="expensesChart"></canvas> -->
+      </div>
+      <div id="under-container2" class="under-container2">
+
+     </div>
+     <div id="under-container3" class="under-container2">
+
+    </div>
+    <div id="under-container4" class="under-container2">
+
+   </div>
     </div>
 
     <!-- フィルターと検索ボタン -->
@@ -71,16 +124,14 @@
         <button id="filterButton">buscar</button>
     </div>
 
-
-
     <!-- レジ履歴の表示用のdiv -->
-    <div id="registerHistory" style="display: none;">
-        <!-- レジ履歴をここに表示 -->
+    <div id="registerHistory" class="registerHistory-desktop"style="display: none;">
+
     </div>
     <div id="registerSalesHistory" style="display: none;">
-        <!-- レジ履歴をここに表示 -->
+
     </div>
-</div>
+
 <!-- ローディングインジケータ -->
 <div id="loadingIndicator" style="display: none;">
     <div class="loader"></div>
@@ -108,8 +159,6 @@
         </div>
     </div>
 </div>
-
-<!-- モーダルのHTML -->
 <!-- モーダルのHTML -->
 <div id="updateModal" class="modal">
   <div class="modal-content">
@@ -119,11 +168,30 @@
     <div class="moda-btn"><button class="custom-sale-btn custom-sale-btn-primary" onclick="saveChanges()">salvar</button></div>
   </div>
 </div>
+</div>
+<!-- 🔹 モーダルの HTML を事前に設置 -->
 
+<div id="modal-container" class="modal-overlay" style="display: none;">
+  <div class="modal-content">
+    <span class="close-modal">&times;</span>
+    <h2>Detalhes da Venda</h2>
+    <div id="modal-body"></div>
+  </div>
+</div>
+<div id="menuEditModal" class="menu-modal">
+    <div class="menu-modal-content" id="edit-menu-container">
+    </div>
+</div>
+<div id="menuOverlay" class="menu-overlay"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 <script src="../../config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="../script/dashboard.js"></script>
+<script src="../script/translations.js"></script>
 
 
 </body>
