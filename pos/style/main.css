@@ -1,3 +1,5 @@
+
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -14,7 +16,6 @@ header {
     overflow: hidden;
     background-color: #333333;
     color: white;
-
     text-align: center;
     display: flex;
     justify-content: space-between;
@@ -22,7 +23,12 @@ header {
 .container {
     padding: 2px;
     width:100%;
+    height: 100%;
+    display: block;
 
+}
+.selects-container-for-pc{
+  display: none
 }
 .card {
     position: absolute;
@@ -41,6 +47,7 @@ header {
     justify-content: center;
     align-items: center;
 }
+
 #card_income{
   top: 19%;  /* グラフの上部に配置 */
 }
@@ -119,16 +126,17 @@ header {
 
 
 
+
 .chart-container {
   width: 100%;
   margin: auto;
   border-bottom: 1px dashed #333;  /* 下に点線を追加 */
   position: relative;
-  margin-top: 3rem;
-  padding-bottom:15px
+  margin-top: 15px;
+  padding-bottom:5px
 }
 .card-content {
-display: flex;
+display: block;
 align-items: center; /* h2 と p の垂直位置を中央揃え */
 justify-content: space-between; /* h2 と p の間にスペースを均等に配置 */
 }
@@ -259,6 +267,7 @@ text-align: center;
     color: #333;
 }
 
+
 .form-group {
     margin-bottom: 15px;
 }
@@ -319,7 +328,7 @@ background-color: rgba(0, 0, 0, 0.8);
 padding: 20px;
 border-radius: 10px;
 color: white;
-z-index: 1000;
+z-index: 1100;
 display: flex;
 flex-direction: column;
 align-items: center;
@@ -872,7 +881,9 @@ width: 100%;
   display: flex;
   flex-wrap: wrap;
   width: 100%;
+  max-height: 15rem;
   justify-content: space-around;
+  overflow: hidden;
 }
 .yearselect{
   width: 20%;
@@ -881,4 +892,569 @@ width: 100%;
   background-color: #333;
   color:#FFF;
     font-size: 15px;
+}
+.edit-menu-bypc{
+  display: none !important
+}
+#menuOverlay {
+    display: none; /* 初期状態は非表示 */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* 透明度50%の黒 */
+    z-index: 999; /* モーダルよりも下、でも他の要素より上 */
+}
+.mobile-pdf{
+  display: none;
+  margin-left: 30px
+}
+
+/* PC向けのレスポンシブ調整 */
+@media (min-width:1024px) {
+  html{
+    height: 100%;
+    width: 100%
+  }
+  body {
+    font-size: 1em;
+    overflow-y: hidden;
+    display: flex;
+    flex-wrap: wrap;
+        height: 100%;
+  }
+  header {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 10px 20px;
+    overflow: hidden;
+        height: 2rem;
+  }
+  .no-display-pc{
+    display: none!important;
+  }
+  header img{
+height:  100%
+
+  }
+  .register-card-header h3 {
+    font-size: 0.7em;
+
+  }
+  .mobile-pdf{
+    display: none!important;
+  }
+  .container {
+    display:  flex;
+    /* max-width: 1200px; */
+    margin: 0;
+    height: 100%;
+    padding: 0px;
+
+  }
+  .edit-menu-bypc{
+    display: block !important
+  }
+  .card-container {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+  }
+  .expense-card {
+    width: 30% !important;
+    padding: 20px;
+  }
+  .chart-container {
+    width: 100%;
+    padding: 2px;
+    margin: 5px auto;
+  }
+  .button-container {
+    width: 15%;
+    height: 100% !important;
+    display: flex;
+    flex-direction: column; /* 縦方向に並べる */
+    justify-content: flex-start; /* 上寄せに配置 */
+    align-items: flex-start; /* 左寄せかつ上寄せ */
+  }
+
+
+  .button-container button {
+    width: 80%; /* 親幅いっぱいに広げる */
+    font-size: 1em;
+    margin-bottom: 10px; /* ボタン間の隙間 */
+    margin-left: 10%
+  }
+
+  .menu-card {
+    width: 45%;
+    margin: 10px;
+  }
+  .popup-content {
+    max-width: 800px;
+  }
+  .card {
+      position: absolute;
+      top:30%!important;
+      right:150px;  /* グラフの右上に配置 */
+  }
+  .selects-container-for-pc{
+    display: block;
+    width: 100%;
+    height: 100%;
+
+  }
+  .select-dtas{
+    width: 100%;
+    height: 8%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+  }
+  .select-dtas input{
+    width: 10rem;
+    height: 80%;
+    border:0.5px solid #333;
+    border-radius: 5px;
+    margin-right: 10px;
+    font-size:20px;
+    text-align: center;
+  }
+    .select-dtas button{
+      font-size: 15px;
+      cursor: pointer;
+      height:80%;
+      border-radius: 5px;
+      margin-right: 10px
+    }
+  .selects-container{
+    display: none!important
+  }
+  #salesChartContainer{
+    display: none;
+  }
+  .under-container{
+    width: 100%;
+    height: 90%;
+    display: flex;
+    border-top: 0.4px solid #333
+  }
+  .under-container2{
+    display: none;
+    width: 100%;
+    height: 85%;
+    display: flex;
+    border-top: 0.4px solid #333;
+    overflow:   auto;
+  }
+  #card_income{
+    display: none;
+  }
+  .chart-container {
+ margin:0px;
+ padding: 0px;
+
+  }
+  .registerHistory-desktop {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none; /* 初期は非表示 */
+    background-color: #333;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    width: 1000px!important;
+    height: 600px!important
+    /* max-width: 1100px; */
+}
+  .hitorico-container{
+    width:20%;
+    height: 92%;
+    padding: 5px;
+    overflow-y: auto;
+  }
+  .summary-container{
+    width:20%;
+    height: 92%;
+    overflow: auto;
+  }
+  .chart-rank-container{
+    width: 60%;
+    height: 92%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+
+  }
+  .chart-under{
+    width: 90%;
+    height: 50%;
+
+  }
+  .rank-div-container{
+    width:90%;
+    height: 42%;
+    overflow: hidden;
+    display: flex;
+    justify-content: space-around;
+  }
+  .sale-card {
+  background: linear-gradient(135deg, #6dd5ed 0%, #2193b0 100%);
+  color: #fff;
+  padding: 10px;
+  margin: 15px 0;
+  border-radius: 5px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+
+.sale-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+
+.sale-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sale-card h5 {
+  font-size: 0.8em;
+  margin: 0;
+}
+
+.sale-card p {
+  margin: 0;
+  font-size: 1.2em;
+  font-weight: 500;
+}
+.card_income-bypc {
+    position: absolute;
+    top:10%;
+    right: 230px;  /* グラフの右上に配置 */
+    background-color: #333;
+    padding: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    z-index: 10;
+    /* font-size: 0.9em;  /* サイズを小さくする */
+    width: 200px;  /* カードの幅を調整 */
+    height: 1.1rem;
+    text-align: center;  /* テキストを中央揃え */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.card_income-bypc h2{
+  color:#fff;
+  font-size: 15px!important
+}
+.card_income-bypc p {
+margin: 0;
+color:#fff;
+font-weight: bold!important;
+font-size: 15px!important; /* p のサイズを h2 に合わせて調整 */
+}
+#salesChart-bypc {
+    max-width: 100%;
+    overflow: visible;  /* キャンバス外も表示 */
+    padding-right: 20px; /* 右側に余白を追加 */
+}
+.rank-div-container{
+  display: flex;
+  justify-content: space-around;
+}
+.rank-div-container div{
+  width: 45%
+}
+#sales-type-container{
+  border-right: 0.5px solid #333
+}
+.edit-menu-bypc{
+  display: block
+}
+.configuration-btn{
+  display: none!important;
+}
+.under-container2 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.menu-card {
+    width: 200px;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    background-color: white;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.menu-card h3 {
+    margin-bottom: 10px;
+}
+
+.menu-card button {
+    margin: 5px;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.menu-edit-btn {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.menu-delete-btn {
+    background-color: #f44336;
+    color: white;
+}
+
+/* **ユニークなモーダルデザイン** */
+.menu-modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 60%;
+    height: 80%;
+    transform: translate(-50%, -50%);
+    background-color: #FFF;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.menu-modal-content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 5px;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.menu-close {
+    align-self: flex-end;
+    cursor: pointer;
+}
+#edit-menu-container form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* フィールド間の余白 */
+    padding: 10px;
+    overflow-x: hidden;
+
+}
+
+/* ラベルのスタイル */
+#edit-menu-container label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    margin-left: 5%
+}
+
+/* 入力フィールドのスタイル */
+#edit-menu-container input,
+#edit-menu-container select,
+#edit-menu-container textarea {
+    width: 80%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-left: 5%
+}
+
+/* テキストエリアの調整 */
+#edit-menu-container textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+/* ボタンのスタイル */
+#edit-menu-container button {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 80%;
+    transition: background 0.3s ease;
+    margin-left: 5%
+}
+
+/* ラベルのデザイン */
+#menuEditModal .switch-label {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* スイッチコンテナ */
+#menuEditModal .switch-container {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+        margin-left: 5%
+}
+
+/* 非表示のチェックボックス */
+#menuEditModal .switch-container input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+
+}
+
+/* スライダー部分 */
+#menuEditModal .switch-container .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    border-radius: 34px;
+    transition: 0.4s;
+}
+
+/* 丸いスライダー */
+#menuEditModal .switch-container .slider::before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    border-radius: 50%;
+    transition: 0.4s;
+}
+
+/* チェックされたときのスタイル */
+#menuEditModal .switch-container input:checked + .slider {
+    background-color: #4CAF50;
+}
+
+/* チェックされたときのスライダー移動 */
+#menuEditModal .switch-container input:checked + .slider::before {
+    transform: translateX(26px);
+}
+
+/* スライダーのアニメーション */
+#menuEditModal .switch-container .slider {
+    box-shadow: 0 0 1px #4CAF50;
+}
+
+
+
+#under-container4 {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    display: none; /* 初期は非表示 */
+}
+
+#under-container4 h2 {
+    text-align: center;
+    color: #333;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+}
+
+#under-container4 .form-group {
+    margin-bottom: 15px;
+}
+
+#under-container4 label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+#under-container4 input,
+#under-container4 select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+#under-container4 input:focus,
+#under-container4 select:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+#under-container4 button {
+    width: 100%;
+    padding: 12px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+#under-container4 button:hover {
+    background: #0056b3;
+}
+
+#saveConfigBtn {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    background-color: #28a745; /* 緑色 */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    text-align: center;
+}
+
+#saveConfigBtn:hover {
+    background-color: #218838;
+}
+.logo-container{
+    width:10%;
+}
+
+
+
 }
