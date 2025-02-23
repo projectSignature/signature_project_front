@@ -91,6 +91,7 @@ year.addEventListener('change', function () {
 
     // 分析ボタンのイベントリスナー
     analistButton.addEventListener('click', async() =>{
+      historyBUton = false
       const startDayElement = document.getElementById("start-day");
       const finishDayElement = document.getElementById("finish-day");
       document.getElementById('mobile-pdf').style.display = 'none'
@@ -128,6 +129,7 @@ year.addEventListener('change', function () {
 
     // レジ履歴ボタンのイベントリスナー
     registerButton.addEventListener('click', async() => {
+      historyBUton = false
       const startDayElement = document.getElementById("start-day");
       const finishDayElement = document.getElementById("finish-day");
       document.getElementById('mobile-pdf').style.display = 'none'
@@ -151,6 +153,7 @@ year.addEventListener('change', function () {
 
     // 設定ボタンのイベントリスナー
     settingsButton.addEventListener('click', function () {
+      historyBUton = false
       document.getElementById('mobile-pdf').style.display = 'none'
       selectsHidden.style.display = 'none'
         // 設定リストの表示/非表示を切り替える
@@ -204,6 +207,7 @@ year.addEventListener('change', function () {
      async function fetchAndDisplayRegisterHistory(startDate, endDate) {
          try {
            loadingIndicator.style.display = 'block';
+           overlays.style.display = 'block';
              const response = await fetch(`${server}/pos/register-history?start_date=${startDate}&end_date=${endDate}`, {
                  method: 'GET',
                  headers: {
@@ -218,7 +222,7 @@ year.addEventListener('change', function () {
              }
              const data = await response.json();
 
-             console.log(data)
+
              // レジ履歴を表示
              let historyHtml = '';
              data.forEach(record => {
@@ -256,7 +260,8 @@ year.addEventListener('change', function () {
             }else{
               registerHistory.innerHTML = historyHtml;
             }
-
+            loadingIndicator.style.display = 'none';
+            overlays.style.display = 'none';
          } catch (error) {
            loadingIndicator.style.display = 'none';
              // console.error('Error fetching register history:', error);
