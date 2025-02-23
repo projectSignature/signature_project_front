@@ -1,6 +1,6 @@
 const token = JSON.parse(window.localStorage.getItem('user'));
 
-
+console.log(token)
    if(!token){
      window.location.href = './pages/dashboard.html';
    }
