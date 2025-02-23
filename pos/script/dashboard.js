@@ -142,11 +142,13 @@ year.addEventListener('change', function () {
         firstUnder.style.display='none'
         fourthUnder.style.display='none'
         }else{
+          const startDayElements = document.getElementById("startDate");
+          const finishDayElements = document.getElementById("endDate");
           toggleDisplay(
               [registerFilter, registerHistory], // 表示する要素
               [salesChartContainer, expensesChartContainer, totalincome, salesContainer, settingsList] // 非表示にする要素
           );
-          await fetchAndDisplayRegisterHistory(firstDayOfMonth, todayFormatted);
+          await fetchAndDisplayRegisterHistory(startDayElements.value, finishDayElements.value);
         }
           loadingIndicator.style.display = 'none';
     });
