@@ -1,5 +1,4 @@
 const token = JSON.parse(window.localStorage.getItem('user'));
-console.log(token)
 const element = document.querySelector('.selects-container-for-pc');
 let nameSpan = document.getElementById('spn-representative')
 let userInfo={}
@@ -11,9 +10,6 @@ year.addEventListener('change', function () {
     fetchTotalSales()
 });
 
-   if(!token||token===null||token===undefined){
-     window.location.href = './pages/dashboard.html';
-   }
 
 
 
@@ -30,7 +26,9 @@ year.addEventListener('change', function () {
    userInfo.confirm_password = '';
    userInfo.email = token.username
 
-
+   if(!token){
+     window.location.href = './pages/dashboard.html';
+   }
 
 
 
@@ -89,8 +87,6 @@ year.addEventListener('change', function () {
 
       fetchTotalSales()
     }
-    console.log(isVisible)
-
 
 
     // 分析ボタンのイベントリスナー
@@ -502,7 +498,7 @@ function editMenuByPC() {
     thirdUnder.innerHTML = ""; // 既存のメニューをクリア
 
     userInfo.Menus.forEach(menu => {
-      console.log(menu)
+
         // 言語に応じたメニュー名を取得
         const menuName = userInfo.language === "jp" ? menu.item_name_jp : menu.item_name;
 
@@ -1363,8 +1359,6 @@ let tgtData = ""
 async function fetchTotalSales() {
     loadingIndicator.style.display = 'block';
     overlays.style.display = 'block'
-    console.log(overlays)
-     console.log('koko')
     try {
         const response = await fetch(`${server}/pos/total-sales/Byyear?user_id=${userInfo.id}&year=${year.value}`, {
         // const response = await fetch(`${server}/pos/total-sales?user_id=${userInfo.id}`, {
@@ -1381,9 +1375,6 @@ async function fetchTotalSales() {
         // 総売上の表示
 
         tgtData = data
-        console.log(tgtData)
-
-
  createData()
 
 
