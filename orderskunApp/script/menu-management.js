@@ -387,7 +387,8 @@ document.getElementById('save-menu-item').addEventListener('click', async () => 
             description_ja: document.getElementById('description_ja').value,
             price: document.getElementById('price').value,
             display_order: document.getElementById('display_order').value,
-            stock_status: document.getElementById('stock_status').value === "true"
+            stock_status: document.getElementById('stock_status').value === "true",
+          admin_item_name: document.getElementById('menu_name_control').value
         };
 
         const menuImageInput = document.getElementById('menu_image');
