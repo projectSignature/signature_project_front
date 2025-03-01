@@ -564,8 +564,24 @@ document.getElementById('save-menu-item').addEventListener('click', async () => 
 async function newAddMenu() {
   stockMotherDiv.style.display = 'none';
   menuForm.style.display = 'block';
-  if(document.getElementById('menu_name_control').value===""){
+    if(document.getElementById('menu_name_control').value===""){
     alert('Insira o nome de controle')
+    return
+  }
+  if(document.getElementById('menu_name_en').value===""){
+    alert('Insira o nome inglês')
+    return
+  }
+  if(document.getElementById('menu_name_pt').value===""){
+    alert('Insira o nome de Português')
+    return
+  }
+  if(document.getElementById('menu_name_ja').value===""){
+    alert('Insira o nome Japonês')
+    return
+  }
+  if(document.getElementById('price').value===""){
+    alert('Insira o valor')
     return
   }
     const menuData = {
@@ -589,6 +605,9 @@ async function newAddMenu() {
 
     if (menuImageFile) {
         formData.append('menu_image', menuImageFile); // 画像がある場合のみ追加
+    }else{
+      alert('Insira a imagem')
+      return
     }
 
     try {
