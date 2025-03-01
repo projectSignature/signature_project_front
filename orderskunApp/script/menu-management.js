@@ -16,6 +16,15 @@ let clients ={
 }
 
 document.getElementById('menu-btn').style = "background-color:orange"
+const datalist = document.getElementById("menu-lister");
+const accessBtn = document.getElementById('access-toestoque')
+const accesRapidoDiv = document.getElementById('alterarEstoquerapido')
+const menuForm = document.getElementById('menu-form');
+const optionsListElement = document.getElementById('options-list');
+const stockMotherDiv = document.getElementById('menu-stock-mother-div')
+
+
+
 let newFlug = false
 const loadingMessage = document.getElementById('loading-message');
 
@@ -24,18 +33,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     const categorySelectElement = document.getElementById('category-select');
     const menuListElement = document.getElementById('menu-list');
     const menuForm = document.getElementById('menu-form');
+    const searchInput = document.getElementById("menu-search");
     const optionsListElement = document.getElementById('options-list');
     let currentMenuItem = null;
 
-    // Fetch categories, menus, and options
     const getData = await makerequest(`${server}/orders/getBasedata?user_id=${clients.id}`);
-    console.log(getData)
     const { categories, menus, options } = getData;
     loadingMessage.style.display = 'none';
     clients.options = options
     clients.categories = categories
 
-    // Load categories into the select element
     categorySelectElement.innerHTML = '';
     categories.forEach(category => {
         const optionElement = document.createElement('option');
@@ -50,9 +57,57 @@ document.addEventListener('DOMContentLoaded', async () => {
         displayMenuItems(menus.filter(menu => menu.category_id == selectedCategoryId));
     });
 
+    // **メニュー名とメニュー情報をMapに保存**
+      const menuMap = new Map();
 
-hideLoadingPopup();
+      function populateDatalist() {
+          datalist.innerHTML = ""; // **リストをクリア**
 
+          menus.forEach(item => {
+              if (!item.admin_item_name) {
+                  return;
+              }
+
+              const option = document.createElement("option");
+              option.value = item.admin_item_name;
+              datalist.appendChild(option);
+              menuMap.set(item.admin_item_name, item);
+          });
+
+      }
+
+      // **メニューが選択された時の処理**
+      function handleSelection() {
+          const selectedValue = searchInput.value.trim();
+          if (!selectedValue) return;
+
+          const selectedItem = menuMap.get(selectedValue);
+
+          if (selectedItem) {
+              displayMenuItem(selectedItem);
+              searchInput.value = ""; // **検索欄をクリア**
+              searchInput.placeholder = `選択中: ${selectedItem.admin_item_name}`;
+          }
+
+          // **リストをリセット**
+          setTimeout(() => {
+              populateDatalist();
+          }, 100);
+      }
+
+      // **検索入力時の処理**
+      searchInput.addEventListener("input", () => {
+          if (menuMap.has(searchInput.value)) {
+              handleSelection();
+          }
+      });
+
+      // **フォーカス時にリストを再作成**
+      searchInput.addEventListener("focus", () => {
+          populateDatalist();
+      });
+
+      hideLoadingPopup();
 
     let draggedItem = null; // ドラッグ中の項目を保存する変数
     let isDragging = false; // ドラッグ状態を管理する変数
@@ -164,6 +219,8 @@ function saveMenuOrder(filteredMenus) {
 }
 
     function displayMenuItem(menuItem) {
+      stockMotherDiv.style.display = 'none';
+      menuForm.style.display = 'block';
         currentMenuItem = menuItem;
         menuForm.classList.add('active');
         clients.currenMenuID = menuItem.id
@@ -213,6 +270,80 @@ function saveMenuOrder(filteredMenus) {
         categorySelectElement.value = categories[0].id;
         displayMenuItems(menus.filter(menu => menu.category_id == categories[0].id));
     }
+
+
+    accessBtn.addEventListener('click', () => {
+        stockMotherDiv.style.display = 'block';
+        menuForm.style.display = 'none';
+        renderStockList();
+    });
+
+    // **在庫管理 UI を作成**
+    function renderStockList() {
+        accesRapidoDiv.innerHTML = ""; // 既存の内容をクリア
+
+        menus.forEach(menu => {
+            // **カード型デザインのコンテナ**
+            const menuItemDiv = document.createElement("div");
+            menuItemDiv.classList.add("stock-item");
+
+            // **メニュー名**
+            const nameLabel = document.createElement("span");
+            nameLabel.textContent = menu.admin_item_name;
+            nameLabel.classList.add("menu-name");
+
+            // **トグルスイッチのラベル**
+            const switchLabel = document.createElement("label");
+            switchLabel.classList.add("switch");
+
+            // **トグルスイッチ**
+            const toggleSwitch = document.createElement("input");
+            toggleSwitch.type = "checkbox";
+            toggleSwitch.checked = menu.stock_status;
+            toggleSwitch.classList.add("toggle-input");
+
+            // **スライダー（見た目を作る）**
+            const slider = document.createElement("span");
+            slider.classList.add("slider");
+
+            // **スイッチを押した時の処理**
+            toggleSwitch.addEventListener("change", async () => {
+                menu.stock_status = toggleSwitch.checked;
+                // スイッチを一時的に無効化（API 完了まで）
+                toggleSwitch.disabled = true;
+                slider.classList.add("loading"); // アニメーション追加
+                await updateStockStatus(menu.id, menu.stock_status);
+                toggleSwitch.disabled = false;
+                slider.classList.remove("loading"); // アニメーション削除
+            });
+
+            // **要素を追加**
+            switchLabel.appendChild(toggleSwitch);
+            switchLabel.appendChild(slider);
+            menuItemDiv.appendChild(nameLabel);
+            menuItemDiv.appendChild(switchLabel);
+            accesRapidoDiv.appendChild(menuItemDiv);
+        });
+    }
+
+    // **バックエンドに在庫情報を送信**
+    async function updateStockStatus(menuId, stockStatus) {
+        try {
+            const response = await fetch(`${server}/orderskun/updateStock`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ id: menuId, stock_status: stockStatus })
+            });
+
+            if (!response.ok) throw new Error("API エラー");
+
+        } catch (error) {
+
+        }
+    }
+
 });
 
 async function deleteOption(optionId) {
@@ -337,10 +468,11 @@ function clearMenuForm() {
 
 
 document.getElementById('add-new-menu').addEventListener('click', () => {
+  stockMotherDiv.style.display = 'none';
+  menuForm.style.display = 'block';
   newFlug =true
     // 右側のフォームを表示し、全てのフィールドをクリアする
-    const menuForm = document.getElementById('menu-form');
-    const optionsListElement = document.getElementById('options-list');
+
     menuForm.classList.add('active'); // フォームを表示
     document.getElementById('menu-category-new').style="display:block"
 
@@ -362,23 +494,20 @@ document.getElementById('add-new-menu').addEventListener('click', () => {
     const newCategorySelect = document.getElementById('new-category-select');
     // 既存のオプションをクリア
     newCategorySelect.innerHTML = '';
-    console.log(clients.categories)
     // 取得したカテゴリーデータを新しいセレクトボックスに設定
  clients.categories.forEach(category => {
      const optionElement = document.createElement('option');
      optionElement.value = category.id;
      optionElement.textContent = category.admin_item_name; // 表示名を設定
-     console.log(optionElement)
      newCategorySelect.appendChild(optionElement);
  });
 });
 
 document.getElementById('save-menu-item').addEventListener('click', async () => {
-  if(document.getElementById('menu_name_control').value===""){
+    if(document.getElementById('menu_name_control').value===""){
       alert('Insira o nome de controle')
       return
     }
-  
     if (!newFlug) {
         const menuData = {
             user_id: clients.id,
@@ -393,7 +522,7 @@ document.getElementById('save-menu-item').addEventListener('click', async () => 
             price: document.getElementById('price').value,
             display_order: document.getElementById('display_order').value,
             stock_status: document.getElementById('stock_status').value === "true",
-          admin_item_name: document.getElementById('menu_name_control').value
+            admin_item_name: document.getElementById('menu_name_control').value
         };
 
         const menuImageInput = document.getElementById('menu_image');
