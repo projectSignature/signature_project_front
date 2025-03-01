@@ -374,6 +374,11 @@ document.getElementById('add-new-menu').addEventListener('click', () => {
 });
 
 document.getElementById('save-menu-item').addEventListener('click', async () => {
+  if(document.getElementById('menu_name_control').value===""){
+      alert('Insira o nome de controle')
+      return
+    }
+  
     if (!newFlug) {
         const menuData = {
             user_id: clients.id,
@@ -428,6 +433,12 @@ document.getElementById('save-menu-item').addEventListener('click', async () => 
 
 
 async function newAddMenu() {
+  stockMotherDiv.style.display = 'none';
+  menuForm.style.display = 'block';
+  if(document.getElementById('menu_name_control').value===""){
+    alert('Insira o nome de controle')
+    return
+  }
     const menuData = {
         user_id: clients.id,
         category_id: document.getElementById('new-category-select').value,
@@ -439,7 +450,8 @@ async function newAddMenu() {
         description_ja: document.getElementById('description_ja').value,
         price: document.getElementById('price').value,
         display_order: document.getElementById('display_order').value,
-        stock_status: document.getElementById('stock_status').value === "true"
+        stock_status: document.getElementById('stock_status').value === "true",
+        admin_item_name: document.getElementById('menu_name_control').value
     };
     const menuImageInput = document.getElementById('menu_image');
     const menuImageFile = menuImageInput.files[0]; // Pega o primeiro arquivo
