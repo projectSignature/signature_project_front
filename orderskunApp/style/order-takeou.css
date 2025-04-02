@@ -842,3 +842,106 @@ button + button {
    text-overflow: ellipsis;
 
 }
+
+.menu-item-card {
+  width: 450px;
+  background: #fefefe;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+  margin: 15px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.menu-item-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+}
+
+.menu-image img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  display: block;
+}
+
+.menu-content {
+  padding: 12px;
+  text-align: center;
+}
+
+.menu-name {
+  font-size: 1.1rem;
+  color: #333;
+  margin: 0 0 6px;
+  font-weight: 600;
+}
+
+.menu-price {
+  font-size: 1rem;
+  color: #444;
+}
+
+.tax-info {
+  font-size: 1rem;
+  color: #888;
+}
+
+.menu-item-card {
+  width: 400px;
+  background: #fefefe;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+  margin: 15px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.menu-item-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+}
+
+.menu-image {
+  position: relative;
+}
+
+/* .menu-image img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  display: block;
+  filter: grayscale(60%) brightness(0.9);
+} */
+
+.sold-out-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: rgba(255, 0, 0, 0.8);
+  color: #fff;
+  font-size: 2rem;
+  padding: 4px 8px;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+.menu-content {
+  padding: 12px;
+  text-align: center;
+}
+
+.menu-name {
+  font-size: 1.1rem;
+  color: #999;
+  margin: 0;
+  font-weight: 600;
+}
+
+.menu-item-card.sold-out {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
