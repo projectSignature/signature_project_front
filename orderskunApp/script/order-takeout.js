@@ -4,6 +4,127 @@ if (!token) {
 }
 const decodedToken = jwt_decode(token); // jwtDecodeではなくjwt_decodeを使用
 const orderNamesContainer = document.getElementById('order-names-container');
+
+const translations = {
+    pt: {
+        "Histórico": "Histórico",
+        "Lista de pedidos": "Lista de pedidos",
+        "Confirmar pedido": "Confirmar pedido",
+        "Alterar": "Alterar",
+        "Abrir comanda": "Criar comanda",
+        "Digite o nome para registro da comanda": "Digite o nome para registro da comanda",
+        "Alterar o pedido": "Alterar o pedido",
+        "Senha para alterar número da mesa": "Senha para alterar número da mesa",
+        "Salvar": "Salvar",
+        "Novo número da mesa": "Novo número da mesa",
+        "Criar comanda":"Criar comanda",
+        "Adicionar no carrinho":"Adicionar no carrinho",
+        "Voltar":"Voltar",
+        "option":"Opções",
+        "Atencion":"Atenção",
+        "selecione uma comanda":"Selecione ou abra uma comanda",
+        "Nenhum item foi selecionado":"Nenhum item foi selecionado",
+        "Pedido feito":"Pedido feito com sucesso",
+        "Erro no registro":"Erro no registro",
+        "Escolha a comanda":"Escolha a comanda",
+        "Nome da comanda":"Nome da comanda",
+        "Valor total":"Valor total",
+        "Quantidade":"Quantidade",
+        "Valor":"Valor",
+        "Histórico não encontrado":"Histórico não encontrado",
+        "Selecione ou abra uma comanda":"Selecione ou abra uma comanda",
+        "Sabor":"Selecione 2 sabores",
+        "Borda":"Selecione a borda",
+        "Só pode escolher 2 sabores.":"Só pode escolher 2 sabores.",
+        "Categoria":'Categoria',
+        "preparando":'preparando',
+        "entregue":'entregue',
+        "status":'status',
+        "comanda exist":'Esse nome já existe, por favor, selecione outro nome para poder separar',
+        tax_included: 'com imposto',
+        "（税込）": "(com imposto)",
+    "（税：+": "(imposto: +"
+    },
+    ja: {
+        "Histórico": "履歴",
+        "Lista de pedidos": "注文リスト",
+        "Confirmar pedido": "注文を確定",
+        "Alterar": "修正",
+        "Abrir comanda": "オーダー追加",
+        "Digite o nome para registro da comanda": "オーダー名を入力してください",
+        "Alterar o pedido": "注文を修正",
+        "Senha para alterar número da mesa": "テーブル番号を変更するパスワード",
+        "Salvar": "保存",
+        "Novo número da mesa": "新しいテーブル番号",
+        "Criar comanda":"オーダーを作成",
+        "Adicionar no carrinho":"カートに追加",
+        "Voltar":"戻る",
+        "option":"オプション",
+        "Atencion":"注意",
+        "Selecione uma comanda":"オーダー名を選択するか、新しく作ってください",
+        "Nenhum item foi selecionado":"商品が選択されていません。",
+         "Pedido feito":"注文が確定しました",
+         "Erro no registro":"登録エラー",
+         "Escolha a comanda":"オーダー名を選択してください",
+         "Nome da comanda":"オーダー名",
+         "Valor total":"合計金額",
+         "Quantidade":"数量",
+         "Valor":"価格",
+         "Histórico não encontrado":"履歴存在しません",
+         "Selecione ou abra uma comanda":"オーダーを作成または選択してください",
+         "Sabor":"2つの味を選択してください",
+         "Borda":"Select the crust",
+         "Só pode escolher 2 sabores.":"2つの味しか選択できません",
+         "Categoria":'カテゴリー',
+         "preparando":'準備中',
+         "entregue":'提供済み',
+         "status":'ステータス',
+         "comanda exist":"This name already exists, please select another name to separate.",
+         tax_included: '税込',
+         "（税込）": "（税込）",
+    "（税：+": "（税：+"
+    },
+    en: {
+        "Histórico": "History",
+        "Lista de pedidos": "Order List",
+        "Confirmar pedido": "Confirm Order",
+        "Alterar": "Edit",
+        "Abrir comanda": "Open Order",
+        "Digite o nome para registro da comanda": "Enter name to register order",
+        "Alterar o pedido": "Edit Order",
+        "Senha para alterar número da mesa": "Password to change table number",
+        "Salvar": "Save",
+        "Novo número da mesa": "New Table Number",
+        "Criar comanda":"create a order",
+        "Adicionar no carrinho":"Add to cart",
+        "Voltar":"Back",
+        "option":"option",
+        "Atencion":"Atencion",
+        "Selecione uma comanda":"Please select or open an order.",
+        "Nenhum item foi selecionado":"No items were selected.",
+         "Pedido feito":"Order placed successfully",
+         "Erro no registro":"Error in registration",
+         "Escolha a comanda":"Select the order",
+         "Nome da comanda": "Order name",
+         "Valor total":"Total ammount",
+         "Quantidade":"Quantity",
+         "Valor":"ammount",
+         "Histórico não encontrado":"Not exist history",
+         "Selecione ou abra uma comanda":"Select or open an order",
+         "Sabor":"Select 2 flavors",
+         "Borda":"エッジを選択してください",
+         "Só pode escolher 2 sabores.":"You can only choose 2 flavors",
+         "Categoria":"Category",
+         "preparando": "preparing",
+         "entregue": "delivered",
+         "status":'status',
+         "comanda exist":"この名前はすでに存在します。別の名前を選択して分けてください。",
+         tax_included: 'tax incl.',
+         "（税込）": "(incl. tax)",
+    "（税：+": "(tax: +"
+
+    }
+};
 // const selectedItemsContainer = document.getElementById('selected-items');
 const nameInput = document.getElementById('name-input');
 const addNameBtn = document.getElementById('add-name-btn');
@@ -88,6 +209,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
 function displayMenuItems(category) {
+  console.log(orderList)
   const sortedData = MainData.menus
       .filter(item => item.category_id === category)
       .sort((a, b) => {
@@ -99,129 +221,183 @@ function displayMenuItems(category) {
           return a.display_order - b.display_order;
       });
 menuItemsContainer.innerHTML = '';
-sortedData.forEach(item => {
-    let div = document.createElement('div');
-    div.classList.add('menu-item');
-    // 在庫がない場合はsold-outクラスを追加し、表示を変更
-    if (!item.stock_status) {
-        div.classList.add('sold-out');
-        div.innerHTML = `<img src="${item.imagem_string}" alt="${item.menu_name_pt}" style="width:25rem">
-                         <h3 data-id="${item.id}">${item[`menu_name_${userLanguage}`]}</h3>
-                         <p>Sold Out</p>`;
-    } else {
-        div.innerHTML = `<img src="${item.imagem_string}" alt="${item.menu_name_pt}" style="width:25rem">
-                         <h3 data-id="${item.id}">${item[`menu_name_${userLanguage}`]}</h3>
-                         <p>￥${Math.floor(item.price).toLocaleString()}</p>`;
-        div.addEventListener('click', () => {
-          displayItemDetails(item);
+// 税区分チェック
+const isExclusive = orderList.taxType === 'exclusive';
 
-        });
-    }
-    menuItemsContainer.appendChild(div);
+sortedData.forEach(item => {
+  const taxRate = item.is_takeout ? 0.08 : 0.10;
+  const basePrice = Math.floor(item.price);
+  const priceWithTax = Math.floor(basePrice * (1 + taxRate));
+
+  let taxDisplay = '';
+  if (orderList.taxType === 'exclusive') {
+    taxDisplay = `（￥${priceWithTax.toLocaleString()} ${translations[userLanguage]["tax_included"]}）`;
+  } else {
+    taxDisplay = `（${translations[userLanguage]["tax_included"]}）`;
+  }
+
+  let div = document.createElement('div');
+  div.classList.add('menu-item');
+   console.log('haiteru')
+  if (!item.stock_status) {
+    div.classList.add('menu-item-card', 'sold-out');
+  div.innerHTML = `
+    <div class="menu-image">
+      <img src="${item.imagem_string}" alt="${item.menu_name_pt}">
+      <div class="sold-out-badge">Sold Out</div>
+    </div>
+    <div class="menu-content">
+      <h3 data-id="${item.id}" class="menu-name">${item[`menu_name_${userLanguage}`]}</h3>
+    </div>
+  `;
+
+  } else {
+    div.classList.add('menu-item-card');
+  div.innerHTML = `
+    <div class="menu-image">
+      <img src="${item.imagem_string}" alt="${item.menu_name_pt}">
+    </div>
+    <div class="menu-content">
+      <h3 data-id="${item.id}" class="menu-name">${item[`menu_name_${userLanguage}`]}</h3>
+      <p class="menu-price">￥${basePrice.toLocaleString()} <span class="tax-info">${taxDisplay}</span></p>
+    </div>
+  `;
+
+    div.addEventListener('click', () => {
+      if (!selectedName) {
+        showAlert(translations[userLanguage]["selecione uma comanda"]);
+        return;
+      }
+      if (item.user_id === 1 && item.category_id === 24) {
+        displayHalfHalfPizza(item);
+      } else {
+        displayItemDetails(item);
+      }
+    });
+  }
+
+  menuItemsContainer.appendChild(div);
 });
+
+
 }
 
 //メニュー詳細の表示------------------>
-    function displayItemDetails(item) {
-      console.log(item)
-        const sortedOptions = MainData.options.filter(opt => opt.menu_id === item.id);
-        const detailsContainer = document.createElement('div');
-        detailsContainer.classList.add('item-details');
-        detailsContainer.innerHTML = `
-            <div class="details-content">
-                <div class="left-side">
-                    <img src="${item.imagem_string}" alt="${item.name}" class="details-image">
-                    <h3>${item[`menu_name_${userLanguage}`]}</h3>
-                    <p>${item[`description_${userLanguage}`] || ""}</p>
-                    <p id="item-price">￥${Math.floor(item.price)}</p>
-                </div>
-                <div class="right-side">
-                    <p>${translations[userLanguage]["option"]}:</p>
-                    <div id="options-list" class="options-list">
-                        ${sortedOptions.map(opt => `
-                            <div class="option-item" data-id="${opt.id}" data-price="${opt.additional_price}">
-                                <span class="option-name">${opt[`option_name_${userLanguage}`]}</span>
-                                <span class="option-price">+￥${Math.floor(opt.additional_price)}</span>
-                            </div>
-                        `).join('')}
-                    </div>
-                    <div>
-                        <div>
-                        <p >${translations[userLanguage]["Quantidade"]}:</p>
-                        </div>
-                        <div class="quantity-selector">
-                        <button id="decrease-quantity">-</button>
-                        <input type="number" id="item-quantity" value="1" min="1">
-                        <button id="increase-quantity">+</button>
-                        </div>
-                    </div>
-                    <button id="add-to-cart" class="add-cancle-btn">${translations[userLanguage]["Adicionar no carrinho"]}</button>
-                    <button id="back-button" class="add-cancle-btn">${translations[userLanguage]["Voltar"]}</button>
-                </div>
+function displayItemDetails(item) {
+  // 税率取得
+  const taxRate = item.is_takeout ? 0.08 : 0.10;
+  const isExclusive = orderList.taxType === 'exclusive';
+  console.log(item)
+    const sortedOptions = MainData.options.filter(opt => opt.menu_id === item.id);
+    const detailsContainer = document.createElement('div');
+    detailsContainer.classList.add('item-details');
+    detailsContainer.innerHTML = `
+        <div class="details-content">
+            <div class="left-side">
+                <img src="${item.imagem_string}" alt="${item.name}" class="details-image">
+                <h3>${item[`menu_name_${userLanguage}`]}</h3>
+                <p>${item[`description_${userLanguage}`] || ""}</p>
+                <p id="item-price">${getTaxText(Math.floor(item.price))}</p>
             </div>
-        `;
-        document.body.appendChild(detailsContainer);
+            <div class="right-side">
+                <p>${translations[userLanguage]["option"]}:</p>
+                <div id="options-list" class="options-list">
+                    ${sortedOptions.map(opt => `
+                        <div class="option-item" data-id="${opt.id}" data-price="${opt.additional_price}">
+                            <span class="option-name">${opt[`option_name_${userLanguage}`]}</span>
+                            <span class="option-price">+￥${Math.floor(opt.additional_price)}</span>
+                        </div>
+                    `).join('')}
+                </div>
+                <div>
+                    <div>
+                    <p >${translations[userLanguage]["Quantidade"]}:</p>
+                    </div>
+                    <div class="quantity-selector">
+                    <button id="decrease-quantity">-</button>
+                    <input type="number" id="item-quantity" value="1" min="1">
+                    <button id="increase-quantity">+</button>
+                    </div>
+                </div>
+                <button id="add-to-cart" class="add-cancle-btn">${translations[userLanguage]["Adicionar no carrinho"]}</button>
+                <button id="back-button" class="add-cancle-btn">${translations[userLanguage]["Voltar"]}</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(detailsContainer);
 
-        const itemPriceElement = document.getElementById('item-price');
-        let basePrice = Math.floor(item.price);
-        let selectedOptionsPrice = 0;
-        let quantity = parseInt(document.getElementById('item-quantity').value);
+    const itemPriceElement = document.getElementById('item-price');
+let basePrice = Math.floor(item.price);
+let selectedOptionsPrice = 0;
+let quantity = parseInt(document.getElementById('item-quantity').value);
 
-        function updateTotalPrice() {
-            const totalPrice = (basePrice + selectedOptionsPrice) * quantity;
-            itemPriceElement.textContent = `￥${totalPrice}`;
-        }
 
-        document.querySelectorAll('.option-item').forEach(optionDiv => {
-            optionDiv.addEventListener('click', () => {
-                optionDiv.classList.toggle('selected');
-                const price = parseFloat(optionDiv.getAttribute('data-price'));
 
-                if (optionDiv.classList.contains('selected')) {
-                    selectedOptionsPrice += price;
-                } else {
-                    selectedOptionsPrice -= price;
-                }
-                updateTotalPrice();
-            });
-        });
+function getTaxText(price) {
+if (isExclusive) {
+    const taxed = Math.floor(price * (1 + taxRate));
+    const taxLabel = translations[userLanguage]["tax_included"] || "税込";
+    return `￥${price.toLocaleString()}（￥${taxed.toLocaleString()} ${taxLabel}）`;
+} else {
+    const taxLabel = translations[userLanguage]["tax_included"] || "税込";
+    return `￥${price.toLocaleString()}（${taxLabel}）`;
+}
+}
 
-        document.getElementById('increase-quantity').addEventListener('click', () => {
-            quantity = parseInt(document.getElementById('item-quantity').value) + 1;
-            document.getElementById('item-quantity').value = quantity;
+function updateTotalPrice() {
+const totalPrice = (basePrice + selectedOptionsPrice) * quantity;
+itemPriceElement.textContent = getTaxText(totalPrice);
+}
+
+
+    document.querySelectorAll('.option-item').forEach(optionDiv => {
+        optionDiv.addEventListener('click', () => {
+            optionDiv.classList.toggle('selected');
+            const price = parseFloat(optionDiv.getAttribute('data-price'));
+
+            if (optionDiv.classList.contains('selected')) {
+                selectedOptionsPrice += price;
+            } else {
+                selectedOptionsPrice -= price;
+            }
             updateTotalPrice();
         });
+    });
 
-        document.getElementById('decrease-quantity').addEventListener('click', () => {
-            if (quantity > 1) {
-                quantity = parseInt(document.getElementById('item-quantity').value) - 1;
-                document.getElementById('item-quantity').value = quantity;
-                updateTotalPrice();
-            }
-        });
+    document.getElementById('increase-quantity').addEventListener('click', () => {
+        quantity = parseInt(document.getElementById('item-quantity').value) + 1;
+        document.getElementById('item-quantity').value = quantity;
+        updateTotalPrice();
+    });
 
-        document.getElementById('back-button').addEventListener('click', () => {
-            document.body.removeChild(detailsContainer);
-        });
+    document.getElementById('decrease-quantity').addEventListener('click', () => {
+        if (quantity > 1) {
+            quantity = parseInt(document.getElementById('item-quantity').value) - 1;
+            document.getElementById('item-quantity').value = quantity;
+            updateTotalPrice();
+        }
+    });
 
-        document.getElementById('add-to-cart').addEventListener('click', () => {//カートに追加の処理
+    document.getElementById('back-button').addEventListener('click', () => {
+        document.body.removeChild(detailsContainer);
+    });
 
-            const selectedOptions = [];
-            document.querySelectorAll('.option-item.selected').forEach(optionDiv => {
-                const optionId = optionDiv.getAttribute('data-id');
-                const additionalPrice = parseFloat(optionDiv.getAttribute('data-price'));
-                const optionName = optionDiv.querySelector('.option-name').textContent;
-                selectedOptions.push({
-                    id: optionId,
-                    name: optionName, // オプション名を追加
-                    additional_price: additionalPrice,
-                });
+    document.getElementById('add-to-cart').addEventListener('click', () => {//カートに追加の処理
+
+        const selectedOptions = [];
+        document.querySelectorAll('.option-item.selected').forEach(optionDiv => {
+            const optionId = optionDiv.getAttribute('data-id');
+            const additionalPrice = parseFloat(optionDiv.getAttribute('data-price'));
+            selectedOptions.push({
+                id: optionId,
+                additional_price: additionalPrice
             });
-
-            addToSelectedItems(item, quantity, selectedOptions);
-            document.body.removeChild(detailsContainer);
         });
-    }
+
+        addToSelectedItems(item, quantity, selectedOptions);
+        document.body.removeChild(detailsContainer);
+    });
+}
 
     document.getElementById('confirm-order').addEventListener('click', async () => {
     showLoadingPopup()
@@ -433,113 +609,7 @@ sortedData.forEach(item => {
        }
 
        const languageIcons = document.querySelectorAll('.language-icon');
-       const translations = {
-           pt: {
-               "Histórico": "Histórico",
-               "Lista de pedidos": "Lista de pedidos",
-               "Confirmar pedido": "Confirmar pedido",
-               "Alterar": "Alterar",
-               "Abrir comanda": "Criar comanda",
-               "Digite o nome para registro da comanda": "Digite o nome para registro da comanda",
-               "Alterar o pedido": "Alterar o pedido",
-               "Senha para alterar número da mesa": "Senha para alterar número da mesa",
-               "Salvar": "Salvar",
-               "Novo número da mesa": "Novo número da mesa",
-               "Criar comanda":"Criar comanda",
-               "Adicionar no carrinho":"Adicionar no carrinho",
-               "Voltar":"Voltar",
-               "option":"Opções",
-               "Atencion":"Atenção",
-               "selecione uma comanda":"Selecione ou abra uma comanda",
-               "Nenhum item foi selecionado":"Nenhum item foi selecionado",
-               "Pedido feito":"Pedido feito com sucesso",
-               "Erro no registro":"Erro no registro",
-               "Escolha a comanda":"Escolha a comanda",
-               "Nome da comanda":"Nome da comanda",
-               "Valor total":"Valor total",
-               "Quantidade":"Quantidade",
-               "Valor":"Valor",
-               "Histórico não encontrado":"Histórico não encontrado",
-               "Selecione ou abra uma comanda":"Selecione ou abra uma comanda",
-               "Sabor":"Selecione 2 sabores",
-               "Borda":"Selecione a borda",
-               "Só pode escolher 2 sabores.":"Só pode escolher 2 sabores.",
-               "Categoria":'Categoria',
-               "preparando":'preparando',
-               "entregue":'entregue',
-               "status":'status'
-           },
-           ja: {
-               "Histórico": "履歴",
-               "Lista de pedidos": "注文リスト",
-               "Confirmar pedido": "注文を確定",
-               "Alterar": "修正",
-               "Abrir comanda": "オーダー追加",
-               "Digite o nome para registro da comanda": "オーダー名を入力してください",
-               "Alterar o pedido": "注文を修正",
-               "Senha para alterar número da mesa": "テーブル番号を変更するパスワード",
-               "Salvar": "保存",
-               "Novo número da mesa": "新しいテーブル番号",
-               "Criar comanda":"オーダーを作成",
-               "Adicionar no carrinho":"カートに追加",
-               "Voltar":"戻る",
-               "option":"オプション",
-               "Atencion":"注意",
-               "Selecione uma comanda":"オーダー名を選択するか、新しく作ってください",
-               "Nenhum item foi selecionado":"商品が選択されていません。",
-                "Pedido feito":"注文が確定しました",
-                "Erro no registro":"登録エラー",
-                "Escolha a comanda":"オーダー名を選択してください",
-                "Nome da comanda":"オーダー名",
-                "Valor total":"合計金額",
-                "Quantidade":"数量",
-                "Valor":"価格",
-                "Histórico não encontrado":"履歴存在しません",
-                "Selecione ou abra uma comanda":"オーダーを作成または選択してください",
-                "Sabor":"2つの味を選択してください",
-                "Borda":"Select the crust",
-                "Só pode escolher 2 sabores.":"2つの味しか選択できません",
-                "Categoria":'カテゴリー',
-                "preparando":'準備中',
-                "entregue":'提供済み',
-                "status":'ステータス'
-           },
-           en: {
-               "Histórico": "History",
-               "Lista de pedidos": "Order List",
-               "Confirmar pedido": "Confirm Order",
-               "Alterar": "Edit",
-               "Abrir comanda": "Open Order",
-               "Digite o nome para registro da comanda": "Enter name to register order",
-               "Alterar o pedido": "Edit Order",
-               "Senha para alterar número da mesa": "Password to change table number",
-               "Salvar": "Save",
-               "Novo número da mesa": "New Table Number",
-               "Criar comanda":"create a order",
-               "Adicionar no carrinho":"Add to cart",
-               "Voltar":"Back",
-               "option":"option",
-               "Atencion":"Atencion",
-               "Selecione uma comanda":"Please select or open an order.",
-               "Nenhum item foi selecionado":"No items were selected.",
-                "Pedido feito":"Order placed successfully",
-                "Erro no registro":"Error in registration",
-                "Escolha a comanda":"Select the order",
-                "Nome da comanda": "Order name",
-                "Valor total":"Total ammount",
-                "Quantidade":"Quantity",
-                "Valor":"ammount",
-                "Histórico não encontrado":"Not exist history",
-                "Selecione ou abra uma comanda":"Select or open an order",
-                "Sabor":"Select 2 flavors",
-                "Borda":"エッジを選択してください",
-                "Só pode escolher 2 sabores.":"You can only choose 2 flavors",
-                "Categoria":"Category",
-                "preparando": "preparing",
-                "entregue": "delivered",
-                "status":'status'
-           }
-       };
+
 
        languageIcons.forEach(icon => {
            icon.addEventListener('click', (event) => {
@@ -587,7 +657,15 @@ function displayOrderForName(name) {
     }
   });
   const totalAmount = orderList.order.takeout.reduce((sum, item) => sum + item.amount, 0);
- totalAmoundDisplay.innerText = `￥${totalAmount.toLocaleString()}`
+  const isInclusive = decodedToken.tax_type === 'inclusive'; // ←適宜キー名調整
+   console.log(isInclusive)
+   console.log( decodedToken)
+  const taxLabel = isInclusive
+    ? translations[userLanguage]["（税込）"]
+    : translations[userLanguage]["（税：+"] + Math.floor(totalAmount * 0.10).toLocaleString() + ")";
+
+  totalAmoundDisplay.innerText = `￥${totalAmount.toLocaleString()} ${taxLabel}`;
+
 }
 
 
@@ -628,31 +706,31 @@ document.querySelectorAll('.close').forEach(closeBtn => {
     });
 });
 
-document.getElementById('confirm-password-btn').addEventListener('click', () => {
-    const enteredPassword = document.getElementById('password-input').value;
-    const correctPassword = '9876'; // ここで正しいパスワードを設定
+// document.getElementById('confirm-password-btn').addEventListener('click', () => {
+//     const enteredPassword = document.getElementById('password-input').value;
+//     const correctPassword = '9876'; // ここで正しいパスワードを設定
+//
+//     if (enteredPassword === correctPassword) {
+//       document.getElementById('password-input').value=""
+//         document.getElementById('password-modal').style.display = 'none';
+//         document.getElementById('table-number-modal').style.display = 'block';
+//
+//     } else {
+//         alert('Senha incorreta!');
+//     }
+// });
 
-    if (enteredPassword === correctPassword) {
-      document.getElementById('password-input').value=""
-        document.getElementById('password-modal').style.display = 'none';
-        document.getElementById('table-number-modal').style.display = 'block';
-
-    } else {
-        alert('Senha incorreta!');
-    }
-});
-
-document.getElementById('save-table-number-btn').addEventListener('click', () => {
-    const newTableNumber = document.getElementById('new-table-number').value;
-    orderList.tableNo = newTableNumber
-    if (newTableNumber) {
-        document.getElementById('table-number').textContent = newTableNumber;
-        localStorage.setItem('tableNumber', newTableNumber);
-        document.getElementById('table-number-modal').style.display = 'none';
-    } else {
-        alert('Por favor, insira um número de mesa válido.');
-    }
-});
+// document.getElementById('save-table-number-btn').addEventListener('click', () => {
+//     const newTableNumber = document.getElementById('new-table-number').value;
+//     orderList.tableNo = newTableNumber
+//     if (newTableNumber) {
+//         document.getElementById('table-number').textContent = newTableNumber;
+//         localStorage.setItem('tableNumber', newTableNumber);
+//         document.getElementById('table-number-modal').style.display = 'none';
+//     } else {
+//         alert('Por favor, insira um número de mesa válido.');
+//     }
+// });
 
 // モーダル外をクリックしたら閉じる
 window.onclick = function(event) {
