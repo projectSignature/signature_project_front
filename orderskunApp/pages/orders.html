@@ -25,7 +25,7 @@
                     <img src="../imagen/table-illustration.png" alt="Table" id="table-illustration">
                     <div id="table-number">1</div>
                 </div>
-                <div style="margin-top: 15px;display:flex">
+                <div style="margin-top: 15px">
                     <button id="view-history" data-translate-key="Histórico">Histórico</button>
                     <button id="update" data-translate-key="reload" style="margin-left:5px">
                      <img src="https://orders-image.sgp1.digitaloceanspaces.com/common/update.png" alt="Reload" style="width: 35px; height: 35px;">
@@ -72,9 +72,7 @@
                 <div class="modal-content">
                     <span class="close">&times;</span>
                     <h2 data-translate-key="Digite o nome para registro da comanda">Digite o nome para registro da comanda</h2>
-                    <form autocomplete="off">
-                        <input type="text" id="name-input" name="no-autofill" autocomplete="off">
-                      </form>
+                    <input type="text" id="name-input" >
                     <button id="add-name-btn" data-translate-key="Criar comanda">Criar comanda</button>
                 </div>
             </div>
@@ -159,25 +157,6 @@
 
         </main>
     </div>
-
-    <div id="alcohol-warning-modal" class="alcohol-modal-overlay hidden">
-      <div class="alcohol-modal-content">
-        <!-- <img src="https://cdn.pixabay.com/photo/2016/11/29/09/08/alcohol-1869285_1280.jpg" alt="飲酒禁止" class="alcohol-modal-image"> -->
-        <h2 id="alcohol-modal-title">🚗 飲酒運転防止</h2>
-        <p id="alcohol-modal-message-ja">
-          お車を運転されるお客様への酒類の提供はできません。安全のため、ご理解とご協力をお願いいたします。
-        </p>
-        <p id="alcohol-modal-message-en" >
-          Alcoholic beverages cannot be served to drivers. Thank you for your understanding and cooperation.
-        </p>
-        <p id="alcohol-modal-message-pt">
-          Aos clientes que conduzem veículos, não servimos bebidas alcoólicas. Agradecemos a sua compreensão e colaboração.
-        </p>
-        <button id="close-alcohol-modal">閉じる / Close / Fechar</button>
-      </div>
-    </div>
-
-
     <button id="fullscreenButton" style="display: none">Enter Fullscreen</button>
     <button id="exitFullscreenButton" style="display: none;">Exit Fullscreen</button>
     <script src="../../config.js"></script>
