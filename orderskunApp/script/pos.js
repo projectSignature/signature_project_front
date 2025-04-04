@@ -48,7 +48,7 @@ let clients ={
   table_count:decodedToken.table_count,
   takeout_enabled:decodedToken.takeout_enabled,
   uber_enabled:decodedToken.uber_enabled,
-  tax_use:decodedToken.tax_enabled
+  tax_use:true
 }
 
 if(clients.id===1){
