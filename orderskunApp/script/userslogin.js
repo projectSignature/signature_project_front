@@ -5,9 +5,31 @@ let password;
 let errormessage;
 let isLoading = false; // Variável para controlar o estado de carregamento
 
+// ネットワーク接続を確認する関数
+function checkNetworkStatus() {
+  if (!navigator.onLine) {
+    alert('Você não está conectado à internet. Verifique sua conexão.');
+  }
+}
+
+// アプリの起動時にネットワークを確認
+window.addEventListener('load', () => {
+  checkNetworkStatus();
+});
+
+// オンライン・オフラインの切り替えを監視
+window.addEventListener('offline', () => {
+  alert('Sua conexão foi perdida.');
+});
+
+window.addEventListener('online', () => {
+  alert('Você está online novamente.');
+});
+
 document.getElementById("login-button").addEventListener("click", login_check);
 //ログイン情報の確認をする処理、IDが空白かどうか、その後PASSがくうはくかどうか、TRUEの場合Swal処理
 async function login_check(user, password) {
+  checkNetworkStatus()
   user = document.getElementById("user").value; //ユーザー名
   password = document.getElementById("pass").value; //パスワード
   if (user == "") {
@@ -32,13 +54,14 @@ async function signin(payload) {
   if (window.location.href.includes('/localhost') || window.location.href.includes('http://127.0.0.1:5500')) {
     urlBase = 'http://localhost:3000';
   }
+
   axios.post(`${server}/noauth/orders/signin`, payload, {
     headers: {
       'Content-Type': 'application/json'
     }
   })
   .then((response) =>{
-    console.log(response)
+
     if (response.data.success) {
       const { token } = response.data.info;
       window.localStorage.setItem('token', token);
@@ -46,7 +69,12 @@ async function signin(payload) {
       if(response.data.kubun==='operator'){
         window.location.href = './pages/pos.html';
       }else if(response.data.kubun==='dine_in'){
-        window.location.href = './pages/orders.html';
+        if(payload.email==='Buonissimo pedidos'){
+          window.location.href = './pages/orders.html';
+        }else{
+          window.location.href = './pages/neworders.html';
+        }
+        //
       }else if(response.data.kubun==='takeout'){
         window.location.href = './pages/ordersTakeOut.html';
       }else{
@@ -61,8 +89,20 @@ async function signin(payload) {
     }
   })
   .catch(error => {
-    alert('Usuário não encontrado ou Senha Incorreta');
     console.error(error);
+    if(error.status===401){
+    showModal({
+      title: 'Ops...',
+      message: 'Usuário não encontrado ou Senha Incorreta',
+      type: 'error'
+    });
+  }else{
+    showModal({
+      title: 'Ops...',
+      message: 'Erro de Autenticação',
+      type: 'error'
+    });
+  }
     hideLoading(); // Oculta o carregamento
   });
 }
