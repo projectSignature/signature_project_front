@@ -14,14 +14,13 @@ let userInfo ={
   iat: 1727826129
 }
 
-// sessionStorage.setItem('userInfo', clients);
+ let currentLang = localStorage.getItem('loacastrogg') || 'pt';
 
-// function getUserInfo() {
-//     const userInfo = clients
-//     // return userInfo ? JSON.parse(userInfo) : null;
-// }
-//
-// const userInfo = getUserInfo();
+
+
+
+
+
 const tableCount = userInfo ? userInfo.table_count : 0;
 
 const today = new Date();
@@ -31,7 +30,8 @@ const day = String(today.getDate()).padStart(2, '0');
 
 const japaneseDate = `${year}-${month}-${day}`;
 
-currentTime.textContent = 'Date: ' + japaneseDate;
+currentTime.textContent = `${t('date_label')} ${japaneseDate}`;
+
 
 const createReservationBtn = document.getElementById('create-reservation-btn');
 const createReservationModal = document.getElementById('create-reservation-modal');
@@ -51,14 +51,6 @@ window.addEventListener('click', (e) => {
     }
 });
 
-// function showLoading() {
-//     document.getElementById('loading-overlay').style.display = 'flex';
-// }
-//
-// function hideLoading() {
-//     document.getElementById('loading-overlay').style.display = 'none';
-// }
-
 function showNotification(message, type = 'success') {
     const notificationContainer = document.getElementById('notification-container');
 
@@ -68,9 +60,7 @@ function showNotification(message, type = 'success') {
     notification.style.textAlign = 'center';
     notification.style.fontSize = '16px';
     notification.style.marginTop = '10px';
-
     notification.textContent = message;
-
     notificationContainer.style.display = 'block';
     notificationContainer.appendChild(notification);
 
@@ -86,10 +76,12 @@ function showNotification(message, type = 'success') {
 function fillTableWithReservations(reservations) {
     const tableContainer = document.getElementById('mesas-container');
     tableContainer.innerHTML = ''; // Limpa qualquer conteúdo existente
-   console.log(reservations)
     // Ordena as reservas pelo número da mesa (table_number) em ordem crescente
-    reservations.sort((a, b) => a.table_number - b.table_number);
-
+    // reservations.sort((a, b) => a.table_number - b.table_number);
+    if(reservations===undefined){
+      console.log('no order')
+      return
+    }
     reservations.forEach(reservation => {
         const tableElement = document.createElement('div');
         tableElement.classList.add('mesa');
@@ -98,12 +90,15 @@ function fillTableWithReservations(reservations) {
         tableElement.setAttribute('data-reservation-id', reservation.id);
 
         tableElement.innerHTML = `
-            <h2>Mesa ${reservation.table_number}</h2>
+        <h2>${t('table')} ${reservation.table_number}</h2>
+
             <div>
                 <i class="fa-solid fa-user-group"></i>
                 <span class="mesa__pessoas">${reservation.num_people}</span>
             </div>
-            <span class="mesa__disponivel">Reservada por ${reservation.reservation_name}</span>
+            <span class="mesa__disponivel">
+              ${t('reserved_by')}: ${reservation.reservation_name}
+            </span>
         `;
 
         tableElement.classList.add('reservada');
@@ -120,16 +115,18 @@ function fillReservationsTable(reservations) {
     tableBody.innerHTML = '';
 
     reservations.forEach(reservation => {
-        const row = document.createElement('tr');
+      console.log(reservation)
+      const row = document.createElement('tr');
+        row.setAttribute('data-reservation-id', reservation.id); // ← 追加
 
         row.innerHTML = `
-            <td>${reservation.id}</td>
-            <td>${reservation.reservation_name}</td>
-            <td>${reservation.table_number}</td>
-            <td>${reservation.num_people}</td>
-            <td>${reservation.reservation_start_time}</td>
+        <td>${reservation.id}</td>
+        <td>${reservation.reservation_name}</td>
+        <td>${reservation.table_number}</td>
+        <td>${reservation.num_people}</td>
+        <td>${reservation.reservation_start_time}</td>
+        <td>${reservation.reservation_end_time}</td>
         `;
-
         tableBody.appendChild(row);
     });
 }
@@ -186,58 +183,79 @@ function hasTimeConflict(newReservation, existingReservations) {
 }
 
 function createReservation() {
-    showLoadingPopup();
+  showLoadingPopup();
 
-    const tableNumber = document.getElementById('create-table-number').value;
+  const tableNumber = document.getElementById('create-table-number').value;
 
-    if (tableNumber > tableCount) {
-        hideLoadingPopup();
-        alert(`Número de mesa não pode exceder ${tableCount}`, 'error');
-        return;
-    }
+  if (tableNumber > tableCount) {
+    hideLoadingPopup();
+    alert(`${t('table_number_limit')} ${tableCount}`, 'error');
+    return;
+  }
 
-    const url = `${server}/reservations/create`;
-    const reservationData = {
-        user_id: userInfo.id,
-        reservation_date: document.getElementById('create-reservation-date').value,
-        reservation_start_time: document.getElementById('create-start-time').value,
-        reservation_end_time: document.getElementById('create-end-time').value,
-        table_number: document.getElementById('create-table-number').value,
-        reservation_name: document.getElementById('create-reservation-name').value,
-        phone_number: document.getElementById('create-phone-number').value,
-        num_people: document.getElementById('create-num-people').value,
-        remarks: document.getElementById('create-remarks').value || null
-    };
-    console.log(reservationData)
-    fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(reservationData)
-    })
+  const reservationData = {
+    user_id: userInfo.id,
+    reservation_date: document.getElementById('create-reservation-date').value,
+    reservation_start_time: document.getElementById('create-start-time').value,
+    reservation_end_time: document.getElementById('create-end-time').value,
+    table_number: tableNumber,
+    reservation_name: document.getElementById('create-reservation-name').value,
+    phone_number: document.getElementById('create-phone-number').value,
+    num_people: document.getElementById('create-num-people').value,
+    remarks: document.getElementById('create-remarks').value || null
+  };
+
+  // ✅ クライアント側バリデーション（remarks以外）
+  const missingFields = [];
+  if (!reservationData.user_id) missingFields.push('user_id');
+  if (!reservationData.reservation_date) missingFields.push('reservation_date');
+  if (!reservationData.reservation_start_time) missingFields.push('reservation_start_time');
+  if (!reservationData.reservation_end_time) missingFields.push('reservation_end_time');
+  if (!reservationData.table_number) missingFields.push('table_number');
+  if (!reservationData.reservation_name) missingFields.push('reservation_name');
+  if (!reservationData.phone_number) missingFields.push('phone_number');
+  if (!reservationData.num_people) missingFields.push('num_people');
+
+  if (missingFields.length > 0) {
+    hideLoadingPopup();
+
+    const translated = missingFields.map(key => translation[currentLang]?.[key] || key);
+
+    alert(`⚠️ ${currentLang === 'jp' ? '未入力項目があります：' : currentLang === 'pt' ? 'Campos ausentes:' : 'Missing fields:'}\n\n${translated.join(', ')}`);
+    return;
+  }
+
+
+  fetch(`${server}/reservations/create`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(reservationData)
+  })
     .then(response => {
-        if (!response.ok) {
-            throw new Error('Erro ao criar a reserva');
-        }
-        return response.json();
+      if (!response.ok) {
+        throw new Error('Erro ao criar a reserva');
+      }
+      return response.json();
     })
     .then(data => {
-        hideLoadingPopup();
-        if (data.success) {
-            showNotification(data.message, 'success');
-            document.getElementById('create-reservation-modal').style.display = 'none';
-            getTableData();
-        } else {
-            showNotification(data.message, 'error');
-        }
+      hideLoadingPopup();
+      if (data.success) {
+        showNotification(data.message, 'success');
+        document.getElementById('create-reservation-modal').style.display = 'none';
+        getTableData();
+      } else {
+        showNotification(data.message, 'error');
+      }
     })
     .catch(error => {
-        hideLoadingPopup();
-        showNotification(error.message, 'error');
-        console.error('Erro ao criar a reserva:', error);
+      hideLoadingPopup();
+      showNotification(error.message, 'error');
+      console.error('Erro ao criar a reserva:', error);
     });
 }
+
 
 const submitCreateReservationBtn = document.getElementById('submit-create-reservation');
 submitCreateReservationBtn.addEventListener('click', createReservation);
@@ -259,6 +277,10 @@ function deleteTable(reservationId) {
         if (data.success) {
             showNotification(data.message, 'success')
             const tableElement = document.querySelector(`.mesa[data-reservation-id="${reservationId}"]`);
+            console.log(tableElement)
+            const tableRow = document.querySelector(`tr[data-reservation-id="${reservationId}"]`);
+            if (tableRow) tableRow.remove();
+
             if (tableElement) {
                 tableElement.remove();
             }
@@ -268,18 +290,18 @@ function deleteTable(reservationId) {
     })
     .catch(error => {
         showNotification(error.message, 'error');
-        hideLoading();
+        hideLoadingPopup();
         console.error("Erro ao deletar a reserva:", error);
     });
 }
 
 function editTable(reservationId) {
-    showLoading();
+    showLoadingPopup();
     const url = `${server}/reservations/update/${reservationId}`;
     const tableNumber = document.getElementById('modal-table-number').value;
     if (tableNumber > tableCount) {
-        hideLoading();
-        alert(`Número de mesa não pode exceder ${tableCount}`, 'error');
+        hideLoadingPopup();
+        alert(`${t('table_number_limit')} ${tableCount}`, 'error');
         return;
     }
     const updatedData = {
@@ -308,7 +330,7 @@ function editTable(reservationId) {
         return response.json();
     })
     .then(data => {
-        hideLoading();
+        hideLoadingPopup();
         if (data.success) {
             showNotification(data.message, 'success');
             document.getElementById('mesa-modal').style.display = 'none';
@@ -319,7 +341,7 @@ function editTable(reservationId) {
     })
     .catch(error => {
         showNotification(error.message, 'error');
-        hideLoading();
+        hideLoadingPopup();
         console.error('Erro ao editar a reserva:', error);
     });
 }
@@ -338,10 +360,9 @@ function getTableData() {
         .then(data => {
             hideLoadingPopup();
             if (data.success && data.data.length > 0) {
+                userInfo.resarvations = data.data
                 fillTableWithReservations(data.data);
                 fillReservationsTable(data.data);
-            } else {
-                console.log("Nenhuma reserva encontrada para a data especificada.");
             }
         })
         .catch(error => {
@@ -353,3 +374,48 @@ function getTableData() {
 document.addEventListener('DOMContentLoaded', function() {
     getTableData();
 });
+
+function t(key) {
+ return translation[currentLang][key] || key;
+}
+
+
+  function applyTranslation(lang) {
+    const elements = document.querySelectorAll('[data-i18n]');
+    elements.forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      const translated = translation[lang][key] || key;
+
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        el.placeholder = translation[currentLang][key] || key;
+      });
+
+      fillTableWithReservations(userInfo.resarvations)
+
+      if (el.querySelector('button')) {
+        const button = el.querySelector('button');
+        el.childNodes[0].nodeValue = translated + ' ';
+        el.appendChild(button);
+      } else {
+        el.innerHTML = translated;
+      }
+    });
+  }
+
+
+
+   // 初期設定と変更イベント
+   document.getElementById('language-select').addEventListener('change', async (e) => {
+     const lang = e.target.value;
+     localStorage.setItem('loacastrogg', lang);
+     currentLang = lang
+     applyTranslation(lang);
+     if (window.currentItemForDetails) {
+    document.querySelectorAll('.item-details').forEach(el => el.remove());
+    displayItemDetails(window.currentItemForDetails);
+  }
+   });
+
+   document.getElementById('language-select').value = currentLang;
+   applyTranslation(currentLang);
