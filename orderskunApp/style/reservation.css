@@ -61,7 +61,7 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
     padding-bottom: 20px;
-    gap: 70px;
+
     height:80vh;
     overflow: hidden;
 }
@@ -335,11 +335,11 @@ button {
     /* 上下にスペースを作る */
 }
 
-#current_time {
+/* #current_time {
     text-align: center;
     margin-top: 70px;
     font-size: 35px;
-}
+} */
 
 /* Mesas */
 
@@ -366,7 +366,10 @@ button {
     border: 1px solid #000000;
     box-shadow: 4px 5px 6px 0px rgba(145, 145, 145, 0.45);
 }
-
+.mesa div{
+  display: flex;
+  justify-content: center;
+}
 .mesa:hover {
     cursor: pointer;
 }
@@ -392,10 +395,11 @@ button {
 
 /* Botão Adicionar */
 .adicionar-btn {
+  width:80%;
     display: flex;
     align-items: center;
-    justify-content: center;
-    margin-top: 15px;
+    justify-content: space-around;
+    margin-top: 5px;
 }
 
 .left {
@@ -403,8 +407,8 @@ button {
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    gap: 10px;
-    /* height:40% */
+
+    height:40%
 }
 
 .adicionar-btn button {
@@ -448,6 +452,9 @@ button {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    max-height: 90%;
+    overflow: auto;
+    z-index:9999
 }
 
 .close {
@@ -571,9 +578,11 @@ input:focus {
 .right {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    width: 100%;
     align-items: center;
     text-align: center;
+    height: 60%;
+    overflow: auto;
 }
 
 .right h2 {
@@ -581,13 +590,13 @@ input:focus {
 }
 
 .reservation-tab-day {
-    width: 40%;
-    min-width: 350px;
+    width: 60%;
+
     background-color: #1c1c1c;
     color: #fff;
     font-size: 18px;
     border-radius: 5px;
-    margin-top: 10px;
+    margin-top: 5px;
     box-shadow: 0px 5px 15px 0px rgba(0, 0, 0, 0.35);
     padding: 4px 10px;
     overflow: auto !important
@@ -622,6 +631,11 @@ input:focus {
     flex-direction: column;
     margin-bottom: 20px;
 }
+.sticky-right {
+  position: sticky;
+
+}
+
 
 .filter h2 {
     margin-bottom: 10px;
@@ -857,7 +871,7 @@ input:focus {
     } */
 
     #current_time {
-        margin-top: 40px;
+        margin-top: 10px;
         font-size: 25px;
     }
 
@@ -875,10 +889,7 @@ input:focus {
         font-size: 20px;
     }
 
-    .reservation-tab-day {
-        min-width: 80%;
-        margin-top: 0px;
-    }
+
 
     .tab-dia-col th {
         font-size: 14px;
@@ -1040,27 +1051,9 @@ table button{
 table button:hover{
   background-color: orange
 }
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%); /* 垂直方向の中央に表示 */
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.5);
-}
 
-.modal-content {
-    background-color: #fefefe;
-    margin: auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 600px; /* モーダルの最大幅を設定 */
-}
+
+
 
 .close {
     color: #aaa;
@@ -1149,7 +1142,10 @@ table button:hover{
   width:10rem
 }
 .table-mother-div{
-  max-height:150px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  max-height:200px;
   overflow-y: auto; /* 横または縦にスクロールを可能に */
 
 }
