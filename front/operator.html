@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Operator Tasks</title>
+<style>
+  body {
+    margin: 0;
+    font-family: "Segoe UI", "Noto Sans JP", "Noto Sans", sans-serif;
+    background: #f2f5f7;
+    color: #333;
+    padding-bottom: 80px;
+  }
+  header {
+    position: sticky;
+    top: 0;
+    background: #007bff;
+    color: white;
+    padding: 12px 16px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  }
+  #refreshBtn, #langSelect {
+    position: absolute;
+    top: 10px;
+    background: white;
+    color: #007bff;
+    border: none;
+    border-radius: 20px;
+    padding: 4px 10px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  #refreshBtn { right: 16px; }
+  #langSelect { left: 16px; padding: 4px 8px; }
+
+  #taskContainer {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .task-card {
+    background: white;
+    border-radius: 12px;
+    padding: 14px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .room-number {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  .task-type {
+    font-size: 14px;
+    color: #007bff;
+    font-weight: bold;
+  }
+  .task-notes {
+    font-size: 13px;
+    color: #555;
+  }
+  .task-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 8px;
+  }
+  .complete-btn {
+    background: linear-gradient(135deg, #28a745, #32c85d);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .complete-btn:hover {
+    background: linear-gradient(135deg, #218838, #28a745);
+  }
+
+  /* ===== ローディングオーバーレイ ===== */
+#loadingOverlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(255, 255, 255, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  font-size: 18px;
+  font-weight: bold;
+  color: #007bff;
+  flex-direction: column;
+  backdrop-filter: blur(2px);
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+#loadingOverlay.visible {
+  visibility: visible;
+  opacity: 1;
+}
+.loader {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #007bff;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 10px;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+</style>
+</head>
+<body>
+<header>
+  <select id="langSelect">
+    <option value="ja">🇯🇵 日本語</option>
+    <option value="pt">🇧🇷 Português</option>
+    <option value="en">🇺🇸 English</option>
+  </select>
+  <span id="headerTitle">オペレータータスク</span>
+  <button id="refreshBtn">🔄 更新</button>
+</header>
+
+<div id="taskContainer"></div>
+
+<div id="loadingOverlay">
+  <div class="loader"></div>
+  <div id="loadingText">Loading...</div>
+</div>
+
+
+<script>
+const API_ROOMS = "http://https://squid-app-ug7x6.ondigitalocean.app:3000/api/room/status?hotel_id=1";
+const API_AMENITIES = "http://https://squid-app-ug7x6.ondigitalocean.app:3000/api/room/amenity/list";
+const API_UPDATE_STATUS = "http://https://squid-app-ug7x6.ondigitalocean.app:3000/api/room/status";
+const API_DELETE_AMENITY = "http://https://squid-app-ug7x6.ondigitalocean.app:3000/api/room/amenity";
+
+const container = document.getElementById("taskContainer");
+const refreshBtn = document.getElementById("refreshBtn");
+const langSelect = document.getElementById("langSelect");
+const headerTitle = document.getElementById("headerTitle");
+
+let currentLang = localStorage.getItem("lang") || "ja";
+
+const loadingOverlay = document.getElementById("loadingOverlay");
+const loadingText = document.getElementById("loadingText");
+
+function showLoading() {
+  loadingText.textContent = currentLang === "ja" ? "読み込み中..." :
+                            currentLang === "pt" ? "Carregando..." :
+                            "Loading...";
+  loadingOverlay.classList.add("visible");
+}
+function hideLoading() {
+  loadingOverlay.classList.remove("visible");
+}
+
+
+const t = {
+  ja: {
+    title: "オペレータータスク",
+    refresh: "🔄 更新",
+    cleaning: "清掃",
+    amenity: "アメニティ",
+    complete: "✅ 完了",
+    cleaningMsg: "清掃を完了したら報告してください。",
+    noTask: "✅ 現在のタスクはありません。",
+    confirmCleaning: "清掃を完了しますか？",
+    confirmAmenity: "アメニティ対応を完了しますか？",
+    alertCleaningDone: "清掃完了を登録しました。",
+    alertAmenityDone: "アメニティ対応を完了しました。",
+    fetchError: "取得に失敗しました。"
+  },
+  pt: {
+    title: "Tarefas do Operador",
+    refresh: "🔄 Atualizar",
+    cleaning: "Limpeza",
+    amenity: "Amenidade",
+    complete: "✅ Concluir",
+    cleaningMsg: "Informe quando a limpeza for concluída.",
+    noTask: "✅ Nenhuma tarefa no momento.",
+    confirmCleaning: "Deseja marcar a limpeza como concluída?",
+    confirmAmenity: "Deseja marcar a amenidade como concluída?",
+    alertCleaningDone: "Limpeza concluída com sucesso.",
+    alertAmenityDone: "Amenidade concluída com sucesso.",
+    fetchError: "Falha ao obter dados."
+  },
+  en: {
+    title: "Operator Tasks",
+    refresh: "🔄 Refresh",
+    cleaning: "Cleaning",
+    amenity: "Amenity",
+    complete: "✅ Complete",
+    cleaningMsg: "Please report when cleaning is done.",
+    noTask: "✅ No tasks at the moment.",
+    confirmCleaning: "Mark cleaning as complete?",
+    confirmAmenity: "Mark amenity as complete?",
+    alertCleaningDone: "Cleaning marked as complete.",
+    alertAmenityDone: "Amenity marked as complete.",
+    fetchError: "Failed to fetch data."
+  }
+};
+
+// 言語反映
+function applyLang() {
+  headerTitle.textContent = t[currentLang].title;
+  refreshBtn.textContent = t[currentLang].refresh;
+  document.documentElement.lang = currentLang;
+  localStorage.setItem("lang", currentLang);
+}
+
+langSelect.value = currentLang;
+langSelect.addEventListener("change", () => {
+  currentLang = langSelect.value;
+  applyLang();
+  loadTasks();
+});
+
+// =======================
+// 🔹 タスク読み込み処理
+// =======================
+async function loadTasks() {
+  showLoading();
+  container.innerHTML = "";
+  try {
+    const [roomRes, amenityRes] = await Promise.all([
+      fetch(API_ROOMS),
+      fetch(API_AMENITIES)
+    ]);
+    const roomData = await roomRes.json();
+    const amenityData = await amenityRes.json();
+
+    const cleaningRooms = (roomData.rooms || []).filter(r => r.status === "cleaning");
+    const amenities = amenityData.requests || [];
+
+    renderTasks(cleaningRooms, amenities);
+  } catch (err) {
+    console.error("❌ Fetch Error:", err);
+    container.innerHTML = `<p style='color:red;text-align:center;'>${t[currentLang].fetchError}</p>`;
+  } finally {
+    hideLoading();
+  }
+}
+
+
+function renderTasks(cleaningRooms, amenities) {
+  container.innerHTML = "";
+
+  // 清掃タスク
+  cleaningRooms.forEach(r => {
+    const card = document.createElement("div");
+    card.className = "task-card";
+    card.innerHTML = `
+      <div class="task-header">
+        <span class="room-number">🧹 ${r.room_number || '-'}</span>
+        <span class="task-type">${t[currentLang].cleaning}</span>
+      </div>
+      <div class="task-notes">${r.notes || t[currentLang].cleaningMsg}</div>
+      <div class="task-footer">
+        <button class="complete-btn" onclick="completeCleaning(${r.id})">${t[currentLang].complete}</button>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+
+  // アメニティタスク
+  amenities.forEach(a => {
+    const card = document.createElement("div");
+    card.className = "task-card";
+    card.innerHTML = `
+      <div class="task-header">
+        <span class="room-number">🧴 ${a.room_number || '-'}</span>
+        <span class="task-type">${a.action_type}</span>
+      </div>
+      <div class="task-notes">${a.amenity} (${a.return_to || "-"})</div>
+      <div class="task-footer">
+        <button class="complete-btn" onclick="completeAmenity(${a.id})">${t[currentLang].complete}</button>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+
+  if (cleaningRooms.length === 0 && amenities.length === 0) {
+    container.innerHTML = `<p style='text-align:center;'>${t[currentLang].noTask}</p>`;
+  }
+}
+
+// =======================
+// 🔹 完了処理
+// =======================
+async function completeCleaning(id) {
+  if (!confirm(t[currentLang].confirmCleaning)) return;
+  await fetch(API_UPDATE_STATUS, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ room_id: id, status: "available" })
+  });
+  alert(t[currentLang].alertCleaningDone);
+  loadTasks();
+}
+
+async function completeAmenity(id) {
+  if (!confirm(t[currentLang].confirmAmenity)) return;
+  await fetch(`${API_DELETE_AMENITY}/${id}`, { method: "DELETE" });
+  alert(t[currentLang].alertAmenityDone);
+  loadTasks();
+}
+
+// =======================
+refreshBtn.addEventListener("click", loadTasks);
+applyLang();
+loadTasks();
+</script>
+
+</body>
+</html>
