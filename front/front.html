@@ -1347,7 +1347,7 @@ const statusLabels = {
   "outofservice": "使用停止中",
   "unavailable": "未使用・閉鎖中"
 };
-const API_URL = "http://https://squid-app-ug7x6.ondigitalocean.app:3000/api/room/status?hotel_id=1";
+const API_URL = "https://squid-app-ug7x6.ondigitalocean.app:3000/api/room/status?hotel_id=1";
 
 const map = document.getElementById("map");
 const legend = document.getElementById("legend");
@@ -1504,7 +1504,7 @@ function renderStatusOptions() {
           showLoading()
           console.log('tooteru2')
 
-          const res = await fetch("http://https://squid-app-ug7x6.ondigitalocean.app:3000/api/room/status", {
+          const res = await fetch("https://squid-app-ug7x6.ondigitalocean.app:3000/api/room/status", {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -1615,7 +1615,7 @@ function renderAmenityOptions() {
         };
         try {
           showLoading();
-          const res = await fetch("http://https://squid-app-ug7x6.ondigitalocean.app:3000/api/room/amenity", {
+          const res = await fetch("https://squid-app-ug7x6.ondigitalocean.app:3000/api/room/amenity", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload)
@@ -1656,7 +1656,7 @@ async function handleReturn(location) {
 
   try {
     showLoading()
-    const res = await fetch("http://https://squid-app-ug7x6.ondigitalocean.app:3000/api/room/amenity", {
+    const res = await fetch("https://squid-app-ug7x6.ondigitalocean.app:3000/api/room/amenity", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
@@ -1718,7 +1718,7 @@ saveRoomDetailBtn.addEventListener("click", async () => {
 
   try {
     showLoading();
-    const res = await fetch("http://https://squid-app-ug7x6.ondigitalocean.app:3000/api/room/details", {
+    const res = await fetch("https://squid-app-ug7x6.ondigitalocean.app:3000/api/room/details", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
@@ -1758,7 +1758,7 @@ amenityListBtn.addEventListener("click", () => {
 async function loadAmenityRequests() {
   try {
     showLoading();
-    const res = await fetch("http://https://squid-app-ug7x6.ondigitalocean.app:3000/api/room/amenity/list"); // ← 新API
+    const res = await fetch("https://squid-app-ug7x6.ondigitalocean.app:3000/api/room/amenity/list"); // ← 新API
     hideLoading();
     if (!res.ok) throw new Error("API取得失敗");
 
@@ -1797,7 +1797,7 @@ async function completeAmenity(id) {
 
   try {
     showLoading();
-    const res = await fetch(`http://https://squid-app-ug7x6.ondigitalocean.app:3000/api/room/amenity/${id}`, {
+    const res = await fetch(`https://squid-app-ug7x6.ondigitalocean.app:3000/api/room/amenity/${id}`, {
       method: "DELETE"
     });
     const result = await res.json();
