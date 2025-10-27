@@ -1108,8 +1108,8 @@ const icons = {
   "available": "✅",   // 使用可能（確認済）
   "occupied": "🛏️",   // 宿泊中
   "stayover": "🔁",    // 連泊中（追加）
-  // "cleaning": "🧹",    // 清掃中
-  "dirty": "🧹",       // 清掃前
+  "cleaning": "🧹",    // 清掃中
+  // "dirty": "🧹",       // 清掃前
   "maintenance": "🛠️", // 故障・点検中（追加）
   "reserved": "📘",     // 予約済み（追加）
   "outofservice": "🚫", // 使用停止中（追加）
@@ -1340,7 +1340,7 @@ const statusLabels = {
   "available": "確認済（使用可能）",
   "occupied": "宿泊中",
   "stayover": "連泊中",
-  // "cleaning": "清掃中",
+  "cleaning": "清掃中",
   "dirty": "清掃前",
   "maintenance": "故障・点検中",
   "reserved": "予約済",
@@ -1448,11 +1448,16 @@ function groupByFloor(rooms) {
 function getRoomColor(r) {
   const defaultColors = {
     "SM": "#e6f7e6",
+    "SMS": "#e6f7e6",
     "TM": "#fff6cc",
+    "TMS": "#fff6cc",
     "TD": "#ffeacc",
-    "TP": "#f2e6ff",
+    "TDS": "#ffeacc",
+    "TS": "#f2e6ff",
+    "TP":"#d9b3ff",
     "TC": "#e6f2ff",
-    "DS": "#ffe6e6"
+    "DS": "#ffe6e6",
+    "TR":"#a64dff"
   };
   return defaultColors[r.room_type] || "#eee";
 }
