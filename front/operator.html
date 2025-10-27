@@ -89,42 +89,41 @@
   }
 
   /* ===== ローディングオーバーレイ ===== */
-#loadingOverlay {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  background: rgba(255, 255, 255, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-  font-size: 18px;
-  font-weight: bold;
-  color: #007bff;
-  flex-direction: column;
-  backdrop-filter: blur(2px);
-  visibility: hidden;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-#loadingOverlay.visible {
-  visibility: visible;
-  opacity: 1;
-}
-.loader {
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #007bff;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  animation: spin 0.8s linear infinite;
-  margin-bottom: 10px;
-}
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
+  #loadingOverlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(255, 255, 255, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    font-size: 18px;
+    font-weight: bold;
+    color: #007bff;
+    flex-direction: column;
+    backdrop-filter: blur(2px);
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  #loadingOverlay.visible {
+    visibility: visible;
+    opacity: 1;
+  }
+  .loader {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #007bff;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 10px;
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
 </style>
 </head>
 <body>
@@ -144,7 +143,6 @@
   <div class="loader"></div>
   <div id="loadingText">Loading...</div>
 </div>
-
 
 <script>
 const API_ROOMS = "https://squid-app-ug7x6.ondigitalocean.app/api/room/status?hotel_id=1";
@@ -172,10 +170,12 @@ function hideLoading() {
   loadingOverlay.classList.remove("visible");
 }
 
-
+// ========================
+// 🔹 翻訳辞書
+// ========================
 const t = {
   ja: {
-    title: "タスク",
+    title: "オペレータータスク",
     refresh: "🔄 更新",
     cleaning: "清掃",
     amenity: "アメニティ",
@@ -186,10 +186,23 @@ const t = {
     confirmAmenity: "アメニティ対応を完了しますか？",
     alertCleaningDone: "清掃完了を登録しました。",
     alertAmenityDone: "アメニティ対応を完了しました。",
-    fetchError: "取得に失敗しました。"
+    fetchError: "取得に失敗しました。",
+    returnFront: "フロント",
+    returnStorage: "倉庫室",
+    amenityTypes: { exchange: "交換", supply: "補充", collect: "回収" },
+    amenitiesList: {
+      pillow: "まくら",
+      hanger: "ハンガー",
+      charger: "充電器",
+      fan: "扇風機",
+      icepail: "アイスペール",
+      extCord: "延長コード",
+      humidifier: "加湿器",
+      smokeChange: "喫煙→禁煙切り換え"
+    }
   },
   pt: {
-    title: "Tarefas",
+    title: "Tarefas do Operador",
     refresh: "🔄 Atualizar",
     cleaning: "Limpeza",
     amenity: "Amenidade",
@@ -200,10 +213,23 @@ const t = {
     confirmAmenity: "Deseja marcar a amenidade como concluída?",
     alertCleaningDone: "Limpeza concluída com sucesso.",
     alertAmenityDone: "Amenidade concluída com sucesso.",
-    fetchError: "Falha ao obter dados."
+    fetchError: "Falha ao obter dados.",
+    returnFront: "Recepção",
+    returnStorage: "Depósito",
+    amenityTypes: { exchange: "Troca", supply: "Reposição", collect: "Coleta" },
+    amenitiesList: {
+      pillow: "Travesseiro",
+      hanger: "Cabide",
+      charger: "Carregador",
+      fan: "Ventilador",
+      icepail: "Balde de gelo",
+      extCord: "Extensão elétrica",
+      humidifier: "Umidificador",
+      smokeChange: "Troca Fumante/Não Fumante"
+    }
   },
   en: {
-    title: "Tasks",
+    title: "Operator Tasks",
     refresh: "🔄 Refresh",
     cleaning: "Cleaning",
     amenity: "Amenity",
@@ -214,11 +240,26 @@ const t = {
     confirmAmenity: "Mark amenity as complete?",
     alertCleaningDone: "Cleaning marked as complete.",
     alertAmenityDone: "Amenity marked as complete.",
-    fetchError: "Failed to fetch data."
+    fetchError: "Failed to fetch data.",
+    returnFront: "Front Desk",
+    returnStorage: "Storage Room",
+    amenityTypes: { exchange: "Exchange", supply: "Supply", collect: "Collect" },
+    amenitiesList: {
+      pillow: "Pillow",
+      hanger: "Hanger",
+      charger: "Charger",
+      fan: "Fan",
+      icepail: "Ice pail",
+      extCord: "Extension cord",
+      humidifier: "Humidifier",
+      smokeChange: "Smoking→Non-smoking switch"
+    }
   }
 };
 
-// 言語反映
+// ========================
+// 🔹 言語反映
+// ========================
 function applyLang() {
   headerTitle.textContent = t[currentLang].title;
   refreshBtn.textContent = t[currentLang].refresh;
@@ -233,9 +274,9 @@ langSelect.addEventListener("change", () => {
   loadTasks();
 });
 
-// =======================
+// ========================
 // 🔹 タスク読み込み処理
-// =======================
+// ========================
 async function loadTasks() {
   showLoading();
   container.innerHTML = "";
@@ -259,7 +300,9 @@ async function loadTasks() {
   }
 }
 
-
+// ========================
+// 🔹 タスク描画
+// ========================
 function renderTasks(cleaningRooms, amenities) {
   container.innerHTML = "";
 
@@ -284,12 +327,41 @@ function renderTasks(cleaningRooms, amenities) {
   amenities.forEach(a => {
     const card = document.createElement("div");
     card.className = "task-card";
+
+    const typeKey =
+      a.action_type === "交換" ? "exchange" :
+      a.action_type === "補充" ? "supply" :
+      a.action_type === "回収" ? "collect" : a.action_type;
+
+    const amenityKeyMap = {
+      "まくら": "pillow",
+      "ハンガー": "hanger",
+      "充電器": "charger",
+      "扇風機": "fan",
+      "アイスペール": "icepail",
+      "延長コード": "extCord",
+      "加湿器": "humidifier",
+      "喫煙→禁煙切り換え": "smokeChange"
+    };
+
+    const returnMap = {
+      "フロント": t[currentLang].returnFront,
+      "倉庫室": t[currentLang].returnStorage,
+      "Front Desk": t[currentLang].returnFront,
+      "Storage Room": t[currentLang].returnStorage
+    };
+
+    const amenityKey = amenityKeyMap[a.amenity] || "";
+    const amenityTranslated = t[currentLang].amenitiesList[amenityKey] || a.amenity;
+    const typeTranslated = t[currentLang].amenityTypes[typeKey] || a.action_type;
+    const returnTranslated = returnMap[a.return_to] || a.return_to || "-";
+
     card.innerHTML = `
       <div class="task-header">
         <span class="room-number">🧴 ${a.room_number || '-'}</span>
-        <span class="task-type">${a.action_type}</span>
+        <span class="task-type">${typeTranslated}</span>
       </div>
-      <div class="task-notes">${a.amenity} (${a.return_to || "-"})</div>
+      <div class="task-notes">${amenityTranslated} (${returnTranslated})</div>
       <div class="task-footer">
         <button class="complete-btn" onclick="completeAmenity(${a.id})">${t[currentLang].complete}</button>
       </div>
@@ -302,9 +374,9 @@ function renderTasks(cleaningRooms, amenities) {
   }
 }
 
-// =======================
+// ========================
 // 🔹 完了処理
-// =======================
+// ========================
 async function completeCleaning(id) {
   if (!confirm(t[currentLang].confirmCleaning)) return;
   await fetch(API_UPDATE_STATUS, {
@@ -323,12 +395,10 @@ async function completeAmenity(id) {
   loadTasks();
 }
 
-// =======================
+// ========================
 refreshBtn.addEventListener("click", loadTasks);
 applyLang();
 loadTasks();
 </script>
-
 </body>
 </html>
-
