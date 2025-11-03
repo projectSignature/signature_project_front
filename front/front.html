@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>ホテル清掃マップ（フロント）</title>
+<title>RoomSync</title>
     <link rel="stylesheet" href="./front.css">
 </head>
 <body>
@@ -464,13 +464,16 @@ async function loadRooms() {
     const res = await fetch(`${API_URL}/api/room/status?hotel_id=${globalId}`);
     hideLoading();
     if (!res.ok) throw new Error("API取得失敗");
+
     const data = await res.json();
     const rooms = data.rooms || [];
     const grouped = groupByFloor(rooms);
 
     map.innerHTML = "";
+    let totalGuestCount = 0;
 
-    let totalGuestCount = 0; // 全体合計
+    // 🟢 各room要素ごとにクリックタイマーを管理するWeakMap
+    const clickTimers = new WeakMap();
 
     Object.keys(grouped)
       .sort((a, b) => b - a)
@@ -481,7 +484,6 @@ async function loadRooms() {
         const floorDiv = document.createElement("div");
         floorDiv.className = "floor";
 
-        // ✅ フロアヘッダーを先に作る
         const floorHeader = document.createElement("div");
         floorHeader.className = "floor-header";
 
@@ -490,13 +492,12 @@ async function loadRooms() {
 
         const floorTotal = document.createElement("span");
         floorTotal.className = "floor-total";
-        floorTotal.textContent = `👥 ${floorGuestCount}`; // 仮値、後で更新
+        floorTotal.textContent = `👥 ${floorGuestCount}`;
 
         floorHeader.appendChild(floorTitle);
         floorHeader.appendChild(floorTotal);
         floorDiv.appendChild(floorHeader);
 
-        // ✅ 部屋一覧を生成
         const roomsContainer = document.createElement("div");
         roomsContainer.className = "rooms";
 
@@ -525,7 +526,7 @@ async function loadRooms() {
             </div>
           `;
 
-          // 人数操作イベント
+          // 🧩 人数操作イベント
           const guestCountEl = room.querySelector(".guest-count");
           const upBtn = room.querySelector(".guest-btn.up");
           const downBtn = room.querySelector(".guest-btn.down");
@@ -549,31 +550,74 @@ async function loadRooms() {
             if (count > 0) updateDisplay(--count);
           });
 
-          // 🟢 左クリックでアクションモーダル表示
+          // ================================
+          // 🟢 クリック・ダブルクリック共存処理（WeakMap版）
+          // ================================
           room.addEventListener("click", (e) => {
             e.stopPropagation();
 
-            // 🟢 一括モードONのときは選択に使う
-            if (bulkMode) {
-              if (room.classList.contains("selected-bulk")) {
-                room.classList.remove("selected-bulk");
-                selectedRoomsBulk = selectedRoomsBulk.filter((r) => r !== room);
-              } else {
-                room.classList.add("selected-bulk");
-                selectedRoomsBulk.push(room);
-              }
-              return;
+            // 既存タイマーがあればキャンセル（多重防止）
+            if (clickTimers.has(room)) {
+              clearTimeout(clickTimers.get(room));
             }
 
-            // 🟣 通常クリック（モーダル表示など）
-            selectedRoom = room;
-            showActionModal(r);
+            const timer = setTimeout(() => {
+              clickTimers.delete(room);
+
+              // 🟢 一括選択モード
+              if (bulkMode) {
+                if (room.classList.contains("selected-bulk")) {
+                  room.classList.remove("selected-bulk");
+                  selectedRoomsBulk = selectedRoomsBulk.filter((r) => r !== room);
+                } else {
+                  room.classList.add("selected-bulk");
+                  selectedRoomsBulk.push(room);
+                }
+                return;
+              }
+
+              // 🟣 通常クリック → モーダル表示
+              selectedRoom = room;
+              showActionModal(r);
+            }, 250);
+
+            clickTimers.set(room, timer);
           });
 
+          // 🟣 ダブルクリック（チェックアウト状態切替）
+          room.addEventListener("dblclick", async (e) => {
+            e.stopPropagation();
 
+            // ⛔ シングルクリック処理キャンセル
+            if (clickTimers.has(room)) {
+              clearTimeout(clickTimers.get(room));
+              clickTimers.delete(room);
+            }
 
+            const statusDiv = room.querySelector(".room-status");
+            const newStatus = await toggleCheckoutStatus(r.id, r.hotel_id);
+            if (!newStatus) return;
 
-          // 🟢 stay_type右クリック切替イベント
+            // 表示更新
+            r.checkout_status = newStatus;
+            if (newStatus === "after") {
+              statusDiv.classList.add("checkout-border");
+            } else {
+              statusDiv.classList.remove("checkout-border");
+            }
+
+            // トースト
+            const toast = document.createElement("div");
+            toast.textContent =
+              newStatus === "after"
+                ? "🚪 チェックアウト済に変更"
+                : "🏠 チェックイン中に変更";
+            toast.className = "toast";
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2000);
+          });
+
+          // 🖱️ 右クリック（滞在タイプ切替）
           room.addEventListener("contextmenu", async (e) => {
             e.preventDefault();
 
@@ -588,86 +632,46 @@ async function loadRooms() {
               header.classList.remove("group-border");
             }
 
-            // 視覚フィードバック
             const toast = document.createElement("div");
-            toast.textContent = newType === "group" ? "👥 グループに変更" : "👤 個別に変更";
+            toast.textContent =
+              newType === "group" ? "👥 グループに変更" : "👤 個別に変更";
             toast.className = "toast";
             document.body.appendChild(toast);
             setTimeout(() => toast.remove(), 2000);
           });
 
-          const statusDiv = room.querySelector(".room-status");
- statusDiv.addEventListener("dblclick", async (e) => {
-   e.stopPropagation();
-
-   const newStatus = await toggleCheckoutStatus(r.id, r.hotel_id);
-   if (!newStatus) return;
-
-   // 表示更新
-   r.checkout_status = newStatus;
-
-   if (newStatus === "after") {
-     statusDiv.classList.add("checkout-border");
-   } else {
-     statusDiv.classList.remove("checkout-border");
-   }
-
-   // 視覚フィードバック
-   const toast = document.createElement("div");
-   toast.textContent =
-     newStatus === "after" ? "🚪 チェックアウト済に変更" : "🏠 チェックイン中に変更";
-   toast.className = "toast";
-   document.body.appendChild(toast);
-   setTimeout(() => toast.remove(), 2000);
- });
-
-          // ⬇️ 最後にDOMへ追加
+          // DOMへ追加
           roomsContainer.appendChild(room);
-
         });
 
-
-        // ✅ 全部作り終えたあとで人数更新
         floorTotal.textContent = `お客様人数： ${floorGuestCount}人`;
-
-        // ✅ append
         floorDiv.appendChild(roomsContainer);
         map.appendChild(floorDiv);
-
-        // ✅ 全体合計にも加算
         totalGuestCount += floorGuestCount;
       });
 
-
-    // Header の総人数表示を更新
+    // ✅ 全体人数更新
     updateHeaderTotal(totalGuestCount);
 
-    // ✅ 内部関数：人数の再集計
     function updateTotals() {
       let newTotal = 0;
-
       document.querySelectorAll(".floor").forEach((floorDiv) => {
         const guestEls = floorDiv.querySelectorAll(".guest-count");
         let floorSum = 0;
-        guestEls.forEach((el) => {
-          const n = Number(el.textContent.replace("👤", ""));
-          floorSum += n;
-        });
-
+        guestEls.forEach((el) => (floorSum += Number(el.textContent.replace("👤", ""))));
         const totalEl = floorDiv.querySelector(".floor-total");
         if (totalEl) totalEl.innerHTML = `お客様人数:${floorSum}`;
-
         newTotal += floorSum;
       });
-
       updateHeaderTotal(newTotal);
     }
-
   } catch (err) {
     console.error("❌ 部屋データ取得エラー:", err);
     map.innerHTML = `<p style="color:red;">データ取得に失敗しました。</p>`;
   }
 }
+
+
 
 async function toggleStayType(roomId) {
   try {
