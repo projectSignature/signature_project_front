@@ -206,6 +206,8 @@
       <option value="ja">🇯🇵 日本語</option>
       <option value="pt">🇧🇷 Português</option>
       <option value="en">🇺🇸 English</option>
+      <option value="es">🇪🇸 Español</option>
+
     </select>
     <span id="headerTitle">オペレータータスク</span>
     <button id="refreshBtn">🔄 更新</button>
@@ -366,7 +368,39 @@ amenityBtn: "🧴 アメニティ",
 cleaningBtn: "🧹 Cleaning",
 amenityBtn: "🧴 Amenity",
 
-  }
+},
+es: {
+  title: "Tareas",
+  refresh: "🔄 Actualizar",
+  cleaning: "Limpieza",
+  amenity: "Amenidad",
+  complete: "✅ Completar",
+  cleaningMsg: "Informe cuando la limpieza esté terminada.",
+  noTask: "✅ No hay tareas por el momento.",
+  confirmCleaning: "¿Marcar la limpieza como completada?",
+  confirmAmenity: "¿Marcar la amenidad como completada?",
+  alertCleaningDone: "Limpieza registrada como completada.",
+  alertAmenityDone: "Amenidad registrada como completada.",
+  fetchError: "Error al obtener los datos.",
+  returnFront: "Recepción",
+  returnStorage: "Depósito",
+  amenityTypes: { exchange: "Cambio", supply: "Reposición", collect: "Recolección" },
+  amenitiesList: {
+    pillow: "Almohada",
+    hanger: "Percha",
+    charger: "Cargador",
+    fan: "Ventilador",
+    icepail: "Cubo de hielo",
+    extCord: "Cable de extensión",
+    humidifier: "Humidificador",
+    smokeChange: "Cambio Fumador/No fumador",
+  },
+  waitingApproval: "(En espera de aprobación)",
+  allFloors: "Todos los pisos",
+  cleaningBtn: "🧹 Limpieza",
+  amenityBtn: "🧴 Amenidad",
+},
+
 };
 
 // ========================
@@ -637,18 +671,33 @@ function checkAccessTime() {
         text-align:center;
         line-height:1.8;
         padding:20px;
+        overflow: auto;
       ">
+        <!-- 🇯🇵 日本語 -->
         <h2 style="margin-bottom:10px;">⏰ 現在はシステム利用時間外です</h2>
         <p>利用可能時間：07:00〜17:00</p>
         <p style="font-size:13px;color:#666;">※ 現在時刻：${currentTime}</p>
+
         <hr style="width:60%;margin:20px 0;border:none;border-top:1px solid #ccc;">
+
+        <!-- 🇧🇷 ポルトガル語 -->
         <h3 style="margin-bottom:6px;">⏰ O sistema está indisponível no momento</h3>
         <p>Horário de uso: 07:00〜17:00</p>
         <p style="font-size:13px;color:#666;">※ Hora atual: ${currentTime}</p>
+
         <hr style="width:60%;margin:20px 0;border:none;border-top:1px solid #ccc;">
+
+        <!-- 🇺🇸 英語 -->
         <h3 style="margin-bottom:6px;">⏰ System is currently unavailable</h3>
         <p>Available hours: 07:00〜17:00</p>
         <p style="font-size:13px;color:#666;">※ Current time: ${currentTime}</p>
+
+        <hr style="width:60%;margin:20px 0;border:none;border-top:1px solid #ccc;">
+
+        <!-- 🇪🇸 スペイン語 -->
+        <h3 style="margin-bottom:6px;">⏰ El sistema no está disponible en este momento</h3>
+        <p>Horario de uso: 07:00〜17:00</p>
+        <p style="font-size:13px;color:#666;">※ Hora actual: ${currentTime}</p>
       </div>
     `;
 
@@ -656,6 +705,7 @@ function checkAccessTime() {
     throw new Error("Access restricted during night hours.");
   }
 }
+
 
 // ページロード時に即チェック
 checkAccessTime();
