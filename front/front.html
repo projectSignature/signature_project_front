@@ -440,7 +440,7 @@ let globalId = 1
 //   "outofservice": "使用停止中",
 //   "unavailable": "未使用・閉鎖中"
 // };
-// const API_URL = "http://localhost:3000";
+// const API_URL = "https://squid-app-ug7x6.ondigitalocean.app";
 const API_URL = "https://squid-app-ug7x6.ondigitalocean.app"
 
 const map = document.getElementById("map");
@@ -1314,10 +1314,13 @@ async function handleExcelUpload(e) {
 
     // 🔹 A列（部屋番号）＋E列（清掃状態）抽出
     const result = [];
+    const guestUpdateList = {}; // ← 配列ではなくオブジェクトにする
+
     for (let i = 5; i < json.length; i++) {
       const row = json[i];
       const roomNoRaw = row[0];
-      const status = row[4]; // E列
+      const status = row[4];
+      const guestCount = row[5] ?? 0;
 
       if (!roomNoRaw || !status) continue;
 
@@ -1329,7 +1332,16 @@ async function handleExcelUpload(e) {
       if (status.includes("未清掃")) {
         result.push(roomNo);
       }
+
+      // ✅ ここを修正：キーに動的な部屋番号を使う
+      guestUpdateList[roomNo] = Number(guestCount) || 0;
     }
+
+
+
+
+    console.log(`result`,result)
+    console.log(`guetsUpdateList`,guestUpdateList)
 
     if (result.length === 0) {
       hideLoading();
@@ -1372,11 +1384,20 @@ async function handleExcelUpload(e) {
         room.classList.add("need_clean");
 
         // ✅ API送信用データ
+        // ✅ API送信用データ
         updatePayload.push({
           room_id: room.dataset.id,
           room_number: roomNo,
           status: "need_clean",
+          guest_count: Number(
+            json.find(r =>
+              String(r[0]).replace(/[０-９]/g, s => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
+                         .replace(/\s/g, "")
+                         .padStart(4, "0") === roomNo
+            )?.[5] || 0 // ← F列（人数）なければ0
+          ),
         });
+
       }
     }
 
@@ -1386,11 +1407,16 @@ async function handleExcelUpload(e) {
       return;
     }
 
+console.log('updatePayload',updatePayload)
     // ✅ API呼び出し
     const res = await fetch("https://squid-app-ug7x6.ondigitalocean.app/api/room/status/bulk", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ updates: updatePayload }),
+      body: JSON.stringify({
+          updates: updatePayload,           // ← 従来のステータス更新
+          updateGuestList: guestUpdateList  // ← 新規：全室の人数オブジェクト
+        }),
+
     });
 
     const resultJson = await res.json();
