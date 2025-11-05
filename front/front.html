@@ -403,6 +403,17 @@ const roomColors = {
 
 };
 
+const maxGuestsByType = {
+  TP: 2,
+  TS: 2,
+  TR: 2,
+  SM: 1,
+  TD: 3,
+  DS: 2,
+  TMS: 2,
+  TC: 2,
+};
+
 async function showLoading() {
   console.log('kokoni deteru')
   const overlay = document.getElementById("loadingOverlay");
@@ -514,7 +525,7 @@ async function loadRooms() {
           floorGuestCount += Number(r.guest_count || 0);
 
           room.innerHTML = `
-            <div class="room-header ${r.stay_type === "group" ? "group-border" : ""}">
+            <div class="room-header ${r.stay_type !== "group" ? "group-border" : ""}">
               ${r.room_number}<br><small>${r.room_type || "-"}</small>
             </div>
             <div class="room-guest">
@@ -541,9 +552,19 @@ async function loadRooms() {
 
           upBtn.addEventListener("click", (e) => {
             e.stopPropagation();
+
+            const roomType = r.room_type; // ← 部屋タイプ取得
+            const maxGuests = maxGuestsByType[roomType] || 2; // デフォルト2人
+
             let count = Number(room.dataset.guest_count);
+            if (count >= maxGuests) {
+              // alert(`⚠️ ${roomType}タイプは最大${maxGuests}名までです`);
+              return;
+            }
+
             updateDisplay(++count);
           });
+
 
           downBtn.addEventListener("click", (e) => {
             e.stopPropagation();
@@ -589,6 +610,9 @@ async function loadRooms() {
           room.addEventListener("dblclick", async (e) => {
             e.stopPropagation();
 
+            // ⛔ 人数ボタン上でのダブルクリックは無視
+            if (e.target.closest(".guest-btn")) return;
+
             // ⛔ シングルクリック処理キャンセル
             if (clickTimers.has(room)) {
               clearTimeout(clickTimers.get(room));
@@ -627,7 +651,7 @@ async function loadRooms() {
 
             r.stay_type = newType;
             const header = room.querySelector(".room-header");
-            if (newType === "group") {
+            if (newType !== "group") {
               header.classList.add("group-border");
             } else {
               header.classList.remove("group-border");
@@ -782,6 +806,7 @@ function getRoomColor(r) {
     "TP":"#d9b3ff",
     "TC": "#e6f2ff",
     "DS": "#ffe6e6",
+    "DSS":"#ffe6e6",
     "TR":"#a64dff"
   };
   return defaultColors[r.room_type] || "#eee";
@@ -1290,19 +1315,16 @@ async function handleExcelUpload(e) {
     // 🔹 A列（部屋番号）＋E列（清掃状態）抽出
     const result = [];
     for (let i = 5; i < json.length; i++) {
-      console.log(i, json[i]);
       const row = json[i];
       const roomNoRaw = row[0];
-
       const status = row[4]; // E列
 
       if (!roomNoRaw || !status) continue;
 
-      const roomNo = String(row[0])
-        .replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0)) // 全角→半角
-        .replace(/\s/g, "") // 空白除去
-        .padStart(4, "0"); // 常に4桁に統一
-
+      const roomNo = String(roomNoRaw)
+        .replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
+        .replace(/\s/g, "")
+        .padStart(4, "0");
 
       if (status.includes("未清掃")) {
         result.push(roomNo);
@@ -1315,33 +1337,44 @@ async function handleExcelUpload(e) {
       return;
     }
 
-    // ✅ ワンクッション確認
     const ok = confirm(`🧹 未清掃の ${result.length} 部屋を一括で「要清掃」に更新しますか？`);
     if (!ok) {
       hideLoading();
       return;
     }
 
-    console.log("🧾 更新対象:", result);
-
-    // 🔹 対象部屋のIDを取得してまとめる
     const roomsOnMap = document.querySelectorAll(".room");
     const updatePayload = [];
 
     for (const room of roomsOnMap) {
-      const roomNo = room.dataset.room;
+      const roomNo = String(room.dataset.room || "")
+        .replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
+        .replace(/\s/g, "")
+        .padStart(4, "0");
+
       if (result.includes(roomNo)) {
+        // ✅ ステータス変更（見た目更新）
         room.dataset.status = "need_clean";
+
+        // 🧩 borderクラスをリセット
+        room.classList.remove(
+          "need_clean",
+          "clean",
+          "checked",
+          "stay",
+          "group-border",
+          "checkout-border"
+        );
+
         const statusDiv = room.querySelector(".room-status");
         if (statusDiv) statusDiv.innerHTML = icons["need_clean"];
 
-        const currentClasses = room.className
-          .split(" ")
-          .filter((c) => !Object.keys(icons).includes(c));
-        room.className = [...currentClasses, "need_clean"].join(" ");
+        room.classList.add("need_clean");
 
+        // ✅ API送信用データ
         updatePayload.push({
           room_id: room.dataset.id,
+          room_number: roomNo,
           status: "need_clean",
         });
       }
@@ -1353,18 +1386,21 @@ async function handleExcelUpload(e) {
       return;
     }
 
-    // ✅ 一括APIで送信
+    // ✅ API呼び出し
     const res = await fetch("https://squid-app-ug7x6.ondigitalocean.app/api/room/status/bulk", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ updates: updatePayload }),
     });
 
+    const resultJson = await res.json();
     hideLoading();
 
-    const resultJson = await res.json();
     if (resultJson.success) {
       alert(`✅ ${resultJson.updated} 部屋のステータスを一括更新しました！`);
+
+      // 🔄 成功後に画面を再生成
+      await loadRooms(); // ← 再描画で全情報リフレッシュ
     } else {
       alert("⚠️ 一括更新に失敗しました。");
     }
@@ -1374,6 +1410,7 @@ async function handleExcelUpload(e) {
     alert("ファイルの読み込みに失敗しました。");
   }
 }
+
 
 document.getElementById("exportStatusBtn").addEventListener("click", exportRoomStatus);
 
