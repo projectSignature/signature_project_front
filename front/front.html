@@ -216,7 +216,8 @@ const icons = {
   stay_noclean: `<img src="./img/noclean.png" alt="連泊・清掃不要" class="icon-img">`,
   need_clean: `<img src="./img/seisou.png" alt="要清掃" class="icon-img">`,
   before_check: `<img src="./img/seisou.png" alt="清掃確認中" class="icon-img">`,
-  unused: `<img src="./img/notuse.png" alt="未使用" class="icon-img">`
+  unused: `<img src="./img/notuse.png" alt="未使用" class="icon-img">`,
+  checkOut: `<img src="./img/checkOut.png" alt="未使用" class="icon-img">`
 };
 
 
@@ -225,7 +226,8 @@ const statusLabels = {
   stay_clean: "連泊（清掃あり）",
   stay_noclean: "連泊（清掃不要）",
   need_clean: "要清掃",
-  unused: "未使用"
+  unused: "未使用",
+  checkOut:'チェックアウト'
 };
 
 
@@ -457,6 +459,7 @@ function hideLoading() {
 }
 
 let globalId = 1
+let globalBlukMode = false
 
 
 // const statusLabels = {
@@ -470,8 +473,8 @@ let globalId = 1
 //   "outofservice": "使用停止中",
 //   "unavailable": "未使用・閉鎖中"
 // };
-// const API_URL = "https://squid-app-ug7x6.ondigitalocean.app";
-const API_URL = "https://squid-app-ug7x6.ondigitalocean.app"
+// const API_URL = "http://localhost:3000";
+const API_URL = "http://localhost:3000"
 
 const map = document.getElementById("map");
 const legend = document.getElementById("legend");
@@ -872,6 +875,10 @@ function renderStatusOptions() {
   statusGrid.innerHTML = "";
 
   Object.entries(icons).forEach(([key, icon]) => {
+    console.log(key)
+    if(key==='checkOut'&&!bulkMode){
+      return
+    }
     const div = document.createElement("div");
     div.className = "status-option";
     div.innerHTML = `
@@ -894,7 +901,7 @@ function renderStatusOptions() {
         try {
           showLoading();
 
-          const res = await fetch("https://squid-app-ug7x6.ondigitalocean.app/api/room/status", {
+          const res = await fetch("http://localhost:3000/api/room/status", {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -929,26 +936,46 @@ function renderStatusOptions() {
         showLoading();
 
         for (const roomEl of selectedRoomsBulk) {
-          roomEl.dataset.status = key;
-          const statusDiv = roomEl.querySelector(".room-status");
-          if (statusDiv) statusDiv.innerHTML = icon;
-          // 現在のクラスを維持して、statusだけ上書き
+
+
+console.log(key)
+
+if(key==='checkOut'){
+  try {
+    statusDiv.classList.add('checkout-border');
+    await fetch("http://localhost:3000/api/room/status/checkOut/after", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        room_id: roomEl.dataset.id,
+        status: key,
+      }),
+    });
+  } catch (err) {
+    console.error(`❌ ${roomEl.dataset.room} 更新失敗`, err);
+  }
+}else{
+  roomEl.dataset.status = key;
+
+  const statusDiv = roomEl.querySelector(".room-status");
+  if (statusDiv) statusDiv.innerHTML = icon;
+  // 現在のクラスを維持して、statusだけ上書き
 const currentClasses = roomEl.className.split(" ").filter(c => !Object.keys(icons).includes(c));
 roomEl.className = [...currentClasses, key].join(" ");
+  try {
+    await fetch("http://localhost:3000/api/room/status", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        room_id: roomEl.dataset.id,
+        status: key,
+      }),
+    });
+  } catch (err) {
+    console.error(`❌ ${roomEl.dataset.room} 更新失敗`, err);
+  }
+}
 
-
-          try {
-            await fetch("https://squid-app-ug7x6.ondigitalocean.app/api/room/status", {
-              method: "PUT",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                room_id: roomEl.dataset.id,
-                status: key,
-              }),
-            });
-          } catch (err) {
-            console.error(`❌ ${roomEl.dataset.room} 更新失敗`, err);
-          }
         }
 
         hideLoading();
@@ -1060,7 +1087,7 @@ function renderAmenityOptions() {
         };
         try {
           showLoading();
-          const res = await fetch("https://squid-app-ug7x6.ondigitalocean.app/api/room/amenity", {
+          const res = await fetch("http://localhost:3000/api/room/amenity", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload)
@@ -1101,7 +1128,7 @@ async function handleReturn(location) {
 
   try {
     showLoading()
-    const res = await fetch("https://squid-app-ug7x6.ondigitalocean.app/api/room/amenity", {
+    const res = await fetch("http://localhost:3000/api/room/amenity", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
@@ -1163,7 +1190,7 @@ saveRoomDetailBtn.addEventListener("click", async () => {
 
   try {
     showLoading();
-    const res = await fetch("https://squid-app-ug7x6.ondigitalocean.app/api/room/details", {
+    const res = await fetch("http://localhost:3000/api/room/details", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
@@ -1203,7 +1230,7 @@ amenityListBtn.addEventListener("click", () => {
 async function loadAmenityRequests() {
   try {
     showLoading();
-    const res = await fetch("https://squid-app-ug7x6.ondigitalocean.app/api/room/amenity/list"); // ← 新API
+    const res = await fetch("http://localhost:3000/api/room/amenity/list"); // ← 新API
     hideLoading();
     if (!res.ok) throw new Error("API取得失敗");
 
@@ -1242,7 +1269,7 @@ async function completeAmenity(id) {
 
   try {
     showLoading();
-    const res = await fetch(`https://squid-app-ug7x6.ondigitalocean.app/api/room/amenity/${id}`, {
+    const res = await fetch(`http://localhost:3000/api/room/amenity/${id}`, {
       method: "DELETE"
     });
     const result = await res.json();
@@ -1302,7 +1329,6 @@ document.getElementById("bulkModeBtn").addEventListener("click", (e) => {
 
   e.target.classList.toggle("active", bulkMode);
   e.target.textContent = bulkMode ? "✅ 選択モード中" : "🧩 一括登録";
-
   document.querySelectorAll(".room").forEach((room) => {
     room.classList.remove("selected-bulk");
   });
@@ -1435,7 +1461,7 @@ async function handleExcelUpload(e) {
 
 console.log('updatePayload',updatePayload)
     // ✅ API呼び出し
-    const res = await fetch("https://squid-app-ug7x6.ondigitalocean.app/api/room/status/bulk", {
+    const res = await fetch("http://localhost:3000/api/room/status/bulk", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
