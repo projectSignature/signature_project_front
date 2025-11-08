@@ -71,7 +71,7 @@
 
 
 <!-- 🌟 アメニティ依頼モーダル -->
-<div id="amenityTypeModal" class="amenity-modal">
+<div id="amenityTypeModalTop" class="amenity-modal">
   <div class="amenity-modal-content">
     <h3>どの依頼をしますか？</h3>
 
@@ -1165,7 +1165,11 @@ async function changeGroupOrSingle(status, roomEl){
 
 // モーダル開閉関数
 function openModal(modal) { modal.style.display = "flex"; }
-function closeModal(modal) { modal.style.display = "none"; }
+function closeModal(modal) {
+  console.log(modal)
+  modal.style.display = "none";
+}
+
 closeButtons.forEach(btn => btn.onclick = () => closeModal(btn.closest(".modal")));
 window.onclick = (e) => {
   if (e.target.classList.contains("modal")) closeModal(e.target);
@@ -1177,8 +1181,8 @@ window.onclick = (e) => {
 // ============================
 
 const amenityBtn = document.getElementById("amenityBtn");
-const amenityTypeModal = document.getElementById("amenityTypeModal");
-// const amenityModal = document.getElementById("amenityModal");
+const amenityTypeModalTop = document.getElementById("amenityTypeModalTop");
+const amenityModal = document.getElementById("amenityModal");
 const amenityGrid = document.getElementById("amenityGrid");
 const returnModal = document.getElementById("returnModal");
 // const returnFrontBtn = document.getElementById("returnFrontBtn");
@@ -1193,17 +1197,26 @@ amenityBtn.disabled = false;
 // 🔸 「アメニティ・他依頼」クリック → 種類選択へ
 amenityBtn.addEventListener("click", () => {
   closeModal(actionModal);
-  openModal(amenityTypeModal);
+  openModal(amenityTypeModalTop);
 });
 
-// 🔸 交換／補充／回収ボタンを押したとき
+// 🔸 交換／補充／回収ボタンを押したときか
 document.querySelectorAll(".amenity-type-btn").forEach(btn => {
+
   btn.addEventListener("click", () => {
+      console.log('here')
     selectedAmenityType = btn.dataset.type;
-    closeModal(amenityTypeModal);
+    console.log(selectedAmenityType)
+    closeModal(amenityTypeModalTop);
     openModal(amenityModal);
     renderAmenityOptions();
   });
+});
+
+const closeAmenityModalBtn = document.querySelector(".close-btn-amenity-modal");
+
+closeAmenityModalBtn.addEventListener("click", () => {
+closeModal(amenityTypeModalTop)
 });
 
 // 🔸 アメニティ一覧
@@ -1731,7 +1744,7 @@ function showBulkConfirmModal() {
   });
 }
 
-const amenityModal = document.getElementById("amenityTypeModal");
+// const amenityModal = document.getElementById("amenityTypeModal");
 const otherBtn = document.getElementById("otherRequestBtn");
 const otherArea = document.getElementById("otherRequestArea");
 const sendOtherBtn = document.getElementById("sendOtherRequestBtn");
@@ -1779,15 +1792,10 @@ hideLoading()
 });
 
 // ✖ ボタンでモーダルを閉じる処理
-const closeAmenityModalBtn = document.querySelector(".close-btn-amenity-modal");
+
 // const amenityModal = document.getElementById("amenityTypeModal");
 
-closeAmenityModalBtn.addEventListener("click", () => {
-  amenityModal.style.display = "none";
-  // 入力欄をリセット
-  document.getElementById("otherRequestArea").classList.add("hidden");
-  document.getElementById("otherRequestInput").value = "";
-});
+
 
 const masterBtn = document.getElementById("masterBtn");
 const otherModal = document.getElementById("otherRequestListModal");
