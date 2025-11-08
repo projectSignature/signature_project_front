@@ -265,8 +265,8 @@ const icons = {
   before_check: `<img src="./img/seisou.png" alt="清掃確認中" class="icon-img">`,
   unused: `<img src="./img/notuse.png" alt="未使用" class="icon-img">`,
   checkOut: `<img src="./img/checkOut.png" alt="未使用" class="icon-img">`,
-  singleGuest :`<img src="./img/checkOut.png" alt="未使用" class="icon-img">`,
-  groupe :`<img src="./img/checkOut.png" alt="未使用" class="icon-img">`,
+  singleGuest :`<img src="./img/single.png" alt="未使用" class="icon-img">`,
+  groupe :`<img src="./img/grouped.png" alt="未使用" class="icon-img">`,
 };
 
 
@@ -996,7 +996,7 @@ if(key==='before_check'){
   return
 }
 
-    if ((key === 'checkOut' || key === 'singleGuest') && !bulkMode) {
+    if ((key === 'checkOut' || key === 'singleGuest' || key === 'groupe') && !bulkMode) {
 
       console.log('kokoknikiteru')
       return
