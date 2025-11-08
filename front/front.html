@@ -759,15 +759,16 @@ currentHotelId = room.dataset.hotel_id
           });
 
 
-          // 🖱️ 右クリック（滞在タイプ切替）
-          room.addEventListener("contextmenu", async (e) => {
-            e.preventDefault();
+          // 🖱️ 右クリック（滞在タイプ切替：即反応＋ブラウザメニュー抑止）
+          room.addEventListener("mousedown", async (e) => {
+            if (e.button !== 2) return; // 右クリック以外は無視
+            e.preventDefault();         // ブラウザ標準メニューを抑止
 
             const header = room.querySelector(".room-header");
-            const originalType = r.stay_type; // 元の状態を保持
+            const originalType = r.stay_type;
             const isCurrentlyGroup = originalType === "group";
 
-            // ✅ 即時見た目反映（UX向上）
+            // ✅ 即時見た目反映
             if (isCurrentlyGroup) {
               header.classList.remove("group-border");
               r.stay_type = "individual";
@@ -776,7 +777,7 @@ currentHotelId = room.dataset.hotel_id
               r.stay_type = "group";
             }
 
-            // トースト表示（仮の変更を伝える）
+            // 🧩 トースト表示
             const toast = document.createElement("div");
             toast.textContent = isCurrentlyGroup ? "👤 個別に変更中..." : "👥 グループに変更中...";
             toast.className = "toast";
@@ -786,14 +787,12 @@ currentHotelId = room.dataset.hotel_id
               const newType = await toggleStayType(r.id, r.hotel_id);
               if (!newType) throw new Error("切替処理に失敗");
 
-              // ✅ 成功時：トースト更新
               toast.textContent = newType === "group" ? "👥 グループに変更しました" : "👤 個別に変更しました";
               r.stay_type = newType;
-
             } catch (err) {
               console.error("滞在タイプ切替失敗:", err);
 
-              // ❌ 失敗時：見た目を元に戻す
+              // ❌ 失敗時に戻す
               if (isCurrentlyGroup) {
                 header.classList.add("group-border");
                 r.stay_type = "group";
@@ -801,13 +800,16 @@ currentHotelId = room.dataset.hotel_id
                 header.classList.remove("group-border");
                 r.stay_type = "individual";
               }
-
               toast.textContent = "⚠️ 切替に失敗しました";
             }
 
-            // 2秒後にトースト削除
             setTimeout(() => toast.remove(), 2000);
           });
+
+          // ✅ ブラウザ標準の右クリックメニューを無効化（フォールバック対策）
+          room.addEventListener("contextmenu", (e) => e.preventDefault());
+
+
 
 
 
