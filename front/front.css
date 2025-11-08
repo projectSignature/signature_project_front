@@ -782,6 +782,7 @@ header .total-guests {
      box-sizing: border-box;
      text-align: center;
      margin-right: 6px;
+     cursor: pointer;
    }
    .rooms {
      display: flex;
