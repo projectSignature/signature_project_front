@@ -763,24 +763,53 @@ currentHotelId = room.dataset.hotel_id
           room.addEventListener("contextmenu", async (e) => {
             e.preventDefault();
 
-            const newType = await toggleStayType(r.id, r.hotel_id);
-            if (!newType) return;
-
-            r.stay_type = newType;
             const header = room.querySelector(".room-header");
-            if (newType !== "group") {
-              header.classList.add("group-border");
-            } else {
+            const originalType = r.stay_type; // 元の状態を保持
+            const isCurrentlyGroup = originalType === "group";
+
+            // ✅ 即時見た目反映（UX向上）
+            if (isCurrentlyGroup) {
               header.classList.remove("group-border");
+              r.stay_type = "individual";
+            } else {
+              header.classList.add("group-border");
+              r.stay_type = "group";
             }
 
+            // トースト表示（仮の変更を伝える）
             const toast = document.createElement("div");
-            toast.textContent =
-              newType === "group" ? "👥 グループに変更" : "👤 個別に変更";
+            toast.textContent = isCurrentlyGroup ? "👤 個別に変更中..." : "👥 グループに変更中...";
             toast.className = "toast";
             document.body.appendChild(toast);
+
+            try {
+              const newType = await toggleStayType(r.id, r.hotel_id);
+              if (!newType) throw new Error("切替処理に失敗");
+
+              // ✅ 成功時：トースト更新
+              toast.textContent = newType === "group" ? "👥 グループに変更しました" : "👤 個別に変更しました";
+              r.stay_type = newType;
+
+            } catch (err) {
+              console.error("滞在タイプ切替失敗:", err);
+
+              // ❌ 失敗時：見た目を元に戻す
+              if (isCurrentlyGroup) {
+                header.classList.add("group-border");
+                r.stay_type = "group";
+              } else {
+                header.classList.remove("group-border");
+                r.stay_type = "individual";
+              }
+
+              toast.textContent = "⚠️ 切替に失敗しました";
+            }
+
+            // 2秒後にトースト削除
             setTimeout(() => toast.remove(), 2000);
           });
+
+
 
           // DOMへ追加
           roomsContainer.appendChild(room);
