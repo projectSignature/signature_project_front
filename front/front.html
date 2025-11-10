@@ -622,6 +622,12 @@ async function loadRooms() {
         roomsContainer.className = "rooms";
 
         floorRooms.forEach((r) => {
+
+          const local = savedRoomStatus?.[r.room_number]?.renpakuFlag;
+          const global = globalRoomStatus?.[r.room_number]?.renpakuFlag;
+          const renpakuFlag = local || global || "";
+          const isRenpaku = renpakuFlag === "S";
+
           const room = document.createElement("div");
           room.className = `room room-${r.room_number} ${r.status} type-${r.room_type}`;
           room.dataset.room = r.room_number;
@@ -641,10 +647,22 @@ async function loadRooms() {
               <span class="guest-count">${r.guest_count || 0}</span>
               <button class="guest-btn down">▽</button>
             </div>
-            <div class="room-status ${r.checkout_status === "after" ? "checkout-border" : ""}">
+            <div class="room-status">
               ${icons[r.status] || "?"}
             </div>
           `;
+
+          const statusDiv = room.querySelector(".room-status");
+          statusDiv.classList.remove("checkout-border", "renpaku-border");
+
+          // ✅ 初期表示の枠ルール
+          if (r.checkout_status === "after") {
+            if (isRenpaku) {
+              statusDiv.classList.add("renpaku-border");   // 🔵 連泊 → 別色
+            } else {
+              statusDiv.classList.add("checkout-border");  // 🔴 通常 → 赤枠
+            }
+          }
 
           // 🧩 人数操作イベント
           const guestCountEl = room.querySelector(".guest-count");
