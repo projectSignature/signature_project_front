@@ -252,6 +252,8 @@
 <script>
 const types = ["TP","TD","TM","SM","TC","DS"];
 const statuses = ["宿泊中","連泊中","掃除前","確認済","未使用"];
+
+let globalRoomStatus = {}
 // ===========================
 // 🏨 部屋状態アイコン一覧
 // ===========================
@@ -514,6 +516,7 @@ function hideLoading() {
 
 let globalId = 1
 let globalBlukMode = false
+let roomsDatas = []
 
 
 // const statusLabels = {
@@ -550,7 +553,25 @@ function scheduleGuestCountUpdate(roomId, newCount) {
     delete updateTimers[roomId];
   }, 1000);
 }
+let savedRoomStatus
 
+function saveRoomStatusToLocal() {
+  const hotelId = globalId || "default"; // 必要なら取得元合わせて
+  const keyName = `roomStatus_${hotelId}`;
+
+  localStorage.setItem(keyName, JSON.stringify(globalRoomStatus));
+  console.log("✅ 保存完了:", keyName);
+   savedRoomStatus= loadRoomStatusFromLocal();
+}
+
+function loadRoomStatusFromLocal() {
+  const hotelId = globalId || "default";
+  const keyName = `roomStatus_${hotelId}`;
+  const saved = localStorage.getItem(keyName);
+  return saved ? JSON.parse(saved) : {};
+}
+
+ savedRoomStatus= loadRoomStatusFromLocal();
 
 
 
@@ -663,6 +684,7 @@ async function loadRooms() {
           // 🟢 クリック・ダブルクリック共存処理（WeakMap版）
           // ================================
           room.addEventListener("click", (e) => {
+            console.log('koko')
             e.stopPropagation();
             currentRoomId = room.dataset.id;  // ← これで部屋のIDが入る
 currentHotelId = room.dataset.hotel_id
@@ -695,9 +717,9 @@ currentHotelId = room.dataset.hotel_id
             clickTimers.set(room, timer);
           });
 
-          // 🟣 ダブルクリック（チェックアウト状態切替）
           room.addEventListener("dblclick", async (e) => {
             e.stopPropagation();
+
 
             if (e.target.closest(".guest-btn")) return;
 
@@ -709,16 +731,32 @@ currentHotelId = room.dataset.hotel_id
             const statusDiv = room.querySelector(".room-status");
             const prevStatus = r.checkout_status;
             const optimisticStatus = prevStatus === "after" ? "before" : "after";
+//             const getStoege =
+// console.log(savedRoomStatus)
+console.log(r)
+            // ✅ 連泊（S）判定（優先順位：localStorage → globalRoomStatus）
+            const local = savedRoomStatus?.[r.room_number]?.renpakuFlag;
+            const global = globalRoomStatus?.[r.room_number]?.renpakuFlag;
+            const renpakuFlag = local || global || "";
+            const isRenpaku = renpakuFlag === "S";
 
-            // 🔹 先に即時UI反映（レスポンス待たない）
+            console.log(local)
+
+            // 🔹 UI即時反映
             r.checkout_status = optimisticStatus;
+
+            statusDiv.classList.remove("checkout-border", "renpaku-border");
+
             if (optimisticStatus === "after") {
-              statusDiv.classList.add("checkout-border");
-            } else {
-              statusDiv.classList.remove("checkout-border");
+              // ✅ チェックアウトON
+              if (isRenpaku) {
+                statusDiv.classList.add("renpaku-border"); // 🔵 Sの場合は別色
+              } else {
+                statusDiv.classList.add("checkout-border"); // 🔴 通常は赤
+              }
             }
 
-            // 🔹 トースト表示も即時出す
+            // トースト表示
             const toast = document.createElement("div");
             toast.textContent =
               optimisticStatus === "after"
@@ -728,25 +766,31 @@ currentHotelId = room.dataset.hotel_id
             document.body.appendChild(toast);
             setTimeout(() => toast.remove(), 1500);
 
-            // 🔹 バックエンド更新
+            // バックエンド反映
             const newStatus = await toggleCheckoutStatus(r.id);
 
-            // 🔹 成功 or 失敗の確定処理
+            // 成否確定処理
             if (!newStatus) {
-              // ❌ 失敗時はロールバック
+              // ❌ 失敗 → ロールバック
               r.checkout_status = prevStatus;
+              statusDiv.classList.remove("checkout-border", "renpaku-border");
+
               if (prevStatus === "after") {
-                statusDiv.classList.add("checkout-border");
-              } else {
-                statusDiv.classList.remove("checkout-border");
+                if (isRenpaku) {
+                  statusDiv.classList.add("renpaku-border");
+                } else {
+                  statusDiv.classList.add("checkout-border");
+                }
               }
+
               const failToast = document.createElement("div");
               failToast.textContent = "⚠️ 更新に失敗しました";
               failToast.className = "toast error";
               document.body.appendChild(failToast);
               setTimeout(() => failToast.remove(), 2000);
+
             } else {
-              // ✅ 成功時の確定表示
+              // ✅ 成功
               const okToast = document.createElement("div");
               okToast.textContent =
                 newStatus === "after"
@@ -757,6 +801,8 @@ currentHotelId = room.dataset.hotel_id
               setTimeout(() => okToast.remove(), 1500);
             }
           });
+
+
 
 
           // 🖱️ 右クリック（滞在タイプ切替：即反応＋ブラウザメニュー抑止）
@@ -1568,6 +1614,8 @@ async function handleExcelUpload(e) {
 
       if (!roomNoRaw || !status) continue;
 
+
+
       const roomNo = String(roomNoRaw)
         .replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
         .replace(/\s/g, "")
@@ -1576,8 +1624,23 @@ async function handleExcelUpload(e) {
         // ✅ 人数更新リスト
         guestUpdateList[roomNo] = Number(guestCount) || 0;
 
+        globalRoomStatus[roomNo] = {
+          status: status,
+          guestCount: guestUpdateList[roomNo],
+          renpakuFlag: renpakuFlag || "",
+        };
+
+
+        if(renpakuFlag === 'V'){
+          result.push({ roomNo, newStatus: "unused" });
+          continue
+        }
+
+
       // ✅ 清掃済み（または空欄）はスキップ
       if (status !== "未清掃") continue;
+
+      // unused
 
       // ✅ 未清掃のみ対象
       if (renpakuFlag === "S") {
@@ -1589,8 +1652,9 @@ async function handleExcelUpload(e) {
 
     }
 
+saveRoomStatusToLocal();
 
-
+console.log('globalRoomStatus',globalRoomStatus)
 
 
     console.log(`result`,result)
@@ -1880,6 +1944,8 @@ otherModal.addEventListener("click", (e) => {
     otherModal.style.display = "none";
   }
 });
+
+
 
 
 
