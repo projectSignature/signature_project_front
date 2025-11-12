@@ -270,7 +270,11 @@ async function loadTasks() {
     const roomData = await roomRes.json();
     const amenityData = await amenityRes.json();
 
-    let cleaningRooms = (roomData.rooms || []).filter(r => ["need_clean", "before_check"].includes(r.status));
+    // ✅ 清掃タスク抽出：need_cleaning と before_check の両方を対象
+    let cleaningRooms = (roomData.rooms || []).filter(r => {
+      const s = String(r.checkout_status || "");
+      return s === "after" || s === "before_check";
+    });
     let amenities = amenityData.requests || [];
 
     if (selectedFloor !== "all") {
