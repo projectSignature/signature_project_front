@@ -630,12 +630,29 @@ async function loadRooms() {
           const global = globalRoomStatus?.[r.room_number]?.renpakuFlag;
           const renpakuFlag = local || global || "";
           const isRenpaku = r.status === 'stay_clean'?true:false
+          let checkOutAndSatyFlag = false
 
+if(r.status==='before_check'){
+  const roomKey = padRoomNumber(r.room_number);
 
-          if(r.room_number==='421'){
-            console.log(r.status)
-                console.log(isRenpaku)
-          }
+  // ✅ Excelデータ取得
+  const ExcelData = JSON.parse(localStorage.getItem(`roomStatus_${globalId}`));
+  let excelRoom = null;
+  if (ExcelData && typeof ExcelData === "object") {
+    excelRoom = ExcelData[roomKey];
+  }
+  const local =
+    excelRoom?.renpakuFlag ||
+    savedRoomStatus?.[r.room_number]?.renpakuFlag || // ← 従来のデータも確認
+    null;
+  console.log(ExcelData)
+  console.log(local)
+  if(local==='S'){
+    checkOutAndSatyFlag = true
+  }
+
+}
+
 
           const room = document.createElement("div");
           room.className = `room room-${r.room_number} ${r.status} type-${r.room_type}`;
@@ -669,7 +686,7 @@ async function loadRooms() {
 
           // ✅ 初期表示の枠ルール
           if (r.checkout_status === "after") {
-            if (isRenpaku) {
+            if (isRenpaku||checkOutAndSatyFlag) {
               statusDiv.classList.add("renpaku-border");   // 🔵 連泊 → 別色
             } else {
               statusDiv.classList.add("checkout-border");  // 🔴 通常 → 赤枠
@@ -677,8 +694,6 @@ async function loadRooms() {
           }
 
           if(r.outOf)
-
-          console.log(r)
 
           // 🧩 人数操作イベント
           const guestCountEl = room.querySelector(".guest-count");
