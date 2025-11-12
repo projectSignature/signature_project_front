@@ -45,6 +45,7 @@
   <div class="legend-item"><span class="icon"><img src="./img/noclean.png" alt="連泊" class="icon-img"></span>連泊・清掃不要</div>
   <div class="legend-item"><span class="icon"><img src="./img/seisou.png" alt="連泊" class="icon-img"></span>要清掃</div>
   <div class="legend-item"><span class="icon"><img src="./img/notuse.png" alt="未使用" class="icon-img"></span>未使用</div>
+  <div class="legend-item"><span class="icon"><img src="./img/outOf.png" alt="未使用" class="icon-img"></span>故障部屋</div>
 
 </div>
 
@@ -267,8 +268,9 @@ const icons = {
   before_check: `<img src="./img/seisou.png" alt="清掃確認中" class="icon-img">`,
   unused: `<img src="./img/notuse.png" alt="未使用" class="icon-img">`,
   checkOut: `<img src="./img/checkOut.png" alt="未使用" class="icon-img">`,
-  singleGuest :`<img src="./img/single.png" alt="未使用" class="icon-img">`,
-  groupe :`<img src="./img/grouped.png" alt="未使用" class="icon-img">`,
+  singleGuest :`<img src="./img/single.png" alt="FIT" class="icon-img">`,
+  groupe :`<img src="./img/grouped.png" alt="団体" class="icon-img">`,
+  outOf:`<img src="./img/outOf.png" alt="故障部屋" class="icon-img">`
 };
 
 
@@ -280,7 +282,8 @@ const statusLabels = {
   unused: "未使用",
   checkOut:'チェックアウト',
   singleGuest:'FITへ変更',
-  groupe:'団体へ変更'
+  groupe:'団体へ変更',
+  outOf:'故障部屋へ変更'
 };
 
 
@@ -626,7 +629,13 @@ async function loadRooms() {
           const local = savedRoomStatus?.[r.room_number]?.renpakuFlag;
           const global = globalRoomStatus?.[r.room_number]?.renpakuFlag;
           const renpakuFlag = local || global || "";
-          const isRenpaku = renpakuFlag === "S";
+          const isRenpaku = r.status === 'stay_clean'?true:false
+
+
+          if(r.room_number==='421'){
+            console.log(r.status)
+                console.log(isRenpaku)
+          }
 
           const room = document.createElement("div");
           room.className = `room room-${r.room_number} ${r.status} type-${r.room_type}`;
@@ -647,10 +656,13 @@ async function loadRooms() {
               <span class="guest-count">${r.guest_count || 0}</span>
               <button class="guest-btn down">▽</button>
             </div>
-            <div class="room-status">
-              ${icons[r.status] || "?"}
+            <div class="room-status ${r.status === "outOf" ? "outof-status" : ""}">
+              ${r.status !== "outOf" ? (icons[r.status] || "?") : ""}
             </div>
           `;
+
+
+
 
           const statusDiv = room.querySelector(".room-status");
           statusDiv.classList.remove("checkout-border", "renpaku-border");
@@ -664,6 +676,10 @@ async function loadRooms() {
             }
           }
 
+          if(r.outOf)
+
+          console.log(r)
+
           // 🧩 人数操作イベント
           const guestCountEl = room.querySelector(".guest-count");
           const upBtn = room.querySelector(".guest-btn.up");
@@ -676,6 +692,7 @@ async function loadRooms() {
             updateTotals();
           };
 
+//客数の＋ボタン処理
           upBtn.addEventListener("click", (e) => {
             e.stopPropagation();
 
@@ -691,7 +708,7 @@ async function loadRooms() {
             updateDisplay(++count);
           });
 
-
+//客数の-ボタン処理
           downBtn.addEventListener("click", (e) => {
             e.stopPropagation();
             let count = Number(room.dataset.guest_count);
@@ -705,7 +722,7 @@ async function loadRooms() {
             console.log('koko')
             e.stopPropagation();
             currentRoomId = room.dataset.id;  // ← これで部屋のIDが入る
-currentHotelId = room.dataset.hotel_id
+            currentHotelId = room.dataset.hotel_id
 
             // 既存タイマーがあればキャンセル（多重防止）
             if (clickTimers.has(room)) {
@@ -735,6 +752,8 @@ currentHotelId = room.dataset.hotel_id
             clickTimers.set(room, timer);
           });
 
+          //ダブルクリック　※チェックアウト処理
+
           room.addEventListener("dblclick", async (e) => {
             e.stopPropagation();
 
@@ -749,16 +768,37 @@ currentHotelId = room.dataset.hotel_id
             const statusDiv = room.querySelector(".room-status");
             const prevStatus = r.checkout_status;
             const optimisticStatus = prevStatus === "after" ? "before" : "after";
-//             const getStoege =
-// console.log(savedRoomStatus)
-console.log(r)
-            // ✅ 連泊（S）判定（優先順位：localStorage → globalRoomStatus）
-            const local = savedRoomStatus?.[r.room_number]?.renpakuFlag;
-            const global = globalRoomStatus?.[r.room_number]?.renpakuFlag;
+            const roomKey = padRoomNumber(r.room_number);
+
+            // ✅ Excelデータ取得
+            const ExcelData = JSON.parse(localStorage.getItem(`roomStatus_${globalId}`));
+
+            // ✅ 4桁化関数
+            // const roomKey = (num) => num.toString().padStart(4, "0");
+
+            console.log(roomKey)
+
+            // ✅ Excelデータがある場合はそちらを優先
+            let excelRoom = null;
+            if (ExcelData && typeof ExcelData === "object") {
+              excelRoom = ExcelData[roomKey];
+            }
+
+            console.log("Excelデータ取得:", excelRoom);
+
+            // ✅ renpakuFlag の優先順位
+            const local =
+              excelRoom?.renpakuFlag ||
+              savedRoomStatus?.[r.room_number]?.renpakuFlag || // ← 従来のデータも確認
+              null;
+
+            const global = globalRoomStatus?.[r.room_number]?.renpakuFlag;　//エクセル優先
             const renpakuFlag = local || global || "";
             const isRenpaku = renpakuFlag === "S";
+            const status = isRenpaku ? 'stay_clean':'need_clean'
 
-            console.log(local)
+
+
 
             // 🔹 UI即時反映
             r.checkout_status = optimisticStatus;
@@ -785,7 +825,7 @@ console.log(r)
             setTimeout(() => toast.remove(), 1500);
 
             // バックエンド反映
-            const newStatus = await toggleCheckoutStatus(r.id);
+            const newStatus = await toggleCheckoutStatus(r.id,status);
 
             // 成否確定処理
             if (!newStatus) {
@@ -887,6 +927,16 @@ console.log(r)
         totalGuestCount += floorGuestCount;
       });
 
+      // 親要素を取得（例: すべての room-status に対して）
+document.querySelectorAll(".room-status.outof-status").forEach((el) => {
+  const width = el.offsetWidth;
+  const height = el.offsetHeight;
+  // 角度 = atan(高さ / 幅)
+  const angle = Math.atan(height / width) * (180 / Math.PI);
+  el.style.setProperty("--diag-angle", `${angle}deg`);
+});
+
+
     // ✅ 全体人数更新
     updateHeaderTotal(totalGuestCount);
 
@@ -906,6 +956,10 @@ console.log(r)
     console.error("❌ 部屋データ取得エラー:", err);
     map.innerHTML = `<p style="color:red;">データ取得に失敗しました。</p>`;
   }
+}
+
+function padRoomNumber(num) {
+  return num.toString().padStart(4, "0");
 }
 
 
@@ -932,12 +986,12 @@ async function toggleStayType(roomId) {
   }
 }
 
-async function toggleCheckoutStatus(roomId) {
+async function toggleCheckoutStatus(roomId,newStatus) {//ここは他でつかってないかチェック必要
   try {
     const res = await fetch(`${API_URL}/api/room/${roomId}/checkout_status`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ hotel_id: globalId  }),
+      body: JSON.stringify({ hotel_id: globalId,status:newStatus  }),
     });
 
     const data = await res.json();
@@ -1081,8 +1135,26 @@ if(key==='before_check'){
         }
 
         selectedRoom.dataset.status = key;
-        selectedRoom.querySelector(".room-status").innerHTML = icon;
-        selectedRoom.className = `room room-${selectedRoom.dataset.room} ${key}`;
+        console.log(key)
+        if (key === 'outOf') {
+          // .room-status 要素を取得
+          const statusDiv = selectedRoom.querySelector('.room-status');
+          if (statusDiv) {
+            statusDiv.className = 'room-status outof-status';
+            statusDiv.innerHTML = ''; // outOfは×マークだけなので中身消す
+          }
+        } else {
+          const statusDiv = selectedRoom.querySelector('.room-status');
+          if (statusDiv) {
+            statusDiv.className = 'room-status'; // ←ステータスの基本クラスに戻す
+            statusDiv.innerHTML = icon; // ←通常アイコンを表示
+          }
+
+          // ルーム本体側はそのまま維持（部屋番号など残す）
+          selectedRoom.className = `room room-${selectedRoom.dataset.room} ${key}`;
+        }
+
+
 
         try {
           showLoading();
@@ -1654,18 +1726,23 @@ async function handleExcelUpload(e) {
           continue
         }
 
+        if(renpakuFlag === 'X'){
+          result.push({ roomNo, newStatus: "outOf" });
+          continue
+        }
+
 
       // ✅ 清掃済み（または空欄）はスキップ
-      if (status !== "未清掃") continue;
+        if (status !== "未清掃") continue;
 
       // unused
 
-      // ✅ 未清掃のみ対象
-      if (renpakuFlag === "S") {
-        result.push({ roomNo, newStatus: "stay_clean" });
-      } else {
-        result.push({ roomNo, newStatus: "need_clean" });
-      }
+        // ✅ 未清掃のみ対象
+        if (renpakuFlag === "S") {
+          result.push({ roomNo, newStatus: "stay_clean" });
+        } else {
+          result.push({ roomNo, newStatus: "need_clean" });
+        }
 
 
     }
