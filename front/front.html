@@ -685,7 +685,7 @@ if(r.status==='before_check'){
           statusDiv.classList.remove("checkout-border", "renpaku-border");
 
           // ✅ 初期表示の枠ルール
-          if (r.checkout_status === "after") {
+          if (r.checkout_status === "after"&&r.status!=='checked') {
             if (isRenpaku||checkOutAndSatyFlag) {
               statusDiv.classList.add("renpaku-border");   // 🔵 連泊 → 別色
             } else {
@@ -693,7 +693,7 @@ if(r.status==='before_check'){
             }
           }
 
-          if(r.outOf)
+          // if(r.outOf)
 
           // 🧩 人数操作イベント
           const guestCountEl = room.querySelector(".guest-count");
