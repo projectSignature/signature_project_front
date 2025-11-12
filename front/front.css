@@ -51,13 +51,13 @@ html, body {
 
 
 
-/* ===== アイコンを見やすく改善 ===== */
-.room-status {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-}
+  .room-status {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 98%;
+      height: 40%;
+  }
 
 .room .icon,
 .room-status {
@@ -942,7 +942,7 @@ header .total-guests {
     background: #fff;
     border-radius: 12px;
     padding: 20px;
-    width: 320px;
+    width: 650px;
     text-align: center;
     position: relative;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
@@ -1156,4 +1156,33 @@ header .total-guests {
 /* 連泊（S）のとき用の枠色＝青例 */
 .renpaku-border {
   border: 3px solid #4a90e2;
+}
+.room-status.outof-status {
+  position: relative;
+  border: 1px dashed black;
+  box-sizing: border-box;
+  overflow: hidden; /* はみ出し防止 */
+}
+
+/* × の斜線 */
+.room-status.outof-status::before,
+.room-status.outof-status::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 150%; /* ← 対角線分しっかり届くように */
+  height: 1px;
+  border-top: 1px dashed black;
+  transform-origin: center;
+}
+
+/* ／方向 */
+.room-status.outof-status::before {
+  transform: translate(-50%, -50%) rotate(var(--diag-angle, 45deg));
+}
+
+/* ＼方向 */
+.room-status.outof-status::after {
+  transform: translate(-50%, -50%) rotate(calc(-1 * var(--diag-angle, 45deg)));
 }
