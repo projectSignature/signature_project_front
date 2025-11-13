@@ -270,7 +270,8 @@ const icons = {
   checkOut: `<img src="./img/checkOut.png" alt="未使用" class="icon-img">`,
   singleGuest :`<img src="./img/single.png" alt="FIT" class="icon-img">`,
   groupe :`<img src="./img/grouped.png" alt="団体" class="icon-img">`,
-  outOf:`<img src="./img/outOf.png" alt="故障部屋" class="icon-img">`
+  outOf:`<img src="./img/outOf.png" alt="故障部屋" class="icon-img">`,
+  stay_amenytyOnliy:`<img src="./img/amenityOnly.png" class="icon-img">`,
 };
 
 
@@ -278,6 +279,8 @@ const statusLabels = {
   checked: "チェック済み",
   stay_clean: "連泊（清掃あり）",
   stay_noclean: "連泊（清掃不要）",
+  stay_amenytyOnliy: "連泊(清掃不要)<br>アメニティ追加",
+
   need_clean: "要清掃",
   unused: "未使用",
   checkOut:'チェックアウト',
@@ -592,6 +595,11 @@ async function loadRooms() {
     const rooms = data.rooms || [];
     const grouped = groupByFloor(rooms);
 
+    globalRoomStatus=rooms
+    // saveRoomStatusToLocal()
+
+    console.log(grouped)
+
     map.innerHTML = "";
     let totalGuestCount = 0;
 
@@ -629,29 +637,14 @@ async function loadRooms() {
           const local = savedRoomStatus?.[r.room_number]?.renpakuFlag;
           const global = globalRoomStatus?.[r.room_number]?.renpakuFlag;
           const renpakuFlag = local || global || "";
-          const isRenpaku = r.status === 'stay_clean'?true:false
+          const isRenpaku = r.status === 'stay_clean' && r.excel_status==='S'?true:false
           let checkOutAndSatyFlag = false
 
-if(r.status==='before_check'){
-  const roomKey = padRoomNumber(r.room_number);
+          console.log(`r`,r)
 
-  // ✅ Excelデータ取得
-  const ExcelData = JSON.parse(localStorage.getItem(`roomStatus_${globalId}`));
-  let excelRoom = null;
-  if (ExcelData && typeof ExcelData === "object") {
-    excelRoom = ExcelData[roomKey];
-  }
-  const local =
-    excelRoom?.renpakuFlag ||
-    savedRoomStatus?.[r.room_number]?.renpakuFlag || // ← 従来のデータも確認
-    null;
-  console.log(ExcelData)
-  console.log(local)
-  if(local==='S'){
-    checkOutAndSatyFlag = true
-  }
-
-}
+            if(r.status==='before_check'&&r.excel_statu==='S'){
+                checkOutAndSatyFlag = true
+            }
 
 
           const room = document.createElement("div");
@@ -678,10 +671,19 @@ if(r.status==='before_check'){
             </div>
           `;
 
+                    const statusDiv = room.querySelector(".room-status");
 
 
+if(r.room_number==='406'||r.room_number==='407'){
+  console.log('未使用部屋だよ！')
+  statusDiv.classList.remove("checkout-border", "renpaku-border");
+  statusDiv.classList.add("mishiyou-room");
+  statusDiv.innerHTML=""
+  roomsContainer.appendChild(room);
+return
+}
 
-          const statusDiv = room.querySelector(".room-status");
+
           statusDiv.classList.remove("checkout-border", "renpaku-border");
 
           // ✅ 初期表示の枠ルール
@@ -785,31 +787,8 @@ if(r.status==='before_check'){
             const optimisticStatus = prevStatus === "after" ? "before" : "after";
             const roomKey = padRoomNumber(r.room_number);
 
-            // ✅ Excelデータ取得
-            const ExcelData = JSON.parse(localStorage.getItem(`roomStatus_${globalId}`));
 
-            // ✅ 4桁化関数
-            // const roomKey = (num) => num.toString().padStart(4, "0");
 
-            console.log(roomKey)
-
-            // ✅ Excelデータがある場合はそちらを優先
-            let excelRoom = null;
-            if (ExcelData && typeof ExcelData === "object") {
-              excelRoom = ExcelData[roomKey];
-            }
-
-            console.log("Excelデータ取得:", excelRoom);
-
-            // ✅ renpakuFlag の優先順位
-            const local =
-              excelRoom?.renpakuFlag ||
-              savedRoomStatus?.[r.room_number]?.renpakuFlag || // ← 従来のデータも確認
-              null;
-
-            const global = globalRoomStatus?.[r.room_number]?.renpakuFlag;　//エクセル優先
-            const renpakuFlag = local || global || "";
-            const isRenpaku = renpakuFlag === "S";
             const status = isRenpaku ? 'stay_clean':'need_clean'
 
 
@@ -944,6 +923,14 @@ if(r.status==='before_check'){
 
       // 親要素を取得（例: すべての room-status に対して）
 document.querySelectorAll(".room-status.outof-status").forEach((el) => {
+  const width = el.offsetWidth;
+  const height = el.offsetHeight;
+  // 角度 = atan(高さ / 幅)
+  const angle = Math.atan(height / width) * (180 / Math.PI);
+  el.style.setProperty("--diag-angle", `${angle}deg`);
+});
+
+document.querySelectorAll(".room-status.mishiyou-room").forEach((el) => {
   const width = el.offsetWidth;
   const height = el.offsetHeight;
   // 角度 = atan(高さ / 幅)
@@ -1719,8 +1706,6 @@ async function handleExcelUpload(e) {
 
       if (!roomNoRaw || !status) continue;
 
-
-
       const roomNo = String(roomNoRaw)
         .replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
         .replace(/\s/g, "")
@@ -1737,46 +1722,39 @@ async function handleExcelUpload(e) {
 
 
         if(renpakuFlag === 'V'){
-          result.push({ roomNo, newStatus: "unused" });
+          result.push({ roomNo, newStatus: "unused",excelStatus:renpakuFlag,seisouFlag:status});
           continue
         }
 
         if(renpakuFlag === 'X'){
-          result.push({ roomNo, newStatus: "outOf" });
+          result.push({ roomNo, newStatus: "outOf",excelStatus:renpakuFlag,seisouFlag:status});
+          continue
+        }
+
+        if (status === '未清掃' && renpakuFlag === "S") {
+          newStatus = "stay_clean"
+          result.push({ roomNo, newStatus: "stay_clean",excelStatus:renpakuFlag,seisouFlag:status});
+          continue
+        }else if(status === '清掃' && renpakuFlag === "S"){
+          result.push({ roomNo, newStatus:  "stay_noclean",excelStatus:renpakuFlag,seisouFlag:status});
+        } else if(status === '未清掃') {
+          result.push({ roomNo, newStatus:  "need_clean",excelStatus:renpakuFlag,seisouFlag:status});
           continue
         }
 
 
-      // ✅ 清掃済み（または空欄）はスキップ
-        if (status !== "未清掃") continue;
 
-      // unused
-
-        // ✅ 未清掃のみ対象
-        if (renpakuFlag === "S") {
-          result.push({ roomNo, newStatus: "stay_clean" });
-        } else {
-          result.push({ roomNo, newStatus: "need_clean" });
-        }
+        result.push({roomNo, newStatus:status,excelStatus:renpakuFlag,seisouFlag:status})
 
 
     }
 
-saveRoomStatusToLocal();
-
-console.log('globalRoomStatus',globalRoomStatus)
+    console.log(result)
 
 
-    console.log(`result`,result)
-    console.log(`guetsUpdateList`,guestUpdateList)
 
-    if (result.length === 0) {
-      hideLoading();
-      alert("未清掃の部屋はありません。");
-      return;
-    }
 
-    const ok = confirm(`🧹 未清掃の ${result.length} 部屋を一括で「要清掃」に更新しますか？`);
+    const ok = confirm(`エクセルデータのステータスに変更しますか？`);
     if (!ok) {
       hideLoading();
       return;
@@ -1794,20 +1772,21 @@ console.log('globalRoomStatus',globalRoomStatus)
       const match = result.find(r => r.roomNo === roomNo);
       if (!match) continue;
 
-      const newStatus = match.newStatus;
 
-      room.dataset.status = newStatus;
-      room.classList.remove("need_clean", "clean", "checked", "stay", "group-border", "checkout-border");
-
-      const statusDiv = room.querySelector(".room-status");
-      if (statusDiv) statusDiv.innerHTML = icons[newStatus];
-      room.classList.add(newStatus);
+      // room.dataset.status = newStatus;
+      // room.classList.remove("need_clean", "clean", "checked", "stay", "group-border", "checkout-border");
+      //
+      // const statusDiv = room.querySelector(".room-status");
+      // if (statusDiv) statusDiv.innerHTML = icons[newStatus];
+      // room.classList.add(newStatus);
 
       updatePayload.push({
         room_id: room.dataset.id,
         room_number: roomNo,
-        status: newStatus,
+        status: match.newStatus,
         guest_count: guestUpdateList[roomNo] || 0,
+        excel_status:match.excelStatus,
+        clean_flag:match.seisouFlag
       });
     }
 
@@ -1820,6 +1799,7 @@ console.log('globalRoomStatus',globalRoomStatus)
     }
 
 console.log('updatePayload',updatePayload)
+    // return
     // ✅ API呼び出し
     const res = await fetch("https://squid-app-ug7x6.ondigitalocean.app/api/room/status/bulk", {
       method: "PUT",
