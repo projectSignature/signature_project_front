@@ -1186,3 +1186,33 @@ header .total-guests {
 .room-status.outof-status::after {
   transform: translate(-50%, -50%) rotate(calc(-1 * var(--diag-angle, 45deg)));
 }
+
+.room-status.mishiyou-room {
+  position: relative;
+  border: 1px solid black;
+  box-sizing: border-box;
+  overflow: hidden; /* はみ出し防止 */
+}
+
+/* × の斜線 */
+.room-status.mishiyou-room::before,
+.room-status.mishiyou-room::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 150%; /* ← 対角線分しっかり届くように */
+  height: 1px;
+  border-top: 1px solid black;
+  transform-origin: center;
+}
+
+/* ／方向 */
+.room-status.mishiyou-room::before {
+  transform: translate(-50%, -50%) rotate(var(--diag-angle, 45deg));
+}
+
+/* ＼方向 */
+.room-status.mishiyou-room::after {
+  transform: translate(-50%, -50%) rotate(calc(-1 * var(--diag-angle, 45deg)));
+}
