@@ -789,7 +789,7 @@ return
 
 
 
-            const status = isRenpaku ? 'stay_clean':'need_clean'
+            const status = r.excel_status==='S' ? 'stay_clean':'need_clean'
 
 
 
@@ -801,7 +801,7 @@ return
 
             if (optimisticStatus === "after") {
               // ✅ チェックアウトON
-              if (isRenpaku) {
+              if (r.excel_status==='S') {
                 statusDiv.classList.add("renpaku-border"); // 🔵 Sの場合は別色
               } else {
                 statusDiv.classList.add("checkout-border"); // 🔴 通常は赤
