@@ -452,8 +452,8 @@ async function loadTasks() {
 
     // ✅ 清掃タスク抽出：need_cleaning と before_check の両方を対象
     let cleaningRooms = (roomData.rooms || []).filter(r => {
-      const s = String(r.status || "");
-      return s === "need_clean" || s === "before_check";
+      const s = String(r.checkout_status || "");
+      return s === "after" || s === "before_check";
     });
 
 
@@ -596,13 +596,13 @@ function renderTasks(cleaningRooms, amenities) {
 // 🔹 完了処理
 // ========================
 async function completeCleaning(id) {
-  if (!confirm(t[currentLang].confirmCleaning)) return;
+  // if (!confirm(t[currentLang].confirmCleaning)) return;
   await fetch(API_UPDATE_STATUS, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ room_id: id, status: "before_check" })
   });
-  alert("✅ 清掃完了（確認待ち）に変更しました。");
+  // alert("✅ 清掃完了（確認待ち）に変更しました。");
   loadTasks();
 }
 
@@ -708,7 +708,7 @@ function checkAccessTime() {
 
 
 // ページロード時に即チェック
-checkAccessTime();
+// checkAccessTime();
 
 
 
