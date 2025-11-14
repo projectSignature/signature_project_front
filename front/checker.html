@@ -345,7 +345,7 @@ async function startCleaning(id) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ room_id: id, status: "before_check" })
   });
-  alert(t[currentLang].alertStarted);
+  // alert(t[currentLang].alertStarted);
   loadTasks();
 }
 async function confirmCleaning(id) {
@@ -355,7 +355,7 @@ async function confirmCleaning(id) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ room_id: id, status: "checked" })
   });
-  alert(t[currentLang].alertConfirmed);
+  // alert(t[currentLang].alertConfirmed);
   loadTasks();
 }
 async function rejectCleaning(id) {
