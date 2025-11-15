@@ -1,0 +1,322 @@
+body {
+  margin: 0;
+  font-family: "Segoe UI", "Noto Sans JP", "Noto Sans", sans-serif;
+  background: #f2f5f7;
+  color: #333;
+  padding-bottom: 80px;
+}
+header {
+  position: sticky;
+  top: 0;
+  background: #007bff;
+  color: white;
+  padding: 12px 16px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  z-index: 10
+}
+#refreshBtn, #langSelect {
+  position: absolute;
+  top: 10px;
+  background: white;
+  color: #007bff;
+  border: none;
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-size: 13px;
+  cursor: pointer;
+}
+#refreshBtn { right: 16px; }
+#langSelect { left: 16px; padding: 4px 8px; }
+
+#taskContainer {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+
+.room-number {
+  font-size: 18px;
+  font-weight: bold;
+}
+.task-type {
+  font-size: 14px;
+  color: #007bff;
+  font-weight: bold;
+}
+.task-notes {
+  font-size: 13px;
+  color: #555;
+}
+.task-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+.complete-btn {
+  background: linear-gradient(135deg, #28a745, #32c85d);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.complete-btn:hover {
+  background: linear-gradient(135deg, #218838, #28a745);
+}
+
+/* ===== ローディングオーバーレイ ===== */
+#loadingOverlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(255, 255, 255, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  font-size: 18px;
+  font-weight: bold;
+  color: #007bff;
+  flex-direction: column;
+  backdrop-filter: blur(2px);
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+#loadingOverlay.visible {
+  visibility: visible;
+  opacity: 1;
+}
+.loader {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #007bff;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 10px;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+#filterBar {
+display: flex;
+justify-content: space-between;
+align-items: center;
+background: #ffffff;
+padding: 8px 12px;
+box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+position: sticky;
+top: 48px; /* headerの高さ */
+z-index: 10;
+}
+
+#floorSelect {
+font-size: 15px;
+padding: 5px 8px;
+border-radius: 6px;
+border: 1px solid #ccc;
+}
+
+#taskFilterButtons {
+display: flex;
+gap: 8px;
+}
+
+#taskFilterButtons button {
+padding: 6px 12px;
+border: none;
+border-radius: 8px;
+background: #e0e0e0;
+cursor: pointer;
+font-weight: bold;
+}
+
+#taskFilterButtons button.active {
+background: #007bff;
+color: #fff;
+}
+
+.filter-btn {
+background: white;
+border: 1px solid #007bff;
+color: #007bff;
+border-radius: 8px;
+padding: 6px 12px;
+cursor: pointer;
+font-weight: bold;
+}
+.filter-btn.active {
+background: #007bff;
+color: white;
+}
+
+
+
+.task-card {
+width: 90%;
+padding: 16px;
+margin-bottom: 14px;
+border-radius: 14px;
+background: linear-gradient(135deg, rgba(255,255,255,0.85), rgba(255,255,255,0.95));
+backdrop-filter: blur(4px);
+border: 1px solid rgba(0,0,0,0.06);
+box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.task-card:not(.disabled-card):hover {
+transform: translateY(-3px);
+box-shadow: 0 6px 14px rgba(0,0,0,0.22);
+}
+
+.task-room-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+
+.room-number {
+font-size: 1.35rem;
+font-weight: 700;
+letter-spacing: 1px;
+}
+
+.icon-area img.icon-img {
+width: 40px;
+height: 40px;
+padding: 8px;
+border-radius: 50%;
+background: rgba(255,255,255,0.6);
+box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+
+.task-buttons {
+margin-top: 14px;
+display: flex;
+gap: 10px;
+}
+
+.btn {
+flex: 1;
+padding: 10px 12px;
+border-radius: 30px;
+border: none;
+font-size: 0.95rem;
+font-weight: 600;
+cursor: pointer;
+color: #fff;
+transition: opacity 0.2s ease, transform 0.15s ease;
+}
+
+.btn:hover {
+opacity: 0.85;
+transform: scale(1.02);
+}
+
+.start-btn { background: #009ffd; }
+.done-btn  { background: #2ecc71; }
+.undo-btn  { background: #ff7675; }
+
+/* before 無効化デザイン：ガラス風フェード */
+.disabled-card {
+opacity: 0.55;
+pointer-events: none;
+filter: grayscale(40%) brightness(0.9);
+}
+
+
+.start-btn { background: #74cfff; }
+.done-btn { background: #7cff9c; }
+.undo-btn { background: #ff7979; }
+
+.icon-img {
+width: 32px;
+height: 32px;
+}
+
+.single-btn {
+display: flex;
+justify-content: center;
+}
+
+.single-btn .undo-btn {
+width: 60%;
+font-size: 1rem;
+}
+/* =============================
+   🔵 共通ボタンデザイン
+============================= */
+.task-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.task-buttons .btn {
+  flex: 1;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  color: white;
+  transition: 0.2s ease;
+}
+
+/* =============================
+   🟠 清掃前に戻す（revert-btn）
+============================= */
+.revert-btn {
+  background-color: #ff9800;    /* オレンジ */
+}
+.revert-btn:hover {
+  background-color: #fb8c00;
+}
+.revert-btn:active {
+  background-color: #ef6c00;
+}
+
+/* =============================
+   🟢 清掃完了（done-btn）
+============================= */
+.done-btn {
+  background-color: #4caf50;    /* グリーン */
+}
+.done-btn:hover {
+  background-color: #43a047;
+}
+.done-btn:active {
+  background-color: #2e7d32;
+}
+
+/* =============================
+   🔵 確認済み（checked-btn）
+============================= */
+.checked-btn {
+  background-color: #2196f3;    /* 青 */
+}
+.checked-btn:hover {
+  background-color: #1e88e5;
+}
+.checked-btn:active {
+  background-color: #1976d2;
+}
+
+/* =============================
+   🔒 無効状態（必要なら）
+============================= */
+.btn:disabled {
+  background-color: #cfd8dc;
+  color: #777;
+  cursor: not-allowed;
+  box-shadow: none;
+}
