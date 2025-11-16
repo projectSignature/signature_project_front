@@ -165,7 +165,7 @@ width: 90%;
 padding: 16px;
 margin-bottom: 14px;
 border-radius: 14px;
-background: linear-gradient(135deg, rgba(255,255,255,0.85), rgba(255,255,255,0.95));
+/* background: linear-gradient(135deg, rgba(255,255,255,0.85), rgba(255,255,255,0.95)); */
 backdrop-filter: blur(4px);
 border: 1px solid rgba(0,0,0,0.06);
 box-shadow: 0 3px 8px rgba(0,0,0,0.15);
@@ -319,4 +319,26 @@ font-size: 1rem;
   color: #777;
   cursor: not-allowed;
   box-shadow: none;
+}
+
+#summaryContainer {
+  display: flex;
+  gap: 12px;
+  margin: 10px 0;
+}
+
+.summary-box {
+  background: #fff;
+  border-radius: 10px;
+  padding: 10px 14px;
+  box-shadow: 0px 2px 6px rgba(0,0,0,0.15);
+  font-size: 15px;
+  font-weight: 600;
+  color: #444;
+}
+
+.summary-box span.number {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ff8800; /* オレンジで強調 */
 }
