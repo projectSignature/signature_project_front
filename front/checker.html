@@ -35,8 +35,11 @@
       <option value="12">12F</option>
     </select>
 
-    <button id="btnShowCleaning" class="filter-btn active">🧹 清掃</button>
-    <button id="btnShowAmenity" class="filter-btn">🧴 アメニティ</button>
+  </select>
+  <div id="summaryContainer">
+    <div id="cleansRooms" class="summary-box"></div>
+    <div id="cleansRoomsInitial" class="summary-box"></div>
+  </div>
   </div>
 
 
@@ -157,6 +160,9 @@ cleaningStatusLabel: {
   done: "清掃完了",
   checked: "確認済み"
 },
+cleaningToDo: "掃除対象",
+cleaningStarted: "開始済み",
+
 
 
 
@@ -210,7 +216,7 @@ actionTypesFixed: {
   collect: "Coleta"
 },
 inspectorButtons: {
-  revert: "⤺ Não limpo",
+  revert: "⤺ Refazer",
   done:   "✅ Limpeza concluída",
   checked:"✔ Confirmado"
 },
@@ -220,6 +226,8 @@ cleaningStatusLabel: {
   done: "Limpo",
   checked: "Limpo confirmado"
 },
+cleaningToDo: "Para limpar",
+cleaningStarted: "Abertos",
 
 
 
@@ -294,7 +302,8 @@ cleaningStatusLabel: {
   done: "Cleaned",
   checked: "Confirmed"
 },
-
+cleaningToDo: "To clean",
+cleaningStarted: "Started",
 
 
 },
@@ -369,6 +378,8 @@ cleaningStatusLabel: {
   done: "Limpio",
   checked: "Confirmado"
 },
+cleaningToDo: "Para limpiar",
+cleaningStarted: "Abiertos",
 
 
 },
@@ -440,17 +451,17 @@ langSelect.addEventListener("change", () => {
 });
 
 
-btnCleaning.addEventListener("click", () => {
-  btnCleaning.classList.add("active");
-  btnAmenity.classList.remove("active");
-  applyFilters();
-});
-
-btnAmenity.addEventListener("click", () => {
-  btnAmenity.classList.add("active");
-  btnCleaning.classList.remove("active");
-  applyFilters();
-});
+// btnCleaning.addEventListener("click", () => {
+//   btnCleaning.classList.add("active");
+//   btnAmenity.classList.remove("active");
+//   applyFilters();
+// });
+//
+// btnAmenity.addEventListener("click", () => {
+//   btnAmenity.classList.add("active");
+//   btnCleaning.classList.remove("active");
+//   applyFilters();
+// });
 
 // =========================
 // 🏢 フロア選択
@@ -487,7 +498,7 @@ async function loadTasks() {
 
     // 🔹 表示
     renderRoomTasks(globalRoomsData);
-    renderAmenityTasks(globalAmenityData);
+    // renderAmenityTasks(globalAmenityData);
 
   } finally {
     hideLoading();
@@ -500,6 +511,20 @@ function renderRoomTasks(roomData) {
 
   container.innerHTML = "";
   globalRoomsData = roomData;
+
+  const beforeCleanning =  roomData.filter(r =>  r.checkout_status === 'after');
+  const inProgressRooms = roomData.filter(r => r.cleaning_status === 'in_progress' && r.checkout_status === 'after');
+  const doneRooms = roomData.filter(r => r.cleaning_status === 'done' && r.checkout_status === 'after');
+  const checked = roomData.filter(r => r.cleaning_status === 'checked' && r.checkout_status === 'after');
+
+  console.log(beforeCleanning)
+
+  // === UI 表示（多言語対応） ===
+  document.getElementById('cleansRooms').innerText =
+    `${t[currentLang].cleaningToDo}: ${beforeCleanning.length}`;
+
+  document.getElementById('cleansRoomsInitial').innerText =
+    `${t[currentLang].cleaningStarted}: ${inProgressRooms.length}`;
 
   const L = t[currentLang];
 
@@ -517,7 +542,9 @@ function renderRoomTasks(roomData) {
     // ===============================
 
     // 清掃前の特殊状態
-    if (r.status === "before_check") {
+    if(r.cleaning_status === 'checked'){
+        bgColor = "#9d9a9a";
+    }else if (r.status === "before_check") {
       bgColor = "#b3e5ff";
       textColor = "#004a77";
       // iconHTML = `<img src="./img/bag.png" class="icon-img">`;
@@ -544,7 +571,7 @@ function renderRoomTasks(roomData) {
 
     // after 通常
     else if (r.checkout_status === "after") {
-      bgColor = "#8fc9ff";
+      bgColor = "#FFFFFF";
       iconHTML = `<img src="./img/seisou.png" class="icon-img">`;
     }
 
@@ -567,23 +594,8 @@ function renderRoomTasks(roomData) {
     // ===============================
     //     3つのボタン（確認者用）
     // ===============================
-    let buttonHTML = allowButtons ? `
-      <div class="task-buttons">
+    const buttonHTML = getButtonsByStatus(r, currentLang);
 
-        <button class="btn revert-btn" data-id="${r.id}">
-          ${t[currentLang].inspectorButtons.revert}
-        </button>
-
-        <button class="btn done-btn" data-id="${r.id}">
-          ${t[currentLang].inspectorButtons.done}
-        </button>
-
-        <button class="btn checked-btn" data-id="${r.id}">
-          ${t[currentLang].inspectorButtons.checked}
-        </button>
-
-      </div>
-    ` : "";
 
 
     // ===============================
@@ -592,7 +604,7 @@ function renderRoomTasks(roomData) {
 
     card.innerHTML = `
       <div class="task-room-header">
-        <span class="room-number">#${r.room_number}</span>
+        <span class="room-number">${r.room_number}</span>
         <div class="status-text">${statusText}</div>
 
       </div>
@@ -606,26 +618,80 @@ function renderRoomTasks(roomData) {
     // ===============================
 
     if (!allowButtons) return; // ボタン無効時は終了
-
     const btnRevert  = card.querySelector(".revert-btn");
     const btnDone    = card.querySelector(".done-btn");
     const btnChecked = card.querySelector(".checked-btn");
 
-    if (btnRevert) {
-      btnRevert.addEventListener("click", () => inspectorRevert(r.id));
-    }
+    if (btnRevert)  btnRevert.addEventListener("click", () => inspectorRevert(r.id));
+    if (btnDone)    btnDone.addEventListener("click", () => inspectorDone(r.id));
+    if (btnChecked) btnChecked.addEventListener("click", () => inspectorChecked(r.id));
 
-    if (btnDone) {
-      btnDone.addEventListener("click", () => inspectorDone(r.id));
-    }
-
-    if (btnChecked) {
-      btnChecked.addEventListener("click", () => inspectorChecked(r.id));
-    }
 
   });
 }
 
+function getButtonsByStatus(r, lang) {
+
+  // 🔹 checkout_status === "before" はボタンなし
+  if (r.checkout_status === "before") {
+    return "";
+  }
+
+  // 🔹 cleaning_status === checked
+  if (r.cleaning_status === "checked") {
+    return `
+      <div class="task-buttons">
+        <button class="btn revert-btn" data-id="${r.id}">
+          ${t[lang].inspectorButtons.revert}
+        </button>
+      </div>
+    `;
+  }
+
+  // 🔹 cleaning_status === done
+  if (r.cleaning_status === "done") {
+    return `
+      <div class="task-buttons">
+        <button class="btn revert-btn" data-id="${r.id}">
+          ${t[lang].inspectorButtons.revert}
+        </button>
+        <button class="btn checked-btn" data-id="${r.id}">
+          ${t[lang].inspectorButtons.checked}
+        </button>
+      </div>
+    `;
+  }
+
+  // 🔹 cleaning_status === in_progress
+  if (r.cleaning_status === "in_progress") {
+    return `
+      <div class="task-buttons">
+        <button class="btn done-btn" data-id="${r.id}">
+          ${t[lang].inspectorButtons.done}
+        </button>
+        <button class="btn checked-btn" data-id="${r.id}">
+          ${t[lang].inspectorButtons.checked}
+        </button>
+      </div>
+    `;
+  }
+
+  // 🔹 cleaning_status === not_started
+  if (r.cleaning_status === "not_started") {
+    return `
+      <div class="task-buttons">
+      <button class="btn done-btn" data-id="${r.id}">
+        ${t[lang].inspectorButtons.done}
+      </button>
+      <button class="btn checked-btn" data-id="${r.id}">
+        ${t[lang].inspectorButtons.checked}
+      </button>
+      </div>
+    `;
+  }
+
+  return "";
+}
 
 
 function inspectorDone(roomId) {
@@ -823,8 +889,8 @@ function applyFilters() {
   const floorSelectEl = document.getElementById("floorSelect");
   const selectedFloor = floorSelectEl.value;
 
-  const modeCleaning = document.getElementById("btnShowCleaning").classList.contains("active");
-  const modeAmenity  = document.getElementById("btnShowAmenity").classList.contains("active");
+  // const modeCleaning = document.getElementById("btnShowCleaning").classList.contains("active");
+  // const modeAmenity  = document.getElementById("btnShowAmenity").classList.contains("active");
 
   // ⭐ 必ず originalRoomsData をコピーして始める！！
   let filtered = [...originalRoomsData];
@@ -835,105 +901,105 @@ function applyFilters() {
   }
 
   // ② 清掃だけ
-  if (modeCleaning && !modeAmenity) {
+
     filtered = filtered.filter(r =>
       r.checkout_status === "after" ||
       r.status === "before_check" ||
       ["not_started","in_progress","done"].includes(r.cleaning_status)
     );
-  }
 
-  // ③ アメニティだけ
-  if (!modeCleaning && modeAmenity) {
-    filtered = filtered.filter(r => r.status === "stay_amenytyOnliy");
-  }
 
-  // ④ 全フロア + 清掃 + アメニティ → 全表示
-  if (selectedFloor === "all" && modeCleaning && modeAmenity) {
-    filtered = [...originalRoomsData];
-  }
+  // // ③ アメニティだけ
+  // if (!modeCleaning && modeAmenity) {
+  //   filtered = filtered.filter(r => r.status === "stay_amenytyOnliy");
+  // }
+  //
+  // // ④ 全フロア + 清掃 + アメニティ → 全表示
+  // if (selectedFloor === "all" && modeCleaning && modeAmenity) {
+  //   filtered = [...originalRoomsData];
+  // }
 
   globalRoomsData = filtered;  // ← 表示用だけ更新
   renderRoomTasks(filtered);
 }
 
-function renderAmenityTasks(amenityData) {
-  const lang = currentLang || "ja";
-  const L = t[lang];
+// function renderAmenityTasks(amenityData) {
+//   const lang = currentLang || "ja";
+//   const L = t[lang];
+//
+//   // 🔹 コンテナ確認（なければ作る）
+//   let amenityContainer = document.getElementById("amenityContainer");
+//   if (!amenityContainer) {
+//     amenityContainer = document.createElement("div");
+//     amenityContainer.id = "amenityContainer";
+//     document.body.appendChild(amenityContainer);
+//   }
+//
+//   amenityContainer.innerHTML = `
+//     <h2 style="margin:15px 0 10px;">🧴 ${L.amenity}</h2>
+//   `;
+//
+//   if (!amenityData || amenityData.length === 0) {
+//     amenityContainer.innerHTML += `
+//       <p style="text-align:center;color:#666;">${L.noTask}</p>
+//     `;
+//     return;
+//   }
+//
+//   amenityData.forEach(a => {
+//     const card = document.createElement("div");
+//     card.className = "task-card";
+//     // card.style.background = "#ffe7ba";
+//
+//     const key = amenityNameToKey[a.amenity] || null;
+//     const displayName = key ? L.amenityListFixed[key] : a.amenity;
+//
+//     const actionKey = actionTypeToKey[a.action_type];
+//     const actionLabel = actionKey
+//       ? t[currentLang].amenityTypes[actionKey]
+//       : a.action_type;
+//
+//     card.innerHTML = `
+//       <div class="task-room-header">
+//         <span class="room-number">${a.room_number}</span>
+//
+//       </div>
+//
+//       <div style="padding:6px 12px;font-size:15px;">
+//         <div><b>${displayName}</b></div>
+//         <div>${actionLabel}</div>
+//         ${a.return_to ? `<div>${a.return_to}</div>` : ""}
+//       </div>
+//
+//       <div class="task-buttons">
+//         <button class="btn done-btn" data-id="${a.id}">
+//           ${t[currentLang].complete}
+//         </button>
+//       </div>
+//     `;
+//
+//
+//
+//     card.querySelector(".done-btn")
+//       .addEventListener("click", () => finishAmenity(a.id));
+//
+//     amenityContainer.appendChild(card);
+//   });
+// }
 
-  // 🔹 コンテナ確認（なければ作る）
-  let amenityContainer = document.getElementById("amenityContainer");
-  if (!amenityContainer) {
-    amenityContainer = document.createElement("div");
-    amenityContainer.id = "amenityContainer";
-    document.body.appendChild(amenityContainer);
-  }
-
-  amenityContainer.innerHTML = `
-    <h2 style="margin:15px 0 10px;">🧴 ${L.amenity}</h2>
-  `;
-
-  if (!amenityData || amenityData.length === 0) {
-    amenityContainer.innerHTML += `
-      <p style="text-align:center;color:#666;">${L.noTask}</p>
-    `;
-    return;
-  }
-
-  amenityData.forEach(a => {
-    const card = document.createElement("div");
-    card.className = "task-card";
-    // card.style.background = "#ffe7ba";
-
-    const key = amenityNameToKey[a.amenity] || null;
-    const displayName = key ? L.amenityListFixed[key] : a.amenity;
-
-    const actionKey = actionTypeToKey[a.action_type];
-    const actionLabel = actionKey
-      ? t[currentLang].amenityTypes[actionKey]
-      : a.action_type;
-
-    card.innerHTML = `
-      <div class="task-room-header">
-        <span class="room-number">#${a.room_number}</span>
-
-      </div>
-
-      <div style="padding:6px 12px;font-size:15px;">
-        <div><b>${displayName}</b></div>
-        <div>${actionLabel}</div>
-        ${a.return_to ? `<div>${a.return_to}</div>` : ""}
-      </div>
-
-      <div class="task-buttons">
-        <button class="btn done-btn" data-id="${a.id}">
-          ${t[currentLang].complete}
-        </button>
-      </div>
-    `;
-
-
-
-    card.querySelector(".done-btn")
-      .addEventListener("click", () => finishAmenity(a.id));
-
-    amenityContainer.appendChild(card);
-  });
-}
-
-function finishAmenity(amenityId) {
-  console.log("Amenity Complete:", amenityId);
-
-  withLoading(() =>
-    fetch(`${API_URL}/api/room/amenity/${amenityId}`, {
-      method: "DELETE"
-    })
-  ).then(() => {
-    // UI から削除
-    globalAmenityData = globalAmenityData.filter(a => a.id !== amenityId);
-    renderAmenityTasks(globalAmenityData);
-  });
-}
+// function finishAmenity(amenityId) {
+//   console.log("Amenity Complete:", amenityId);
+//
+//   withLoading(() =>
+//     fetch(`${API_URL}/api/room/amenity/${amenityId}`, {
+//       method: "DELETE"
+//     })
+//   ).then(() => {
+//     // UI から削除
+//     globalAmenityData = globalAmenityData.filter(a => a.id !== amenityId);
+//     renderAmenityTasks(globalAmenityData);
+//   });
+// }
 
 
 
