@@ -1953,7 +1953,8 @@ console.log('updatePayload',updatePayload)
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
           updates: updatePayload,           // ← 従来のステータス更新
-          updateGuestList: guestUpdateList  // ← 新規：全室の人数オブジェクト
+          updateGuestList: guestUpdateList,  // ← 新規：全室の人数オブジェクト
+          hotelId:globalId
         }),
 
     });
