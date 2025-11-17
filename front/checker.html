@@ -8,17 +8,20 @@
 
 </head>
 <body>
-  <header>
-    <select id="langSelect">
-      <option value="ja">🇯🇵 日本語</option>
-      <option value="pt">🇧🇷 Português</option>
-      <option value="en">🇺🇸 English</option>
-      <option value="es">🇪🇸 Español</option>
+  <header style="
 
-    </select>
-    <span id="headerTitle">オペレータータスク</span>
-    <button id="refreshBtn">🔄 更新</button>
+    background: #d90000;   /* ★ここで赤色に変更 */
+  ">
+      <select id="langSelect">
+        <option value="ja">🇯🇵 日本語</option>
+        <option value="pt">🇧🇷 Português</option>
+        <option value="en">🇺🇸 English</option>
+        <option value="es">🇪🇸 Español</option>
+      </select>
+      <span id="headerTitle">オペレータータスク</span>
+      <button id="refreshBtn">🔄 更新</button>
   </header>
+
 
   <!-- 🟢 フィルターエリア追加 -->
   <div id="filterBar" style="display:flex;justify-content:center;align-items:center;gap:10px;padding:8px 0;background:#eef3f8;">
@@ -641,7 +644,7 @@ function getButtonsByStatus(r, lang) {
   if (r.cleaning_status === "checked") {
     return `
       <div class="task-buttons">
-        <button class="btn revert-btn" data-id="${r.id}">
+        <button class="btn revert-btn small-btn" data-id="${r.id}">
           ${t[lang].inspectorButtons.revert}
         </button>
       </div>
