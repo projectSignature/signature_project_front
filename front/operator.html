@@ -46,6 +46,19 @@
 
   <div id="taskContainer"></div>
 
+  <!-- 🔥 観察モーダル -->
+<div id="observModal" class="observ-modal hidden">
+  <div class="observ-content">
+    <h3 id="observModalTitle"></h3>
+
+    <div id="observText"></div>
+
+    <button id="observDoneBtn" class="observ-done-btn"></button>
+    <button id="observCloseBtn" class="observ-close-btn"></button>
+  </div>
+</div>
+
+
 
 <div id="loadingOverlay">
   <div class="loader"></div>
@@ -152,7 +165,9 @@ returnPlacesFixed: {
 },
 cleaningToDo: "掃除対象",
 cleaningStarted: "開始済み",
-
+observBtn: "観察",
+observModalTitle: "観察内容",
+observDone: "観察を完了する",
 
 
   },
@@ -205,7 +220,9 @@ actionTypesFixed: {
 },
 cleaningToDo: "Para limpar",
 cleaningStarted: "Abertos",
-
+observBtn: "Observações",
+observModalTitle: "Detalhes",
+observDone: "Concluir observação",
 
   },
   en: {
@@ -269,7 +286,9 @@ returnPlacesFixed: {
 },
 cleaningToDo: "To clean",
 cleaningStarted: "Started",
-
+observBtn: "Observation",
+observModalTitle: "Observation Details",
+observDone: "Mark as Completed",
 
 },
 es: {
@@ -320,7 +339,9 @@ actionTypesFixed: {
 },
 cleaningToDo: "Para limpiar",
 cleaningStarted: "Abiertos",
-
+observBtn: "Observación",
+observModalTitle: "Detalles de observación",
+observDone: "Marcar como completado",
 
 },
 
@@ -359,6 +380,7 @@ const actionTypeToKey = {
 
 const btnCleaning = document.getElementById("btnShowCleaning");
 const btnAmenity  = document.getElementById("btnShowAmenity");
+let globalAmenitys = ""
 
 // ========================
 // 🔹 言語反映
@@ -417,16 +439,17 @@ async function loadTasks() {
   try {
     const [roomRes, amenityRes] = await Promise.all([
       fetch(API_ROOMS),
-      // fetch(API_AMENITIES)
+      fetch(API_AMENITIES)
     ]);
 
     const roomData = await roomRes.json();
-    // const amenityJson = await amenityRes.json();
+    const amenityJson = await amenityRes.json();
 
     // ★ 正しい配列をセットする
-    // const amenitys = amenityJson.requests || amenityJson || [];
+    const amenitys = amenityJson.requests || amenityJson || [];
+    globalAmenitys = amenitys
 
-
+console.log(amenitys)
     // 🔹 部屋データ
     const sortedRoomData = roomData.rooms.sort((a, b) => a.id - b.id);
     originalRoomsData = [...sortedRoomData];
@@ -521,15 +544,27 @@ function renderRoomTasks(roomData) {
     }
 
             let youseisouBeforeCheckOut = false
+            let amenityOnliyRoom=false
 
     // ===================================================
     // ② status / checkout_status の既存ロジック優先適用
     // ===================================================
+// console.log(r)
+
+    if(r.room_number==='910'){
+      console.log(r)
+      console.log('amenityONly')
+    }
 
     // before_check → Undo のみ
-    if(r.cleaning_status === 'checked'&&r.excel_status !== "S" ){
+    if(r.status === 'stay_amenytyOnliy'){
+      bgColor = "#ffb974";
+      iconHTML = `<img src="./img/bag.png" class="icon-img">`;
+      amenityOnliyRoom=true
+    }
+    else if(r.cleaning_status === 'checked'&&r.excel_status !== "S" ){
         bgColor = "#9d9a9a";
-    }else if (r.excel_status === "S" && r.checkout_status === "before") {
+    }else if (r.excel_status === "S" && r.checkout_status === "before" && r.status!=='status') {
       bgColor = "#ff9d33";
       showStart = false;
       showDone = false;
@@ -543,20 +578,11 @@ youseisouBeforeCheckOut=true
     }else if (r.status === 'before_check') {
       bgColor = "#b3e5ff";
       textColor = "#004a77";
-      iconHTML = `<img src="./img/bag.png" class="icon-img">`;
+      // iconHTML = `<img src="./img/bag.png" class="icon-img">`;
       showStart = false;
       showDone = false;
       showUndo = true;  // ← 必ず Undo のみ
-    }
-
-    // amenity only
-    else if (r.status === 'stay_amenytyOnliy') {
-      bgColor = "#ffb974";
-      iconHTML = `<img src="./img/bag.png" class="icon-img">`;
-    }
-
-    // チェックイン前 → 完全無効
-    else if (r.checkout_status === "before") {
+    }else if (r.checkout_status === "before") {
       // console.log(r.room_number)
       bgColor = "#cfcfcf";
       textColor = "#888";
@@ -632,20 +658,42 @@ youseisouBeforeCheckOut=true
       buttonHTML = "";
     }
 
-    // HTMLセット
+    // --- 観察データ取得 ---
+    const amenitysGet = globalAmenitys.filter(a => a.room_number === r.room_number);
+
+    // --- 観察ボタン（多言語対応） ---
+    let observBtnHTML = "";
+    if (amenitysGet.length > 0) {
+      observBtnHTML = `
+        <button class="observ-btn" data-room="${r.room_number}">
+          📝 ${t[lang].observBtn}
+        </button>
+      `;
+    }
+
+    // --- カードHTML ---
     card.innerHTML = `
       <div class="task-room-header">
         <span class="room-number">${r.room_number}</span>
+        ${observBtnHTML}
         <div class="icon-area">${iconHTML}</div>
       </div>
+
       ${buttonHTML}
     `;
+
+
 
     // ===================================================
     // ④ イベント付与
     // ===================================================
 
     if (showStart) {
+
+      if(amenityOnliyRoom){
+        card.querySelector(".start-btn")
+        card.querySelector(".start-btn").innerText='AMENITY'
+      }
       card.querySelector(".start-btn")
         .addEventListener("click", () => startCleaning(r.id));
     }
@@ -924,6 +972,57 @@ function finishAmenity(amenityId) {
     renderAmenityTasks(globalAmenityData);
   });
 }
+
+document.addEventListener("click", async (e) => {
+  // 観察ボタン押された？
+  if (e.target.classList.contains("observ-btn")) {
+    const roomNo = e.target.dataset.room;
+
+    const data = globalAmenitys.filter(a => a.room_number === roomNo);
+
+    // 内容を差し込む
+    const html = data
+      .map(a => `
+        <div class="observ-item">
+          <b>${t[lang].amenity}:</b> ${a.amenity}<br>
+          <b>${t[lang].amenityTypes[a.action_type] || a.action_type}:</b><br>
+          <b>${t[lang].returnFront} / ${t[lang].returnStorage}:</b> ${a.return_to}<br>
+          <b>Status:</b> ${a.status}<br>
+          <hr>
+        </div>
+      `)
+      .join("");
+
+    document.getElementById("observText").innerHTML = html;
+
+    // 多言語ラベル適用
+    document.getElementById("observModalTitle").textContent = t[lang].observModalTitle;
+    document.getElementById("observDoneBtn").textContent = t[lang].observDone;
+    document.getElementById("observCloseBtn").textContent = "✖ " + t[lang].undoBtn;
+
+    // 完了の roomNo 保存
+    document.getElementById("observDoneBtn").dataset.room = roomNo;
+
+    // 開く
+    document.getElementById("observModal").classList.remove("hidden");
+  }
+
+  // 閉じるボタン
+  if (e.target.id === "observCloseBtn") {
+    document.getElementById("observModal").classList.add("hidden");
+  }
+
+  // 完了ボタン
+  if (e.target.id === "observDoneBtn") {
+    const roomNo = e.target.dataset.room;
+
+    await finishAmenity(roomNo);
+
+    document.getElementById("observModal").classList.add("hidden");
+    refreshTasks();
+  }
+});
+
 
 
 
