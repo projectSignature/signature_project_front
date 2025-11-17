@@ -347,3 +347,13 @@ font-size: 1rem;
   pointer-events: none;  /* クリックできないようにする */
   filter: grayscale(40%); /* 色味を落とす（好みで調整） */
 }
+.small-btn {
+  flex: none !important;     /* 親の flex:1 を無効化 */
+  width: auto !important;    /* 幅を内容のみに */
+  padding: 4px 8px !important;
+  font-size: 10px !important;
+  border-radius: 20px !important;
+  transform: scale(0.9);     /* 全体を少し小さくする */
+  margin: 0 auto;            /* ★中央寄せ */
+  display: block;            /* margin:auto を効かせるため */
+}
