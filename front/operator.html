@@ -432,6 +432,8 @@ async function loadTasks() {
     originalRoomsData = [...sortedRoomData];
     globalRoomsData   = [...sortedRoomData];
 
+    console.log(sortedRoomData)
+
     // 🔹 アメニティデータ
     // originalAmenityData = [...amenitys];
     // globalAmenityData   = [...amenitys];
@@ -454,7 +456,7 @@ function renderRoomTasks(roomData) {
   // <span id='cleansROoms'></span>
   // <span id='cleansROomsInitial'></span>
 
-  const beforeCleanning =  roomData.filter(r =>  r.checkout_status === 'after');
+  const beforeCleanning =  roomData.filter(r =>  r.clean_flag === '未清掃');
   const inProgressRooms = roomData.filter(r => r.cleaning_status === 'in_progress' && r.checkout_status === 'after');
   const doneRooms = roomData.filter(r => r.cleaning_status === 'done' && r.checkout_status === 'after');
   const checked = roomData.filter(r => r.cleaning_status === 'checked' && r.checkout_status === 'after');
@@ -518,13 +520,26 @@ function renderRoomTasks(roomData) {
         break;
     }
 
+            let youseisouBeforeCheckOut = false
+
     // ===================================================
     // ② status / checkout_status の既存ロジック優先適用
     // ===================================================
 
     // before_check → Undo のみ
-    if(r.cleaning_status === 'checked'){
+    if(r.cleaning_status === 'checked'&&r.excel_status !== "S" ){
         bgColor = "#9d9a9a";
+    }else if (r.excel_status === "S" && r.checkout_status === "before") {
+      bgColor = "#ff9d33";
+      showStart = false;
+      showDone = false;
+      showUndo = false;
+
+      // iconHTML = `<img src="./img/seisou.png" class="icon-img">`;
+    }else if(r.checkout_status === "before" &&r.clean_flag === '未清掃' &&r.excel_status !== "S" ){
+      console.log('1121Sのやつ')
+bgColor = "#ffffff";
+youseisouBeforeCheckOut=true
     }else if (r.status === 'before_check') {
       bgColor = "#b3e5ff";
       textColor = "#004a77";
@@ -579,13 +594,20 @@ function renderRoomTasks(roomData) {
 
     let buttonHTML = `<div class="task-buttons">`;
 
-    if (showStart) {
+    if (showStart || youseisouBeforeCheckOut) {
+      if(r.room_number === '1121'){
+        console.log(r)
+        console.log(youseisouBeforeCheckOut)
+      }
+
+      const disabledClass = youseisouBeforeCheckOut ? " disabled-btn" : "";
       buttonHTML += `
-        <button class="btn start-btn" data-id="${r.id}">
+        <button class="btn start-btn${disabledClass}" data-id="${r.id}">
           ${L.cleaningBtn}
         </button>
       `;
     }
+
 
     if (showDone) {
       buttonHTML += `
@@ -912,4 +934,3 @@ loadTasks();
 </script>
 </body>
 </html>
-
