@@ -342,3 +342,8 @@ font-size: 1rem;
   font-weight: 700;
   color: #ff8800; /* オレンジで強調 */
 }
+.disabled-btn {
+  opacity: 0.4;          /* 薄く見せる */
+  pointer-events: none;  /* クリックできないようにする */
+  filter: grayscale(40%); /* 色味を落とす（好みで調整） */
+}
