@@ -515,7 +515,7 @@ function renderRoomTasks(roomData) {
   container.innerHTML = "";
   globalRoomsData = roomData;
 
-  const beforeCleanning =  roomData.filter(r =>  r.checkout_status === 'after');
+    const beforeCleanning =  roomData.filter(r =>  r.clean_flag === '未清掃');
   const inProgressRooms = roomData.filter(r => r.cleaning_status === 'in_progress' && r.checkout_status === 'after');
   const doneRooms = roomData.filter(r => r.cleaning_status === 'done' && r.checkout_status === 'after');
   const checked = roomData.filter(r => r.cleaning_status === 'checked' && r.checkout_status === 'after');
@@ -1013,3 +1013,4 @@ loadTasks();
 </script>
 </body>
 </html>
+
