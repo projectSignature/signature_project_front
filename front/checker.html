@@ -515,7 +515,7 @@ function renderRoomTasks(roomData) {
   container.innerHTML = "";
   globalRoomsData = roomData;
 
-    const beforeCleanning =  roomData.filter(r =>  r.clean_flag === '未清掃');
+  const beforeCleanning =  roomData.filter(r =>  r.clean_flag === '未清掃');
   const inProgressRooms = roomData.filter(r => r.cleaning_status === 'in_progress' && r.checkout_status === 'after');
   const doneRooms = roomData.filter(r => r.cleaning_status === 'done' && r.checkout_status === 'after');
   const checked = roomData.filter(r => r.cleaning_status === 'checked' && r.checkout_status === 'after');
@@ -557,6 +557,17 @@ function renderRoomTasks(roomData) {
     else if (r.status === "stay_amenytyOnliy") {
       bgColor = "#ffb974";
       iconHTML = `<img src="./img/bag.png" class="icon-img">`;
+    }else if(r.excel_status === "S" && r.status === 'stay_noclean'){
+        bgColor = "#ff9d33";
+    }else if (r.excel_status === "S" && r.checkout_status === "before" && r.clean_flag==='清掃') {
+      bgColor = "#ff9d33";
+      allowButtons = false;
+
+      // iconHTML = `<img src="./img/seisou.png" class="icon-img">`;
+    }else if (r.excel_status === "S" && r.checkout_status === "before" && r.clean_flag==='未清掃') {
+      bgColor = "#ff9d33";
+      console.log(`該当${r.room_number}`)
+allowButtons = true
     }
 
     // チェックイン前 → 無効状態
@@ -589,6 +600,10 @@ function renderRoomTasks(roomData) {
     // デザイン適用
     card.style.backgroundColor = bgColor;
     card.style.color = textColor;
+
+    if(r.room_number==='719'){
+      console.log(allowButtons)
+    }
 
     if (!allowButtons) {
       card.classList.add("disabled-card");
@@ -636,7 +651,7 @@ function renderRoomTasks(roomData) {
 function getButtonsByStatus(r, lang) {
 
   // 🔹 checkout_status === "before" はボタンなし
-  if (r.checkout_status === "before") {
+  if (r.checkout_status === "before" && r.clean_flag!=='未清掃') {
     return "";
   }
 
@@ -1013,4 +1028,3 @@ loadTasks();
 </script>
 </body>
 </html>
-
