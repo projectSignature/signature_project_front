@@ -256,12 +256,13 @@ font-size: 1rem;
 ============================= */
 .task-buttons {
   display: flex;
+  justify-content:right;
   gap: 10px;
   margin-top: 10px;
 }
 
 .task-buttons .btn {
-  flex: 1;
+  flex: 0.3;
   padding: 10px 12px;
   border: none;
   border-radius: 10px;
@@ -356,4 +357,151 @@ font-size: 1rem;
   transform: scale(0.9);     /* 全体を少し小さくする */
   margin: 0 auto;            /* ★中央寄せ */
   display: block;            /* margin:auto を効かせるため */
+}
+/* ===============================
+   🔥【観察モーダル：背景】
+   半透明の黒背景 + 中央配置
+================================ */
+#observModal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 3000;
+  backdrop-filter: blur(3px);   /* 背景を少しぼかして高級感アップ */
+}
+
+#observModal.hidden {
+  display: none;
+}
+
+/* ===============================
+   🔥【観察モーダル：本体カード】
+   スマホアプリ風の丸くて綺麗なカード
+================================ */
+.observ-content {
+  background: #ffffff;
+  width: 90%;
+  max-width: 400px;
+  border-radius: 18px;
+  padding: 22px 24px;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.25);
+  animation: modalFade 0.22s ease-out;
+  transform: translateY(-6px);
+}
+
+/* モーダル登場アニメーション */
+@keyframes modalFade {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ===============================
+   🔥 タイトル
+================================ */
+#observModalTitle {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  text-align: center;
+  color: #333;
+}
+
+/* ===============================
+   🔥 観察リストエリア
+================================ */
+#observText {
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 6px;
+  margin-bottom: 18px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: #444;
+}
+
+.observ-item {
+  padding: 10px 0;
+  border-bottom: 1px solid #ddd;
+}
+.observ-item:last-child {
+  border-bottom: none;
+}
+
+/* ===============================
+   🔥 ボタン（完了・閉じる）
+================================ */
+.observ-done-btn {
+  width: 100%;
+  background: #4CAF50;
+  color: #fff;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  font-size: 16px;
+  margin-bottom: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.2);
+}
+.observ-done-btn:active {
+  transform: scale(0.96);
+}
+
+.observ-close-btn {
+  width: 100%;
+  background: #9E9E9E;
+  color: #fff;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.observ-close-btn:active {
+  transform: scale(0.96);
+}
+/* ===============================
+   🔥 タスク強調ラベル（room-number の横）
+   - 高級ホテルアプリ風
+   - 読みやすい
+   - コンパクト
+================================= */
+.task-badge {
+  display: inline-block;
+  background: #ffe5e5;               /* 薄い赤で “注意” を表現 */
+  color: #c62828;                    /* 濃い赤で強調 */
+  padding: 6px 10px;
+  margin-left: 10px;
+  max-width: 250px;
+  border-left: 5px solid #e53935;    /* アクセントライン */
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1.3;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.18);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, opacity 0.2s;
+  white-space: normal;               /* 複数行対応 */
+}
+
+/* ホバーで少し浮く */
+.task-badge:hover {
+  transform: scale(1.03);
+  box-shadow: 0 5px 12px rgba(0,0,0,0.25);
+  opacity: 0.95;
+}
+
+/* クリック時のフィードバック */
+.task-badge:active {
+  transform: scale(0.96);
 }
