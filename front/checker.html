@@ -165,6 +165,7 @@ cleaningStatusLabel: {
 },
 cleaningToDo: "掃除対象",
 cleaningStarted: "開始済み",
+ taskSentence: "%AMENITY% を%ACTION% → %PLACE%へ",
 
 
 
@@ -221,7 +222,7 @@ actionTypesFixed: {
 inspectorButtons: {
   revert: "⤺ Refazer",
   done:   "✅ Limpeza concluída",
-  checked:"✔ Confirmado"
+  checked:"✔ Verificado"
 },
 cleaningStatusLabel: {
   not_started: "Não limpo",
@@ -231,6 +232,19 @@ cleaningStatusLabel: {
 },
 cleaningToDo: "Para limpar",
 cleaningStarted: "Abertos",
+returnPlacesFixed: {
+  front: "Recepção",
+  linen4: "deposito 4F",
+  linen5: "deposito 5F",
+  linen6: "deposito 6F",
+  linen7: "deposito 7F",
+  linen8: "deposito 8F",
+  linen9: "deposito 9F",
+  linen10: "deposito 10F",
+  linen11: "deposito 11F",
+  linen12: "deposito 12F",
+},
+ taskSentence: "%ACTION% de %AMENITY% → levar para %PLACE%",
 
 
 
@@ -307,6 +321,7 @@ cleaningStatusLabel: {
 },
 cleaningToDo: "To clean",
 cleaningStarted: "Started",
+taskSentence: "Take %ACTION% of %AMENITY% → to %PLACE%",
 
 
 },
@@ -387,6 +402,8 @@ cleaningStarted: "Abiertos",
 
 },
 
+taskSentence: "%ACTION% de %AMENITY% → llevar a %PLACE%",
+
 };
 
 
@@ -418,10 +435,26 @@ const actionTypeToKey = {
 };
 
 
+const returnPlaceToKey = {
+  "フロント": "front",
+  "front": "front",
+  "4F リネン室": "linen4",
+  "5F リネン室": "linen5",
+  "6F リネン室": "linen6",
+  "7F リネン室": "linen7",
+  "8F リネン室": "linen8",
+  "9F リネン室": "linen9",
+  "10F リネン室": "linen10",
+  "11F リネン室": "linen11",
+  "12F リネン室": "linen12",
+};
+
+
 
 
 const btnCleaning = document.getElementById("btnShowCleaning");
 const btnAmenity  = document.getElementById("btnShowAmenity");
+let globalAmenitys = ""
 
 // ========================
 // 🔹 言語反映
@@ -488,6 +521,7 @@ async function loadTasks() {
 
     // ★ 正しい配列をセットする
     const amenitys = amenityJson.requests || amenityJson || [];
+    globalAmenitys = amenitys
 
 
     // 🔹 部屋データ
@@ -495,9 +529,9 @@ async function loadTasks() {
     originalRoomsData = [...sortedRoomData];
     globalRoomsData   = [...sortedRoomData];
 
-    // 🔹 アメニティデータ
-    originalAmenityData = [...amenitys];
-    globalAmenityData   = [...amenitys];
+    // // 🔹 アメニティデータ
+    // originalAmenityData = [...amenitys];
+    // globalAmenityData   = [...amenitys];
 
     // 🔹 表示
     renderRoomTasks(globalRoomsData);
@@ -508,6 +542,23 @@ async function loadTasks() {
   }
 }
 
+function buildAmenityTaskText(a) {
+  let lang = currentLang
+  const key = amenityNameToKey[a.amenity];
+  const translatedName = key ? t[lang].amenitiesList[key] : a.amenity;
+
+  const actKey = actionTypeToKey[a.action_type];
+  const actTranslated = actKey ? t[lang].amenityTypes[actKey] : a.action_type;
+
+  const rtnKey = returnPlaceToKey[a.return_to];
+  const rtnTranslated = rtnKey ? t[lang].returnPlacesFixed[rtnKey] : a.return_to;
+
+  // 言語別テンプレートに置換
+  return t[lang].taskSentence
+    .replace("%AMENITY%", translatedName)
+    .replace("%ACTION%", actTranslated)
+    .replace("%PLACE%", rtnTranslated);
+}
 
 
 function renderRoomTasks(roomData) {
@@ -515,7 +566,10 @@ function renderRoomTasks(roomData) {
   container.innerHTML = "";
   globalRoomsData = roomData;
 
-  const beforeCleanning =  roomData.filter(r =>  r.clean_flag === '未清掃');
+  const beforeCleanning =  roomData.filter(r =>
+    r.clean_flag === '未清掃' &&
+    r.status!=='stay_noclean' &&
+   r.status!=='stay_amenytyOnliy');
   const inProgressRooms = roomData.filter(r => r.cleaning_status === 'in_progress' && r.checkout_status === 'after');
   const doneRooms = roomData.filter(r => r.cleaning_status === 'done' && r.checkout_status === 'after');
   const checked = roomData.filter(r => r.cleaning_status === 'checked' && r.checkout_status === 'after');
@@ -554,8 +608,8 @@ function renderRoomTasks(roomData) {
     }
 
     // アメニティのみ
-    else if (r.status === "stay_amenytyOnliy") {
-      bgColor = "#ffb974";
+    if(r.status === 'stay_amenytyOnliy'){
+      bgColor = "#ffdfc2";
       iconHTML = `<img src="./img/bag.png" class="icon-img">`;
     }else if(r.excel_status === "S" && r.status === 'stay_noclean'){
         bgColor = "#ff9d33";
@@ -580,13 +634,13 @@ allowButtons = true
     // after（S=連泊）
     else if (r.excel_status === "S" && r.checkout_status === "after") {
       bgColor = "#ffb974";
-      iconHTML = `<img src="./img/seisou.png" class="icon-img">`;
+      // iconHTML = `<img src="./img/seisou.png" class="icon-img">`;
     }
 
     // after 通常
     else if (r.checkout_status === "after") {
       bgColor = "#FFFFFF";
-      iconHTML = `<img src="./img/seisou.png" class="icon-img">`;
+      // iconHTML = `<img src="./img/seisou.png" class="icon-img">`;
     }
 
     let statusText = "";
@@ -614,20 +668,57 @@ allowButtons = true
     // ===============================
     const buttonHTML = getButtonsByStatus(r, currentLang);
 
+    // --- 観察データ取得 ---
+    const amenitysGet = globalAmenitys.filter(a => a.room_number === r.room_number&&a.status!=='done');
+    // console.log(amenitysGet)
+
+    // --- 観察ボタン（多言語対応） ---
+    let observBadgeHTML = "";
+    if (amenitysGet.length > 0) {
+
+      const taskText = amenitysGet
+        .map(a => buildAmenityTaskText(a))
+        .join("<br>");
+
+      observBadgeHTML = `
+        <span class="task-badge" data-room="${r.room_number}">
+          ${taskText}
+        </span>
+      `;
+    }
+
+    if(r.notes){
+      console.log(r.notes)
+      observBadgeHTML = `
+        <span class="task-badge" data-room="${r.room_number}">
+          ${r.notes}
+        </span>
+      `;
+    }
+        // console.log(r)
+        card.innerHTML = `
+          <div class="task-room-header">
+            <span class="room-number">${r.room_number}</span>
+            ${observBadgeHTML}
+            <div class="icon-area">${iconHTML}</div>
+          </div>
+
+          ${buttonHTML}
+        `;
 
 
-    // ===============================
-    //     HTML セット
-    // ===============================
-
-    card.innerHTML = `
-      <div class="task-room-header">
-        <span class="room-number">${r.room_number}</span>
-        <div class="status-text">${statusText}</div>
-
-      </div>
-      ${buttonHTML}
-    `;
+    // // ===============================
+    // //     HTML セット
+    // // ===============================
+    //
+    // card.innerHTML = `
+    //   <div class="task-room-header">
+    //     <span class="room-number">${r.room_number}</span>
+    //     <div class="status-text">${statusText}</div>
+    //
+    //   </div>
+    //   ${buttonHTML}
+    // `;
 
     container.appendChild(card);
 
@@ -650,63 +741,84 @@ allowButtons = true
 
 function getButtonsByStatus(r, lang) {
 
+
   // 🔹 checkout_status === "before" はボタンなし
   if (r.checkout_status === "before" && r.clean_flag!=='未清掃') {
     return "";
   }
 
-  // 🔹 cleaning_status === checked
-  if (r.cleaning_status === "checked") {
+  console.log(r)
+  let yetPress = false
+
+
+
+  if (r.cleaning_status  !== "done") {
+    yetPress = true
+  }
+
+
+  const disabledAttr = yetPress ? "disabled" : "";
+  const disabledClass = yetPress ? "disabled-btn" : "";
+
+  if (r.cleaning_status !== "done") {
     return `
       <div class="task-buttons">
-        <button class="btn revert-btn small-btn" data-id="${r.id}">
-          ${t[lang].inspectorButtons.revert}
+
+        <button class="btn checked-btn ${disabledClass}" ${disabledAttr} data-id="${r.id}">
+          ${t[lang].inspectorButtons.checked}
         </button>
       </div>
     `;
   }
 
-  // 🔹 cleaning_status === done
   if (r.cleaning_status === "done") {
     return `
       <div class="task-buttons">
-        <button class="btn revert-btn" data-id="${r.id}">
-          ${t[lang].inspectorButtons.revert}
-        </button>
-        <button class="btn checked-btn" data-id="${r.id}">
+
+        <button class="btn checked-btn ${disabledClass}" ${disabledAttr} data-id="${r.id}">
           ${t[lang].inspectorButtons.checked}
         </button>
       </div>
     `;
   }
+
+
+  // // 🔹 cleaning_status === checked
+  // if (r.cleaning_status === "checked") {
+  //   return `
+  //     <div class="task-buttons">
+  //       <button class="btn revert-btn small-btn" data-id="${r.id}">
+  //         ${t[lang].inspectorButtons.revert}
+  //       </button>
+  //     </div>
+  //   `;
+  // }
+  //
+  // // 🔹 cleaning_status === done
+  // // <button class="btn revert-btn" data-id="${r.id}">
+  // //   ${t[lang].inspectorButtons.revert}
+  // // </button>
+  // if (r.cleaning_status === "done") {
+  //   return `
+  //     <div class="task-buttons">
+  //
+  //       <button class="btn checked-btn" data-id="${r.id}">
+  //         ${t[lang].inspectorButtons.checked}
+  //       </button>
+  //     </div>
+  //   `;
+  // }
 
   // 🔹 cleaning_status === in_progress
-  if (r.cleaning_status === "in_progress") {
-    return `
-      <div class="task-buttons">
-        <button class="btn done-btn" data-id="${r.id}">
-          ${t[lang].inspectorButtons.done}
-        </button>
-        <button class="btn checked-btn" data-id="${r.id}">
-          ${t[lang].inspectorButtons.checked}
-        </button>
-      </div>
-    `;
-  }
+  // <button class="btn done-btn" data-id="${r.id}">
+  //   ${t[lang].inspectorButtons.done}
+  // </button>
 
-  // 🔹 cleaning_status === not_started
-  if (r.cleaning_status === "not_started") {
-    return `
-      <div class="task-buttons">
-      <button class="btn done-btn" data-id="${r.id}">
-        ${t[lang].inspectorButtons.done}
-      </button>
-      <button class="btn checked-btn" data-id="${r.id}">
-        ${t[lang].inspectorButtons.checked}
-      </button>
-      </div>
-    `;
-  }
+  //
+  // // 🔹 cleaning_status === not_started
+  // if (r.cleaning_status === "not_started") {
+  //
+  // }
 
   return "";
 }
