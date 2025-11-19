@@ -609,7 +609,7 @@ function renderRoomTasks(roomData) {
 
     // アメニティのみ
     if(r.status === 'stay_amenytyOnliy'){
-      bgColor = "#f0af73";
+      bgColor = "#ffdfc2";
       iconHTML = `<img src="./img/bag.png" class="icon-img">`;
     }else if(r.excel_status === "S" && r.status === 'stay_noclean'){
         bgColor = "#ff9d33";
@@ -648,6 +648,10 @@ allowButtons = true
     // cleaning_status の文字を表示するが…
     if (r.checkout_status !== "before") {
       statusText = t[currentLang].cleaningStatusLabel?.[r.cleaning_status] || "";
+    }
+
+    if(r.stay_type==='individual'){
+      iconHTML += `<img src="./img/esponja.png" class="icon-img">`;
     }
 
 
@@ -1140,4 +1144,3 @@ loadTasks();
 </script>
 </body>
 </html>
-
