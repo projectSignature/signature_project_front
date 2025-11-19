@@ -505,3 +505,10 @@ font-size: 1rem;
 .task-badge:active {
   transform: scale(0.96);
 }
+
+.disabled-btn {
+  opacity: 0.4;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+}
+
