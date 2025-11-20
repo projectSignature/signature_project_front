@@ -1,0 +1,474 @@
+body {
+  margin: 0;
+  background: #ffffff;   /* ← 白ベースに変更 */
+  font-family: "Segoe UI", "Noto Sans JP", sans-serif;
+  color: #222;
+}
+
+/* HEADER */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  background: #403e3e;
+  backdrop-filter: blur(6px);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo img {
+  width: 200px;
+}
+
+.logo div {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* MENU BUTTON */
+.menu-btn {
+  font-size: 26px;
+  color: #fff;
+  padding: 4px;
+}
+
+/* SIDE MENU */
+.side-menu {
+  position: fixed;
+  top: 0;
+  right: -400px;   /* ← 完全に隠す！ */
+  width: 260px;
+  height: 100vh;
+  background: rgba(0,0,0,0.85);
+  padding: 25px;
+  transition: 0.35s ease;
+  z-index: 9999;
+}
+
+.side-menu.open {
+  right: 0;  /* ← 開くときだけ0 */
+}
+
+
+.side-menu h3 {
+  color: #fff;
+  font-size: 20px;
+  margin-bottom: 18px;
+}
+
+.menu-item {
+  padding: 14px 0;
+  border-bottom: 1px solid #444;
+  color: #f1f1f1;
+  font-size: 16px;
+}
+
+.menu-item:hover {
+  color: #4fc3f7;
+}
+
+/* CONTENT */
+.container {
+  padding: 18px;
+}
+
+h2 {
+  font-size: 22px;
+  margin-bottom: 16px;
+}
+
+/* MOBILE CARDS: ONE COLUMN */
+.card {
+  background: rgba(255,255,255,0.18);
+  padding: 18px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  backdrop-filter: blur(6px);
+}
+
+.card h2 {
+  font-size: 32px;
+  margin: 0;
+}
+
+.card p {
+  margin-top: 8px;
+  font-size: 14px;
+}
+
+/* Dashboard grid: 2 columns */
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);   /* ← 2列 */
+  gap: 14px;
+  padding: 16px;
+  margin-top: 10px;
+}
+
+/* Stylish pastel cards */
+.dash-card {
+  border-radius: 14px;
+  padding: 18px;
+  background: #ffffffcc;  /* うすい白ベース透明 */
+  border: 1px solid #e0e0e0;
+  backdrop-filter: blur(6px);
+  text-align: center;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+}
+
+.dash-card h1 {
+  margin: 0;
+  font-size: 34px;
+  font-weight: 700;
+}
+
+.dash-card p {
+  margin-top: 6px;
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+/* ===== パステル配色 ===== */
+.red {
+  background: #ffebee;      /* 超薄い赤 */
+  border-color: #ffcdd2;
+}
+
+.blue {
+  background: #e3f2fd;      /* 超薄い青 */
+  border-color: #bbdefb;
+}
+
+.green {
+  background: #e8f5e9;      /* 超薄い緑 */
+  border-color: #c8e6c9;
+}
+
+.yellow {
+  background: #fffde7;      /* 超薄い黄色 */
+  border-color: #fff9c4;
+}
+
+.purple {
+  background: #f3e5f5;      /* 超薄い紫 */
+  border-color: #e1bee7;
+}
+
+.dash-card {
+border-radius: 16px;
+padding: 18px;
+backdrop-filter: blur(10px);
+background: rgba(255,255,255,0.15);
+color: #fff;
+text-align: center;
+box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+}
+
+.dash-card h1 {
+margin: 0;
+font-size: 40px;
+font-weight: 700;
+}
+
+.dash-card p {
+margin-top: 8px;
+font-size: 15px;
+opacity: 0.9;
+}
+
+/* --- Colors --- */
+.red { background: linear-gradient(135deg, #ff1744aa, #d50000aa); }
+.blue { background: linear-gradient(135deg, #2979ffaa, #1565c0aa); }
+.green { background: linear-gradient(135deg, #00c853aa, #2e7d32aa); }
+.yellow { background: linear-gradient(135deg, #fdd835aa, #f9a825aa); color: #000; }
+.purple { background: linear-gradient(135deg, #ab47bcaa, #8e24aaaa); }
+
+
+/* Floor button area */
+.floor-buttons {
+display: flex;
+overflow-x: auto;
+gap: 10px;
+padding: 16px;
+}
+
+.floor-buttons button {
+flex: 0 0 auto;
+padding: 10px 18px;
+background: #e3f2fd;
+border: 1px solid #90caf9;
+border-radius: 10px;
+font-size: 16px;
+}
+
+/* Modal background */
+.modal {
+display: none;
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: rgba(0,0,0,0.45);
+backdrop-filter: blur(3px);
+z-index: 9999;
+justify-content: center;
+align-items: center;
+}
+
+/* Modal box */
+.modal-content {
+width: 92%;
+max-width: 420px;
+background: #ffffff;
+border-radius: 14px;
+padding: 0;
+overflow: hidden;
+}
+
+/* Header */
+.modal-header {
+background: #1565c0;
+color: white;
+padding: 12px 16px;
+font-size: 18px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+
+.close-btn {
+border: none;
+background: transparent;
+color: white;
+font-size: 20px;
+}
+
+/* Body */
+.modal-body {
+padding: 16px;
+}
+
+/* Sample room item */
+.room-item {
+padding: 10px 0;
+border-bottom: 1px solid #eee;
+}
+
+.floor-buttons {
+display: flex;
+overflow-x: auto;
+gap: 10px;
+padding: 16px;
+}
+
+.floor-buttons button {
+flex: 0 0 auto;
+padding: 10px 18px;
+background: #e3f2fd;
+border: 1px solid #90caf9;
+border-radius: 10px;
+font-size: 16px;
+}
+
+.floor-buttons button {
+  flex: 0 0 auto;
+  padding: 10px 18px;
+  background: #e3f2fd;
+  border: 1px solid #90caf9;
+  border-radius: 10px;
+  font-size: 16px;
+}
+
+/* 選択中 */
+.floor-active {
+  background: #1565c0 !important;
+  color: white;
+  border-color: #0d47a1 !important;
+}
+
+/* USER ADMIN MODAL */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(3px);
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-box {
+  width: 90%;
+  max-width: 420px;
+  background: #fff;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+/* HEADER */
+.modal-header {
+  background: #1565c0;
+  color: #fff;
+  padding: 12px 16px;
+  font-size: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close-btn {
+  background: transparent;
+  color: #fff;
+  border: none;
+  font-size: 20px;
+}
+
+.modal-content {
+  padding: 16px;
+}
+
+.admin-btn {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 12px;
+  border: 1px solid #1565c0;
+  background: #e3f2fd;
+  border-radius: 10px;
+  font-size: 16px;
+}
+
+.user-form-area {
+  margin-top: 16px;
+  padding: 10px;
+  border-top: 1px solid #ddd;
+}
+
+.user-form-area input, .user-form-area select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.user-form-area button {
+  margin-top: 14px;
+  width: 100%;
+  padding: 12px;
+  background: #1565c0;
+  border: none;
+  color: white;
+  border-radius: 10px;
+  font-size: 16px;
+}
+
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #1565c0;
+  color: #fff;
+  padding: 14px 20px;
+  border-radius: 10px;
+  font-size: 15px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: 0.4s;
+  z-index: 999999;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.toast.error {
+  background: #c62828;
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 30000;
+  transition: opacity 0.3s ease;
+}
+.loading-overlay.hidden {
+  opacity: 0;
+  display: none;
+}
+
+/* スピナー */
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 6px solid rgba(0,0,0,0.1);
+  border-top: 6px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.loading-overlay p {
+  font-size: 16px;
+  color: #333;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+}
+
+.user-modal {
+  width: 90%;
+  max-width: 380px;
+  background: #fff;
+  color: #333;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.user-list-box {
+  max-height: 350px;
+  overflow-y: auto;
+  margin-top: 12px;
+}
+
+.user-item {
+  padding: 12px 14px;
+  background: #f4f7fa;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+  border: 1px solid #e0e0e0;
+}
+
+.user-item:hover {
+  background: #e3f2fd;
+  border-color: #64b5f6;
+}
+
+.user-role {
+  font-size: 12px;
+  color: #777;
+  margin-top: 4px;
+}
