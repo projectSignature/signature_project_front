@@ -472,3 +472,137 @@ font-size: 16px;
   color: #777;
   margin-top: 4px;
 }
+
+.orange {
+  background-color: #ff9f43;
+  color: #fff;
+}
+
+/* Modal base */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.45);
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+/* Box design */
+.floor-summary-box {
+  width: 90%;
+  max-width: 380px;
+  background: #fff;
+  border-radius: 14px;
+  padding: 0;
+  animation: modalPop 0.25s ease;
+  overflow: hidden;
+}
+
+@keyframes modalPop {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.modal-header {
+  background: #6f42c1;
+  color: white;
+  padding: 12px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.floor-summary-body {
+  padding: 18px;
+}
+
+.floor-summary-item {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #eee;
+  padding: 8px 0;
+  font-size: 18px;
+}
+
+.floor-summary-item:last-child {
+  border-bottom: none;
+}
+
+.floor-name {
+  font-weight: 700;
+}
+
+.floor-count {
+  font-size: 20px;
+  font-weight: 800;
+  color: #6f42c1;
+}
+/* Tomorrow list modal */
+.tomorrow-box {
+  background: white;
+  width: 300px;
+  border-radius: 14px;
+  overflow: hidden;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modal-header-tomorrow {
+  background: linear-gradient(45deg, #8b00ff, #cd2dff);
+  padding: 14px;
+  color: white;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.floor-list {
+  padding: 10px 0;
+}
+
+.floor-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px;      /* ← 左右の余白を狭くした */
+  border-bottom: 1px solid #eee;
+  font-size: 20px;        /* ← 文字サイズUP */
+  font-weight: 600;       /* ← 少し太字に */
+}
+
+.floor-row span {
+  flex: 1;
+}
+
+.floor-row span:first-child {
+  /* text-align: left;       /* 4F を左寄せ */
+  padding-left: 80px
+
+}
+
+.floor-row .count {
+  flex: 0;
+  text-align: right;      /* 数字を右寄せ */
+  padding-right: 80px;
+
+  font-size: 20px;
+  font-weight: 700;
+  color: #6a00ca;
+}
+
+#tomorrowModal.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+@keyframes fadeIn {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
