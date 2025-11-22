@@ -33,7 +33,7 @@
   <h3>Menu</h3>
 
 <div class="menu-item" onclick="openUserAdmin()">Gerenciar Usuários</div>
-  <div class="menu-item" onclick="goLogs()">Histórico</div>
+  <!-- <div class="menu-item" onclick="goLogs()">Histórico</div> -->
   <!-- <div class="menu-item" onclick="goAmenity()">Pedidos de Amenidades</div>
   <div class="menu-item" onclick="goRooms()">Mapa dos Quartos</div>
   <div class="menu-item" onclick="goExcel()">Exportar Excel</div> -->
@@ -376,6 +376,7 @@ function selectFloor(floor, clickedButton) {
 
 function openUserAdmin() {
   document.getElementById("userAdminModal").style.display = "flex";
+  closeMenu();
 }
 
 function closeUserAdmin() {
