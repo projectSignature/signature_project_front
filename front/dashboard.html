@@ -69,10 +69,17 @@
     <p>Amenity</p>
   </div>
 
-  <div class="dash-card purple">
-    <h1 id="card_tomorrow">--</h1>
-    <p>Para limpar Amanhã</p>
-  </div>
+  <div class="dash-card orange">
+  <h1 id="card_observation">0</h1>
+  <p>Observação</p>
+</div>
+
+
+<div class="dash-card purple" onclick="openTomorrowModal()">
+  <h1 id="card_tomorrow">--</h1>
+  <p>Para limpar Amanhã</p>
+</div>
+
 
 </div>
 
@@ -137,6 +144,21 @@
   </div>
 </div>
 
+<!-- TOMORROW CLEAN MODAL -->
+<div id="tomorrowModal" class="modal">
+  <div class="modal-box floor-summary-box">
+    <div class="modal-header">
+      <span>Limpeza Amanhã — Por Andar</span>
+      <button class="close-btn" onclick="closeTomorrowModal()">✕</button>
+    </div>
+
+    <div id="tomorrowFloorList" class="modal-body floor-summary-body">
+      <!-- JS にて挿入 -->
+    </div>
+  </div>
+</div>
+
+
 
 
 
@@ -190,7 +212,11 @@ async function loadDashboard() {
       const API_AMENITIES = await fetch(`${API_URL}/api/room/amenity/list`);
       const amenityJson = await API_AMENITIES.json();
 
-      const amenityRoms = amenityJson.requests.length + notes.length
+console.log(notes)
+console.log(amenityJson.requests.length)
+      const amenityRoms = amenityJson.requests.length
+
+      console.log('amenityRoms',amenityRoms)
       console.log(amenityJson)
 
     const tomorowCleanNeedRooms = roomData.filter(r => r.guest_count >0);
@@ -208,6 +234,7 @@ async function loadDashboard() {
     document.getElementById("card_checked").innerText = checked.length;
     document.getElementById("card_tomorrow").innerText = tomorowCleanNeedRooms.length;
     document.getElementById("card_amenity").innerText = amenityRoms
+    document.getElementById('card_observation').innerText = notes.length
 
 
     // const
@@ -333,6 +360,8 @@ function selectFloor(floor, clickedButton) {
   const tomorrowRooms = targetRooms.filter(r => r.guest_count > 0);
 
   // Amenity API は全体データを使うのでここは全件（必要あれば階フィルタ版も作る）
+
+  console.log(notes)
   const amenityCount = notes.length;
 
   // カード更新
@@ -366,6 +395,7 @@ function showUserForm(type) {
       <input placeholder="Senha" type="password" id="u_password">
       <select id="u_role">
         <option value="staff">operador</option>
+        <option value="staff">operador2</option>
         <option value="inspector">conferente</option>
         <option value="admin">Administrador</option>
       </select>
@@ -603,6 +633,70 @@ function openDeleteUserModal() {
   showUserForm('delete');
   openUserList("delete");
 }
+
+
+
+
+// ========= 追加：明日清掃の階別一覧モーダル =========
+function openTomorrowModal() {
+  const modal = document.createElement("div");
+  modal.id = "tomorrowModal";
+  modal.className = "modal";
+  modal.style.display = "flex";
+
+  // ① 対象データ抽出
+  const targetRooms = globalRoomData.filter(r => r.guest_count > 0);
+
+  // ② 階別に集計
+  const countByFloor = {};
+  targetRooms.forEach(r => {
+    const floor = `${r.floor}F`;
+    if (!countByFloor[floor]) countByFloor[floor] = 0;
+    countByFloor[floor]++;
+  });
+
+  // ③ 数値順にソート（4F → 12F）
+  const sortedList = Object.entries(countByFloor).sort((a, b) => {
+    const fa = parseInt(a[0]); // 4F → 4
+    const fb = parseInt(b[0]);
+    return fa - fb;
+  });
+
+  // ④ HTMLリスト生成
+  let listHtml = "";
+  sortedList.forEach(([floor, count]) => {
+    listHtml += `
+      <div class="floor-row">
+        <span>${floor}</span>
+        <span class="count">${count}</span>
+      </div>
+    `;
+  });
+
+  // ⑤ モーダル本体組み立て
+  modal.innerHTML = `
+    <div class="modal-box tomorrow-box">
+      <div class="modal-header-tomorrow">
+        Limpeza Amanhã — Por Andar
+        <span class="close-btn" onclick="closeTomorrowModal()">✕</span>
+      </div>
+      <div class="floor-list">
+        ${listHtml}
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+}
+
+function closeTomorrowModal() {
+  const m = document.getElementById("tomorrowModal");
+  if (m) m.remove();
+}
+
+
+
+
 
 
 
