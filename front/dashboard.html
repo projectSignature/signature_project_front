@@ -167,6 +167,10 @@
   const API_URL = "https://squid-app-ug7x6.ondigitalocean.app"
   const globalId = 1
   let globalRoomData = []
+  let globalObservation = []
+  let globalAmenitys = []
+  let globalConferidos = []
+  let finalizados = []
 
 
 function toggleMenu() {
@@ -585,10 +589,11 @@ async function openUserList(mode) {
   box.innerHTML = "";
 
   list.forEach(u => {
+    console.log(u)
     box.innerHTML += `
       <div class="user-item" onclick="selectUser('${u.username}', '${u.name}', '${u.role}', '${u.contract_type}', '${u.language}')">
         <strong>${u.name}</strong>
-        <div class="user-role">${u.role} • ${u.contract_type} • ${u.language}</div>
+        <div class="user-role">${u.role}</div>
       </div>
     `;
   });
