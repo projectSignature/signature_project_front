@@ -116,7 +116,7 @@ h2 {
 /* Stylish pastel cards */
 .dash-card {
   border-radius: 14px;
-  padding: 8px;
+  padding: 18px;
   background: #ffffffcc;  /* うすい白ベース透明 */
   border: 1px solid #e0e0e0;
   backdrop-filter: blur(6px);
@@ -164,7 +164,7 @@ h2 {
 
 .dash-card {
 border-radius: 16px;
-padding: 18px;
+padding: 8px;
 backdrop-filter: blur(10px);
 background: rgba(255,255,255,0.15);
 color: #fff;
@@ -174,7 +174,7 @@ box-shadow: 0 4px 14px rgba(0,0,0,0.25);
 
 .dash-card h1 {
 margin: 0;
-font-size: 40px;
+font-size: 30px;
 font-weight: 700;
 }
 
@@ -606,4 +606,3 @@ font-size: 16px;
   from { transform: translateY(20px); opacity: 0; }
   to   { transform: translateY(0); opacity: 1; }
 }
-
