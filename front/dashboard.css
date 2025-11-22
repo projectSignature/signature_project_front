@@ -116,7 +116,7 @@ h2 {
 /* Stylish pastel cards */
 .dash-card {
   border-radius: 14px;
-  padding: 18px;
+  padding: 8px;
   background: #ffffffcc;  /* うすい白ベース透明 */
   border: 1px solid #e0e0e0;
   backdrop-filter: blur(6px);
@@ -606,3 +606,4 @@ font-size: 16px;
   from { transform: translateY(20px); opacity: 0; }
   to   { transform: translateY(0); opacity: 1; }
 }
+
