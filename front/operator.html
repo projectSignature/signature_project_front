@@ -546,6 +546,7 @@ function renderRoomTasks(roomData) {
   // <span id='cleansROomsInitial'></span>
 
   const beforeCleanning =  roomData.filter(r =>
+
     r.clean_flag === '未清掃' &&
     r.status!=='stay_noclean' &&
    r.status!=='stay_amenytyOnliy');
@@ -554,8 +555,8 @@ function renderRoomTasks(roomData) {
   const checked = roomData.filter(r => r.cleaning_status === 'checked' && r.checkout_status === 'after');
 
   console.log(beforeCleanning)
-  const elevenFloor = beforeCleanning.filter(r=>r.floor===11)
-  console.log(elevenFloor)
+  // const elevenFloor = beforeCleanning.filter(r=>r.floor===11)
+  // console.log(elevenFloor)
 
   // === UI 表示（多言語対応） ===
   document.getElementById('cleansRooms').innerText =
@@ -570,6 +571,7 @@ function renderRoomTasks(roomData) {
   const L = t[lang];
 
   roomData.forEach(r => {
+        console.log(r)
     const card = document.createElement("div");
     card.className = "task-card";
 
@@ -821,6 +823,8 @@ if(r.notes){
         .addEventListener("click", () => undoCleaning(r.id));
     }
 
+    // console.log(card)
+
     container.appendChild(card);
   });
 }
@@ -985,19 +989,19 @@ function applyFilters() {
     filtered = filtered.filter(r => String(r.floor) === selectedFloor);
   }
 
-  // ② 清掃だけ
-  if (modeCleaning && !modeAmenity) {
-    filtered = filtered.filter(r =>
-      r.checkout_status === "after" ||
-      r.status === "before_check" ||
-      ["not_started","in_progress","done"].includes(r.cleaning_status)
-    );
-  }
-
-  // ③ アメニティだけ
-  if (!modeCleaning && modeAmenity) {
-    filtered = filtered.filter(r => r.status === "stay_amenytyOnliy");
-  }
+  // // ② 清掃だけ
+  // if (modeCleaning && !modeAmenity) {
+  //   filtered = filtered.filter(r =>
+  //     r.checkout_status === "after" ||
+  //     r.status === "before_check" ||
+  //     ["not_started","in_progress","done"].includes(r.cleaning_status)
+  //   );
+  // }
+  //
+  // // ③ アメニティだけ
+  // if (!modeCleaning && modeAmenity) {
+  //   filtered = filtered.filter(r => r.status === "stay_amenytyOnliy");
+  // }
 
   // ④ 全フロア + 清掃 + アメニティ → 全表示
   if (selectedFloor === "all" && modeCleaning && modeAmenity) {
