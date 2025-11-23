@@ -215,10 +215,10 @@ async function loadDashboard() {
 
       const API_AMENITIES = await fetch(`${API_URL}/api/room/amenity/list`);
       const amenityJson = await API_AMENITIES.json();
+        globalAmenitys =amenityJson.requests
 
-console.log(notes)
-console.log(amenityJson.requests.length)
-      const amenityRoms = amenityJson.requests.length
+
+      const amenityRoms = globalAmenitys.length
 
       console.log('amenityRoms',amenityRoms)
       console.log(amenityJson)
@@ -239,6 +239,8 @@ console.log(amenityJson.requests.length)
     document.getElementById("card_tomorrow").innerText = tomorowCleanNeedRooms.length;
     document.getElementById("card_amenity").innerText = amenityRoms
     document.getElementById('card_observation').innerText = notes.length
+
+    console.log(document.getElementById("card_amenity").innerText)
 
 
     // const
@@ -331,14 +333,25 @@ function selectFloor(floor, clickedButton) {
   );
   clickedButton.classList.add("floor-active");
 
-  // フィルタするデータ
   let targetRooms = [];
+  let amenytyRooms = [];
 
   if (floor === "ALL") {
     targetRooms = globalRoomData;
+    amenytyRooms = globalAmenitys;
   } else {
     targetRooms = globalRoomData.filter(r => `${r.floor}F` === floor);
+
+    for (let i = 0; i < globalAmenitys.length; i++) {
+      const floorRoom = globalRoomData.find(r => r.room_number === globalAmenitys[i].room_number);
+
+      // find() は1件のみ返すので floorRoom があるかチェック
+      if (floorRoom && `${floorRoom.floor}F` === floor) {
+        amenytyRooms.push(globalAmenitys[i]);
+      }
+    }
   }
+
 
   // 各種集計
   const beforeCleanning = targetRooms.filter(r =>
@@ -363,9 +376,6 @@ function selectFloor(floor, clickedButton) {
 
   const tomorrowRooms = targetRooms.filter(r => r.guest_count > 0);
 
-  // Amenity API は全体データを使うのでここは全件（必要あれば階フィルタ版も作る）
-
-  console.log(notes)
   const amenityCount = notes.length;
 
   // カード更新
@@ -373,7 +383,8 @@ function selectFloor(floor, clickedButton) {
   document.getElementById("card_progress").innerText = inProgressRooms.length;
   document.getElementById("card_done").innerText = doneRooms.length;
   document.getElementById("card_checked").innerText = checked.length;
-  document.getElementById("card_amenity").innerText = amenityCount;
+  document.getElementById("card_amenity").innerText = amenytyRooms.length;
+  document.getElementById('card_observation').innerText = notes.length
   document.getElementById("card_tomorrow").innerText = tomorrowRooms.length;
 }
 
