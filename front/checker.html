@@ -155,7 +155,8 @@ returnPlacesFixed: {
 inspectorButtons: {
   revert: "⤺ 清掃前に戻す",
   done:   "✅ 清掃完了",
-  checked:"✔ 確認済み"
+  checked:"✔ 確認済み",
+  beforeChecked:'確認する'
 },
 cleaningStatusLabel: {
   not_started: "未清掃",
@@ -222,7 +223,8 @@ actionTypesFixed: {
 inspectorButtons: {
   revert: "⤺ Refazer",
   done:   "✅ Limpeza concluída",
-  checked:"✔ Verificado"
+  checked:"Verificado",
+  beforeChecked:'Verificar'
 },
 cleaningStatusLabel: {
   not_started: "Não limpo",
@@ -311,7 +313,8 @@ returnPlacesFixed: {
 inspectorButtons: {
   revert: "⤺ Revert to Before Cleaning",
   done:   "✅ Cleaning Done",
-  checked:"✔ Checked"
+  checked:"Confirmed",
+  beforeChecked:'check'
 },
 cleaningStatusLabel: {
   not_started: "Not cleaned",
@@ -374,7 +377,8 @@ actionTypesFixed: {
 inspectorButtons: {
   revert: "Volver antes de limpiar",
   done:   "Limpieza completada",
-  checked:"Confirmado"
+  checked:"Verificado",
+  beforeChecked:'Verificar'
 },
 
 // 🔥 返却先の翻訳（他言語にもあるので ES も必要）
@@ -593,6 +597,11 @@ function renderRoomTasks(roomData) {
     let textColor = "#333";
     let iconHTML = "";
     let allowButtons = true;
+    // let confirmdText =L.inspectorButtons.beforeChecked
+
+// console.log(confirmdText)
+//
+// console.log(r)
 
     // ===============================
     //     デザイン・ロック判定
@@ -734,6 +743,10 @@ allowButtons = true
     const btnRevert  = card.querySelector(".revert-btn");
     const btnDone    = card.querySelector(".done-btn");
     const btnChecked = card.querySelector(".checked-btn");
+
+    if(r.cleaning_status === 'done'){
+      btnChecked.innerText = L.inspectorButtons.beforeChecked
+    }
 
     if (btnRevert)  btnRevert.addEventListener("click", () => inspectorRevert(r.id));
     if (btnDone)    btnDone.addEventListener("click", () => inspectorDone(r.id));
