@@ -590,6 +590,9 @@ function renderRoomTasks(roomData) {
   const L = t[currentLang];
 
   roomData.forEach(r => {
+    if(r.room_number === '403'){
+      console.log(r)
+    }
     const card = document.createElement("div");
     card.className = "task-card";
 
@@ -677,7 +680,22 @@ allowButtons = true
     // ===============================
     //     3つのボタン（確認者用）
     // ===============================
-    const buttonHTML = getButtonsByStatus(r, currentLang);
+    let buttonHTML = ''
+    let verificarHtml = '';
+
+
+        if(r.cleaning_status === 'checked'){
+          console.log(`r.cleaning_status`,r.cleaning_status)
+          console.log('nazeda')
+          verificarHtml =
+          ` <div id="confirmed-text-mother"class="confirmed-text-mother">
+              <span id="confirmid-text">${t[currentLang].inspectorButtons.checked}</span>
+            </div>
+          `
+          allowButtons =false
+        }else{
+          buttonHTML = getButtonsByStatus(r, currentLang);
+        }
 
     // --- 観察データ取得 ---
     const amenitysGet = globalAmenitys.filter(a => a.room_number === r.room_number&&a.status!=='done');
@@ -715,6 +733,11 @@ allowButtons = true
           </div>
 
           ${buttonHTML}
+
+          ${verificarHtml}
+
+
+
         `;
 
 
@@ -737,14 +760,19 @@ allowButtons = true
     //     イベント付与（安全版）
     // ===============================
 
+
+
     if (!allowButtons) return; // ボタン無効時は終了
     const btnRevert  = card.querySelector(".revert-btn");
     const btnDone    = card.querySelector(".done-btn");
     const btnChecked = card.querySelector(".checked-btn");
 
     if(r.cleaning_status !== 'checked'){
+      console.log('kokomade kitenai')
       btnChecked.innerText = L.inspectorButtons.beforeChecked
     }
+
+
 
     if (btnRevert)  btnRevert.addEventListener("click", () => inspectorRevert(r.id));
     if (btnDone)    btnDone.addEventListener("click", () => inspectorDone(r.id));
@@ -762,7 +790,7 @@ function getButtonsByStatus(r, lang) {
     return "";
   }
 
-  console.log(r)
+  // console.log(r)
   let yetPress = false
 
 
