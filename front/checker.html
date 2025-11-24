@@ -668,9 +668,7 @@ allowButtons = true
     card.style.backgroundColor = bgColor;
     card.style.color = textColor;
 
-    if(r.room_number==='719'){
-      console.log(allowButtons)
-    }
+
 
     if (!allowButtons) {
       card.classList.add("disabled-card");
@@ -744,7 +742,7 @@ allowButtons = true
     const btnDone    = card.querySelector(".done-btn");
     const btnChecked = card.querySelector(".checked-btn");
 
-    if(r.cleaning_status === 'done'){
+    if(r.cleaning_status !== 'checked'){
       btnChecked.innerText = L.inspectorButtons.beforeChecked
     }
 
@@ -782,7 +780,7 @@ function getButtonsByStatus(r, lang) {
       <div class="task-buttons">
 
         <button class="btn checked-btn ${disabledClass}" ${disabledAttr} data-id="${r.id}">
-          ${t[lang].inspectorButtons.checked}
+          ${t[lang].inspectorButtons.beforeChecked}
         </button>
       </div>
     `;
