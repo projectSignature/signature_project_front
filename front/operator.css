@@ -511,4 +511,11 @@ font-size: 1rem;
   cursor: not-allowed !important;
   pointer-events: none !important;
 }
-
+.confirmed-text-mother{
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+.confirmed-text-mother span{
+  color:green
+}
