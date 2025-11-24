@@ -540,8 +540,9 @@ function buildAmenityTaskText(a) {
 
 function renderRoomTasks(roomData) {
 
+  roomData.sort((a, b) => Number(a.room_number) - Number(b.room_number));
   globalRoomsData=roomData
-  console.log(roomData)
+
   // <span id='cleansROoms'></span>
   // <span id='cleansROomsInitial'></span>
 
@@ -1171,3 +1172,4 @@ loadTasks();
 </script>
 </body>
 </html>
+
