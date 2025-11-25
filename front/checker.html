@@ -767,8 +767,7 @@ allowButtons = true
     const btnDone    = card.querySelector(".done-btn");
     const btnChecked = card.querySelector(".checked-btn");
 
-    if(r.cleaning_status !== 'checked'){
-      console.log('kokomade kitenai')
+    if(r.cleaning_status !== 'checked' && r.status !== 'stay_amenytyOnliy'){
       btnChecked.innerText = L.inspectorButtons.beforeChecked
     }
 
@@ -1183,3 +1182,4 @@ loadTasks();
 </script>
 </body>
 </html>
+
