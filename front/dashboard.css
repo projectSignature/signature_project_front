@@ -309,11 +309,12 @@ font-size: 16px;
 }
 
 .modal-box {
-  width: 90%;
-  max-width: 420px;
-  background: #fff;
-  border-radius: 14px;
-  overflow: hidden;
+    width: 90%;
+    max-width: 420px;
+    background: #fff;
+    border-radius: 14px;
+    overflow: hidden;
+    max-height: 90%;
 }
 
 /* HEADER */
@@ -629,10 +630,10 @@ font-size: 16px;
 }
 /* ===== 一括割当 リスト ===== */
 .bulk-room-list {
-  max-height: 65vh;
-  overflow-y: auto;
-  margin-top: 12px;
-  padding-right: 4px;
+    max-height: 45vh;
+    overflow-y: auto;
+    margin-top: 12px;
+    padding-right: 4px;
 }
 
 .bulk-room-item {
