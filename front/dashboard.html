@@ -786,6 +786,13 @@ async function loadBulkRoomList() {
   const json = await res.json();
   const rooms = json.rows;
 
+  console.log(rooms)
+
+  rooms.sort((a, b) => a.room_number - b.room_number);
+
+  console.log(rooms)
+
+
   const box = document.getElementById("bulkRoomList");
   box.innerHTML = "";
 
@@ -795,9 +802,9 @@ async function loadBulkRoomList() {
     if (r.status !== '清掃') return;
 
     const operatorName = getStaffNameById(r.assigned_staff_id);
-    console.log(globalWorkerList)
-
-    console.log(r.assigned_staff_id)
+    // console.log(globalWorkerList)
+    //
+    // console.log(r.assigned_staff_id)
 
     box.innerHTML += `
       <div class="bulk-room-item"
@@ -853,6 +860,12 @@ async function loadServiceRooms() {
   }
 
   const rooms = json.rows; // ここに daily_room_list のデータ
+
+  console.log(rooms)
+
+  rooms.sort((a, b) => a.room_number - b.room_number);
+
+  console.log(rooms)
 
   const box = document.getElementById("serviceRoomList");
   box.innerHTML = "";
