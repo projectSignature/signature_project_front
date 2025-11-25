@@ -1156,6 +1156,8 @@ header .total-guests {
 /* 連泊（S）のとき用の枠色＝青例 */
 .renpaku-border {
   border: 3px solid #4a90e2;
+  border-radius: 6px;
+  box-sizing: border-box;
 }
 .room-status.outof-status {
   position: relative;
@@ -1215,4 +1217,93 @@ header .total-guests {
 /* ＼方向 */
 .room-status.mishiyou-room::after {
   transform: translate(-50%, -50%) rotate(calc(-1 * var(--diag-angle, 45deg)));
+}
+.close-day-btn {
+  background-color: #ff9933;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  box-shadow: 0px 3px 6px rgba(0,0,0,0.2);
+  transition: 0.2s;
+}
+
+.close-day-btn:hover {
+  background-color: #ffac4d;
+  transform: scale(1.05);
+}
+.close-day-modal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.45);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.close-day-content {
+  background: white;
+  padding: 25px;
+  width: 300px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+.close-day-content input[type="date"] {
+  width: 80%;
+  padding: 10px 14px;
+  font-size: 16px;
+  border: 2px solid #d8d8d8;
+  border-radius: 8px;
+  outline: none;
+  background-color: #fafafa;
+  transition: 0.25s ease;
+  text-align: center;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+  cursor: pointer;
+}
+
+/* クリック時（フォーカス時） */
+.close-day-content input[type="date"]:focus {
+  border-color: #0077cc;
+  background-color: #fff;
+  box-shadow: 0 0 6px rgba(0,119,204,0.4);
+}
+
+/* 日付選択のアイコンを右側に固定（ブラウザ対応） */
+.close-day-content input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  filter: invert(40%);
+  width: 22px;
+  height: 22px;
+}
+
+
+.close-day-actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.close-day-submit {
+  background: #0077cc;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+#closeDayCancel {
+  background: #aaa;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
 }
