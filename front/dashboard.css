@@ -606,3 +606,116 @@ font-size: 16px;
   from { transform: translateY(20px); opacity: 0; }
   to   { transform: translateY(0); opacity: 1; }
 }
+
+#serviceDate {
+  width: 90%;
+  padding: 12px 14px;
+  font-size: 16px;
+  margin-top: 6px;
+  margin-bottom: 16px;
+
+  background: #f5f7fb;        /* 優しいグレー */
+  border: 2px solid #cdd4e0;  /* 柔らかいグレー境界線 */
+  border-radius: 8px;
+
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+#serviceDate:focus {
+  border-color: #4a90e2;      /* RoomSync の青 */
+  background: #ffffff;
+  box-shadow: 0 0 6px rgba(74,144,226,0.4);
+}
+/* ===== 一括割当 リスト ===== */
+.bulk-room-list {
+  max-height: 65vh;
+  overflow-y: auto;
+  margin-top: 12px;
+  padding-right: 4px;
+}
+
+.bulk-room-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  background: #ffffff;
+  padding: 10px 14px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+
+  border-left: 4px solid #4a90e2;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.bulk-room-item strong {
+  font-size: 17px;
+  color: #333;
+}
+
+.bulk-room-item p {
+  font-size: 12px;
+  color: #777;
+  margin: 2px 0 0;
+}
+
+/* チェックボックス */
+.bulk-checkbox {
+  transform: scale(1.4);
+  margin-right: 4px;
+}
+
+/* スタッフ選択 */
+#bulkWorker {
+  padding: 10px;
+  border-radius: 6px;
+  border: 2px solid #cdd4e0;
+  background: #f5f7fb;
+  font-size: 15px;
+  margin-top: 6px;
+  margin-bottom: 14px;
+  width: 100%;
+}
+
+/* 一括ボタン */
+.assign-bulk-btn {
+  background: #4a90e2;
+  color: #fff;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 8px;
+  font-size: 16px;
+  width: 100%;
+  margin-top: 10px;
+
+  box-shadow: 0 3px 8px rgba(74,144,226,0.4);
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.assign-bulk-btn:hover {
+  background: #357ac9;
+  box-shadow: 0 4px 10px rgba(74,144,226,0.6);
+}
+
+.bulk-room-item.selected {
+  border-left: 4px solid #2ecc71;
+  background: #eafff1;
+  transform: scale(1.02);
+}
+
+.room-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.room-line span{
+  margin-left: 20px
+}
+
+.operator-name {
+  font-size: 14px;
+  color: #2c3e50;
+  font-weight: 600;
+}
