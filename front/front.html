@@ -646,10 +646,9 @@ async function loadRooms() {
           const local = savedRoomStatus?.[r.room_number]?.renpakuFlag;
           const global = globalRoomStatus?.[r.room_number]?.renpakuFlag;
           const renpakuFlag = local || global || "";
-          const isRenpaku = r.status === 'stay_clean' && r.excel_status==='S'?true:false
+          const isRenpaku = (r.status === 'stay_clean'||r.status ==='stay_amenytyOnliy') && r.excel_status==='S'?true:false
           let checkOutAndSatyFlag = false
 
-          console.log(`r`,r)
 
             if(r.status==='before_check'&&r.excel_statu==='S'){
                 checkOutAndSatyFlag = true
@@ -2195,3 +2194,4 @@ loadRooms();
 </script>
 </body>
 </html>
+
