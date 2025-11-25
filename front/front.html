@@ -18,6 +18,8 @@
  <button id="bulkChangeBtn" class="bulk-btn" disabled>🔄 ステータス変更</button>
  <button id="importExcelBtn" class="bulk-btn">📂 清掃データ取込</button>
  <button id="exportStatusBtn" class="bulk-btn">📤 ステータス出力</button>
+ <button id="closeDayBtn" class="bulk-btn close-day-btn">締め</button>
+
 
     </div>
   </header>
@@ -238,6 +240,18 @@
     <div style="text-align:right;">
       <button id="bulkCancelBtn">キャンセル</button>
       <button id="bulkOkBtn">OK</button>
+    </div>
+  </div>
+</div>
+
+<div id="closeDayModal" class="close-day-modal">
+  <div class="close-day-content">
+    <h3>登録日を選択</h3>
+    <input type="date" id="closeDayDate">
+
+    <div class="close-day-actions">
+      <button id="closeDayCancel">キャンセル</button>
+      <button id="closeDaySubmit" class="close-day-submit">登録</button>
     </div>
   </div>
 </div>
@@ -532,6 +546,7 @@ let globalId = 1
 let globalBlukMode = false
 let roomsDatas = []
 
+// https://squid-app-ug7x6.ondigitalocean.app
 
 // const statusLabels = {
 //   "available": "確認済（使用可能）",
@@ -650,6 +665,7 @@ async function loadRooms() {
           let checkOutAndSatyFlag = false
 
 
+
             if(r.status==='before_check'&&r.excel_statu==='S'){
                 checkOutAndSatyFlag = true
             }
@@ -683,7 +699,7 @@ async function loadRooms() {
 
 
 if(r.room_number==='406'||r.room_number==='407'){
-  console.log('未使用部屋だよ！')
+
   statusDiv.classList.remove("checkout-border", "renpaku-border");
   statusDiv.classList.add("mishiyou-room");
   statusDiv.innerHTML=""
@@ -2183,6 +2199,62 @@ otherModal.addEventListener("click", (e) => {
 });
 
 
+//1日の締リスト作成
+
+const closeDayBtn = document.getElementById("closeDayBtn");
+const closeDayModal = document.getElementById("closeDayModal");
+const closeDayCancel = document.getElementById("closeDayCancel");
+const closeDaySubmit = document.getElementById("closeDaySubmit");
+const closeDayDate = document.getElementById("closeDayDate");
+
+// モダル開く
+closeDayBtn.addEventListener("click", () => {
+  closeDayDate.value = new Date().toISOString().split("T")[0];
+  closeDayModal.style.display = "flex";
+});
+
+// モダル閉じる
+closeDayCancel.addEventListener("click", () => {
+  closeDayModal.style.display = "none";
+});
+
+// 登録
+closeDaySubmit.addEventListener("click", async () => {
+  const date = closeDayDate.value;
+
+  if (!date) {
+    alert("日付を選択してください。");
+    return;
+  }
+
+  try {
+     showLoading()
+    const res = await fetch(`${API_URL}/api/room/daily-list/close`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ work_date: date, hotel_id: globalId})
+    });
+
+    const data = await res.json();
+    hideLoading()
+
+    if (data.exists) {
+      alert("⚠️ 既にこの日は登録されています。");
+    } else if (data.success) {
+      alert("✅ 登録しました！");
+      closeDayModal.style.display = "none";
+    } else {
+      alert("エラーが発生しました。");
+    }
+
+  } catch (err) {
+    hideLoading()
+    console.error(err);
+    alert("通信エラーが発生しました。");
+  }
+});
+
+
 
 
 
@@ -2194,4 +2266,3 @@ loadRooms();
 </script>
 </body>
 </html>
-
