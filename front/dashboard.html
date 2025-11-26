@@ -669,6 +669,7 @@ function openTomorrowModal(kubun) {
   modal.id = "tomorrowModal";
   modal.className = "modal";
   modal.style.display = "flex";
+  let text = 'Limpeza para Amanhã'
 
   let targetRooms=""
 
@@ -681,15 +682,19 @@ function openTomorrowModal(kubun) {
 if(kubun==='tomorrow'){
   targetRooms =globalRoomData.filter(r => r.guest_count > 0);
 }else if(kubun==='today'){
+  text= 'Limpezas para hoje'
   targetRooms =globalRoomData.filter(r =>
     r.clean_flag === '未清掃' &&
     r.status!=='stay_noclean' &&
    r.status!=='stay_amenytyOnliy');
 }else if(kubun==='opend'){
+  text= 'Quartos abertos'
   targetRooms =globalRoomData.filter(r => r.cleaning_status === 'in_progress' && r.checkout_status === 'after');
 }else if(kubun==='checked'){
+  text= 'Quartos checados'
   targetRooms =globalRoomData.filter(r => r.cleaning_status === 'checked' && r.checkout_status === 'after');
 }else if(kubun==='done'){
+  text= 'Limpeza faita'
   targetRooms = globalRoomData.filter(r => r.cleaning_status === 'done' && r.checkout_status === 'after');
 }
 
@@ -729,7 +734,7 @@ if(kubun==='tomorrow'){
   modal.innerHTML = `
     <div class="modal-box tomorrow-box">
       <div class="modal-header-tomorrow">
-        Limpeza Amanhã — Por Andar
+        ${text}
         <span class="close-btn" onclick="closeTomorrowModal()">✕</span>
       </div>
       <div class="floor-list">
