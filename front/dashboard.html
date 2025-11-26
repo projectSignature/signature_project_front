@@ -1,23 +1,14 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-<title>RoomSync Painel Administrativo</title>
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<link rel="stylesheet" href="./dashboard.css">
-
-<style>
-
-
-
-
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <title>RoomSync Painel Administrativo</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="./dashboard.css">
 </head>
 
 <body>
-
 <header>
   <div class="logo">
     <img src="./img/logo.png" alt="RoomSync ロゴ">
@@ -45,38 +36,39 @@
 <div class="floor-buttons" id="floorButtons"></div>
 <div class="dashboard">
 
-  <div class="dash-card red">
+  <div class="dash-card red" onclick="openTomorrowModal('today')">
     <h1 id="card_before">--</h1>
     <p>Para limpar</p>
   </div>
 
-  <div class="dash-card blue">
+  <div class="dash-card blue" onclick="openTomorrowModal('opend')">
     <h1 id="card_progress">--</h1>
     <p>Abertos</p>
   </div>
 
-  <div class="dash-card green">
+  <div class="dash-card green" onclick="openTomorrowModal('done')">
     <h1 id="card_done">--</h1>
     <p>Finalizados</p>
   </div>
 
-  <div class="dash-card yellow">
+  <div class="dash-card yellow" onclick="openTomorrowModal('checked')">
     <h1 id="card_checked">--</h1>
     <p>Conferidos</p>
   </div>
 
-  <div class="dash-card yellow">
+  <div class="dash-card yellow" onclick="openAmenityListModal('amenity')">
     <h1 id="card_amenity">--</h1>
     <p>Amenity</p>
   </div>
 
-  <div class="dash-card orange">
+
+  <div class="dash-card orange" onclick="openAmenityListModal('note')">
   <h1 id="card_observation">0</h1>
   <p>Observação</p>
 </div>
 
 
-<div class="dash-card purple" onclick="openTomorrowModal()">
+<div class="dash-card purple" onclick="openTomorrowModal('tomorrow')">
   <h1 id="card_tomorrow">--</h1>
   <p>Para limpar Amanhã</p>
 </div>
@@ -246,24 +238,16 @@ async function loadDashboard() {
     const doneRooms = roomData.filter(r => r.cleaning_status === 'done' && r.checkout_status === 'after');
     const checked = roomData.filter(r => r.cleaning_status === 'checked' && r.checkout_status === 'after');
     const notes = roomData.filter(r => r.notes !== '' && r.notes !== null);
+    globalObservation = notes
 
       const API_AMENITIES = await fetch(`${API_URL}/api/room/amenity/list`);
       const amenityJson = await API_AMENITIES.json();
         globalAmenitys =amenityJson.requests
 
-
       const amenityRoms = globalAmenitys.length
-
-      console.log('amenityRoms',amenityRoms)
-      console.log(amenityJson)
 
     const tomorowCleanNeedRooms = roomData.filter(r => r.guest_count >0);
 
-
-    console.log(beforeCleanning )
-    console.log(inProgressRooms)
-    console.log(doneRooms)
-    console.log(checked)
 
     // === DASHBOARD 数値更新 ===
     document.getElementById("card_before").innerText = beforeCleanning.length;
@@ -274,21 +258,8 @@ async function loadDashboard() {
     document.getElementById("card_amenity").innerText = amenityRoms
     document.getElementById('card_observation').innerText = notes.length
 
-    console.log(document.getElementById("card_amenity").innerText)
 
 
-    // const
-    // console.log(data)
-    // const grouped = groupByFloor(rooms);
-    // console.log(grouped)
-    // const res = await fetch("/api/room/summary", {
-    //   headers: { Authorization: token }
-    // });
-    // const json = await res.json();
-    //
-    // document.getElementById("plannedCount").innerText = json.planned ?? "--";
-    // document.getElementById("beforeCheck").innerText = json.beforeCheck ?? "--";
-    // document.getElementById("afterCheck").innerText = json.afterCheck ?? "--";
    hideLoading()
   } catch (err) {
      hideLoading()
@@ -693,26 +664,52 @@ function openDeleteUserModal() {
 
 
 // ========= 追加：明日清掃の階別一覧モーダル =========
-function openTomorrowModal() {
+function openTomorrowModal(kubun) {
   const modal = document.createElement("div");
   modal.id = "tomorrowModal";
   modal.className = "modal";
   modal.style.display = "flex";
 
-  // ① 対象データ抽出
-  const targetRooms = globalRoomData.filter(r => r.guest_count > 0);
+  let targetRooms=""
 
-  // ② 階別に集計
+  // const inProgressRooms = roomData.filter(r => r.cleaning_status === 'in_progress' && r.checkout_status === 'after');
+  // const doneRooms = roomData.filter(r => r.cleaning_status === 'done' && r.checkout_status === 'after');
+  // const checked = roomData.filter(r => r.cleaning_status === 'checked' && r.checkout_status === 'after');
+  // const notes = roomData.filter(r => r.notes !== '' && r.notes !== null);
+  console.log(globalRoomData)
+
+if(kubun==='tomorrow'){
+  targetRooms =globalRoomData.filter(r => r.guest_count > 0);
+}else if(kubun==='today'){
+  targetRooms =globalRoomData.filter(r =>
+    r.clean_flag === '未清掃' &&
+    r.status!=='stay_noclean' &&
+   r.status!=='stay_amenytyOnliy');
+}else if(kubun==='opend'){
+  targetRooms =globalRoomData.filter(r => r.cleaning_status === 'in_progress' && r.checkout_status === 'after');
+}else if(kubun==='checked'){
+  targetRooms =globalRoomData.filter(r => r.cleaning_status === 'checked' && r.checkout_status === 'after');
+}else if(kubun==='done'){
+  targetRooms = globalRoomData.filter(r => r.cleaning_status === 'done' && r.checkout_status === 'after');
+}
+
+  // ② 階別に集計（まず 4F〜12F を 0 で初期化）
   const countByFloor = {};
+  for (let f = 4; f <= 12; f++) {
+    countByFloor[`${f}F`] = 0;
+  }
+
+  // 対象部屋でカウント上書き
   targetRooms.forEach(r => {
     const floor = `${r.floor}F`;
-    if (!countByFloor[floor]) countByFloor[floor] = 0;
-    countByFloor[floor]++;
+    if (countByFloor[floor] !== undefined) {
+      countByFloor[floor]++;
+    }
   });
 
   // ③ 数値順にソート（4F → 12F）
   const sortedList = Object.entries(countByFloor).sort((a, b) => {
-    const fa = parseInt(a[0]); // 4F → 4
+    const fa = parseInt(a[0]);
     const fb = parseInt(b[0]);
     return fa - fb;
   });
@@ -748,6 +745,62 @@ function closeTomorrowModal() {
   const m = document.getElementById("tomorrowModal");
   if (m) m.remove();
 }
+
+function openAmenityListModal(listTYpe) {
+  // 既に開いている場合は削除して再生成（二重表示防止）
+  const old = document.getElementById("amenityListModal");
+  if (old) old.remove();
+
+  const modal = document.createElement("div");
+  modal.id = "amenityListModal";
+  modal.className = "amenity-list-modal";
+  modal.style.display = "flex";
+  let text=`lista de Amenitys`
+
+  if(listTYpe==='amenity'){
+    lists = globalAmenitys
+  }else{
+    lists = globalObservation
+    text = `Lista de observações`
+  }
+
+  // ② HTMLリスト構築
+  let listHtml = "";
+  if (lists.length === 0) {
+    listHtml = `<div class="amenity-empty">Nenhum pedido encontrado.</div>`;
+  } else {
+    lists.forEach(r => {
+      listHtml += `
+        <div class="amenity-room-row">
+          <div class="amenity-room-number">${r.room_number}</div>
+          <div class="amenity-notes">${r.notes || "-"}</div>
+        </div>
+      `;
+    });
+  }
+
+  // ③ モーダル本体
+  modal.innerHTML = `
+    <div class="amenity-list-modal-box">
+      <div class="amenity-list-header">
+        ${text}
+        <span class="amenity-list-close" onclick="closeAmenityListModal()">✕</span>
+      </div>
+
+      <div class="amenity-list-body">
+        ${listHtml}
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+}
+
+function closeAmenityListModal() {
+  const modal = document.getElementById("amenityListModal");
+  if (modal) modal.remove();
+}
+
 
 
 function openServiceRegister() {
