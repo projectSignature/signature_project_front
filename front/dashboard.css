@@ -790,3 +790,110 @@ font-size: 16px;
   padding: 20px;
   color: #777;
 }
+
+.room-select-counter {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background: #ffce54;
+  color: #333;
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-weight: bold;
+  font-size: 16px;
+  z-index: 9999;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.selected-room {
+  background: #fff3c4;     /* 柔らかい黄色 */
+  border: 2px solid #f2b600;
+}
+
+.selected-operator {
+  font-size: 12px;
+  color: #444;
+  margin-left: 8px;
+  padding: 2px 6px;
+  background: #ffe9a3;
+  border-radius: 6px;
+}
+.assigned-room {
+  background: #d4f7d4;   /* 柔らかい緑 */
+  border: 2px solid #37b637;
+}
+
+.assigned-operator {
+  font-size: 12px;
+  color: #1d5e1d;
+  padding: 2px 6px;
+  background: #b6efb6;
+  border-radius: 6px;
+  margin-left: 6px;
+  font-weight: bold;
+}
+.status-btn {
+  position: fixed;
+  top: 10px;
+  left:10px;
+
+  background: #007bff;
+  color: white;
+  padding: 12px 18px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+
+  z-index: 99999; /* ← 絶対隠れない */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+.assign-status-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999;
+}
+
+.assign-status-box {
+  width: 300px;
+  background: #fff;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.assign-status-header {
+  font-size: 18px;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.assign-status-close {
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.status-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.status-name {
+  font-weight: bold;
+}
+
+.empty-status {
+  text-align: center;
+  padding: 10px;
+  color: gray;
+}
