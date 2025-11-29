@@ -1287,12 +1287,15 @@ async function onServiceDateChange() {
 }
 
 //初期日付をセット
-  document.addEventListener("DOMContentLoaded", () => {
-    const today = new Date().toISOString().split("T")[0];
-    document.getElementById("dailyDate").value = today;
+document.addEventListener("DOMContentLoaded", () => {
+  const now = new Date();
+  now.setHours(now.getHours() + 9);  // JSTに補正
 
-    loadDashboard(); // 初回ロード
-  });
+  const todayJST = now.toISOString().split("T")[0];
+  document.getElementById("dailyDate").value = todayJST;
+
+  loadDashboard();
+});
 
 
 
@@ -1314,3 +1317,4 @@ loadDashboard().then(() => {
 
 </body>
 </html>
+
