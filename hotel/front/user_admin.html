@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+<title>Gerenciar Usuários - RoomSync</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+  body {
+    margin: 0;
+    background: #0d47a1;
+    color: #fff;
+    font-family: "Segoe UI", "Noto Sans JP", sans-serif;
+    padding: 18px;
+  }
+
+  h2 {
+    margin-top: 10px;
+    margin-bottom: 16px;
+    font-size: 22px;
+  }
+
+  /* USER LIST */
+  .user-card {
+    background: rgba(255,255,255,0.18);
+    padding: 16px;
+    border-radius: 12px;
+    margin-bottom: 14px;
+    backdrop-filter: blur(5px);
+  }
+
+  .user-header {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .user-info {
+    font-size: 14px;
+    margin: 4px 0 10px 0;
+  }
+
+  .btn-row {
+    display: flex;
+    gap: 10px;
+  }
+
+  .btn {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  .btn-edit {
+    background: #29b6f6;
+    color: #fff;
+  }
+
+  .btn-delete {
+    background: #ef5350;
+    color: #fff;
+  }
+
+  /* FORM */
+  .form-box {
+    background: rgba(255,255,255,0.22);
+    padding: 18px;
+    border-radius: 12px;
+    margin-top: 25px;
+  }
+
+  label {
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  input, select {
+    width: 100%;
+    padding: 10px;
+    margin: 6px 0 14px 0;
+    border-radius: 8px;
+    border: none;
+  }
+
+  .btn-save {
+    width: 100%;
+    padding: 12px;
+    background: #4caf50;
+    color: white;
+    font-size: 16px;
+    border-radius: 10px;
+  }
+
+  .btn-new {
+    background: #ffca28;
+    color: #333;
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+  }
+</style>
+</head>
+
+<body>
+
+<h2>Gerenciar Usuários</h2>
+
+<div id="userList"></div>
+
+<!-- FORM AREA -->
+<div class="form-box">
+  <h3 id="formTitle">Novo Usuário</h3>
+
+  <button class="btn-new" onclick="resetForm()">+ Adicionar Novo</button>
+
+  <label>Nome</label>
+  <input type="text" id="name" placeholder="Nome do usuário">
+
+  <label>Usuário (Login)</label>
+  <input type="text" id="username" placeholder="Ex: front1">
+
+  <label>Senha</label>
+  <input type="password" id="password" placeholder="Defina uma senha">
+
+  <label>Papel</label>
+  <select id="role">
+    <option value="admin">Administrador</option>
+    <option value="front">Recepção</option>
+    <option value="operator">Operador</option>
+  </select>
+
+  <label>ID do Hotel</label>
+  <input type="number" id="hotel_id" value="1">
+
+  <button class="btn-save" onclick="saveUser()">Salvar</button>
+</div>
+
+<script>
+let editUserId = null;
+
+/* ===== GET USERS ===== */
+async function loadUsers() {
+  const res = await fetch("/api/users");
+  const list = await res.json();
+
+  const container = document.getElementById("userList");
+  container.innerHTML = "";
+
+  list.forEach(u => {
+    container.innerHTML += `
+      <div class="user-card">
+        <div class="user-header">${u.name}</div>
+        <div class="user-info">
+          Usuário: ${u.username}<br>
+          Papel: ${u.role}<br>
+          Hotel ID: ${u.hotel_id}
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-edit" onclick="editUser(${u.id})">Editar</button>
+          <button class="btn btn-delete" onclick="deleteUser(${u.id})">Excluir</button>
+        </div>
+      </div>
+    `;
+  });
+}
+
+/* ===== RESET FORM ===== */
+function resetForm() {
+  editUserId = null;
+  document.getElementById("formTitle").innerText = "Novo Usuário";
+  document.getElementById("name").value = "";
+  document.getElementById("username").value = "";
+  document.getElementById("password").value = "";
+  document.getElementById("role").value = "front";
+  document.getElementById("hotel_id").value = 1;
+}
+
+/* ===== EDIT USER ===== */
+async function editUser(id) {
+  const res = await fetch(`/api/users/${id}`);
+  const u = await res.json();
+
+  editUserId = id;
+
+  document.getElementById("formTitle").innerText = "Editar Usuário";
+  document.getElementById("name").value = u.name;
+  document.getElementById("username").value = u.username;
+  document.getElementById("password").value = "";
+  document.getElementById("role").value = u.role;
+  document.getElementById("hotel_id").value = u.hotel_id;
+}
+
+/* ===== SAVE (ADD or EDIT) ===== */
+async function saveUser() {
+  const data = {
+    name: document.getElementById("name").value,
+    username: document.getElementById("username").value,
+    password: document.getElementById("password").value,
+    role: document.getElementById("role").value,
+    hotel_id: Number(document.getElementById("hotel_id").value)
+  };
+
+  if (editUserId) {
+    await fetch(`/api/users/${editUserId}`, {
+      method: "PUT",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(data)
+    });
+    alert("Usuário atualizado!");
+  } else {
+    await fetch("/api/users", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(data)
+    });
+    alert("Usuário criado!");
+  }
+
+  resetForm();
+  loadUsers();
+}
+
+/* ===== DELETE ===== */
+async function deleteUser(id) {
+  if (!confirm("Tem certeza que deseja excluir?")) return;
+
+  await fetch(`/api/users/${id}`, { method: "DELETE" });
+
+  alert("Usuário excluído!");
+  loadUsers();
+}
+
+loadUsers();
+</script>
+
+</body>
+</html>

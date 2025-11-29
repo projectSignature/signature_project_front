@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RoomSync ログイン</title>
+
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: "Segoe UI", "Noto Sans JP", sans-serif;
+    background: linear-gradient(135deg, #0d47a1, #1976d2);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .login-container {
+    width: 360px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    padding: 32px;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+    text-align: center;
+    color: #fff;
+  }
+
+  .logo {
+    width: 120px;
+    margin-bottom: 15px;
+  }
+
+  h2 {
+    margin: 0 0 25px 0;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+
+  .input-box {
+    width: 90%;
+    margin-bottom: 15px;
+    text-align: left;
+  }
+
+  .input-box label {
+    font-size: 14px;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .input-box input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    font-size: 15px;
+  }
+
+  .login-btn {
+    width: 100%;
+    padding: 12px 0;
+    margin-top: 15px;
+    background: #ffca28;
+    color: #333;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  .login-btn:hover {
+    background: #ffd54f;
+  }
+
+  .error-msg {
+    margin-top: 15px;
+    color: #ffdede;
+    font-size: 14px;
+    display: none;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="login-container">
+
+  <!-- ロゴ -->
+  <img src="./front/img/logoCleare.png" alt="RoomSync ロゴ">
+  <!-- <img src="./img/system_logo.png" class="logo" alt="System Logo"> -->
+
+
+
+  <div class="input-box">
+    <label for="username">ユーザー名</label>
+    <input type="text" id="username" placeholder="username" />
+  </div>
+
+  <div class="input-box">
+    <label for="password">パスワード</label>
+    <input type="password" id="password" placeholder="password" />
+  </div>
+
+  <button class="login-btn" onclick="doLogin()">ログイン</button>
+
+  <div id="errorMsg" class="error-msg">ユーザー名またはパスワードが違います。</div>
+</div>
+
+
+<script>
+async function doLogin() {
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value.trim();
+  const errorMsg = document.getElementById("errorMsg");
+
+  errorMsg.style.display = "none";
+
+  if (!username || !password) {
+    errorMsg.innerText = "入力内容をご確認ください。";
+    errorMsg.style.display = "block";
+    return;
+  }
+
+  try {
+    const res = await fetch("http://localhost:3000/api/room/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password })
+    });
+
+
+    const json = await res.json();
+
+    if (!json.success) {
+      errorMsg.innerText = "ユーザー名またはパスワードが違います。";
+      errorMsg.style.display = "block";
+      return;
+    }
+
+    localStorage.setItem("authToken", json.token);
+
+
+    console.log(json)
+
+    const token = localStorage.getItem("authToken");
+const decoded = JSON.parse(atob(token.split('.')[1]));
+
+console.log(`decoded`,decoded)
+
+if(decoded.role==='staff'){
+  window.location.href = "./front/operator.html";
+}else if(decoded.role==='inspector'){
+  window.location.href = "./front/checker.html";
+}else if(decoded.role==='admin'){
+  window.location.href = "./front/dashboard.html";
+}
+
+
+
+  } catch (err) {
+    console.error(err);
+    errorMsg.innerText = "サーバーに接続できません。";
+    errorMsg.style.display = "block";
+  }
+}
+</script>
+
+</body>
+</html>

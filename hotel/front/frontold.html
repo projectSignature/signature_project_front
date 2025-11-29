@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ホテル清掃マップ（フロント）</title>
+<style>
+  body {
+    font-family: "Segoe UI", sans-serif;
+    background: #f5f5f5;
+    margin: 0;
+    padding: 20px;
+    user-select: none;
+  }
+
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .floor {
+    background: #fff;
+    margin-bottom: 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    padding: 10px 15px;
+  }
+
+  .floor h3 {
+    margin: 0 0 10px 0;
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 5px;
+  }
+
+  .rooms {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  /* ======= タイプ別カラー（淡く） ======= */
+  .TP, .TR, .TS { background-color: #f2e6ff; }
+  .TD, .TDS     { background-color: #ffeacc; }
+  .TM, .TMS     { background-color: #fff6cc; }
+  .SM, .SMS     { background-color: #e6f7e6; }
+  .TC           { background-color: #e6f2ff; }
+  .DS, .DSS     { background-color: #ffe6e6; }
+
+
+  /* ===== 右クリックメニュー ===== */
+  .context-menu {
+    position: absolute;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    display: none;
+    z-index: 9999;
+    width: 200px;
+  }
+  .context-menu ul {
+    list-style: none;
+    padding: 5px;
+    margin: 0;
+  }
+  .context-menu li {
+    padding: 6px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.15s;
+  }
+  .context-menu li:hover {
+    background: #e6f0ff;
+  }
+  .room-408, .room-417 {
+  flex: 0 0 7% !important;   /* 横幅を8%に変更（デフォはcalc(100%/21)） */
+}
+.room-508, .room-517 {
+flex: 0 0 7% !important;   /* 横幅を8%に変更（デフォはcalc(100%/21)） */
+}
+.room-608, .room-617 {
+flex: 0 0 7% !important;   /* 横幅を8%に変更（デフォはcalc(100%/21)） */
+}
+.room-708, .room-717 {
+flex: 0 0 7% !important;   /* 横幅を8%に変更（デフォはcalc(100%/21)） */
+}
+.room-808, .room-817 {
+flex: 0 0 7% !important;   /* 横幅を8%に変更（デフォはcalc(100%/21)） */
+}
+.room-901{
+  flex: 0 0 4% !important;
+}
+
+.room-401,
+.room-402,
+.room-403,
+.room-404,
+.room-405,
+.room-406,
+.room-407,
+.room-409,
+.room-410,
+.room-411,
+.room-412,
+.room-413,
+.room-414,
+.room-415,
+.room-416,
+.room-418,
+.room-419,
+.room-420,
+.room-421 {
+flex: 0 0 4% !important;   /* 横幅を8%に変更（デフォはcalc(100%/21)） */
+}
+
+.room-501,
+.room-502,
+.room-503,
+.room-505,
+.room-505,
+.room-506,
+.room-507,
+.room-509,
+.room-510,
+.room-511,
+.room-512,
+.room-513,
+.room-515,
+.room-515,
+.room-516,
+.room-518,
+.room-519,
+.room-520,
+.room-521 {
+flex: 0 0 4% !important;   /* 横幅を8%に変更（デフォはcalc(100%/21)） */
+}
+
+.room-601,
+.room-602,
+.room-603,
+.room-606,
+.room-606,
+.room-606,
+.room-607,
+.room-609,
+.room-610,
+.room-611,
+.room-612,
+.room-613,
+.room-616,
+.room-616,
+.room-616,
+.room-618,
+.room-619,
+.room-620,
+.room-621 {
+flex: 0 0 4% !important;   /* 横幅を8%に変更（デフォはcalc(100%/21)） */
+}
+
+.room-701,
+.room-702,
+.room-703,
+.room-704,
+.room-705,
+.room-706,
+.room-707,
+.room-709,
+.room-710,
+.room-711,
+.room-712,
+.room-713,
+.room-714,
+.room-715,
+.room-716,
+.room-718,
+.room-719,
+.room-720,
+.room-721 {
+flex: 0 0 4% !important;   /* 横幅を8%に変更（デフォはcalc(100%/21)） */
+}
+
+.room-801,
+.room-802,
+.room-803,
+.room-804,
+.room-805,
+.room-806,
+.room-807,
+.room-809,
+.room-810,
+.room-811,
+.room-812,
+.room-813,
+.room-814,
+.room-815,
+.room-816,
+.room-818,
+.room-819,
+.room-820,
+.room-821 {
+flex: 0 0 4% !important;   /* 横幅を8%に変更（デフォはcalc(100%/21)） */
+}
+
+.room-901,
+.room-904,
+.room-905,
+.room-909,
+.room-910,
+.room-911,
+.room-912,
+.room-913,
+.room-916,
+.room-918,
+.room-921 {
+flex: 0 0 4% !important;   /* 横幅を8%に変更（デフォはcalc(100%/21)） */
+}
+
+.room-902,
+.room-907,
+.room-914,
+.room-919 {
+flex: 0 0 9% !important;   /* 横幅を8%に変更（デフォはcalc(100%/21)） */
+}
+
+.room-908,
+.room-917 {
+flex: 0 0 7% !important;   /* 横幅を8%に変更（デフォはcalc(100%/21)） */
+}
+
+.room-1001,
+.room-1004,
+.room-1005,
+.room-1009,
+.room-1010,
+.room-1011,
+.room-1012,
+.room-1013,
+.room-1016,
+.room-1018,
+.room-1021 {
+  flex: 0 0 4% !important;   /* 細い部屋（デフォ 4%） */
+}
+
+.room-1002,
+.room-1007,
+.room-1014,
+.room-1019 {
+  flex: 0 0 9% !important;   /* 広めの部屋（デフォ 9%） */
+}
+
+.room-1008,
+.room-1017 {
+  flex: 0 0 7% !important;   /* 中間サイズ */
+}
+
+.room-1101,
+.room-1104,
+.room-1107,
+.room-1109,
+.room-1110,
+.room-1111,
+.room-1112,
+.room-1113,
+.room-1116,
+.room-1118,
+.room-1121 {
+  flex: 0 0 4% !important;   /* 細い部屋（デフォ 4%） */
+}
+
+.room-1102,
+.room-1105,
+.room-1114,
+.room-1119 {
+  flex: 0 0 9% !important;   /* 広めの部屋（デフォ 9%） */
+}
+
+.room-1108,
+.room-1117 {
+  flex: 0 0 7% !important;   /* 中間サイズ */
+}
+
+.room-1201 {
+flex: 0 0 14% !important;   /* 横幅を8%に変更（デフォはcalc(100%/21)） */
+}
+
+.room-1205 {
+flex: 0 0 15% !important;   /* 横幅を8%に変更（デフォはcalc(100%/21)） */
+}
+
+.room-1202,
+.room-1203,
+.room-1204,
+.room-1206,
+.room-1207,
+.room-1208,
+.room-1209,
+.room-1210,
+.room-1211,
+.room-1212 {
+  flex: 0 0 7% !important;
+}
+
+
+/* ===== アイコンを見やすく改善 ===== */
+.room-status {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.room .icon,
+.room-status {
+  font-size: 26px; /* ← ちょっと大きめ */
+  position: relative;
+}
+
+
+/* 絵文字（アイコン）本体を前面に */
+.room-status span,
+.room-status {
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.room {
+  border-radius: 8px;
+  color: #333;
+  background: #eee;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 90px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: transform 0.2s, border-color 0.2s;
+  box-sizing: border-box;
+  text-align: center;
+  font-size: 12px;
+}
+
+.room:hover {
+  transform: scale(1.05);
+}
+
+.room-header {
+  font-weight: bold;
+  font-size: 11px;
+  margin-top: 3px;
+}
+
+.room-status{
+  border-top: 0.3px solid #333
+}
+
+
+/* ステータス別に色を微調整 */
+.掃除前 .room-status { color: #ff6600; }   /* オレンジ（🧹） */
+.確認済 .room-status { color: #009900; }   /* 緑（✅） */
+.宿泊中 .room-status { color: #333366; }   /* ネイビー（🛏️） */
+.連泊中 .room-status { color: #3366ff; }   /* ブルー（🔁） */
+.未使用 .room-status { color: #666; }      /* グレー（⬜） */
+
+/* ===== 右クリックメニュー（モダンガラス風） ===== */
+.context-menu {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  display: none;
+  z-index: 9999;
+  width: 220px;
+  overflow: hidden;
+  animation: fadeIn 0.15s ease-out;
+}
+
+.context-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.context-menu li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+.context-menu li:last-child {
+  border-bottom: none;
+}
+
+.context-menu li:hover {
+  background: rgba(0, 123, 255, 0.15);
+  color: #0044aa;
+  transform: translateX(4px);
+}
+
+.context-menu li:active {
+  background: rgba(0, 123, 255, 0.25);
+  transform: scale(0.98);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+/* ===== 凡例（Legend）右下固定 ===== */
+#legend {
+  position: fixed;
+  bottom: 70px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  border-radius: 10px;
+  border: 1px solid rgba(200, 200, 200, 0.6);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+  padding: 10px 14px;
+  font-size: 13px;
+  z-index: 10000;
+  width: 180px;
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.3s ease;
+}
+
+#legend.hidden {
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
+}
+
+#legend h4 {
+  margin: 0 0 6px 0;
+  font-size: 14px;
+  text-align: center;
+  border-bottom: 1px solid rgba(150,150,150,0.3);
+  padding-bottom: 4px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin: 3px 0;
+  gap: 5px;
+}
+
+.legend-item .icon {
+  font-size: 16px;
+}
+
+.legend-color {
+  display: inline-block;
+  width: 18px;
+  height: 12px;
+  border-radius: 3px;
+  border: 1px solid #aaa;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+/* 凡例ボタン：右上固定 */
+#toggleLegendBtn {
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 7px 16px;
+  font-size: 13px;
+  cursor: pointer;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.25);
+  transition: background 0.2s, transform 0.2s;
+}
+
+#toggleLegendBtn:hover {
+  background: #0056c1;
+  transform: translateY(-2px);
+}
+/* ===== ヘッダー（タイトル＋凡例ボタン） ===== */
+.header {
+  position: sticky;         /* ← スクロールしても上に固定 */
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(to right, #ffffff, #f0f6ff);
+  border-bottom: 1px solid #ccc;
+  padding: 10px 20px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.header {
+  height:40px;
+  overflow:hidden
+}
+.header img {
+  height: 100%;
+}
+
+.header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+/* 凡例切り替えボタン */
+#toggleLegendBtn {
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+  transition: background 0.2s, transform 0.2s;
+}
+
+#toggleLegendBtn:hover {
+  background: #0056c1;
+  transform: translateY(-2px);
+}
+
+.header-right {
+  display: flex;
+  gap: 10px;
+}
+
+#masterBtn {
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+  transition: background 0.2s, transform 0.2s;
+}
+
+#masterBtn:hover {
+  background: #1e7e34;
+  transform: translateY(-2px);
+}
+
+
+
+
+</style>
+</head>
+<body>
+  <header class="header">
+    <img src="./img/logo.png" alt="RoomSync ロゴ">
+
+    <div class="header-right">
+      <button id="masterBtn">⚙️ 設定</button>
+      <button id="toggleLegendBtn">凡例表示</button>
+    </div>
+  </header>
+
+
+
+<div id="map"></div>
+
+<!-- 右クリックメニュー -->
+<div class="context-menu" id="contextMenu">
+  <ul>
+    <li data-action="掃除依頼">🧹 掃除依頼</li>
+    <li data-action="アメニティ交換">🧴 アメニティ交換</li>
+    <li data-action="充電器回収">🔌 充電器回収</li>
+    <li data-action="延長コード回収">🔋 延長コード回収</li>
+  </ul>
+</div>
+
+<div id="legend" class="hidden">
+  <h4>凡例</h4>
+  <div class="legend-item"><span class="icon">🛏️</span> 宿泊中</div>
+  <div class="legend-item"><span class="icon">🔁</span> 連泊中</div>
+  <div class="legend-item"><span class="icon">🧹</span> 掃除前</div>
+  <div class="legend-item"><span class="icon">✅</span> 確認済</div>
+  <div class="legend-item"><span class="icon">⬜</span> 未使用</div>
+</div>
+
+
+<script>
+const types = ["TP","TD","TM","SM","TC","DS"];
+const statuses = ["宿泊中","連泊中","掃除前","確認済","未使用"];
+const icons = {
+  "宿泊中": "🛏️",
+  "連泊中": "🔁",
+  "掃除前": "🧹",
+  "available": "✅",
+  "未使用": "⬜"
+};
+
+// ========================================
+// 🎨 色設定：タイプ or 部屋番号ごとに自由変更
+// ========================================
+const roomColors = {
+  // タイプ別（デフォルト）
+  TP: "#f2e6ff",
+  TD: "#ffeacc",
+  TM: "#fff6cc",
+  SM: "#e6f7e6",
+  TC: "#e6f2ff",
+  DS: "#ffe6e6",
+
+  // 個別設定（優先される）
+  "1201": "#ffebf0",  // 薄ピンク
+  "1202": "#ebf8ff",  // 薄水色
+  "804":  "#f7ffe6",  // 薄黄緑
+  "501":  "#fff0e6",  // ベージュ
+  "401": "#99e6b3",
+  "402": "#66b3ff",
+  "403": "#66b3ff",
+  "404": "#66b3ff",
+  "405": "#66b3ff",
+  "406": "#ebf8ff",
+  "407": "#ebf8ff",
+  "408": "#ffeb3b",
+  "409": "#66b3ff",
+  "410": "#66b3ff",
+  "411": "#ffb3b3",
+  "412": "#66b3ff",
+  "413": "#66b3ff",
+  "414": "#99e6b3",
+  "415": "#66b3ff",
+  "416": "#66b3ff",
+  "417": "#ffeb3b",
+  "418": "#99e6b3",
+  "419": "#66b3ff",
+  "420": "#66b3ff",
+  "421": "#66b3ff",
+  // ==== 5F（501〜521） ====
+"501": "#66b3ff",
+"502": "#66b3ff",
+"503": "#66b3ff",
+"504": "#66b3ff",
+"505": "#66b3ff",
+"506": "#66b3ff",
+"507": "#66b3ff",
+"508": "#ffeb3b",
+"509": "#66b3ff",
+"510": "#66b3ff",
+"511": "#ffb3b3",
+"512": "#66b3ff",
+"513": "#66b3ff",
+"514": "#99e6b3",
+"515": "#66b3ff",
+"516": "#66b3ff",
+"517": "#ffeb3b",
+"518": "#99e6b3",
+"519": "#66b3ff",
+"520": "#66b3ff",
+"521": "#66b3ff",
+
+// ==== 6F（601〜621） ====
+"601": "#66b3ff",
+"602": "#66b3ff",
+"603": "#66b3ff",
+"604": "#66b3ff",
+"605": "#66b3ff",
+"606": "#66b3ff",
+"607": "#66b3ff",
+"608": "#ffeb3b",
+"609": "#66b3ff",
+"610": "#66b3ff",
+"611": "#ffb3b3",
+"612": "#66b3ff",
+"613": "#66b3ff",
+"614": "#99e6b3",
+"615": "#66b3ff",
+"616": "#66b3ff",
+"617": "#ffeb3b",
+"618": "#99e6b3",
+"619": "#66b3ff",
+"620": "#66b3ff",
+"621": "#66b3ff",
+
+// ==== 7F（701〜721） ====
+"701": "#66b3ff",
+"702": "#66b3ff",
+"703": "#66b3ff",
+"704": "#66b3ff",
+"705": "#66b3ff",
+"706": "#66b3ff",
+"707": "#66b3ff",
+"708": "#ffeb3b",
+"709": "#66b3ff",
+"710": "#66b3ff",
+"711": "#ffb3b3",
+"712": "#66b3ff",
+"713": "#66b3ff",
+"714": "#99e6b3",
+"715": "#66b3ff",
+"716": "#66b3ff",
+"717": "#ffeb3b",
+"718": "#99e6b3",
+"719": "#66b3ff",
+"720": "#66b3ff",
+"721": "#66b3ff",
+
+// ==== 8F（801〜821） ====
+"801": "#66b3ff",
+"802": "#66b3ff",
+"803": "#66b3ff",
+"804": "#66b3ff",
+"805": "#66b3ff",
+"806": "#66b3ff",
+"807": "#66b3ff",
+"808": "#ffeb3b",
+"809": "#66b3ff",
+"810": "#66b3ff",
+"811": "#ffb3b3",
+"812": "#66b3ff",
+"813": "#66b3ff",
+"814": "#99e6b3",
+"815": "#66b3ff",
+"816": "#66b3ff",
+"817": "#ffeb3b",
+"818": "#99e6b3",
+"819": "#66b3ff",
+"820": "#66b3ff",
+"821": "#66b3ff",
+
+// ==== 9F（901〜917） ====
+"901": "#99e6b3",
+"902": "#ff8800",
+"904": "#99e6b3",
+"905": "#99e6b3",
+"907": "#ff8800",
+"908": "#ffeb3b",
+"909": "#99e6b3",
+"910": "#99e6b3",
+"911": "#ffb3b3",
+"912": "#99e6b3",
+"913": "#99e6b3",
+"914": "#ff8800",
+"916": "#99e6b3",
+"917": "#ffeb3b",
+"918": "#99e6b3",
+"919": "#ff8800",
+"921": "#99e6b3",
+
+"1001": "#99e6b3",
+"1002": "#ff8800",
+"1004": "#99e6b3",
+"1005": "#99e6b3",
+"1007": "#ff8800",
+"1008": "#ffeb3b",
+"1009": "#99e6b3",
+"1010": "#99e6b3",
+"1011": "#ffb3b3",
+"1012": "#99e6b3",
+"1013": "#99e6b3",
+"1014": "#ff8800",
+"1016": "#99e6b3",
+"1017": "#ffeb3b",
+"1018": "#99e6b3",
+"1019": "#ff8800",
+"1021": "#99e6b3",
+
+"1101": "#99e6b3",
+"1102": "#ff8800",
+"1104": "#99e6b3",
+"1105": "#ff8800",
+"1107": "#99e6b3",
+"1108": "#ffeb3b",
+"1109": "#99e6b3",
+"1110": "#99e6b3",
+"1111": "#ffb3b3",
+"1112": "#99e6b3",
+"1113": "#99e6b3",
+"1114": "#ff8800",
+"1116": "#99e6b3",
+"1117": "#ffeb3b",
+"1118": "#99e6b3",
+"1119": "#ff8800",
+"1121": "#99e6b3",
+
+"1201" : "#cc99ff",
+"1202" : "#ccccff",
+"1203" : "#ccccff",
+"1204" : "#ccccff",
+"1205" : "#9933ff",
+"1206" : "#ccccff",
+"1207" : "#ccccff",
+"1208" : "#ccccff",
+"1209" : "#ccccff",
+"1210" : "#ccccff",
+"1211" : "#ccccff",
+"1212" : "#ccccff",
+
+
+
+};
+
+
+
+const map = document.getElementById("map");
+const contextMenu = document.getElementById("contextMenu");
+let selectedRoom = null;
+
+map.innerHTML = "";
+
+for(let f=12; f>=4; f--){
+  const floorDiv = document.createElement("div");
+  floorDiv.className = "floor";
+  const h3 = document.createElement("h3");
+  h3.textContent = f + "F";
+  floorDiv.appendChild(h3);
+
+  const roomsContainer = document.createElement("div");
+  roomsContainer.className = `rooms floor-${f}F`;
+
+  // ✅ 部屋番号リストを生成（9階だけ903と920を除外）
+  let roomNumbers = [];
+  if(f === 12) roomNumbers = Array.from({length: 12}, (_,i)=>1201+i);
+  else if(f >= 9 && f <= 11) {
+    roomNumbers = Array.from({length: 21}, (_,i)=>f*100 + (i+1));
+    if(f === 9) roomNumbers = roomNumbers.filter(n => n !== 903 && n !== 920&& n !== 906&& n !== 915);
+    if(f === 10) roomNumbers = roomNumbers.filter(n => n !== 1003 && n !== 1020&& n !== 1006&& n !== 1015);
+    if(f === 11) roomNumbers = roomNumbers.filter(n => n !== 1103 && n !== 1120&& n !== 1106&& n !== 1115);
+  }
+  else if(f <= 8) {
+    roomNumbers = Array.from({length: 21}, (_,i)=>f*100 + (i+1));
+  }
+
+  // 各部屋を生成
+  for(const num of roomNumbers){
+    const type = types[num % types.length];
+    const status = statuses[(num + f) % statuses.length];
+
+    const room = document.createElement("div");
+    room.className = `room ${type} ${status} room-${num}`;
+    room.style.backgroundColor = roomColors[num] || roomColors[type] || "#eee";
+    room.dataset.room = num;
+    room.dataset.type = type;
+    room.dataset.status = status;
+    room.dataset.action = "";
+
+    room.innerHTML = `
+      <div class="room-header">${num}<br><small>${type}</small></div>
+      <div class="room-status">${icons[status] || "⬜"}</div>
+    `;
+
+    room.addEventListener("click",()=>{ /* 詳細表示 */ });
+    room.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+      selectedRoom = room;
+
+      // 表示位置を調整（画面端だと切れないように）
+      const menuWidth = 220;
+      const menuHeight = 150;
+      const posX = (e.pageX + menuWidth > window.innerWidth)
+        ? e.pageX - menuWidth
+        : e.pageX;
+      const posY = (e.pageY + menuHeight > window.innerHeight)
+        ? e.pageY - menuHeight
+        : e.pageY;
+
+      contextMenu.style.left = `${posX}px`;
+      contextMenu.style.top = `${posY}px`;
+      contextMenu.style.display = "block";
+    });
+
+
+    roomsContainer.appendChild(room);
+  }
+
+  floorDiv.appendChild(roomsContainer);
+  map.appendChild(floorDiv);
+}
+
+// メニュー外クリックで閉じる
+document.addEventListener("click",()=>{
+  contextMenu.style.display = "none";
+});
+
+// メニュー項目クリック時
+contextMenu.addEventListener("click",(e)=>{
+
+  console.log(e)
+  if (selectedRoom) {
+      selectedRoom.dataset.status = key;
+      selectedRoom.querySelector(".room-status").textContent = icon;
+      selectedRoom.className = `room room-${selectedRoom.dataset.room} ${key}`;
+
+      try {
+        const res = await fetch("http://localhost:3000/api/room/status", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            room_id: selectedRoom.dataset.id,  // ← DBのidを持ってる場合
+            status: key
+          })
+        });
+        const result = await res.json();
+        if (result.success) {
+          console.log("✅ 更新成功:", result.message);
+        } else {
+          console.warn("⚠️ 更新失敗:", result.error);
+        }
+      } catch (err) {
+        console.error("❌ 通信エラー:", err);
+      }
+    }
+
+    closeModal(statusModal);
+    alert(`部屋 ${selectedRoom.dataset.room} のステータスを「${statusLabels[key]}」に変更しました`);
+});
+
+const legend = document.getElementById("legend");
+const toggleLegendBtn = document.getElementById("toggleLegendBtn");
+
+toggleLegendBtn.addEventListener("click", () => {
+  legend.classList.toggle("hidden");
+  const hidden = legend.classList.contains("hidden");
+  toggleLegendBtn.textContent = hidden ? "凡例表示" : "凡例非表示";
+});
+
+
+</script>
+</body>
+</html>

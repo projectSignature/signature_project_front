@@ -1,0 +1,521 @@
+body {
+  margin: 0;
+  font-family: "Segoe UI", "Noto Sans JP", "Noto Sans", sans-serif;
+  background: #f2f5f7;
+  color: #333;
+  padding-bottom: 80px;
+}
+header {
+  position: sticky;
+  top: 0;
+  background: #007bff;
+  color: white;
+  padding: 12px 16px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  z-index: 10
+}
+#refreshBtn, #langSelect {
+  position: absolute;
+  top: 10px;
+  background: white;
+  color: #007bff;
+  border: none;
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-size: 13px;
+  cursor: pointer;
+}
+#refreshBtn { right: 16px; }
+#langSelect { left: 16px; padding: 4px 8px; }
+
+#taskContainer {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+
+.room-number {
+  font-size: 18px;
+  font-weight: bold;
+}
+.task-type {
+  font-size: 14px;
+  color: #007bff;
+  font-weight: bold;
+}
+.task-notes {
+  font-size: 13px;
+  color: #555;
+}
+.task-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+.complete-btn {
+  background: linear-gradient(135deg, #28a745, #32c85d);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.complete-btn:hover {
+  background: linear-gradient(135deg, #218838, #28a745);
+}
+
+/* ===== ローディングオーバーレイ ===== */
+#loadingOverlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(255, 255, 255, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  font-size: 18px;
+  font-weight: bold;
+  color: #007bff;
+  flex-direction: column;
+  backdrop-filter: blur(2px);
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+#loadingOverlay.visible {
+  visibility: visible;
+  opacity: 1;
+}
+.loader {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #007bff;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 10px;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+#filterBar {
+display: flex;
+justify-content: space-between;
+align-items: center;
+background: #ffffff;
+padding: 8px 12px;
+box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+position: sticky;
+top: 48px; /* headerの高さ */
+z-index: 10;
+}
+
+#floorSelect {
+font-size: 15px;
+padding: 5px 8px;
+border-radius: 6px;
+border: 1px solid #ccc;
+}
+
+#taskFilterButtons {
+display: flex;
+gap: 8px;
+}
+
+#taskFilterButtons button {
+padding: 6px 12px;
+border: none;
+border-radius: 8px;
+background: #e0e0e0;
+cursor: pointer;
+font-weight: bold;
+}
+
+#taskFilterButtons button.active {
+background: #007bff;
+color: #fff;
+}
+
+.filter-btn {
+background: white;
+border: 1px solid #007bff;
+color: #007bff;
+border-radius: 8px;
+padding: 6px 12px;
+cursor: pointer;
+font-weight: bold;
+}
+.filter-btn.active {
+background: #007bff;
+color: white;
+}
+
+
+
+.task-card {
+width: 90%;
+padding: 16px;
+margin-bottom: 14px;
+border-radius: 14px;
+/* background: linear-gradient(135deg, rgba(255,255,255,0.85), rgba(255,255,255,0.95)); */
+backdrop-filter: blur(4px);
+border: 1px solid rgba(0,0,0,0.06);
+box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.task-card:not(.disabled-card):hover {
+transform: translateY(-3px);
+box-shadow: 0 6px 14px rgba(0,0,0,0.22);
+}
+
+.task-room-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+
+.room-number {
+font-size: 1.35rem;
+font-weight: 700;
+letter-spacing: 1px;
+}
+
+.icon-area img.icon-img {
+width: 40px;
+height: 40px;
+padding: 8px;
+border-radius: 50%;
+background: rgba(255,255,255,0.6);
+box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+
+.task-buttons {
+margin-top: 14px;
+display: flex;
+gap: 10px;
+}
+
+.btn {
+flex: 1;
+padding: 10px 12px;
+border-radius: 30px;
+border: none;
+font-size: 0.95rem;
+font-weight: 600;
+cursor: pointer;
+color: #fff;
+transition: opacity 0.2s ease, transform 0.15s ease;
+}
+
+.btn:hover {
+opacity: 0.85;
+transform: scale(1.02);
+}
+
+.start-btn { background: #009ffd; }
+.done-btn  { background: #2ecc71; }
+.undo-btn  { background: #ff7675; }
+
+/* before 無効化デザイン：ガラス風フェード */
+.disabled-card {
+opacity: 0.55;
+pointer-events: none;
+filter: grayscale(40%) brightness(0.9);
+}
+
+
+.start-btn { background: #74cfff; }
+.done-btn { background: #7cff9c; }
+.undo-btn { background: #ff7979; }
+
+.icon-img {
+width: 32px;
+height: 32px;
+}
+
+.single-btn {
+display: flex;
+justify-content: center;
+}
+
+.single-btn .undo-btn {
+width: 60%;
+font-size: 1rem;
+}
+/* =============================
+   🔵 共通ボタンデザイン
+============================= */
+.task-buttons {
+  display: flex;
+  justify-content:right;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.task-buttons .btn {
+  flex: 0.3;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  color: white;
+  transition: 0.2s ease;
+}
+
+/* =============================
+   🟠 清掃前に戻す（revert-btn）
+============================= */
+.revert-btn {
+  background-color: #ff9800;    /* オレンジ */
+}
+.revert-btn:hover {
+  background-color: #fb8c00;
+}
+.revert-btn:active {
+  background-color: #ef6c00;
+}
+
+/* =============================
+   🟢 清掃完了（done-btn）
+============================= */
+.done-btn {
+  background-color: #4caf50;    /* グリーン */
+}
+.done-btn:hover {
+  background-color: #43a047;
+}
+.done-btn:active {
+  background-color: #2e7d32;
+}
+
+/* =============================
+   🔵 確認済み（checked-btn）
+============================= */
+.checked-btn {
+  background-color: #2196f3;    /* 青 */
+}
+.checked-btn:hover {
+  background-color: #1e88e5;
+}
+.checked-btn:active {
+  background-color: #1976d2;
+}
+
+/* =============================
+   🔒 無効状態（必要なら）
+============================= */
+.btn:disabled {
+  background-color: #cfd8dc;
+  color: #777;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+#summaryContainer {
+  display: flex;
+  gap: 12px;
+  margin: 10px 0;
+}
+
+.summary-box {
+  background: #fff;
+  border-radius: 10px;
+  padding: 10px 14px;
+  box-shadow: 0px 2px 6px rgba(0,0,0,0.15);
+  font-size: 15px;
+  font-weight: 600;
+  color: #444;
+}
+
+.summary-box span.number {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ff8800; /* オレンジで強調 */
+}
+.disabled-btn {
+  opacity: 0.4;          /* 薄く見せる */
+  pointer-events: none;  /* クリックできないようにする */
+  filter: grayscale(40%); /* 色味を落とす（好みで調整） */
+}
+.small-btn {
+  flex: none !important;     /* 親の flex:1 を無効化 */
+  width: auto !important;    /* 幅を内容のみに */
+  padding: 4px 8px !important;
+  font-size: 10px !important;
+  border-radius: 20px !important;
+  transform: scale(0.9);     /* 全体を少し小さくする */
+  margin: 0 auto;            /* ★中央寄せ */
+  display: block;            /* margin:auto を効かせるため */
+}
+/* ===============================
+   🔥【観察モーダル：背景】
+   半透明の黒背景 + 中央配置
+================================ */
+#observModal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 3000;
+  backdrop-filter: blur(3px);   /* 背景を少しぼかして高級感アップ */
+}
+
+#observModal.hidden {
+  display: none;
+}
+
+/* ===============================
+   🔥【観察モーダル：本体カード】
+   スマホアプリ風の丸くて綺麗なカード
+================================ */
+.observ-content {
+  background: #ffffff;
+  width: 90%;
+  max-width: 400px;
+  border-radius: 18px;
+  padding: 22px 24px;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.25);
+  animation: modalFade 0.22s ease-out;
+  transform: translateY(-6px);
+}
+
+/* モーダル登場アニメーション */
+@keyframes modalFade {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ===============================
+   🔥 タイトル
+================================ */
+#observModalTitle {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  text-align: center;
+  color: #333;
+}
+
+/* ===============================
+   🔥 観察リストエリア
+================================ */
+#observText {
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 6px;
+  margin-bottom: 18px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: #444;
+}
+
+.observ-item {
+  padding: 10px 0;
+  border-bottom: 1px solid #ddd;
+}
+.observ-item:last-child {
+  border-bottom: none;
+}
+
+/* ===============================
+   🔥 ボタン（完了・閉じる）
+================================ */
+.observ-done-btn {
+  width: 100%;
+  background: #4CAF50;
+  color: #fff;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  font-size: 16px;
+  margin-bottom: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.2);
+}
+.observ-done-btn:active {
+  transform: scale(0.96);
+}
+
+.observ-close-btn {
+  width: 100%;
+  background: #9E9E9E;
+  color: #fff;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.observ-close-btn:active {
+  transform: scale(0.96);
+}
+/* ===============================
+   🔥 タスク強調ラベル（room-number の横）
+   - 高級ホテルアプリ風
+   - 読みやすい
+   - コンパクト
+================================= */
+.task-badge {
+  display: inline-block;
+  background: #ffe5e5;               /* 薄い赤で “注意” を表現 */
+  color: #c62828;                    /* 濃い赤で強調 */
+  padding: 6px 10px;
+  margin-left: 10px;
+  max-width: 250px;
+  border-left: 5px solid #e53935;    /* アクセントライン */
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1.3;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.18);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, opacity 0.2s;
+  white-space: normal;               /* 複数行対応 */
+}
+
+/* ホバーで少し浮く */
+.task-badge:hover {
+  transform: scale(1.03);
+  box-shadow: 0 5px 12px rgba(0,0,0,0.25);
+  opacity: 0.95;
+}
+
+/* クリック時のフィードバック */
+.task-badge:active {
+  transform: scale(0.96);
+}
+
+.disabled-btn {
+  opacity: 0.4;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+}
+.confirmed-text-mother{
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+.confirmed-text-mother span{
+  color:green
+}

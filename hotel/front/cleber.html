@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tabela de Produtos — Amigos Butcher Shop</title>
+<style>
+  body {
+    font-family: "Segoe UI", "Noto Sans JP", sans-serif;
+    background: #fafafa;
+    color: #333;
+    margin: 20px;
+  }
+  h1 {
+    text-align: center;
+    font-size: 24px;
+    color: #222;
+    margin-bottom: 20px;
+  }
+
+  .wrapper {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .column {
+    flex: 1;
+    max-width: 48%;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    padding: 12px 16px;
+  }
+
+  h2 {
+    font-size: 18px;
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 8px;
+    margin-top: 0;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .bovinos h2 { background: linear-gradient(135deg, #b71c1c, #e53935); }
+  .suinos h2 { background: linear-gradient(135deg, #880e4f, #d81b60); }
+  .frangos h2 { background: linear-gradient(135deg, #1565c0, #42a5f5); }
+  .outros h2 { background: linear-gradient(135deg, #2e7d32, #66bb6a); }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 4px 6px;
+  }
+
+  th {
+    background: #f3f3f3;
+    border-bottom: 2px solid #ddd;
+    font-weight: bold;
+  }
+
+  tr:nth-child(even) td {
+    background: #fafafa;
+  }
+
+  td:first-child {
+    width: 35px;
+    font-weight: 600;
+    color: #555;
+  }
+
+  .bovinos .dual {
+    display: flex;
+    gap: 16px;
+  }
+  .bovinos .dual table {
+    width: 100%;
+  }
+
+  @media print {
+    body { background: white; margin: 10px; }
+    .column { box-shadow: none; page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<h1>🥩 Amigos Butcher Shop — Registro de Produtos</h1>
+
+<div class="wrapper">
+
+  <!-- 🥩 Bovinos (duas subcolunas internas) -->
+  <div class="column bovinos">
+    <h2>🥩 Bovinos</h2>
+    <div class="dual">
+      <table>
+        <tr><th>ID</th><th>Produto</th></tr>
+        <tr><td>1</td><td>Rump (Alcatra e picanha)</td></tr>
+        <tr><td>2</td><td>Picanha black Angus</td></tr>
+        <tr><td>3</td><td>Picanha Wagyu</td></tr>
+        <tr><td>4</td><td>Contrafilé</td></tr>
+        <tr><td>5</td><td>Contra filé wagyu</td></tr>
+        <tr><td>6</td><td>Acém americano</td></tr>
+        <tr><td>7</td><td>Tomahawk black Angus</td></tr>
+        <tr><td>8</td><td>Tomahawk wagyu</td></tr>
+        <tr><td>9</td><td>Fraldinha</td></tr>
+        <tr><td>10</td><td>Bananinha</td></tr>
+        <tr><td>11</td><td>Alcatra black Angus</td></tr>
+        <tr><td>12</td><td>Costela c/osso americana</td></tr>
+        <tr><td>18</td><td>Mocotó</td></tr>
+        <tr><td>19</td><td>Músculo bovino</td></tr>
+        <tr><td>20</td><td>Bife ancho</td></tr>
+        <tr><td>21</td><td>Bife chorizo</td></tr>
+        <tr><td>22</td><td>Patinho</td></tr>
+        <tr><td>23</td><td>Língua de boi</td></tr>
+        <tr><td>26</td><td>Carne seca</td></tr>
+      </table>
+
+      <table>
+        <tr><th>ID</th><th>Produto</th></tr>
+        <tr><td>27</td><td>Picanha Australiana</td></tr>
+        <tr><td>28</td><td>Coxão duro Australiano</td></tr>
+        <tr><td>29</td><td>Coxão mole black angus</td></tr>
+        <tr><td>30</td><td>Maminha Australiana</td></tr>
+        <tr><td>31</td><td>Costela brisket Australiana</td></tr>
+        <tr><td>32</td><td>Rabo bovino</td></tr>
+        <tr><td>33</td><td>Shoulder steak black Angus</td></tr>
+        <tr><td>34</td><td>Filé mignon</td></tr>
+        <tr><td>35</td><td>Cupim australiano</td></tr>
+        <tr><td>36</td><td>Chuck steak</td></tr>
+        <tr><td>37</td><td>Tbone steak</td></tr>
+        <tr><td>38</td><td>Costelão com osso</td></tr>
+        <tr><td>39</td><td>Ossobuco</td></tr>
+        <tr><td>40</td><td>Tutano bovino</td></tr>
+        <tr><td>41</td><td>Tendão bovino</td></tr>
+        <tr><td>42</td><td>Flank steak</td></tr>
+        <tr><td>43</td><td>Coxão mole wagyu</td></tr>
+        <tr><td>44</td><td>Maminha wagyu</td></tr>
+        <tr><td>45</td><td>Rump wagyu</td></tr>
+        <tr><td>46</td><td>Costela sem osso wagyu</td></tr>
+        <tr><td>47</td><td>Costela brisket wagyu</td></tr>
+        <tr><td>48</td><td>Filé mignon wagyu</td></tr>
+        <tr><td>60</td><td>Costela c/osso fatiada</td></tr>
+        <tr><td>62</td><td>Butcher’s hamburger</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- 🐖 Suínos / 🍗 Frangos / 🧂 Outros -->
+  <div class="column suinos">
+    <h2>🐖 Suínos</h2>
+    <table>
+      <tr><th>ID</th><th>Produto</th></tr>
+      <tr><td>13</td><td>Pernil suíno</td></tr>
+      <tr><td>14</td><td>Costelinha suína c/osso</td></tr>
+      <tr><td>15</td><td>Carré suíno c/osso</td></tr>
+      <tr><td>16</td><td>Tomahawk suíno</td></tr>
+      <tr><td>17</td><td>Panceta suína c/pele</td></tr>
+      <tr><td>49</td><td>Bisteca com osso</td></tr>
+      <tr><td>50</td><td>Baby Back ribs</td></tr>
+      <tr><td>51</td><td>Copa lombo defumado</td></tr>
+      <tr><td>52</td><td>Bacon</td></tr>
+      <tr><td>53</td><td>Costelinha com osso defumado</td></tr>
+      <tr><td>59</td><td>Lombinho</td></tr>
+    </table>
+
+    <h2>🍗 Frangos</h2>
+    <table>
+      <tr><th>ID</th><th>Produto</th></tr>
+      <tr><td>24</td><td>Tulipa temperada</td></tr>
+      <tr><td>25</td><td>Coração de frango temperado</td></tr>
+    </table>
+
+    <h2>🧂 Outros / Temperos</h2>
+    <table>
+      <tr><th>ID</th><th>Produto</th></tr>
+      <tr><td>54</td><td>Jack Daniels BBQ sauce</td></tr>
+      <tr><td>55</td><td>Sal de parrilla</td></tr>
+      <tr><td>56</td><td>Sal de parrilla c/chimichurri</td></tr>
+      <tr><td>57</td><td>Pasta de alho</td></tr>
+      <tr><td>58</td><td>Tempero caseiro</td></tr>
+      <tr><td>61</td><td>Carré de cordeiro</td></tr>
+
+    </table>
+  </div>
+
+</div>
+
+</body>
+</html>

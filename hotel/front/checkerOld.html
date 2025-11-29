@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checker Tasks</title>
+<style>
+  body {
+    margin: 0;
+    font-family: "Segoe UI", "Noto Sans JP", "Noto Sans", sans-serif;
+    background: #f2f5f7;
+    color: #333;
+    padding-bottom: 80px;
+  }
+  header {
+    position: sticky;
+    top: 0;
+    background: #28a745;
+    color: white;
+    padding: 12px 16px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  }
+  #refreshBtn, #langSelect {
+    position: absolute;
+    top: 10px;
+    background: white;
+    color: #28a745;
+    border: none;
+    border-radius: 20px;
+    padding: 4px 10px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  #refreshBtn { right: 16px; }
+  #langSelect { left: 16px; padding: 4px 8px; }
+
+  #taskContainer {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .task-card {
+    background: white;
+    border-radius: 12px;
+    padding: 14px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .room-number {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  .task-type {
+    font-size: 14px;
+    color: #28a745;
+    font-weight: bold;
+  }
+  .task-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 8px;
+  }
+  .confirm-btn, .start-btn {
+    background: linear-gradient(135deg, #28a745, #32c85d);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .reject-btn {
+    background: linear-gradient(135deg, #dc3545, #ff4d5e);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .task-card[data-status="need_clean"] {
+    border-left: 6px solid #ffc107;
+  }
+  .task-card[data-status="before_check"] {
+    border-left: 6px solid #6c757d;
+  }
+  .task-card[data-status="checked"] {
+    border-left: 6px solid #28a745;
+    opacity: 0.7;
+  }
+
+  #filterBar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    background: #eef3f8;
+    padding: 8px;
+    position: sticky;
+    top: 48px;
+    z-index: 10;
+  }
+  .filter-btn {
+    background: white;
+    border: 1px solid #28a745;
+    color: #28a745;
+    border-radius: 8px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  .filter-btn.active {
+    background: #28a745;
+    color: white;
+  }
+</style>
+</head>
+<body>
+  <header>
+    <select id="langSelect">
+      <option value="ja">🇯🇵 日本語</option>
+      <option value="pt">🇧🇷 Português</option>
+      <option value="en">🇺🇸 English</option>
+    </select>
+    <span id="headerTitle">確認タスク</span>
+    <button id="refreshBtn">🔄 更新</button>
+  </header>
+
+  <div id="filterBar">
+    <select id="floorSelect">
+      <option value="all">全フロア</option>
+      <option value="4">4F</option>
+      <option value="5">5F</option>
+      <option value="6">6F</option>
+      <option value="7">7F</option>
+      <option value="8">8F</option>
+      <option value="9">9F</option>
+      <option value="10">10F</option>
+      <option value="11">11F</option>
+      <option value="12">12F</option>
+    </select>
+
+    <button id="btnShowCleaning" class="filter-btn active">🧹 清掃</button>
+    <button id="btnShowAmenity" class="filter-btn">🧴 アメニティ</button>
+  </div>
+
+  <div id="taskContainer"></div>
+
+  <div id="loadingOverlay">
+    <div class="loader"></div>
+    <div id="loadingText">Loading...</div>
+  </div>
+
+<script>
+const API_ROOMS = "https://squid-app-ug7x6.ondigitalocean.app/api/room/status?hotel_id=2";
+const API_AMENITIES = "https://squid-app-ug7x6.ondigitalocean.app/api/room/amenity/list";
+const API_UPDATE_STATUS = "https://squid-app-ug7x6.ondigitalocean.app/api/room/status";
+const API_DELETE_AMENITY = "https://squid-app-ug7x6.ondigitalocean.app/api/room/amenity";
+
+const container = document.getElementById("taskContainer");
+const refreshBtn = document.getElementById("refreshBtn");
+const langSelect = document.getElementById("langSelect");
+const headerTitle = document.getElementById("headerTitle");
+
+let currentLang = localStorage.getItem("lang") || "ja";
+let selectedFloor = "all";
+let showType = "cleaning";
+
+const t = {
+  ja: {
+    title: "確認タスク",
+    refresh: "🔄 更新",
+    cleaning: "清掃",
+    amenity: "アメニティ",
+    start: "🧹 清掃開始",
+    confirm: "✅ 確認完了",
+    reject: "❌ やり直し",
+    confirmMsg: "この部屋を確認済みにしますか？",
+    rejectMsg: "やり直しに戻しますか？",
+    startMsg: "清掃を開始しますか？",
+    alertConfirmed: "確認完了にしました。",
+    alertRejected: "やり直しに戻しました。",
+    alertStarted: "清掃を開始しました。",
+    noTask: "現在、対象の部屋はありません。",
+    allFloors: "全フロア",
+    cleaningBtn: "🧹 清掃",
+    amenityBtn: "🧴 アメニティ"
+  },
+  pt: {
+    title: "Tarefas de Verificação",
+    refresh: "🔄 Atualizar",
+    cleaning: "Limpeza",
+    amenity: "Amenidade",
+    start: "🧹 Iniciar limpeza",
+    confirm: "✅ Confirmar",
+    reject: "❌ Refazer",
+    confirmMsg: "Deseja confirmar a limpeza?",
+    rejectMsg: "Deseja devolver para refazer?",
+    startMsg: "Deseja iniciar a limpeza?",
+    alertConfirmed: "Marcado como verificado.",
+    alertRejected: "Devolvido para refazer.",
+    alertStarted: "Limpeza iniciada.",
+    noTask: "Nenhum quarto encontrado.",
+    allFloors: "Todos os andares",
+    cleaningBtn: "🧹 Limpeza",
+    amenityBtn: "🧴 Amenidade"
+  },
+  en: {
+    title: "Checker Tasks",
+    refresh: "🔄 Refresh",
+    cleaning: "Cleaning",
+    amenity: "Amenity",
+    start: "🧹 Start Cleaning",
+    confirm: "✅ Confirm",
+    reject: "❌ Re-do",
+    confirmMsg: "Mark this room as verified?",
+    rejectMsg: "Return this room for re-cleaning?",
+    startMsg: "Start cleaning this room?",
+    alertConfirmed: "Marked as verified.",
+    alertRejected: "Returned for re-cleaning.",
+    alertStarted: "Cleaning started.",
+    noTask: "No rooms found.",
+    allFloors: "All Floors",
+    cleaningBtn: "🧹 Cleaning",
+    amenityBtn: "🧴 Amenity"
+  }
+};
+
+function showLoading() {
+  loadingOverlay.classList.add("visible");
+  loadingText.textContent = t[currentLang].refresh;
+}
+function hideLoading() { loadingOverlay.classList.remove("visible"); }
+
+function applyLang() {
+  headerTitle.textContent = t[currentLang].title;
+  refreshBtn.textContent = t[currentLang].refresh;
+  document.getElementById("btnShowCleaning").textContent = t[currentLang].cleaningBtn;
+  document.getElementById("btnShowAmenity").textContent = t[currentLang].amenityBtn;
+  document.getElementById("floorSelect").options[0].text = t[currentLang].allFloors;
+}
+
+langSelect.value = currentLang;
+langSelect.addEventListener("change", () => {
+  currentLang = langSelect.value;
+  applyLang();
+  loadTasks();
+});
+
+async function loadTasks() {
+  showLoading();
+  container.innerHTML = "";
+  try {
+    const [roomRes, amenityRes] = await Promise.all([
+      fetch(API_ROOMS),
+      fetch(API_AMENITIES)
+    ]);
+    const roomData = await roomRes.json();
+    const amenityData = await amenityRes.json();
+
+    // ✅ 清掃タスク抽出：need_cleaning と before_check の両方を対象
+    let cleaningRooms = (roomData.rooms || []).filter(r => {
+      const s = String(r.checkout_status || "");
+      return s === "after" || s === "before_check";
+    });
+    let amenities = amenityData.requests || [];
+
+    if (selectedFloor !== "all") {
+      cleaningRooms = cleaningRooms.filter(r => String(r.floor) === selectedFloor);
+      amenities = amenities.filter(a => String(a.floor) === selectedFloor);
+    }
+
+    if (showType === "cleaning") renderTasks(cleaningRooms, []);
+    else if (showType === "amenity") renderTasks([], amenities);
+    else renderTasks(cleaningRooms, amenities);
+
+  } catch (err) {
+    console.error("❌ Fetch Error:", err);
+    container.innerHTML = `<p style='color:red;text-align:center;'>${t[currentLang].noTask}</p>`;
+  } finally {
+    hideLoading();
+  }
+}
+
+function renderTasks(cleaningRooms, amenities) {
+  container.innerHTML = "";
+  cleaningRooms.forEach(r => {
+    const card = document.createElement("div");
+    card.className = "task-card";
+    card.dataset.status = r.status;
+
+    let buttons = "";
+    if (r.status === "need_clean") {
+      buttons = `<button class="start-btn" onclick="startCleaning(${r.id})">${t[currentLang].start}</button>`;
+    } else if (r.status === "before_check") {
+      buttons = `
+        <button class="confirm-btn" onclick="confirmCleaning(${r.id})">${t[currentLang].confirm}</button>
+        <button class="reject-btn" onclick="rejectCleaning(${r.id})">${t[currentLang].reject}</button>
+      `;
+    }
+
+    card.innerHTML = `
+      <div class="task-header">
+        <span class="room-number">🧹 ${r.room_number}</span>
+        <span class="task-type">${r.room_type || ""}</span>
+      </div>
+      <div class="task-footer">${buttons}</div>
+    `;
+    container.appendChild(card);
+  });
+
+  amenities.forEach(a => {
+    const card = document.createElement("div");
+    card.className = "task-card";
+    const roomNo = a.room_number || (a.Room ? a.Room.room_number : "-");
+    card.innerHTML = `
+      <div class="task-header">
+        <span class="room-number">🧴 ${roomNo}</span>
+        <span class="task-type">${a.action_type}</span>
+      </div>
+      <div class="task-footer">
+        <button class="reject-btn" onclick="deleteAmenity(${a.id})">${t[currentLang].reject}</button>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+async function startCleaning(id) {
+  if (!confirm(t[currentLang].startMsg)) return;
+  await fetch(API_UPDATE_STATUS, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ room_id: id, status: "before_check" })
+  });
+  // alert(t[currentLang].alertStarted);
+  loadTasks();
+}
+async function confirmCleaning(id) {
+  if (!confirm(t[currentLang].confirmMsg)) return;
+  await fetch(API_UPDATE_STATUS, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ room_id: id, status: "checked" })
+  });
+  // alert(t[currentLang].alertConfirmed);
+  loadTasks();
+}
+async function rejectCleaning(id) {
+  if (!confirm(t[currentLang].rejectMsg)) return;
+  await fetch(API_UPDATE_STATUS, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ room_id: id, status: "need_clean" })
+  });
+  alert(t[currentLang].alertRejected);
+  loadTasks();
+}
+async function deleteAmenity(id) {
+  await fetch(`${API_DELETE_AMENITY}/${id}`, { method: "DELETE" });
+  alert("アメニティを削除しました。");
+  loadTasks();
+}
+
+document.getElementById("floorSelect").addEventListener("change", e => {
+  selectedFloor = e.target.value;
+  loadTasks();
+});
+document.getElementById("btnShowCleaning").addEventListener("click", () => {
+  showType = "cleaning";
+  document.getElementById("btnShowCleaning").classList.add("active");
+  document.getElementById("btnShowAmenity").classList.remove("active");
+  loadTasks();
+});
+document.getElementById("btnShowAmenity").addEventListener("click", () => {
+  showType = "amenity";
+  document.getElementById("btnShowAmenity").classList.add("active");
+  document.getElementById("btnShowCleaning").classList.remove("active");
+  loadTasks();
+});
+
+refreshBtn.addEventListener("click", loadTasks);
+applyLang();
+loadTasks();
+</script>
+</body>
+</html>
