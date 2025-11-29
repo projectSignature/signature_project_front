@@ -128,11 +128,17 @@ async function doLogin() {
   }
 
   try {
-    const res = await fetch("http://localhost:3000/api/room/login", {
+
+    const res = await fetch("https://squid-app-ug7x6.ondigitalocean.app", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password })
     });
+    // const res = await fetch("http://localhost:3000/api/room/login", {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({ username, password })
+    // });
 
 
     const json = await res.json();
