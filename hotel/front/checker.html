@@ -549,8 +549,10 @@ async function loadTasks() {
   showLoading();
   container.innerHTML = "";
 
-  const today = new Date();
-  const date = today.toISOString().split("T")[0];  // "2025-11-30" みたいに
+  const now = new Date();
+   now.setHours(now.getHours() + 9);  // JST補正
+
+   const date = now.toISOString().split("T")[0];  // JSTの日付 "YYYY-MM-DD"
 
   // console.log(date);
 
