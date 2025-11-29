@@ -15,12 +15,13 @@
       <button id="masterBtn">⚙️他指示一覧</button>
       <button id="toggleLegendBtn">凡例表示</button>
       <button id="bulkModeBtn" class="bulk-btn">🧩 一括登録</button>
- <button id="bulkChangeBtn" class="bulk-btn" disabled>🔄 ステータス変更</button>
- <button id="importExcelBtn" class="bulk-btn">📂 清掃データ取込</button>
- <button id="exportStatusBtn" class="bulk-btn">📤 ステータス出力</button>
- <button id="closeDayBtn" class="bulk-btn close-day-btn">締め</button>
-
-
+       <button id="bulkChangeBtn" class="bulk-btn" disabled>🔄 ステータス変更</button>
+       <button id="importExcelBtn" class="bulk-btn">📂 清掃データ取込</button>
+       <button id="exportStatusBtn" class="bulk-btn">📤 ステータス出力</button>
+       <button id="closeDayBtn" class="bulk-btn close-day-btn">締め</button>
+       <button id="fixCloseDayBtn" class="bulk-btn fix-close-day-btn">
+        締め修正
+      </button>
     </div>
   </header>
 
@@ -255,6 +256,28 @@
     </div>
   </div>
 </div>
+
+<div id="fixCloseDayModal" class="modal-fix-close">
+  <div class="modal-fix-box">
+    <div class="fix-modal-header">
+      締めデータ修正
+      <span class="fix-close-btn" onclick="closeFixCloseDayModal()">✕</span>
+    </div>
+
+    <label>日付</label>
+    <input type="date" id="fixCloseDayDate">
+
+    <button class="fetch-fix-btn" onclick="loadFixCloseDayData()">読み込み</button>
+
+    <div id="fixCloseDayList" class="fix-list"></div>
+
+    <div class="fix-save-wrapper">
+      <button class="save-fix-btn" onclick="submitFixCloseDay()">確定</button>
+    </div>
+
+  </div>
+</div>
+
 
 
 
@@ -559,7 +582,7 @@ let roomsDatas = []
 //   "outofservice": "使用停止中",
 //   "unavailable": "未使用・閉鎖中"
 // };
-// const API_URL = "https://squid-app-ug7x6.ondigitalocean.app";
+// const API_URL = "http://localhost:3000";
 const API_URL = "https://squid-app-ug7x6.ondigitalocean.app"
 // https://squid-app-ug7x6.ondigitalocean.app
 
@@ -695,17 +718,16 @@ async function loadRooms() {
             </div>
           `;
 
-                    const statusDiv = room.querySelector(".room-status");
+            const statusDiv = room.querySelector(".room-status");
 
+            if(r.room_number==='406'||r.room_number==='407'){
 
-if(r.room_number==='406'||r.room_number==='407'){
-
-  statusDiv.classList.remove("checkout-border", "renpaku-border");
-  statusDiv.classList.add("mishiyou-room");
-  statusDiv.innerHTML=""
-  roomsContainer.appendChild(room);
-return
-}
+              statusDiv.classList.remove("checkout-border", "renpaku-border");
+              statusDiv.classList.add("mishiyou-room");
+              statusDiv.innerHTML=""
+              roomsContainer.appendChild(room);
+            return
+            }
 
 
           statusDiv.classList.remove("checkout-border", "renpaku-border");
@@ -792,141 +814,6 @@ return
 
             clickTimers.set(room, timer);
           });
-
-          //ダブルクリック　※チェックアウト処理
-
-          // room.addEventListener("dblclick", async (e) => {
-          //   e.stopPropagation();
-          //
-          //
-          //   if (e.target.closest(".guest-btn")) return;
-          //
-          //   if (clickTimers.has(room)) {
-          //     clearTimeout(clickTimers.get(room));
-          //     clickTimers.delete(room);
-          //   }
-          //
-          //   const statusDiv = room.querySelector(".room-status");
-          //   const prevStatus = r.checkout_status;
-          //   const optimisticStatus = prevStatus === "after" ? "before" : "after";
-          //   const roomKey = padRoomNumber(r.room_number);
-          //
-          //
-          //
-          //   const status = r.excel_status==='S' ? 'stay_clean':'need_clean'
-          //
-          //
-          //
-          //
-          //   // 🔹 UI即時反映
-          //   r.checkout_status = optimisticStatus;
-          //
-          //   statusDiv.classList.remove("checkout-border", "renpaku-border");
-          //
-          //   if (optimisticStatus === "after") {
-          //     // ✅ チェックアウトON
-          //     if (r.excel_status==='S') {
-          //       statusDiv.classList.add("renpaku-border"); // 🔵 Sの場合は別色
-          //     } else {
-          //       statusDiv.classList.add("checkout-border"); // 🔴 通常は赤
-          //     }
-          //   }
-          //
-          //   // トースト表示
-          //   const toast = document.createElement("div");
-          //   toast.textContent =
-          //     optimisticStatus === "after"
-          //       ? "🚪 チェックアウト済に変更（反映中...）"
-          //       : "🏠 チェックイン中に変更（反映中...）";
-          //   toast.className = "toast";
-          //   document.body.appendChild(toast);
-          //   setTimeout(() => toast.remove(), 1500);
-          //
-          //   // バックエンド反映
-          //   const newStatus = await toggleCheckoutStatus(r.id,status);
-          //
-          //   // 成否確定処理
-          //   if (!newStatus) {
-          //     // ❌ 失敗 → ロールバック
-          //     r.checkout_status = prevStatus;
-          //     statusDiv.classList.remove("checkout-border", "renpaku-border");
-          //
-          //     if (prevStatus === "after") {
-          //       if (isRenpaku) {
-          //         statusDiv.classList.add("renpaku-border");
-          //       } else {
-          //         statusDiv.classList.add("checkout-border");
-          //       }
-          //     }
-          //
-          //     const failToast = document.createElement("div");
-          //     failToast.textContent = "⚠️ 更新に失敗しました";
-          //     failToast.className = "toast error";
-          //     document.body.appendChild(failToast);
-          //     setTimeout(() => failToast.remove(), 2000);
-          //
-          //   } else {
-          //     // ✅ 成功
-          //     const okToast = document.createElement("div");
-          //     okToast.textContent =
-          //       newStatus === "after"
-          //         ? "✅ チェックアウト済に確定"
-          //         : "✅ チェックイン中に確定";
-          //     okToast.className = "toast";
-          //     document.body.appendChild(okToast);
-          //     setTimeout(() => okToast.remove(), 1500);
-          //   }
-          // });
-
-
-
-
-          // // 🖱️ 右クリック（滞在タイプ切替：即反応＋ブラウザメニュー抑止）
-          // room.addEventListener("mousedown", async (e) => {
-          //   if (e.button !== 2) return; // 右クリック以外は無視
-          //   e.preventDefault();         // ブラウザ標準メニューを抑止
-          //
-          //   const header = room.querySelector(".room-header");
-          //   const originalType = r.stay_type;
-          //   const isCurrentlyGroup = originalType === "group";
-          //
-          //   // ✅ 即時見た目反映
-          //   if (isCurrentlyGroup) {
-          //     header.classList.remove("group-border");
-          //     r.stay_type = "individual";
-          //   } else {
-          //     header.classList.add("group-border");
-          //     r.stay_type = "group";
-          //   }
-          //
-          //   // 🧩 トースト表示
-          //   const toast = document.createElement("div");
-          //   toast.textContent = isCurrentlyGroup ? "👤 個別に変更中..." : "👥 グループに変更中...";
-          //   toast.className = "toast";
-          //   document.body.appendChild(toast);
-          //
-          //   try {
-          //     const newType = await toggleStayType(r.id, r.hotel_id);
-          //     if (!newType) throw new Error("切替処理に失敗");
-          //
-          //     toast.textContent = newType === "group" ? "👥 グループに変更しました" : "👤 個別に変更しました";
-          //     r.stay_type = newType;
-          //   } catch (err) {
-          //     console.error("滞在タイプ切替失敗:", err);
-          //
-          //     // ❌ 失敗時に戻す
-          //     if (isCurrentlyGroup) {
-          //       header.classList.add("group-border");
-          //       r.stay_type = "group";
-          //     } else {
-          //       header.classList.remove("group-border");
-          //       r.stay_type = "individual";
-          //     }
-          //     toast.textContent = "⚠️ 切替に失敗しました";
-          //   }
-          //
-          //   setTimeout(() => toast.remove(), 2000);
-          // });
 
           room.addEventListener("dblclick", async (e) => {
   e.stopPropagation();
@@ -1321,7 +1208,7 @@ if(key==='before_check'){
         try {
           showLoading();
 
-          const res = await fetch("https://squid-app-ug7x6.ondigitalocean.app/api/room/status", {
+          const res = await fetch(`${API_URL}/api/room/status`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -1366,7 +1253,7 @@ if(key==='checkOut'){
   try {
     const statusDiv = roomEl.querySelector(".room-status");
     statusDiv.classList.add('checkout-border');
-    await fetch("https://squid-app-ug7x6.ondigitalocean.app/api/room/status/checkOut/after", {
+    await fetch(`${API_URL}/api/room/status/checkOut/after`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -1392,7 +1279,7 @@ changeGroupOrSingle('individual', roomEl)
 const currentClasses = roomEl.className.split(" ").filter(c => !Object.keys(icons).includes(c));
 roomEl.className = [...currentClasses, key].join(" ");
   try {
-    await fetch("https://squid-app-ug7x6.ondigitalocean.app/api/room/status", {
+    await fetch(`${API_URL}/api/room/status`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -1448,7 +1335,7 @@ async function changeGroupOrSingle(status, roomEl){
 
 
     // https://squid-app-ug7x6.ondigitalocean.app
-    await fetch("https://squid-app-ug7x6.ondigitalocean.app/api/room/status/singleGuest", {
+    await fetch(`${API_URL}/api/room/status/singleGuest`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -1555,7 +1442,7 @@ function renderAmenityOptions() {
         };
         try {
           showLoading();
-          const res = await fetch("https://squid-app-ug7x6.ondigitalocean.app/api/room/amenity", {
+          const res = await fetch(`${API_URL}/api/room/amenity`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload)
@@ -1596,7 +1483,7 @@ async function handleReturnToDisnation(location) {
 
   try {
     showLoading()
-    const res = await fetch("https://squid-app-ug7x6.ondigitalocean.app/api/room/amenity", {
+    const res = await fetch(`${API_URL}/api/room/amenity`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
@@ -1676,7 +1563,7 @@ saveRoomDetailBtn.addEventListener("click", async () => {
 
   try {
     showLoading();
-    const res = await fetch("https://squid-app-ug7x6.ondigitalocean.app/api/room/details", {
+    const res = await fetch(`${API_URL}/api/room/details`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
@@ -1716,7 +1603,7 @@ amenityListBtn.addEventListener("click", () => {
 async function loadAmenityRequests() {
   try {
     showLoading();
-    const res = await fetch("https://squid-app-ug7x6.ondigitalocean.app/api/room/amenity/list"); // ← 新API
+    const res = await fetch(`${API_URL}/api/room/amenity/list`); // ← 新API
     hideLoading();
     if (!res.ok) throw new Error("API取得失敗");
 
@@ -1755,7 +1642,7 @@ async function completeAmenity(id) {
 
   try {
     showLoading();
-    const res = await fetch(`https://squid-app-ug7x6.ondigitalocean.app/api/room/amenity/${id}`, {
+    const res = await fetch(`${API_URL}/api/room/amenity/${id}`, {
       method: "DELETE"
     });
     const result = await res.json();
@@ -1904,17 +1791,8 @@ async function handleExcelUpload(e) {
           continue
         }
 
-
-
         result.push({roomNo, newStatus:status,excelStatus:renpakuFlag,seisouFlag:status})
-
-
     }
-
-    console.log(result)
-
-
-
 
     const ok = confirm(`エクセルデータのステータスに変更しますか？`);
     if (!ok) {
@@ -1934,14 +1812,6 @@ async function handleExcelUpload(e) {
       const match = result.find(r => r.roomNo === roomNo);
       if (!match) continue;
 
-
-      // room.dataset.status = newStatus;
-      // room.classList.remove("need_clean", "clean", "checked", "stay", "group-border", "checkout-border");
-      //
-      // const statusDiv = room.querySelector(".room-status");
-      // if (statusDiv) statusDiv.innerHTML = icons[newStatus];
-      // room.classList.add(newStatus);
-
       updatePayload.push({
         room_id: room.dataset.id,
         room_number: roomNo,
@@ -1952,18 +1822,16 @@ async function handleExcelUpload(e) {
       });
     }
 
-
-
     if (updatePayload.length === 0) {
       hideLoading();
       alert("対象の部屋がマップ上に見つかりませんでした。");
       return;
     }
 
-console.log('updatePayload',updatePayload)
-    // return
+
+
     // ✅ API呼び出し
-    const res = await fetch("https://squid-app-ug7x6.ondigitalocean.app/api/room/status/bulk", {
+    const res = await fetch(`${API_URL}/api/room/status/bulk`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -2254,8 +2122,112 @@ closeDaySubmit.addEventListener("click", async () => {
   }
 });
 
+fixCloseDayBtn.addEventListener("click", () => {
+  document.getElementById("fixCloseDayModal").style.display = "flex";
+});
+
+async function loadFixCloseDayData() {
+  const date = fixCloseDayDate.value;
+  if (!date) return alert("日付を選択してください");
+
+  showLoading();
+
+  const res = await fetch(`${API_URL}/api/room/daily_room_list?date=${date}&hotel_id=${globalId}`);
+  const data = await res.json();
+
+  hideLoading();
+
+  // テーブル生成
+  renderFixCloseDayList(data.rows || []);
+}
+
+function renderFixCloseDayList(rows) {
+  let html = `
+    <table class="fix-table">
+      <tr>
+        <th>部屋</th>
+        <th>ステータス</th>
+        <th>ゲストタイプ</th>
+        <th>他依頼</th>
+
+      </tr>
+  `;
+
+  rows.forEach(r => {
+    html += `
+      <tr data-id="${r.id}">
+
+        <td>${r.room_number}</td>
+
+        <!-- 🔥 ステータス（セレクト） -->
+        <td>
+          <select class="fix-status">
+            ${Object.entries(statusLabels).map(([key, jp]) => `
+              <option value="${key}" ${r.status === key ? "selected" : ""}>${jp.replace("<br>", " ")}</option>
+            `).join("")}
+          </select>
+        </td>
+
+        <!-- 🔥 ゲストタイプ（FIT / 団体） -->
+        <td>
+          <select class="fix-stay-type">
+            <option value="single" ${r.stay_type === "individual" ? "selected" : ""}>FIT</option>
+            <option value="group"  ${r.stay_type === "group"  ? "selected" : ""}>団体</option>
+          </select>
+        </td>
+
+        <!-- 🔥 コメント -->
+        <td>
+          <textarea class="fix-notes">${r.notes || ""}</textarea>
+        </td>
 
 
+
+      </tr>
+    `;
+  });
+
+  html += "</table>";
+
+  document.getElementById("fixCloseDayList").innerHTML = html;
+}
+
+async function submitFixCloseDay() {
+  const rows = [...document.querySelectorAll(".fix-table tr[data-id]")].map(tr => ({
+    id: tr.dataset.id,
+    status: tr.querySelector(".fix-status").value,
+    stay_type: tr.querySelector(".fix-stay-type").value,
+    notes: tr.querySelector(".fix-notes").value
+  }));
+
+  showLoading();
+
+  const res = await fetch(`${API_URL}/api/room/daily-list/update`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ rows, hotel_id: globalId }),
+  });
+
+  hideLoading();
+
+  const data = await res.json();
+  if (data.success) {
+    alert("修正を保存しました！");
+    closeFixCloseDayModal();
+  } else {
+    alert("保存エラー");
+  }
+}
+
+
+
+
+document.addEventListener("input", function (e) {
+  if (e.target.classList.contains("fix-notes")) {
+    e.target.style.height = "auto";
+    e.target.style.height = (e.target.scrollHeight + 2) + "px";
+  }
+});
 
 
 
