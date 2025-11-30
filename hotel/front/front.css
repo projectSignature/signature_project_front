@@ -471,7 +471,7 @@ html, body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  z-index: 30000;
+  z-index: 100000;
   transition: opacity 0.3s ease;
 }
 .loading-overlay.hidden {
@@ -1471,4 +1471,56 @@ header .total-guests {
   border-color: #1976d2;
   background: #fff;
   box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+}
+#closeStatusLabel {
+  display: none;
+  padding: 4px 10px;
+  margin-left: 10px;
+  background-color: #ffebee;     /* 薄い赤背景 */
+  color: #c62828;                /* 濃い赤文字 */
+  font-weight: bold;
+  border: 1px solid #ef9a9a;     /* 赤系の枠線 */
+  border-radius: 6px;
+  font-size: 14px;
+}
+.floor-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    justify-content: flex-start;
+}
+
+.floor-total {
+    margin-right: 12px;
+    margin-left: 40%;
+}
+/* 横並びのコンテナ */
+.floor-info-inline {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 32%;
+}
+
+/* 画像と同じ “白い pill タグ”  */
+.info-tag {
+    background: #f5f5f5;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    white-space: nowrap;
+    margin-right: 30px;
+}
+
+/* 清掃用青ライン */
+.info-tag.clean {
+  border-left: 4px solid #42a5f5;
+}
+
+/* アメニティ用黄色ライン */
+.info-tag.amenity {
+  border-left: 4px solid #ffca28;
 }
