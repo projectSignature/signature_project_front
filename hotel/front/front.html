@@ -19,9 +19,9 @@
        <button id="importExcelBtn" class="bulk-btn">📂 清掃データ取込</button>
        <button id="exportStatusBtn" class="bulk-btn">📤 ステータス出力</button>
        <button id="closeDayBtn" class="bulk-btn close-day-btn">締め</button>
-       <button id="fixCloseDayBtn" class="bulk-btn fix-close-day-btn">
-        締め修正
-      </button>
+       <button id="fixCloseDayBtn" class="bulk-btn fix-close-day-btn">締め修正</button>
+       <span id="closeStatusLabel">本日締済み</span>
+
     </div>
   </header>
 
@@ -552,6 +552,8 @@ const maxGuestsByType = {
 
 let currentRoomId = null;
 let currentHotelId = null;
+let globalShimeFlag=false
+let globalShimeData = []
 
 async function showLoading() {
   console.log('kokoni deteru')
@@ -635,6 +637,50 @@ async function loadRooms() {
   try {
     showLoading();
     const res = await fetch(`${API_URL}/api/room/status?hotel_id=${globalId}`);
+
+//     const now = new Date();
+// now.setHours(now.getHours() + 9);   // JST補正
+//
+// // ★ 明日にする
+// now.setDate(now.getDate() + 1);
+//
+// const date = now.toISOString().split("T")[0];
+
+    // // showLoading()
+    const today = new Date().toLocaleDateString("ja-JP", {
+      timeZone: "Asia/Tokyo",
+    })
+      .replace(/\//g, "-");   // 2025/11/30 → 2025-11-30
+console.log(today)
+    const url = `${API_URL}/api/room/daily_room_list?date=${today}&hotel_id=${globalId}`;
+    const getDayList = await fetch(url)
+    const DayList= await getDayList.json();
+    const closeStatusLabel = document.getElementById("closeStatusLabel");
+
+    // ----------- 判定ロジック -----------
+if (DayList.rows && DayList.rows.length > 0) {
+
+  // 締済み → 締めボタン非表示
+  closeDayBtn.style.display = "none";
+
+  // 締め修正のみ表示
+  fixCloseDayBtn.style.display = "inline-block";
+    closeStatusLabel.style.display = "inline-block";
+
+  globalShimeFlag=true
+globalShimeData = DayList.rows
+
+} else {
+
+  // 未締め → 締めボタン表示
+  closeDayBtn.style.display = "inline-block";
+
+  // 締め修正ボタン非表示
+  fixCloseDayBtn.style.display = "none";
+    closeStatusLabel.style.display = "none";
+}
+
+
     hideLoading();
     if (!res.ok) throw new Error("API取得失敗");
 
@@ -656,6 +702,10 @@ async function loadRooms() {
     Object.keys(grouped)
       .sort((a, b) => b - a)
       .forEach((floor) => {
+
+        // console.log(floor)
+
+        const {targetClean, targetAmenity} =  getSummaryRooms(floor)
         const floorRooms = grouped[floor];
         let floorGuestCount = 0;
 
@@ -668,12 +718,12 @@ async function loadRooms() {
         const floorTitle = document.createElement("h3");
         floorTitle.textContent = `${floor}F`;
 
-        const floorTotal = document.createElement("span");
-        floorTotal.className = "floor-total";
-        floorTotal.textContent = `👥 ${floorGuestCount}`;
+        // const floorTotal = document.createElement("span");
+        // floorTotal.className = "floor-total";
+        // floorTotal.textContent = `👥 ${floorGuestCount}`;
 
         floorHeader.appendChild(floorTitle);
-        floorHeader.appendChild(floorTotal);
+        // floorHeader.appendChild(floorTotal);
         floorDiv.appendChild(floorHeader);
 
         const roomsContainer = document.createElement("div");
@@ -782,7 +832,10 @@ async function loadRooms() {
           // 🟢 クリック・ダブルクリック共存処理（WeakMap版）
           // ================================
           room.addEventListener("click", (e) => {
-            console.log('koko')
+            if(globalShimeFlag){
+              alert('本日は既にデータ締め済みです。修正が必要ある場合は締め修正ボタンより行ってください')
+              return
+            }
             e.stopPropagation();
             currentRoomId = room.dataset.id;  // ← これで部屋のIDが入る
             currentHotelId = room.dataset.hotel_id
@@ -860,6 +913,12 @@ async function loadRooms() {
 
           room.addEventListener("mousedown", (e) => {
             if (e.button !== 2) return;
+
+            if(globalShimeFlag){
+              alert('本日は既にデータ締め済みです。修正が必要ある場合は締め修正ボタンより行ってください')
+              return
+            }
+
             e.preventDefault();
 
             console.log(r.stay_type)
@@ -887,15 +946,25 @@ async function loadRooms() {
           // ✅ ブラウザ標準の右クリックメニューを無効化（フォールバック対策）
           room.addEventListener("contextmenu", (e) => e.preventDefault());
 
-
-
-
-
           // DOMへ追加
           roomsContainer.appendChild(room);
         });
 
-        floorTotal.textContent = `お客様人数： ${floorGuestCount}人`;
+        // let
+
+        const floorInfo = document.createElement("div");
+        floorInfo.className = "floor-info-inline";
+
+        floorInfo.innerHTML = `
+          <span class="info-tag total">お客様人数：${floorGuestCount}人</span>
+          <span class="info-tag clean">清掃対象：${targetClean}</span>
+          <span class="info-tag amenity">アメニティ：${targetAmenity}</span>
+        `;
+
+        floorHeader.appendChild(floorInfo);
+
+
+
         floorDiv.appendChild(roomsContainer);
         map.appendChild(floorDiv);
         totalGuestCount += floorGuestCount;
@@ -982,6 +1051,35 @@ async function sendStayTypeBatch() {
 
   } catch (err) {
     console.error("❌ 一括更新エラー:", err);
+  }
+}
+
+function getSummaryRooms(floor){
+
+  if(globalShimeFlag){
+    // console.log(globalShimeData)
+    const beforeCleanning = globalShimeData.filter(r =>
+      r.status === '未清掃' &&
+      r.sub_status !== 'stay_noclean' &&
+      Number(r.floor) === Number(floor) &&
+
+      (r.amenity_only ?? 0) === 0
+    );
+    const stayAmenityOnly = globalShimeData.filter(r => r.sub_status==='stay_amenytyOnliy'&&
+    Number(r.floor) === Number(floor));
+    return  {
+      targetClean:beforeCleanning.length, targetAmenity:stayAmenityOnly.length
+    }
+  }else{
+    const beforeCleanning = globalRoomStatus.filter(r => (r.status === 'need_clean' || r.status === 'stay_clean') &&
+    Number(r.floor) === Number(floor))
+
+    const stayAmenityOnly = globalRoomStatus.filter(r => (r.status === 'stay_amenytyOnliy' || r.notes !== '')
+    && Number(r.floor) === Number(floor))
+
+    return  {
+      targetClean:beforeCleanning.length, targetAmenity:stayAmenityOnly.length
+    }
   }
 }
 
@@ -1147,6 +1245,11 @@ let currentRoom = null;
 
 // 「部屋ステータス変更」を押した時
 statusChangeBtn.addEventListener("click", () => {
+
+console.log('koko')
+  if(globalShimeFlag){
+    alert('本日は既にデータ締め済みです。修正が必要ある場合は締め修正ボタンより行ってください')
+  }
   closeModal(actionModal);
   openModal(statusModal);
   renderStatusOptions();
@@ -2137,11 +2240,21 @@ async function loadFixCloseDayData() {
 
   hideLoading();
 
+  console.log(data)
+
+  if(data.rows.length === 0){
+    alert('選択日の締めデータは存在しません')
+    return
+  }
+
   // テーブル生成
   renderFixCloseDayList(data.rows || []);
 }
 
 function renderFixCloseDayList(rows) {
+  rows.sort((a, b) => Number(a.floor) - Number(b.floor));
+
+  console.log(rows)
   let html = `
     <table class="fix-table">
       <tr>
@@ -2163,7 +2276,7 @@ function renderFixCloseDayList(rows) {
         <td>
           <select class="fix-status">
             ${Object.entries(statusLabels).map(([key, jp]) => `
-              <option value="${key}" ${r.status === key ? "selected" : ""}>${jp.replace("<br>", " ")}</option>
+              <option value="${key}" ${r.sub_status === key ? "selected" : ""}>${jp.replace("<br>", " ")}</option>
             `).join("")}
           </select>
         </td>
@@ -2193,12 +2306,15 @@ function renderFixCloseDayList(rows) {
 }
 
 async function submitFixCloseDay() {
+  console.log('koko2306')
   const rows = [...document.querySelectorAll(".fix-table tr[data-id]")].map(tr => ({
     id: tr.dataset.id,
     status: tr.querySelector(".fix-status").value,
     stay_type: tr.querySelector(".fix-stay-type").value,
     notes: tr.querySelector(".fix-notes").value
   }));
+
+  console.log(rows)
 
   showLoading();
 
@@ -2228,6 +2344,12 @@ document.addEventListener("input", function (e) {
     e.target.style.height = (e.target.scrollHeight + 2) + "px";
   }
 });
+
+function closeFixCloseDayModal(){
+  const fixModal = document.getElementById('fixCloseDayModal')
+  fixModal.style.display='none'
+}
+
 
 
 
