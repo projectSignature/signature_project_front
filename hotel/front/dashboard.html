@@ -22,6 +22,8 @@
 <!-- SIDE MENU -->
 <div class="side-menu" id="sideMenu">
   <h3>Menu</h3>
+  <div class="menu-item" onclick="openDashboard()">Dashboard</div>
+  <div class="menu-item" onclick="openServiceList()">Tabela de Serviços</div>
   <div class="menu-item" onclick="openServiceRegister()">Registrar Serviços</div>
 
 <div class="menu-item" onclick="openUserAdmin()">Gerenciar Usuários</div>
@@ -34,12 +36,12 @@
 </div>
 
 <!-- 🔥 日付選択エリア（Dashboard最上部に追加） -->
-<div class="date-selector">
+<div class="date-selector" id='data-selector'>
 <label for="dailyDate">Data selecionada:</label>
 <input type="date" id="dailyDate" onchange="loadDashboard()" />
 </div>
 <div class="floor-buttons" id="floorButtons"></div>
-<div class="dashboard">
+<div class="dashboard" id="dashboard">
 
 
 
@@ -81,6 +83,9 @@
   <p>Para limpar Amanhã</p>
 </div>
 
+
+</div>
+<div id='tabela-div' style='display:none'>
 
 </div>
 
@@ -250,6 +255,8 @@ const hotel_id = globalId; // 既存のホテルID
     const data = await res.json();
 
     const roomData = data.rows || [];
+
+    console.log(data.rows)
     globalRoomDailyList = data.rows || [];
     // console.log(`globalRoomData`,globalRoomData)
 
@@ -297,6 +304,8 @@ const hotel_id = globalId; // 既存のホテルID
      hideLoading()
     console.log("Erro:", err);
   }
+
+    await openServiceList()
 }
 
 // ========= 追加：明日清掃の階別一覧モーダル =========
@@ -498,13 +507,14 @@ const stayAmenityOnly = targetRooms.filter(r => r.sub_status==='stay_amenytyOnli
 
 
   // カード更新
-  document.getElementById("card_before").innerText = targetRooms.length;
-  document.getElementById("card_progress").innerText = inProgressRooms.length;
-  document.getElementById("card_done").innerText = doneRooms.length;
-  document.getElementById("card_checked").innerText = checked.length;
-  document.getElementById("card_amenity").innerText = amenytyRooms.length+stayAmenityOnly.length;
-  document.getElementById('card_observation').innerText = notesRooms.length
-  document.getElementById("card_tomorrow").innerText = tomorrowRooms.length;
+  document.getElementById("card_before").innerText = targetRooms?.length ?? 0;
+  document.getElementById("card_progress").innerText = inProgressRooms?.length ?? 0;
+  document.getElementById("card_done").innerText = doneRooms?.length ?? 0;
+  document.getElementById("card_checked").innerText = checked?.length ?? 0;
+  document.getElementById("card_amenity").innerText = (amenytyRooms?.length ?? 0) + (stayAmenityOnly?.length ?? 0);
+  document.getElementById("card_observation").innerText = notesRooms?.length ?? 0;
+  document.getElementById("card_tomorrow").innerText = tomorrowRooms?.length ?? 0;
+
 }
 
 
@@ -1298,6 +1308,304 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
+function openServiceList(){
+  const dashEl = document.getElementById('dashboard')
+  const tabelaEl = document.getElementById('tabela-div')
+  const dataEl = document.getElementById('data-selector')
+  const floorEl = document.getElementById('floorButtons')
+  dashEl.style.display='none'
+  tabelaEl.style.display='flex'
+  dataEl.style.display='none'
+  floorEl.style.display='none'
+closeMenu();
+createServices()
+}
+
+function openDashboard(){
+  const dashEl = document.getElementById('dashboard')
+  const tabelaEl = document.getElementById('tabela-div')
+  const dataEl = document.getElementById('data-selector')
+  const floorEl = document.getElementById('floorButtons')
+  dashEl.style.display='grid'
+  tabelaEl.style.display='none'
+  dataEl.style.display='flex'
+  floorEl.style.display='flex'
+closeMenu();
+}
+
+
+
+async function createServices() {
+  console.log(globalRoomDailyList);
+
+  // 🔥前回選んだ値を保持
+const prevFloor = document.getElementById("filterFloor")?.value || "";
+const prevStatus = document.getElementById("filterStatus")?.value || "";
+
+
+  const container = document.getElementById("tabela-div");
+  container.innerHTML = "";
+
+  // 🔥 データが空ならスタイリッシュメッセージ表示
+  if (!globalRoomDailyList || globalRoomDailyList.length === 0) {
+    container.innerHTML = `
+      <div class="no-data-box">
+        <i class="fas fa-info-circle"></i>
+        <p>Lista não criada</p>
+      </div>
+    `;
+    return;
+  }
+
+  // ============================
+  // 🔥 上部のフィルターUI（フロア・ステータス）
+  // ============================
+  const floors = [...new Set(globalRoomDailyList.map(r => r.floor))].sort((a,b)=>a-b);
+
+  container.innerHTML += `
+    <div class="filter-container">
+
+      <!-- Floor -->
+      <select id="filterFloor" class="filter-select">
+        <option value="" ${prevFloor === "" ? "selected" : ""}>Todos andares</option>
+        ${floors.map(f =>
+          `<option value="${f}" ${prevFloor == f ? "selected" : ""}>${f}F</option>`
+        ).join("")}
+      </select>
+
+      <!-- Status -->
+      <select id="filterStatus" class="filter-select" style="display:none">
+        <option value="" ${prevStatus === "" ? "selected" : ""}>Todos status</option>
+        <option value="abrir" ${prevStatus === "abrir" ? "selected" : ""}>Abrir</option>
+        <option value="aberto" ${prevStatus === "aberto" ? "selected" : ""}>Aberto</option>
+        <option value="limpo" ${prevStatus === "limpo" ? "selected" : ""}>Limpo</option>
+        <option value="verificado" ${prevStatus === "verificado" ? "selected" : ""}>Verificado</option>
+        <option value="nao_aberto" ${prevStatus === "nao_aberto" ? "selected" : ""}>Não aberto</option>
+      </select>
+
+    </div>
+  `;
+
+
+  // ============================
+  // 🔥 フィルターの値取得
+  // ============================
+  const floorValue = document.getElementById("filterFloor").value;
+  const statusValue = document.getElementById("filterStatus").value;
+
+  // ============================
+  // 🔥 フィルター適用
+  // ============================
+  let filteredRooms = globalRoomDailyList;
+
+  console.log(floorValue)
+
+  if (floorValue) {
+    filteredRooms = filteredRooms.filter(r => r.floor-0 == floorValue-0);
+  }
+  if (statusValue) {
+    filteredRooms = filteredRooms.filter(r => {
+
+      let currentStatus = "nao_aberto";
+      if (r.checked_flag === 1) currentStatus = "verificado";
+      else if (r.cleaning_done_at !== null) currentStatus = "limpo";
+      else if (r.open_flag === 1) currentStatus = "aberto";
+
+      return currentStatus === statusValue;
+    });
+  }
+
+  // ============================
+  // 🔥 一覧カード描画
+  // ============================
+
+  filteredRooms.sort((a, b) => (a.room_number - 0) - (b.room_number - 0));
+
+  filteredRooms.forEach(r => {
+    const card = document.createElement("div");
+    card.className = "task-card";
+
+    // ========== ここから元の処理そのまま ==========
+
+    let bgColor = "#e0e0e0";
+    let textColor = "#333";
+    let iconHTML = "";
+    let observBadgeHTML = "";
+
+    if (r.sub_status === 'stay_amenytyOnliy') {
+      bgColor = "#ffdfc2";
+      iconHTML = `<img src="./img/bag.png" class="icon-img">`;
+    } else if (r.checkout_time === null) {
+      bgColor = "#cfcfcf";
+      textColor = "#888";
+    }
+
+    if (r.stay_type === 'individual') {
+      iconHTML += `<img src="./img/esponja.png" class="icon-img">`;
+    }
+
+    let statusValue = "nao_aberto";
+    if (r.checked_flag === 1) statusValue = "verificado";
+    else if (r.cleaning_done_at !== null) statusValue = "limpo";
+    else if (r.open_flag === 1) statusValue = "aberto";
+
+    const seisouFlag =
+      r.status === '未清掃' ||
+      !['stay_amenytyOnliy', 'noclean', 'stay_noclean','outOf'].includes(r.sub_status ?? '');
+
+    const checkOuFlag = (r.checked_flag === 1) || (r.checkout_time !== null);
+    const disabledAttr = checkOuFlag ? "" : "disabled";
+
+    if (!seisouFlag) {
+      bgColor = '#a0a7aa';
+    }
+
+    if(r.notes){
+      observBadgeHTML = `
+        <span class="task-badge" data-room="${r.room_number}">
+          ${r.notes}
+        </span>
+      `;
+    }
+
+    card.style.backgroundColor = bgColor;
+    card.style.color = textColor;
+
+    let selectHTML = "";
+    if (seisouFlag) {
+      selectHTML = `
+        <div class="task-select-area">
+          <select class="task-status-select" data-room="${r.id}" ${disabledAttr}>
+            <option value="abrir" ${statusValue === "abrir" ? "selected" : ""}>Abrir</option>
+            <option value="aberto" ${statusValue === "aberto" ? "selected" : ""}>Aberto</option>
+            <option value="limpo" ${statusValue === "limpo" ? "selected" : ""}>Limpo</option>
+            <option value="verificado" ${statusValue === "verificado" ? "selected" : ""}>Verificado</option>
+            <option value="nao_aberto" ${statusValue === "nao_aberto" ? "selected" : ""}>Não aberto</option>
+          </select>
+        </div>
+      `;
+    }
+
+    card.innerHTML = `
+      <div class="task-room-header">
+        <span class="room-number">${r.room_number}</span>
+        <div class="icon-area">${iconHTML}</div>
+      </div>
+      ${observBadgeHTML}
+      ${selectHTML}
+    `;
+
+    container.appendChild(card);
+  });
+
+  // ============================
+  // 🔥 セレクト変更で再描画
+  // ============================
+  document.getElementById("filterFloor").onchange = createServices;
+  document.getElementById("filterStatus").onchange = createServices;
+}
+
+
+// async function createServices() {
+//   console.log(globalRoomDailyList);
+//
+//   const container = document.getElementById("tabela-div");
+// container.innerHTML = "";
+//
+// // 🔥 データが空ならスタイリッシュメッセージ表示
+// if (!globalRoomDailyList || globalRoomDailyList.length === 0) {
+//   container.innerHTML = `
+//     <div class="no-data-box">
+//       <i class="fas fa-info-circle"></i>
+//         <p>Lista não criada</p>
+//     </div>
+//   `;
+//   return;
+// }
+//
+//   globalRoomDailyList.sort((a, b) => (a.room_number-0) - (b.room_number-0));
+//
+//   globalRoomDailyList.forEach(r => {
+//     const card = document.createElement("div");
+//     card.className = "task-card";
+//     console.log(r)
+//
+//     let bgColor = "#e0e0e0";
+//     let textColor = "#333";
+//     let iconHTML = "";
+//     let observBadgeHTML = "";
+//
+//     // --- アイコンと背景色 ---
+//     if (r.sub_status === 'stay_amenytyOnliy') {
+//       bgColor = "#ffdfc2";
+//       iconHTML = `<img src="./img/bag.png" class="icon-img">`;
+//     } else if (r.checkout_time === null) {
+//       bgColor = "#cfcfcf";
+//       textColor = "#888";
+//     }
+//
+//     if (r.stay_type === 'individual') {
+//       iconHTML += `<img src="./img/esponja.png" class="icon-img">`;
+//     }
+//
+//
+//
+//     // --- 初期ステータス判定 ---
+//     let statusValue = "nao_aberto"; // デフォルト
+//
+//     if (r.checked_flag === 1) {
+//       statusValue = "verificado";
+//     } else if (r.cleaning_done_at !== null) {
+//       statusValue = "limpo";
+//     } else if (r.open_flag === 1) {
+//       statusValue = "aberto";
+//     }
+//
+//     const seisouFlag =
+//       r.status === '未清掃' ||
+//       !['stay_amenytyOnliy', 'noclean', 'stay_noclean','outOf'].includes(r.sub_status ?? '');
+//
+//       const checkOuFlag = (r.checked_flag === 1) || (r.checkout_time !== null);
+//       const disabledAttr = checkOuFlag ? "" : "disabled";
+//
+//
+//
+//     if(!seisouFlag){
+//       bgColor = '#a0a7aa'
+//     }
+//
+//     card.style.backgroundColor = bgColor;
+//     card.style.color = textColor;
+//
+//     let selectHTML = "";
+//     if (seisouFlag) {
+//       selectHTML = `
+//         <div class="task-select-area">
+//           <select class="task-status-select" data-room="${r.id}" ${disabledAttr}>
+//             <option value="abrir" ${statusValue === "abrir" ? "selected" : ""}>Abrir</option>
+//             <option value="aberto" ${statusValue === "aberto" ? "selected" : ""}>Aberto</option>
+//             <option value="limpo" ${statusValue === "limpo" ? "selected" : ""}>Limpo</option>
+//             <option value="verificado" ${statusValue === "verificado" ? "selected" : ""}>Verificado</option>
+//             <option value="nao_aberto" ${statusValue === "nao_aberto" ? "selected" : ""}>Não aberto</option>
+//           </select>
+//         </div>
+//       `;
+//     }
+//
+//     // --- カード HTML ---
+//     card.innerHTML = `
+//       <div class="task-room-header">
+//         <span class="room-number">${r.room_number}</span>
+//         ${observBadgeHTML}
+//         <div class="icon-area">${iconHTML}</div>
+//       </div>
+//
+//       ${selectHTML}
+//     `;
+//
+//     container.appendChild(card);
+//   });
+// }
 
 
 
@@ -1306,10 +1614,11 @@ renderFloorButtons();
 
 
 
-loadDashboard().then(() => {
+loadDashboard().then(async () => {
   // データ取得後に ALL で初期集計
   const firstBtn = document.querySelector("#floorButtons button");
-  selectFloor("ALL", firstBtn);
+  await selectFloor("ALL", firstBtn);
+
   // hideLoading()
 });
 
@@ -1317,4 +1626,3 @@ loadDashboard().then(() => {
 
 </body>
 </html>
-
