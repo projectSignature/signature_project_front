@@ -945,3 +945,162 @@ font-size: 16px;
   border-color: #3466ff;
   box-shadow: 0 5px 14px rgba(52, 102, 255, 0.35);
 }
+#tabela-div{
+  width: 92%;
+  height: 90%;
+  background-color: blue
+}
+#tabela-div {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.task-room-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+.room-number {
+font-size: 1.35rem;
+font-weight: 700;
+letter-spacing: 1px;
+}
+.icon-area img.icon-img {
+width: 40px;
+height: 40px;
+padding: 8px;
+border-radius: 50%;
+background: rgba(255,255,255,0.6);
+box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+
+.task-card {
+width: 95%;
+padding: 16px;
+margin-bottom: 14px;
+border-radius: 14px;
+/* background: linear-gradient(135deg, rgba(255,255,255,0.85), rgba(255,255,255,0.95)); */
+backdrop-filter: blur(4px);
+border: 1px solid rgba(0,0,0,0.06);
+box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.task-card:not(.disabled-card):hover {
+transform: translateY(-3px);
+box-shadow: 0 6px 14px rgba(0,0,0,0.22);
+}
+#tabela-div {
+  position: relative;
+
+  background: #ffffff;
+}
+.task-status-select {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 10px;
+  border: 2px solid #ddd;
+  background: #fafafa;
+  color: #333;
+  appearance: none;               /* デフォルトの矢印を消す */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%23666' height='20' viewBox='0 0 20 20' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M5 7l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* ホバーした時 */
+.task-status-select:hover {
+  border-color: #aaa;
+  background-color: #f0f0f0;
+}
+
+/* フォーカスしたとき（押したとき） */
+.task-status-select:focus {
+  outline: none;
+  border-color: #4a90e2;
+  background-color: #fff;
+  box-shadow: 0 0 4px rgba(74,144,226,0.4);
+}
+.no-data-box {
+  width: 90%;
+  margin: 40px auto;
+  padding: 25px;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+  text-align: center;
+  color: #555;
+  font-size: 18px;
+  font-weight: 600;
+  animation: fadeIn 0.4s ease;
+}
+
+.no-data-box i {
+  font-size: 40px;
+  color: #4a90e2;
+  margin-bottom: 10px;
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0px); }
+}
+
+.task-badge {
+  display: inline-block;
+  background: #ffe5e5;               /* 薄い赤で “注意” を表現 */
+  color: #c62828;                    /* 濃い赤で強調 */
+  padding: 6px 10px;
+  margin-left: 10px;
+  max-width: 250px;
+  border-left: 5px solid #e53935;    /* アクセントライン */
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1.3;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.18);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, opacity 0.2s;
+  white-space: normal;               /* 複数行対応 */
+  margin-bottom: 10px
+}
+
+/* ホバーで少し浮く */
+.task-badge:hover {
+  transform: scale(1.03);
+  box-shadow: 0 5px 12px rgba(0,0,0,0.25);
+  opacity: 0.95;
+}
+
+/* クリック時のフィードバック */
+.task-badge:active {
+  transform: scale(0.96);
+}
+
+.filter-container {
+  display: flex;
+  gap: 12px;
+  padding: 10px 10px 20px 10px;
+}
+
+.filter-select {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 2px solid #ccc;
+  background: #fafafa;
+  font-size: 15px;
+  font-weight: 600;
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%23666' height='20' viewBox='0 0 20 20' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M5 7l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+}
