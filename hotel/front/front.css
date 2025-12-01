@@ -257,7 +257,7 @@ html, body {
 }
 
 .header {
-  height:4%;
+  height:6%;
   overflow:hidden
 }
 .header img {
@@ -1523,4 +1523,20 @@ header .total-guests {
 /* アメニティ用黄色ライン */
 .info-tag.amenity {
   border-left: 4px solid #ffca28;
+}
+#summary-div {
+    display: flex;
+    flex-direction: column;
+    /* gap: 6px; */
+    padding: 10px 15px;
+    background: #ffffff;
+    border-radius: 8px;
+    width: fit-content;
+    font-size: 12px;
+    line-height: 1.4;
+    min-width: 125px;
+}
+
+#summary-div span {
+  font-weight: 600;
 }
