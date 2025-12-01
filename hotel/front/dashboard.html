@@ -1435,7 +1435,7 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
     if (r.sub_status === 'stay_amenytyOnliy') {
       bgColor = "#ffdfc2";
       iconHTML = `<img src="./img/bag.png" class="icon-img">`;
-    } else if (r.checkout_time === null) {
+    } else if (r.checkout_status === 'before' || r.checkout_status ==='null') {
       bgColor = "#cfcfcf";
       textColor = "#888";
     }
@@ -1453,7 +1453,7 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
       r.status === '未清掃' ||
       !['stay_amenytyOnliy', 'noclean', 'stay_noclean','outOf'].includes(r.sub_status ?? '');
 
-    const checkOuFlag = (r.checked_flag === 1) || (r.checkout_time !== null);
+    const checkOuFlag = (r.checkout_status === 'after');
     const disabledAttr = checkOuFlag ? "" : "disabled";
 
     if (!seisouFlag) {
