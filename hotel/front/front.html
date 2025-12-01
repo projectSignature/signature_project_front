@@ -832,21 +832,23 @@ globalShimeData = DayList.rows
           // 🟢 クリック・ダブルクリック共存処理（WeakMap版）
           // ================================
           room.addEventListener("click", (e) => {
-            if(globalShimeFlag){
-              alert('本日は既にデータ締め済みです。修正が必要ある場合は締め修正ボタンより行ってください')
-              return
-            }
             e.stopPropagation();
-            currentRoomId = room.dataset.id;  // ← これで部屋のIDが入る
-            currentHotelId = room.dataset.hotel_id
+            currentRoomId = room.dataset.id;
+            currentHotelId = room.dataset.hotel_id;
 
-            // 既存タイマーがあればキャンセル（多重防止）
+            // 既存タイマーがあればキャンセル
             if (clickTimers.has(room)) {
               clearTimeout(clickTimers.get(room));
             }
 
             const timer = setTimeout(() => {
               clickTimers.delete(room);
+
+              // 🟢 ★ シングルクリック確定した瞬間だけ Shime チェック
+              if (globalShimeFlag) {
+                alert('本日は既にデータ締め済みです。修正が必要ある場合は締め修正ボタンより行ってください');
+                return;
+              }
 
               // 🟢 一括選択モード
               if (bulkMode) {
@@ -863,12 +865,20 @@ globalShimeData = DayList.rows
               // 🟣 通常クリック → モーダル表示
               selectedRoom = room;
               showActionModal(r);
+
             }, 250);
 
             clickTimers.set(room, timer);
           });
 
+
           room.addEventListener("dblclick", async (e) => {
+
+            if (clickTimers.has(room)) {
+  clearTimeout(clickTimers.get(room));
+  clickTimers.delete(room);
+}
+
   e.stopPropagation();
 
   if (e.target.closest(".guest-btn")) return;
