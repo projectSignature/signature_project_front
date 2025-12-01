@@ -550,6 +550,8 @@ async function loadTasks() {
     // operatorId = 11
 
     console.log(roomData)
+
+    console.log(roomData)
     beforeCleanning = roomData.rows.filter(e => e.assigned_staff_id === operatorId)
 
     console.log(`beforeCleanning`,beforeCleanning)
@@ -721,7 +723,7 @@ function renderRoomTasks(roomData) {
 
     // スタート
     if (showStart) {
-      const disabledClass = r.checkout_time===null ? " disabled-btn" : "";
+      const disabledClass = r.checkout_status==='before' || r.checkout_status===null  ? " disabled-btn" : "";
       buttonHTML += `
         <button class="btn start-btn${disabledClass}" data-id="${r.id}">
           ${L.cleaningBtn}
@@ -1164,4 +1166,3 @@ loadTasks();
 </script>
 </body>
 </html>
-
