@@ -23,6 +23,11 @@
        <span id="closeStatusLabel">本日締済み</span>
 
     </div>
+  <div id='summary-div'>
+    <span id='total-guest'></span>
+    <span id='total-seisou'></span>
+    <span id='total-amenity'></span>
+    <div>
   </header>
 
   <input type="file" id="excelUpload" accept=".xls,.xlsx" style="display:none">
@@ -695,6 +700,8 @@ globalShimeData = DayList.rows
 
     map.innerHTML = "";
     let totalGuestCount = 0;
+    let totalseisou = 0;
+    let totalAmenity = 0
 
     // 🟢 各room要素ごとにクリックタイマーを管理するWeakMap
     const clickTimers = new WeakMap();
@@ -978,6 +985,8 @@ globalShimeData = DayList.rows
         floorDiv.appendChild(roomsContainer);
         map.appendChild(floorDiv);
         totalGuestCount += floorGuestCount;
+        totalseisou += targetClean
+        totalAmenity += targetAmenity
       });
 
       // 親要素を取得（例: すべての room-status に対して）
@@ -1000,6 +1009,7 @@ document.querySelectorAll(".room-status.mishiyou-room").forEach((el) => {
 
     // ✅ 全体人数更新
     updateHeaderTotal(totalGuestCount);
+     totalElements(totalseisou,totalAmenity)
 
     function updateTotals() {
       let newTotal = 0;
@@ -1165,19 +1175,28 @@ async function toggleCheckoutStatus(roomId,newStatus) {//ここは他でつか�
   }
 }
 
+function totalElements(totalseisou,totalAmenity){
+  // const totalEl = document.getElementById('total-guest')
+  const totalSeisou = document.getElementById('total-seisou')
+  const totalAmenityRom = document.getElementById('total-amenity')
 
+  // totalEl.innerText = `総お客様人数: ${total}人`;
+  totalSeisou.innerText = `総清掃対象: ${totalseisou}`;
+  totalAmenityRom.innerText = `総アメニティ数: ${totalAmenity}`;
+}
 
 // 🔧 Headerに総人数を表示
 function updateHeaderTotal(total) {
-  const header = document.querySelector("header");
-  if (!header) return;
-  let totalEl = header.querySelector(".total-guests");
-  if (!totalEl) {
-    totalEl = document.createElement("span");
-    totalEl.className = "total-guests";
-    header.appendChild(totalEl);
-  }
-  totalEl.textContent = `総お客様人数: ${total}人`;
+  const totalEl = document.getElementById('total-guest')
+  // const header = document.querySelector("header");
+  // if (!header) return;
+  // let totalEl = header.querySelector(".total-guests");
+  // if (!totalEl) {
+  //   totalEl = document.createElement("span");
+  //   totalEl.className = "total-guests";
+  //   header.appendChild(totalEl);
+  // }
+  totalEl.innerText = `総お客様人数: ${total}人`;
 }
 
 
