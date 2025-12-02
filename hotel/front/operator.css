@@ -518,4 +518,114 @@ font-size: 1rem;
 }
 .confirmed-text-mother span{
   color:green
+}/* モーダルの背景（黒透過） */
+#undoModal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+/* モーダル本体 */
+.undo-modal-content {
+  background: #fff;
+  width: 90%;
+  max-width: 420px;
+  max-height: 80vh;
+  padding: 20px;
+  border-radius: 16px;
+  overflow-y: auto;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+  animation: fadeIn 0.2s ease;
+}
+
+/* カード */
+.undo-room-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px;
+  background: #f2f5f9;
+  border: 1px solid #d8dce3;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: 0.15s;
+}
+
+/* 選択状態 */
+.undo-room-card.selected {
+  background: #007bff;
+  border-color: #007bff;
+  color: #fff;
+}
+
+/* チェックボックス */
+.undo-room-card .undo-check {
+  width: 24px;
+  height: 24px;
+}
+
+/* ボタン */
+.undo-apply-btn,
+.undo-close-btn {
+  width: 100%;
+  padding: 15px;
+  font-size: 18px;
+  border-radius: 12px;
+  border: none;
+  margin-top: 12px;
+}
+
+.undo-apply-btn {
+  background: #007bff;
+  color: #fff;
+}
+
+.undo-close-btn {
+  background: #9ca3af;
+  color: #fff;
+}
+
+.hidden {
+  display: none !important;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+#desfazerBtn {
+  width: 90%;
+  max-width: 420px;
+  margin: 15px auto;
+  display: block;
+
+  background: #007bff;
+  color: white;
+
+  border: none;
+  padding: 14px 18px;
+  font-size: 18px;
+  font-weight: 600;
+
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+#desfazerBtn:active {
+  background: #005fcc;
+  transform: scale(0.97);
+}
+div#undoRoomList {
+    max-height: 450px;
+    overflow: auto;
 }
