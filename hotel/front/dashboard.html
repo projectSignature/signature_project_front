@@ -222,6 +222,11 @@
   let globalOpnedRooms = []
   let globalDoneRoos = []
   let globalCheckedRooms = []
+
+  const token = localStorage.getItem("authToken");
+  const decoded = JSON.parse(atob(token.split('.')[1]));
+
+  let operatorId = decoded.id
   // let globalWorkers = []
 
 function toggleMenu() {
@@ -260,11 +265,16 @@ const hotel_id = globalId; // 既存のホテルID
     globalRoomDailyList = data.rows || [];
     // console.log(`globalRoomData`,globalRoomData)
 
+    // console.log(roomData)
+
     const beforeCleanning = roomData.filter(r =>
       r.status === '未清掃' &&
       r.sub_status !== 'stay_noclean' &&
-      (r.amenity_only ?? 0) === 0
+      r.sub_status !== 'stay_amenytyOnliy'
+      // (r.amenity_only ?? 0) === 0
     );
+
+    console.log(beforeCleanning)
 
     globalRoomData = beforeCleanning
      //Quartos abertos
@@ -926,8 +936,11 @@ async function openServiceRegister() {
   document.getElementById("regisCondition").style.display = "flex";
   closeMenu();
 
-  const today = new Date().toISOString().split("T")[0];
-  document.getElementById("serviceDate").value = today;
+  const now = new Date();
+  now.setHours(now.getHours() + 9);  // JSTに補正
+
+  const todayJST = now.toISOString().split("T")[0];
+  document.getElementById("serviceDate").value = todayJST;
 
   await loadWorkerOptions();
   loadBulkRoomList();
@@ -1473,10 +1486,11 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
 
     let selectHTML = "";
     if (seisouFlag) {
+                  // <option value="abrir" ${statusValue === "abrir" ? "selected" : ""}>Abrir</option>
       selectHTML = `
         <div class="task-select-area">
           <select class="task-status-select" data-room="${r.id}" ${disabledAttr}>
-            <option value="abrir" ${statusValue === "abrir" ? "selected" : ""}>Abrir</option>
+
             <option value="aberto" ${statusValue === "aberto" ? "selected" : ""}>Aberto</option>
             <option value="limpo" ${statusValue === "limpo" ? "selected" : ""}>Limpo</option>
             <option value="verificado" ${statusValue === "verificado" ? "selected" : ""}>Verificado</option>
@@ -1503,6 +1517,16 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
   // ============================
   document.getElementById("filterFloor").onchange = createServices;
   document.getElementById("filterStatus").onchange = createServices;
+
+  document.querySelectorAll(".task-status-select").forEach(sel => {
+    sel.addEventListener("change", (e) => {
+      const roomId = e.target.dataset.room;
+      const newStatus = e.target.value;
+
+      console.log("🔥 status changed:", roomId, newStatus);
+      handleStatusChange(roomId, newStatus);
+    });
+  });
 }
 
 
@@ -1606,6 +1630,41 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
 //     container.appendChild(card);
 //   });
 // }
+
+
+
+
+
+
+async function handleStatusChange(roomId, newStatus) {
+  console.log("📌 handleStatusChange", roomId, newStatus);
+
+  // バッファなどあなたの既存ロジック
+  // checkoutBuffer[roomId] = newStatus;
+
+  // 送信データ準備
+  const payload = {
+    id: roomId,
+    status: newStatus,
+    user_id: operatorId   // ← cleaning/checked 用（必要なら）
+  };
+
+  // API送信
+  const res = await fetch(`${API_URL}/api/room/update_status`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+
+  const data = await res.json();
+  console.log("🔥 update response:", data);
+
+  // UI再描画したい場合
+  // createServices();
+}
+
+
+
 
 
 
