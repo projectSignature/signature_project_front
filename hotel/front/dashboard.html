@@ -289,9 +289,11 @@ const hotel_id = globalId; // 既存のホテルID
     const stayAmenityOnly = roomData.filter(r => r.sub_status==='stay_amenytyOnliy');
     //Pecar os amenitys
     const API_AMENITIES = await fetch(`${API_URL}/api/room/amenity/list`);
+    // globalAmenityShoukai = 
     const amenityJson = await API_AMENITIES.json();
 
         globalAmenitys =amenityJson.requests //amenitys list
+        globalAmenityShoukai = amenityJson.requests
         globalObservation = notes //observacao
         globalStayAmenityOnly = stayAmenityOnly
         globalOpnedRooms = inProgressRooms
@@ -822,6 +824,8 @@ function openAmenityObervacion(listTYpe) {
     text = `Lista de observações`
   }
 
+  console.log(lists)
+
   // ② HTMLリスト構築
   let listHtml = "";
   if (lists.length === 0) {
@@ -857,6 +861,7 @@ function openAmenityObervacion(listTYpe) {
 function openAmenityListModal(listType) {
   const old = document.getElementById("amenityListModal");
   if (old) old.remove();
+  console.log(`listType`,listType)
 
   const modal = document.createElement("div");
   modal.id = "amenityListModal";
@@ -875,6 +880,8 @@ function openAmenityListModal(listType) {
     lists = globalObservation;
     title = "Lista de observações";
   }
+
+  console.log(lists)
 
   let listHtml = "";
 
