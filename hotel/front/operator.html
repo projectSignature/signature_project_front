@@ -92,6 +92,7 @@
 <script>
 
 const API_URL = `https://squid-app-ug7x6.ondigitalocean.app`
+let userRole = ``
 // const API_URL = `http://localhost:3000`
 
 
@@ -108,6 +109,8 @@ if (!token) {
 
     // デコード成功 → decoded をグローバルに持たせる
     window.decodedUser = decoded;
+
+    userRole = decoded.role
 
     console.log("ログインユーザー:", decoded);
 
@@ -151,6 +154,7 @@ let originalRoomsData = [];
 let globalRoomsData = []; // ← これは表示用にする
 let globalAmenityData = [];  // ← グローバル変数作成しておく
 let originalAmenityData = [];
+
 
 
 
@@ -642,7 +646,7 @@ function renderRoomTasks(roomData) {
   document.getElementById('cleansRoomsInitial').innerText = `${L.cleaningStarted}:${abertosRooms.length}`
 
   roomData.forEach(r => {
-console.log(r)
+
     const card = document.createElement("div");
     card.className = "task-card";
 
@@ -665,24 +669,20 @@ console.log(r)
       showStart = true;
       showDone = false;
       showUndo = false;
-    }else if(r.assigned_staff_id!==operatorId){
-      showStart = false;
-      showDone = false;
-      showUndo = false;
-      bgColor = '#b5b5b5'
     }else if (r.open_flag === 1&&r.cleaning_done_at===null) {
       showStart = false;
       showDone = true;
       showUndo = true;
       // taskType = "open";
     }
-    else if (r.cleaning_done_at !== null) {
+    else if (r.cleaning_done_at !== null&&r.checked_flag !== 1) {
       showStart = false;
       showDone = false;
       showUndo = false;
       taskType = "done";
     }
     else if (r.checked_flag === 1) {
+      // console.log('')
       showStart = false;
       showDone = false;
       showUndo = false;
@@ -705,6 +705,7 @@ console.log(r)
 
     // ボタン無しフラグの確認
     if (!showStart && !showDone && !showUndo) {
+      // console.log('ここにはいるはず')
       showButtons = false;
     }
 
@@ -758,7 +759,7 @@ console.log(r)
     let buttonHTML = `<div class="task-buttons">`;
 
     // スタート
-    if (showStart) {
+    if (showStart && taskType !== 'checked') {
       const disabledClass = r.checkout_status==='before' || r.checkout_status===null  ? " disabled-btn" : "";
       buttonHTML += `
         <button class="btn start-btn${disabledClass}" data-id="${r.id}">
@@ -768,7 +769,7 @@ console.log(r)
     }
 
     // 完了
-    if (showDone) {
+    if (showDone && taskType !== 'checked') {
       buttonHTML += `
         <button class="btn done-btn" data-id="${r.id}">
           ${L.complete}
@@ -786,6 +787,8 @@ console.log(r)
     // }
 
     buttonHTML += `</div>`;
+
+
 
     if (!showButtons) buttonHTML = "";
 
@@ -836,7 +839,7 @@ console.log(r)
 }
 
 
-function startCleaning(roomId,number,r) {
+async function startCleaning(roomId,number,r) {
   console.log("Start cleaning:", roomId);
 
   if(!operatorId)return
@@ -846,29 +849,44 @@ function startCleaning(roomId,number,r) {
   console.log(r)
 
   // UI即時更新
-  updateRoomLocalStatus(roomId, "in_progress");
-  refreshTasks();
+  // updateRoomLocalStatus(roomId, "in_progress");
+  // refreshTasks();
 
-  console.log()
 
-  handleStatusChange(roomId,'aberto')
+  // console.log()
+
+  await handleStatusChange(roomId,'aberto')
+    loadTasks()
 
 }
 
 
-function finishCleaning(roomId,number,r) {
-
-console.log(number)
+async function finishCleaning(roomId,number,r) {
 
   const now = new Date();
 
-  r.cleaning_done_at = now
+  // updateRoomLocalStatus(roomId, "done");
 
-  updateRoomLocalStatus(roomId, "done");
-  refreshTasks();
 
-// return
-  handleStatusChange(roomId,'limpo',number)
+if(userRole==='staffManeger'){
+  // updateRoomLocalStatus(roomId, "checked");
+  //   r.checked_flag = 1
+  //   r.checked_done_at = now
+  //   refreshTasks();
+  await   handleStatusChange(roomId,'limpo',number)
+  await  handleStatusChange(roomId,'verificado',number)
+}else{
+  // updateRoomLocalStatus(roomId, "done");
+  //   r.cleaning_done_at = now
+  //   refreshTasks();
+  await  handleStatusChange(roomId,'limpo',number)
+
+}
+
+  loadTasks()
+
+
+
 }
 
 
