@@ -289,7 +289,7 @@ const hotel_id = globalId; // 既存のホテルID
     const stayAmenityOnly = roomData.filter(r => r.sub_status==='stay_amenytyOnliy');
     //Pecar os amenitys
     const API_AMENITIES = await fetch(`${API_URL}/api/room/amenity/list`);
-    // globalAmenityShoukai = 
+    // globalAmenityShoukai =
     const amenityJson = await API_AMENITIES.json();
 
         globalAmenitys =amenityJson.requests //amenitys list
@@ -552,7 +552,7 @@ function showUserForm(type) {
       <input placeholder="Senha" type="password" id="u_password">
       <select id="u_role">
         <option value="staff">operador</option>
-        <option value="staff">operador2</option>
+        <option value="staffManeger">operador2</option>
         <option value="inspector">conferente</option>
         <option value="admin">Administrador</option>
       </select>
@@ -1452,6 +1452,8 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
     let iconHTML = "";
     let observBadgeHTML = "";
 
+    console.log(r.room_number)
+
     if (r.sub_status === 'stay_amenytyOnliy') {
       bgColor = "#ffdfc2";
       iconHTML = `<img src="./img/bag.png" class="icon-img">`;
@@ -1469,12 +1471,17 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
     else if (r.cleaning_done_at !== null) statusValue = "limpo";
     else if (r.open_flag === 1) statusValue = "aberto";
 
+    let statusAmenyty = 'before'
+    if(r.amenity_complete_flag === 1){
+      statusAmenyty = 'done'
+    }
+
     const seisouFlag =
       r.status === '未清掃' ||
       !['stay_amenytyOnliy', 'noclean', 'stay_noclean','outOf','unused'].includes(r.sub_status ?? '');
 
     const checkOuFlag = (r.checkout_status === 'after');
-    const disabledAttr = checkOuFlag ? "" : "disabled";
+    const disabledAttr = checkOuFlag || r.amenity_only ===1 ? "" : "disabled";
 
     if (!seisouFlag) {
       bgColor = '#a0a7aa';
@@ -1491,20 +1498,37 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
     card.style.backgroundColor = bgColor;
     card.style.color = textColor;
 
+    // console.log(r)
+
     let selectHTML = "";
     if (seisouFlag) {
                   // <option value="abrir" ${statusValue === "abrir" ? "selected" : ""}>Abrir</option>
-      selectHTML = `
-        <div class="task-select-area">
-          <select class="task-status-select" data-room="${r.id}" ${disabledAttr}>
 
-            <option value="aberto" ${statusValue === "aberto" ? "selected" : ""}>Aberto</option>
-            <option value="limpo" ${statusValue === "limpo" ? "selected" : ""}>Limpo</option>
-            <option value="verificado" ${statusValue === "verificado" ? "selected" : ""}>Verificado</option>
-            <option value="nao_aberto" ${statusValue === "nao_aberto" ? "selected" : ""}>Não aberto</option>
-          </select>
-        </div>
-      `;
+      if(r.sub_status === 'stay_amenytyOnliy'){
+        console.log(statusAmenyty)
+        selectHTML = `
+          <div class="task-select-area">
+            <select class="task-status-select" data-roomNumber="${r.room_number}" data-room="${r.id}" ${disabledAttr}>
+
+              <option value="done" ${statusAmenyty === "done" ? "selected" : ""}>Feito</option>
+              <option value="before" ${statusAmenyty=== "before" ? "selected" : ""}>Não Feito</option>
+            </select>
+          </div>
+        `
+      }else{
+        selectHTML = `
+          <div class="task-select-area">
+            <select class="task-status-select" data-roomNumber="${r.room_number}" data-room="${r.id}" ${disabledAttr}>
+
+              <option value="aberto" ${statusValue === "aberto" ? "selected" : ""}>Aberto</option>
+              <option value="limpo" ${statusValue === "limpo" ? "selected" : ""}>Limpo</option>
+              <option value="verificado" ${statusValue === "verificado" ? "selected" : ""}>Verificado</option>
+              <option value="nao_aberto" ${statusValue === "nao_aberto" ? "selected" : ""}>Não aberto</option>
+            </select>
+          </div>
+        `;
+      }
+
     }
 
     card.innerHTML = `
@@ -1529,11 +1553,16 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
     sel.addEventListener("change", (e) => {
       const roomId = e.target.dataset.room;
       const newStatus = e.target.value;
+      const roomNumber = e.target.dataset.roomnumber;
 
-      console.log("🔥 status changed:", roomId, newStatus);
-      handleStatusChange(roomId, newStatus);
+
+
+      console.log("🔥 status changed:", roomId, newStatus,roomNumber);
+      handleStatusChange(roomId, newStatus,roomNumber);
     });
   });
+
+
 }
 
 
@@ -1643,8 +1672,8 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
 
 
 
-async function handleStatusChange(roomId, newStatus) {
-  console.log("📌 handleStatusChange", roomId, newStatus);
+async function handleStatusChange(roomId, newStatus,roomNumber) {
+  console.log("📌 handleStatusChange", roomId, newStatus,roomNumber);
 
   // バッファなどあなたの既存ロジック
   // checkoutBuffer[roomId] = newStatus;
@@ -1653,7 +1682,9 @@ async function handleStatusChange(roomId, newStatus) {
   const payload = {
     id: roomId,
     status: newStatus,
-    user_id: operatorId   // ← cleaning/checked 用（必要なら）
+    user_id: operatorId,   // ← cleaning/checked 用（必要なら）
+    roomNumber:roomNumber,
+    hotelId:globalId
   };
 
   // API送信
