@@ -268,11 +268,15 @@ const hotel_id = globalId; // 既存のホテルID
     // console.log(roomData)
 
     const beforeCleanning = roomData.filter(r =>
-      r.status === '未清掃' &&
-      r.sub_status !== 'stay_noclean' &&
-      r.sub_status !== 'stay_amenytyOnliy'
-      // (r.amenity_only ?? 0) === 0
+      ![
+        'stay_amenytyOnliy',
+        'noclean',
+        'stay_noclean',
+        'outOf',
+        'unused'
+      ].includes(r.sub_status ?? '')
     );
+
 
     console.log(beforeCleanning)
 
@@ -287,20 +291,27 @@ const hotel_id = globalId; // 既存のホテルID
     const notes = roomData.filter(r => r.notes !== '' && r.notes !== null);
     //Quartos amenitys
     const stayAmenityOnly = roomData.filter(r => r.sub_status==='stay_amenytyOnliy');
+
+    console.log(`stayAmenityOnly`,stayAmenityOnly)
     //Pecar os amenitys
     const API_AMENITIES = await fetch(`${API_URL}/api/room/amenity/list`);
     // globalAmenityShoukai =
     const amenityJson = await API_AMENITIES.json();
 
         globalAmenitys =amenityJson.requests //amenitys list
-        globalAmenityShoukai = amenityJson.requests
+        globalAmenityShoukai = [
+          ...amenityJson.requests,
+          ...stayAmenityOnly
+        ];
         globalObservation = notes //observacao
         globalStayAmenityOnly = stayAmenityOnly
         globalOpnedRooms = inProgressRooms
         globalDoneRoos = doneRooms
         globalCheckedRooms = checked
 
-   const amentysCount = globalAmenitys.length
+console.log(`globalAmenityShoukai`,globalAmenityShoukai)
+
+   // const amentysCount = globalAmenitys.length + globalStayAmenityOnly.length
    const tomorowCleanNeedRooms = roomData.filter(r => r.guest_count >0);
 
     // === DASHBOARD 数値更新 ===
@@ -309,7 +320,7 @@ const hotel_id = globalId; // 既存のホテルID
     document.getElementById("card_done").innerText = doneRooms.length;
     document.getElementById("card_checked").innerText = checked.length;
     document.getElementById("card_tomorrow").innerText = tomorowCleanNeedRooms.length;
-    document.getElementById("card_amenity").innerText = amentysCount
+    document.getElementById("card_amenity").innerText = globalAmenityShoukai.length
     document.getElementById('card_observation').innerText = notes.length
    hideLoading()
   } catch (err) {
@@ -1477,7 +1488,6 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
     }
 
     const seisouFlag =
-      r.status === '未清掃' ||
       !['stay_amenytyOnliy', 'noclean', 'stay_noclean','outOf','unused'].includes(r.sub_status ?? '');
 
     const checkOuFlag = (r.checkout_status === 'after');
