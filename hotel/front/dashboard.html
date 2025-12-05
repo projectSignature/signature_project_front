@@ -892,7 +892,6 @@ function openAmenityListModal(listType) {
     title = "Lista de observações";
   }
 
-  console.log(lists)
 
   let listHtml = "";
 
@@ -975,7 +974,7 @@ async function loadWorkerOptions() {
     globalWorkerList = json.users;
     console.log(`globalWorkerList`,globalWorkerList)
 
-  const staffList = json.users.filter(u => u.role === "staff");
+  const staffList = json.users.filter(u => u.role === "staff" || u.role === 'staffManeger');
   const sel = document.getElementById("bulkWorker");
   sel.innerHTML = `<option value="">-- Selecionar --</option>`;
 
@@ -988,27 +987,47 @@ async function loadBulkRoomList() {
   const date = document.getElementById("serviceDate").value;
 
   globalRoomData.sort((a, b) => a.room_number - b.room_number);
-
-  globalRoomDailyList = globalRoomData
+  globalRoomDailyList = globalRoomData;
 
   const box = document.getElementById("bulkRoomList");
   box.innerHTML = "";
 
+  tgtDatas = [
+    ...globalRoomDailyList,
+    ...globalAmenityShoukai
+  ];
 
-  globalRoomDailyList.forEach(r => {
+  tgtDatas.sort((a, b) => a.room_number - b.room_number);
+  globalRoomDailyList = tgtDatas;
+
+  tgtDatas.forEach(r => {
+
+    // ============================
+    // ★ アイコン判定
+    // ============================
+    let iconHTML = "";
+    if (r.stay_type === "individual") {
+      iconHTML = `<img src="./img/esponja.png" class="icon-img">`;
+    } else if (r.sub_status === "stay_amenytyOnliy") {
+      iconHTML = `<img src="./img/bag.png" class="icon-img">`;
+    }
 
     const operatorName = getStaffNameById(r.assigned_staff_id);
 
-
     const assignedClass = r.assigned_staff_id ? "assigned-room" : "";
+    const amenityClass = r.sub_status === "stay_amenytyOnliy" ? "stay-amenity" : "";
 
+    // ============================
+    // ★ 画面描画
+    // ============================
     box.innerHTML += `
-      <div class="bulk-room-item ${assignedClass}"
+      <div class="bulk-room-item ${assignedClass} ${amenityClass}"
            id="room_${r.id}"
            onclick="toggleRoomSelect(${r.id})">
 
         <div class="room-line">
           <strong>${r.room_number}</strong>
+          ${iconHTML}
           <span class="operator-name">${operatorName}</span>
         </div>
 
@@ -1020,63 +1039,132 @@ async function loadBulkRoomList() {
 
 function toggleRoomSelect(roomId) {
 
+  console.log(globalRoomDailyList.map(r => r.id));
+
+
   const selectedOperatorId = String(document.getElementById("bulkWorker").value);
-  console.log(roomAssignedMap)
-  console.log(selectedOperatorId)
-  if(!selectedOperatorId){
-showToast("Selecione o operador", true);
-    return
-  }
 
-console.log(`globalRoomDailyList`,globalRoomDailyList)
-  const targetRoom = globalRoomDailyList.filter((r)=> r.id===roomId)
-  console.log(`targetRoom`,targetRoom)
-  console.log(targetRoom[0].assigned_staff_id)
-  console.log(selectedOperatorId)
+  const targetRoom = globalRoomDailyList.find((r) => r.id === roomId);
+  const item = document.getElementById(`room_${roomId}`);
 
+  const roomHasAssigned = targetRoom.assigned_staff_id != null && targetRoom.assigned_staff_id !== 0;
 
+  // =========================================================
+  // ★ オペレーター未選択 ＆ この部屋は登録済み → 初期化してOK
+  // =========================================================
+  if (!selectedOperatorId && roomHasAssigned) {
 
-  // ★ DBで既にこのオペレーターに登録されている場合はスキップ
-  if (targetRoom[0].assigned_staff_id === selectedOperatorId-0) {
-    console.log("この部屋はすでに登録済み → カウント変更しない");
+    // 初期化（解除）
+    targetRoom.assigned_staff_id = null;
+    targetRoom.upateFlag = true;  // ← 初期化も更新対象として扱うなら true のままでOK
+
+    item.classList.remove("selected-room", "assigned-room");
+    item.querySelector(".operator-name").innerText = "";
+
+    updateRoomSelectCounter();
+    console.log("★ 未選択だけど登録済 → 初期化完了");
     return;
   }
 
-  targetRoom[0].assigned_staff_id = selectedOperatorId-0
-  targetRoom[0].upateFlag = true
+  // =========================================================
+  // ★ オペレーター未選択 ＆ 未登録 → エラー（従来の動作）
+  // =========================================================
+  if (!selectedOperatorId) {
+    showToast("Selecione o operador", true);
+    return;
+  }
 
-  const item = document.getElementById(`room_${roomId}`);
-  item.classList.remove(`assigned-room`)
+  // =========================================================
+  // ★ すでに同じオペレーターで登録済み → 解除
+  // =========================================================
+  if (targetRoom.assigned_staff_id === selectedOperatorId - 0) {
+
+    targetRoom.assigned_staff_id = null;
+    targetRoom.upateFlag = true;
+
+    item.classList.remove("selected-room", "assigned-room");
+    item.querySelector(".operator-name").innerText = "";
+
+    updateRoomSelectCounter();
+    console.log("★ 同じID → 取り消し完了");
+    return;
+  }
+
+  // =========================================================
+  // ★ 通常の登録処理
+  // =========================================================
+  targetRoom.assigned_staff_id = selectedOperatorId - 0;
+  targetRoom.upateFlag = true;
+
+  item.classList.remove("assigned-room");
   item.classList.add("selected-room");
 
-
-
-
-console.log(`AfterglobalRoomDailyList`,globalRoomDailyList)
-
-  const workerName = globalWorkerList.filter(w=> w.id ===selectedOperatorId-0)
-
-  console.log(`workerName`,workerName)
-
-  const assignedCount = globalRoomDailyList.filter((r)=> r.assigned_staff_id-0===selectedOperatorId-0)
-
-
-
-    console.log(`assignedCount`,assignedCount)
-
-  currentAssignedCount = assignedCount.length; // ←★これ重要！
-
-// globalWorkerLis
-
-  // selectedOperatorId
-
-  item.querySelector(".operator-name").innerText = workerName[0].name;
-
-console.log(item)
-
+  const workerName = globalWorkerList.find(w => w.id === selectedOperatorId - 0);
+  item.querySelector(".operator-name").innerText = workerName?.name ?? "";
 
   updateRoomSelectCounter();
 }
+
+
+// function toggleRoomSelect(roomId) {
+//
+//   const selectedOperatorId = String(document.getElementById("bulkWorker").value);
+//   console.log(roomAssignedMap)
+//   console.log(selectedOperatorId)
+//   if(!selectedOperatorId){
+// showToast("Selecione o operador", true);
+//     return
+//   }
+//
+// console.log(`globalRoomDailyList`,globalRoomDailyList)
+//   const targetRoom = globalRoomDailyList.filter((r)=> r.id===roomId)
+//   console.log(`targetRoom`,targetRoom)
+//   console.log(targetRoom[0].assigned_staff_id)
+//   console.log(selectedOperatorId)
+//
+//
+//
+//   // ★ DBで既にこのオペレーターに登録されている場合はスキップ
+//   if (targetRoom[0].assigned_staff_id === selectedOperatorId-0) {
+//     console.log("この部屋はすでに登録済み → カウント変更しない");
+//     return;
+//   }
+//
+//   targetRoom[0].assigned_staff_id = selectedOperatorId-0
+//   targetRoom[0].upateFlag = true
+//
+//   const item = document.getElementById(`room_${roomId}`);
+//   item.classList.remove(`assigned-room`)
+//   item.classList.add("selected-room");
+//
+//
+//
+//
+// console.log(`AfterglobalRoomDailyList`,globalRoomDailyList)
+//
+//   const workerName = globalWorkerList.filter(w=> w.id ===selectedOperatorId-0)
+//
+//   console.log(`workerName`,workerName)
+//
+//   const assignedCount = globalRoomDailyList.filter((r)=> r.assigned_staff_id-0===selectedOperatorId-0)
+//
+//
+//
+//     console.log(`assignedCount`,assignedCount)
+//
+//   currentAssignedCount = assignedCount.length; // ←★これ重要！
+//
+// // globalWorkerLis
+//
+//   // selectedOperatorId
+//
+//   item.querySelector(".operator-name").innerText = workerName[0].name;
+//
+// console.log(item)
+//
+//
+//   updateRoomSelectCounter();
+// }
 
 
 
@@ -1194,7 +1282,7 @@ async function assignBulk() {
 
 function getStaffNameById(id) {
   if (!id) return "";
-  console.log(`globalWorkerList`,globalWorkerList)
+  // console.log(`globalWorkerList`,globalWorkerList)
   const found = globalWorkerList.find(u => u.id == id);
   return found ? found.name : "";
 }
@@ -1463,7 +1551,7 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
     let iconHTML = "";
     let observBadgeHTML = "";
 
-    console.log(r.room_number)
+    // console.log(r.room_number)
 
     if (r.sub_status === 'stay_amenytyOnliy') {
       bgColor = "#ffdfc2";
