@@ -46,27 +46,27 @@
 
 
 
-  <div class="dash-card red" onclick="openTomorrowModal('today')">
+  <div class="dash-card" style="background-color: #2196f3" onclick="openTomorrowModal('today')">
     <h1 id="card_before">--</h1>
     <p>Para limpar</p>
   </div>
 
-  <div class="dash-card blue" onclick="openTomorrowModal('opend')">
+  <div class="dash-card" style="background-color: #9c27b0" onclick="openTomorrowModal('opend')">
     <h1 id="card_progress">--</h1>
     <p>Abertos</p>
   </div>
 
-  <div class="dash-card green" onclick="openTomorrowModal('done')">
+  <div class="dash-card" style="background-color: #e74c3c" onclick="openTomorrowModal('done')">
     <h1 id="card_done">--</h1>
     <p>Finalizados</p>
   </div>
 
-  <div class="dash-card yellow" onclick="openTomorrowModal('checked')">
+  <div class="dash-card" style='background-color: green' onclick="openTomorrowModal('checked')">
     <h1 id="card_checked">--</h1>
     <p>Verificados</p>
   </div>
 
-  <div class="dash-card yellow" onclick="openAmenityListModal('amenity')">
+  <div class="dash-card orange" onclick="openAmenityListModal('amenity')">
     <h1 id="card_amenity">--</h1>
     <p>Amenity</p>
   </div>
@@ -78,16 +78,19 @@
 </div>
 
 
-<div class="dash-card purple" onclick="openTomorrowModal('tomorrow')">
+<div class="dash-card " style='background-color:#333'onclick="openTomorrowModal('tomorrow')">
   <h1 id="card_tomorrow">--</h1>
   <p>Para limpar Amanhã</p>
 </div>
 
 
 </div>
-<div id='tabela-div' style='display:none'>
+<div id="tabela-overlay"></div>
+<div class="tabela-div-mother">
+<div id="tabela-div"></div>
 
-</div>
+
+
 
 <!-- <h3 style="padding:16px 16px 0;">Por Andar</h3> -->
 
@@ -262,7 +265,6 @@ const hotel_id = globalId; // 既存のホテルID
 
     const roomData = data.rows || [];
 
-    console.log(data.rows)
     globalRoomDailyList = data.rows || [];
     // console.log(`globalRoomData`,globalRoomData)
 
@@ -279,8 +281,6 @@ const hotel_id = globalId; // 既存のホテルID
     );
 
 
-    console.log(beforeCleanning)
-
     globalRoomData = beforeCleanning
      //Quartos abertos
     const inProgressRooms = beforeCleanning.filter(r => r.open_flag === 1 && r.cleaned_by === null);
@@ -292,14 +292,10 @@ const hotel_id = globalId; // 既存のホテルID
     const notes = roomData.filter(r => r.notes !== '' && r.notes !== null);
     //Quartos amenitys
     const stayAmenityOnly = roomData.filter(r => r.sub_status==='stay_amenytyOnliy');
-
-    console.log(`stayAmenityOnly`,stayAmenityOnly)
-    console.log(`notes`,notes)
     //Pecar os amenitys
     const API_AMENITIES = await fetch(`${API_URL}/api/room/amenity/list`);
     // globalAmenityShoukai =
     const amenityJson = await API_AMENITIES.json();
-    console.log(amenityJson)
 
         globalAmenitys =amenityJson.requests //amenitys list
         globalAmenityShoukai = [
@@ -315,26 +311,10 @@ const hotel_id = globalId; // 既存のホテルID
         globalDoneRoos = doneRooms
         globalCheckedRooms = checked
 
-        console.log(globalObservation)
-
-// console.log(`globalAmenityShoukai`,globalAmenityShoukai)
-//
-//    // const amentysCount = globalAmenitys.length + globalStayAmenityOnly.length
-//    const tomorowCleanNeedRooms = roomData.filter(r => r.guest_count >0);
-//
-//     // === DASHBOARD 数値更新 ===
-//     document.getElementById("card_before").innerText = beforeCleanning.length;
-//     document.getElementById("card_progress").innerText = inProgressRooms.length;
-//     document.getElementById("card_done").innerText = doneRooms.length;
-//     document.getElementById("card_checked").innerText = checked.length;
-//     document.getElementById("card_tomorrow").innerText = tomorowCleanNeedRooms.length;
-//     document.getElementById("card_amenity").innerText = globalAmenityShoukai.length
-//     document.getElementById('card_observation').innerText = notes.length
-
     const firstBtn = document.querySelector("#floorButtons button");
     await selectFloor("ALL", firstBtn);
 
-
+openServiceList()
    hideLoading()
   } catch (err) {
      hideLoading()
@@ -353,13 +333,6 @@ function openTomorrowModal(kubun) {
   let text = 'Limpeza para Amanhã'
 
   let targetRooms=""
-
-  // globalAmenitys =amenityJson.requests //amenitys list
-  // globalObservation = notes //observacao
-  // globalStayAmenityOnly = stayAmenityOnly
-  // globalOpnedRooms = inProgressRooms
-  // globalDoneRoos = doneRooms
-  // globalCheckedRooms = checked
 
 if(kubun==='tomorrow'){
   targetRooms =globalRoomDailyList.filter(r => r.guest_count > 0);
@@ -504,47 +477,32 @@ function selectFloor(floor, clickedButton) {
   let amenytyRooms = [];
   let notesRooms = []
   let tomorrowRooms = []
+  let stayAmenityOnly =[]
 
   if (floor === "ALL") {
     targetRooms = globalRoomData;
     amenytyRooms = globalAmenitys;
     tomorrowRooms = globalRoomDailyList.filter(r => r.guest_count >0);
     notesRooms = globalObservation.filter(r => r.notes !== '' && r.notes !== null);
+    stayAmenityOnly = globalRoomDailyList.filter(r => r.sub_status==='stay_amenytyOnliy');
   } else {
     targetRooms = globalRoomData.filter(r => `${r.floor}F` === floor);
     notesRooms = globalObservation.filter(r => `${r.floor}F` === floor && r.notes !== '' && r.notes !== null);
     tomorrowRooms = globalRoomDailyList.filter(r => `${r.floor}F` === floor && r.guest_count >0);
+    stayAmenityOnly = globalRoomDailyList.filter(r => `${r.floor}F` === floor &&  r.sub_status==='stay_amenytyOnliy');
 
-    for (let i = 0; i < globalAmenitys.length; i++) {
-      const floorRoom = globalRoomData.find(r => r.room_number === globalAmenitys[i].room_number);
-
-      // find() は1件のみ返すので floorRoom があるかチェック
-      if (floorRoom && `${floorRoom.floor}F` === floor) {
-        amenytyRooms.push(globalAmenitys[i]);
-      }
-    }
   }
 
-console.log(targetRooms)
-console.log(`floor`,floor)
-console.log(`clickedButton`,clickedButton)
-console.log(`globalRoomData`,globalRoomData)
-console.log(`globalAmenitys`,globalAmenitys)
-console.log('notesRooms',notesRooms)
 
 
-
-const inProgressRooms =targetRooms.filter(r => r.open_flag === 1);
+const inProgressRooms =targetRooms.filter(r => r.open_flag === 1 || r.checked_flag === 1);
 //Quartos feitos
-const doneRooms = targetRooms.filter(r => r.cleaned_by !== null &&  r.checked_flag !== 1);
+const doneRooms = targetRooms.filter(r => r.cleaned_by !== null || r.checked_flag === 1);
 //Quartos checados
 const checked = targetRooms.filter(r => r.checked_flag === 1);
 //Quartos amenitys
-const stayAmenityOnly = globalRoomDailyList.filter(r => r.sub_status==='stay_amenytyOnliy');
+// const stayAmenityOnly = globalRoomDailyList.filter(r => r.sub_status==='stay_amenytyOnliy');
 
-console.log(`targetRooms`,targetRooms)
-console.log(`amenytyRooms`,amenytyRooms)
-console.log(`stayAmenityOnly`,stayAmenityOnly)
 
 
 
@@ -1484,17 +1442,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 function openServiceList(){
-  const dashEl = document.getElementById('dashboard')
-  const tabelaEl = document.getElementById('tabela-div')
-  const dataEl = document.getElementById('data-selector')
-  const floorEl = document.getElementById('floorButtons')
-  dashEl.style.display='none'
-  tabelaEl.style.display='flex'
-  dataEl.style.display='none'
-  floorEl.style.display='none'
-closeMenu();
-createServices()
+  const dashEl = document.getElementById('dashboard');
+  const tabelaEl = document.getElementById('tabela-div');
+  const dataEl = document.getElementById('data-selector');
+  const floorEl = document.getElementById('floorButtons');
+  // const overlay = document.getElementById('tabela-overlay');
+
+  dashEl.style.display = 'none';
+  tabelaEl.style.display = 'flex';
+  dataEl.style.display = 'none';
+  floorEl.style.display = 'none';
+
+  //🔥 オーバーレイ表示
+  // overlay.style.display = 'block';
+
+  closeMenu();
+  createServices();
 }
+
 
 function openDashboard(){
   const dashEl = document.getElementById('dashboard')
@@ -1531,7 +1496,7 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
     `;
     return;
   }
-
+  // <button id="desfazerBtn">desfazer</button>
   // ============================
   // 🔥 上部のフィルターUI（フロア・ステータス）
   // ============================
@@ -1547,6 +1512,8 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
           `<option value="${f}" ${prevFloor == f ? "selected" : ""}>${f}F</option>`
         ).join("")}
       </select>
+
+
 
       <!-- Status -->
       <select id="filterStatus" class="filter-select" style="display:none">
@@ -1597,61 +1564,94 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
   filteredRooms.sort((a, b) => (a.room_number - 0) - (b.room_number - 0));
 
   filteredRooms.forEach(r => {
-    console.log(r)
+    // console.log(r)
 
     const card = document.createElement("div");
     card.className = "task-card";
 
     // ========== ここから元の処理そのまま ==========
 
-    let bgColor = "#ffffff";
+    let bgColor = "#a0a7aa";
     let textColor = "#333";
     let iconHTML = "";
-    let observBadgeHTML = "";
-    let amenityRoom = r.sub_status === 'stay_amenytyOnliy' ? true : false
+    let textHTML = ""
+    // let observBadgeHTML = "";
+    // let amenityRoom = r.sub_status === 'stay_amenytyOnliy' ? true : false
 
     // console.log(r.room_number)
 
-    if (r.sub_status === 'stay_amenytyOnliy') {
-      bgColor = "#ffdfc2";
-      iconHTML = `<img src="./img/bag.png" class="icon-img">`;
-    } else if (r.checkout_status === 'before' || r.checkout_status ==='null') {
-      bgColor = "#cfcfcf";
-      textColor = "#888";
-    }
+    //
+    // if (r.sub_status === 'stay_amenytyOnliy') {
+    //   bgColor = "#ffdfc2";
+    //   iconHTML = `<img src="./img/bag.png" class="icon-img">`;
+    // } else if (r.checkout_status === 'before' || r.checkout_status ==='null') {
+    //   bgColor = "#cfcfcf";
+    //   textColor = "#888";
+    // }
+    //
+    // if (r.stay_type === 'individual') {
+    //   iconHTML += `<img src="./img/esponja.png" class="icon-img">`;
+    // }
+    //
+    // let statusValue = "nao_aberto";
+    // if (r.checked_flag === 1) statusValue = "Concluídos";
+    // else if (r.cleaning_done_at !== null) statusValue = "limpo";
+    // else if (r.open_flag === 1) statusValue = "aberto";
+    //
+    // let statusAmenyty = 'before'
+    // if(r.amenity_complete_flag === 1){
+    //   statusAmenyty = 'done'
+    // }
+    //
+
+    //
+    // const checkOuFlag = (r.checkout_status === 'after');
+    //
+    //
+    // if (!seisouFlag) {
+    //   bgColor = '#a0a7aa';
+    // }
+    //
+    //
+    //
+    // const amenitySiji = globalAmenitys.find(amr=>amr.room_number === r.room_number)
+
+
+    // console.log(amenitySiji)
+    //
+    // if(r.notes){
+    //   observBadgeHTML = `
+    //     <span class="task-badge" data-room="${r.room_number}">
+    //       ${r.notes}
+    //     </span>
+    //   `;
+    // }
+    //
+    // if(amenitySiji!==undefined){
+    //       const henkyakusaki = amenitySiji.action_type === '回収' ? `返却先:${amenitySiji.return_to}` : ''
+    //   observBadgeHTML = `
+    //     <span class="task-badge" data-room="${r.room_number}">
+    //       ${amenitySiji.amenity}を${amenitySiji.action_type} ${henkyakusaki}
+    //     </span>
+    //   `;
+    // }
+
+    const amenityRoom = r.sub_status === 'stay_amenytyOnliy' ? true : false //ここでステーアメニティのみかチェックしてる
+    // const disabledAttr = checkOuFlag || r.amenity_only ===1 ? "" : "disabled";
+
+    const seisouFlag =
+      !['stay_amenytyOnliy', 'noclean', 'stay_noclean','outOf','unused'].includes(r.sub_status ?? '');
+
+      if(!seisouFlag){
+          card.classList.add(`no-plan-card`);
+      }
 
     if (r.stay_type === 'individual') {
       iconHTML += `<img src="./img/esponja.png" class="icon-img">`;
     }
 
-    let statusValue = "nao_aberto";
-    if (r.checked_flag === 1) statusValue = "verificado";
-    else if (r.cleaning_done_at !== null) statusValue = "limpo";
-    else if (r.open_flag === 1) statusValue = "aberto";
-
-    let statusAmenyty = 'before'
-    if(r.amenity_complete_flag === 1){
-      statusAmenyty = 'done'
-    }
-
-    const seisouFlag =
-      !['stay_amenytyOnliy', 'noclean', 'stay_noclean','outOf','unused'].includes(r.sub_status ?? '');
-
-    const checkOuFlag = (r.checkout_status === 'after');
-    const disabledAttr = checkOuFlag || r.amenity_only ===1 ? "" : "disabled";
-
-    if (!seisouFlag) {
-      bgColor = '#a0a7aa';
-    }
-
-
-
-    const amenitySiji = globalAmenitys.find(amr=>amr.room_number === r.room_number)
-
-
-    console.log(amenitySiji)
-
-    if(r.notes){
+    let observBadgeHTML = "";
+    if (r.notes) {
       observBadgeHTML = `
         <span class="task-badge" data-room="${r.room_number}">
           ${r.notes}
@@ -1659,51 +1659,111 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
       `;
     }
 
-    if(amenitySiji!==undefined){
-          const henkyakusaki = amenitySiji.action_type === '回収' ? `返却先:${amenitySiji.return_to}` : ''
-      observBadgeHTML = `
-        <span class="task-badge" data-room="${r.room_number}">
-          ${amenitySiji.amenity}を${amenitySiji.action_type} ${henkyakusaki}
-        </span>
-      `;
+    const getAmentys = globalAmenitys.filter(rm=> rm.room_number===r.room_number)
+        let selectHTML = "";
+
+    if(getAmentys.length>0){
+      getAmentys.forEach(a => {
+        // console.log(a)
+        const msg = a.action_type==='回収'?`返却先:${a.return_to}`:''
+        const finalMsg = `${a.amenity}を${a.action_type} ${msg}`
+        observBadgeHTML += `
+          <span class="task-badge" data-room="${r.room_number}">
+            ${finalMsg}
+          </span>
+        `;
+
+      })
     }
 
-    card.style.backgroundColor = bgColor;
-    card.style.color = textColor;
+    if (amenityRoom) {
+      iconHTML = `<img src="./img/bag.png" class="icon-img">`;
 
-    // console.log(r)
+    }
 
-    let selectHTML = "";
+    // card.style.backgroundColor = bgColor;
+    // card.style.color = textColor;
 
+    console.log(r)
 
-    if(r.sub_status === 'stay_amenytyOnliy'){
-    console.log('amnytyOnly ni haiteru')
-      selectHTML = `
-        <div class="task-select-area">
-          <select class="task-status-select" data-roomNumber="${r.room_number}" data-room="${r.id}" ${disabledAttr}>
+    let open = false
+    let showStart = false
+    let showDone=false
+    let amenityDone = false
+    let limpostart = false
 
-            <option value="done" ${statusAmenyty === "done" ? "selected" : ""}>Feito</option>
-            <option value="before" ${statusAmenyty=== "before" ? "selected" : ""}>Não Feito</option>
-          </select>
+    const nextCheck = r.checked_flag===0 && r.cleaned_by!==null? true:false
+    const nextSeisou = r.open_flag===1 && r.cleaned_by===null? true:false
+    const nextOpen = r.open_flag===0?true:false
+    const nextAmenityCheck = r.sub_status==='stay_amenytyOnliy'?true:false
+
+    console.log(nextSeisou)
+
+    if(r.checked_flag===1||r.amenity_complete_flag===1){//完了形だから、テキストのみ
+        textHTML = `
+        <div style="width:100%;text-align:right">
+          <span style="
+            background-color:#1fa93b;
+            color:white;
+            padding:6px 10px;
+            border-radius:6px;
+            font-weight:bold;
+          ">
+            concluído
+          </span>
         </div>
-      `
-    }
 
-    if (seisouFlag) {
+        `;
+
+        card.classList.add(`concluido-card`)
+        if(r.checked_flag===1){
+          card.classList.add(`concluido-card-isnoAmenity`)
+        }
+    }else{
+      if(r.sub_status === 'stay_amenytyOnliy'){
+      console.log('amnytyOnly ni haiteru')
         selectHTML = `
           <div class="task-select-area">
-            <select class="task-status-select" data-roomNumber="${r.room_number}" data-room="${r.id}" ${disabledAttr}>
+            <select class="task-status-select" data-roomNumber="${r.room_number}" data-room="${r.id}" >
 
-              <option value="aberto" ${statusValue === "aberto" ? "selected" : ""}>Aberto</option>
-              <option value="limpo" ${statusValue === "limpo" ? "selected" : ""}>Limpo</option>
-              <option value="verificado" ${statusValue === "verificado" ? "selected" : ""}>Verificado</option>
-              <option value="nao_aberto" ${statusValue === "nao_aberto" ? "selected" : ""}>Não aberto</option>
+              <option value="done" ${statusAmenyty === "done" ? "selected" : ""}>Feito</option>
+              <option value="before" ${statusAmenyty=== "before" ? "selected" : ""}>Não Feito</option>
             </select>
           </div>
-        `;
+        `
+      }
+
+      if (seisouFlag) {
+          selectHTML = `
+            <div class="task-select-area">
+              <select class="task-status-select" data-roomNumber="${r.room_number}" data-room="${r.id}" >
+                <option value="aberto" ${nextSeisou ? "selected" : ""}>Aberto</option>
+                <option value="limpo" ${nextCheck ? "selected" : ""}>Limpo</option>
+                <option value="verificado" >Verificado</option>
+                <option value="nao_aberto" ${nextOpen ? "selected" : ""}>Não aberto</option>
+              </select>
+            </div>
+          `;
+
+          if (nextCheck && !nextAmenityCheck) {
+            card.classList.add(`limpo-card`);
+          }
+
+          if (nextAmenityCheck) {
+            card.classList.add(`limpo-card`)
+          }
+
+          if (nextOpen && !nextAmenityCheck) {
+            card.classList.add(`open-card`)
+          }
+          if(nextSeisou&& !nextAmenityCheck){
+            card.classList.add(`antesDeLimpar-card`)
+          }
+        }
+
+
     }
 
-    const notes = r.notes
 
     card.innerHTML = `
       <div class="task-room-header">
@@ -1712,12 +1772,11 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
       </div>
       ${observBadgeHTML}
       ${selectHTML}
+        ${textHTML}
     `;
 
 
-if(seisouFlag){
-    card.classList.add(statusValue);
-}
+
 
 if(amenityRoom){
   card.classList.add(`amenityOnlyRoom`);
@@ -1748,8 +1807,54 @@ if(amenityRoom){
       const card = document.querySelector(`.task-card[data-room="${roomId}"]`);
 
       if (card) {
+        console.log(card)
         // 🔥 今までのステータスクラスを全部消す
-        card.classList.remove("limpo", "aberto", "verificado", "nao_aberto", "done", "before");
+        card.classList.remove("open-card", "concluido-card", "antesDeLimpar-card", "limpo-card", "done", "before",'limpo','aberto','nao_aberto');
+
+        console.log(`newStatus`,newStatus)
+
+        if (newStatus==='nao_aberto') {
+          card.classList.add(`open-card`)
+        }
+
+        if (newStatus === 'verificado') {
+
+          // ① セレクト削除
+          const selectArea = card.querySelector(".task-select-area");
+          if (selectArea) {
+            selectArea.remove();
+          }
+
+          // ② クラス追加
+          card.classList.add("concluido-card");
+          card.classList.add("concluido-card-isnoAmenity");
+
+          // ③ 緑のバッジ追加
+          const doneHTML = `
+            <div style="width:100%;text-align:right">
+              <span style="
+                background-color:#1fa93b;
+                color:white;
+                padding:6px 10px;
+                border-radius:6px;
+                font-weight:bold;
+              ">
+                concluído
+              </span>
+            </div>
+          `;
+
+          // ④ 挿入（末尾に追加）
+          card.insertAdjacentHTML("beforeend", doneHTML);
+        }
+
+       if(newStatus==='limpo'){
+         card.classList.add(`limpo-card`)
+       }
+
+        if(newStatus==='aberto'){
+          card.classList.add(`antesDeLimpar-card`)
+        }
 
         // 🔥 新しいステータスを追加
         card.classList.add(newStatus);
@@ -1899,9 +2004,36 @@ async function handleStatusChange(roomId, newStatus,roomNumber) {
   // createServices();
 }
 
+// document.getElementById("desfazerBtn").addEventListener("click", () => {
+//   openUndoModal();
+// });
+function openUndoModal() {
+  const modal = document.getElementById("undoModal");
+  const list = document.getElementById("undoRoomList");
 
+  list.innerHTML = "";
 
+  // console.log("📌 beforeCleanning:", beforeCleanning);
 
+  beforeCleanning.forEach(room => {
+    // console.log(room)
+    if(room.checked_flag){
+      return
+    }
+    const div = document.createElement("div");
+    div.className = "undo-room-card";
+    div.dataset.id = room.id;
+
+    div.innerHTML = `
+      <span>Quarto ${room.room_number}</span>
+      <input type="checkbox" class="undo-check" />
+    `;
+
+    list.appendChild(div);
+  });
+
+  modal.classList.remove("hidden");
+}
 
 
 renderFloorButtons();
