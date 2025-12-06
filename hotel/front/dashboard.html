@@ -536,11 +536,11 @@ console.log('notesRooms',notesRooms)
 
 const inProgressRooms =targetRooms.filter(r => r.open_flag === 1);
 //Quartos feitos
-const doneRooms = targetRooms.filter(r => r.cleaned_by !== null);
+const doneRooms = targetRooms.filter(r => r.cleaned_by !== null &&  r.checked_flag !== 1);
 //Quartos checados
 const checked = targetRooms.filter(r => r.checked_flag === 1);
 //Quartos amenitys
-const stayAmenityOnly = targetRooms.filter(r => r.sub_status==='stay_amenytyOnliy');
+const stayAmenityOnly = globalRoomDailyList.filter(r => r.sub_status==='stay_amenytyOnliy');
 
 console.log(`targetRooms`,targetRooms)
 console.log(`amenytyRooms`,amenytyRooms)
@@ -553,7 +553,7 @@ console.log(`stayAmenityOnly`,stayAmenityOnly)
   document.getElementById("card_progress").innerText = inProgressRooms?.length ?? 0;
   document.getElementById("card_done").innerText = doneRooms?.length ?? 0;
   document.getElementById("card_checked").innerText = checked?.length ?? 0;
-  document.getElementById("card_amenity").innerText = (amenytyRooms?.length ?? 0) + (stayAmenityOnly?.length ?? 0);
+  document.getElementById("card_amenity").innerText =  (stayAmenityOnly?.length ?? 0);
   document.getElementById("card_observation").innerText = notesRooms?.length ?? 0;
   document.getElementById("card_tomorrow").innerText = tomorrowRooms?.length ?? 0;
 
