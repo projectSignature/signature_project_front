@@ -500,8 +500,8 @@ const btnCleaning = document.getElementById("btnShowCleaning");
 const btnAmenity  = document.getElementById("btnShowAmenity");
 let globalAmenitys = ""
 let beforeCleanning = []
-// let operatorId = decoded.id
-let operatorId = 11
+let operatorId = decoded.id
+// let operatorId = 11
 
 
 // ========================
@@ -663,22 +663,11 @@ function renderRoomTasks(roomData) {
     let amenityOnliyRoom = false
     let textHTML = ''
 
-        const amenityRoom = r.sub_status === 'stay_amenytyOnliy' ? true : false //ここでステーアメニティのみかチェックしてる
+    const amenityRoom = r.sub_status === 'stay_amenytyOnliy' ? true : false //ここでステーアメニティのみかチェックしてる
 
-    // =======================
-    // ② アイコン
-    // =======================
     if (r.stay_type === 'individual') {
       iconHTML += `<img src="./img/esponja.png" class="icon-img">`;
     }
-
-    // =======================
-    // ③ 備考バッジ
-    // =======================
-
-
-
-
 
     let observBadgeHTML = "";
     if (r.notes) {
@@ -690,7 +679,6 @@ function renderRoomTasks(roomData) {
     }
 
     const getAmentys = globalAmenitys.filter(rm=> rm.room_number===r.room_number)
-    // console.log(getAmentys)
 
     if(getAmentys.length>0){
       getAmentys.forEach(a => {
@@ -711,9 +699,7 @@ function renderRoomTasks(roomData) {
 
     }
 
-    // =======================
-    // デザイン反映
-    // =======================
+
     card.style.backgroundColor = bgColor;
     card.style.color = textColor;
 
@@ -755,7 +741,7 @@ function renderRoomTasks(roomData) {
       const nextCheck = r.checked_flag===0 && r.cleaned_by!==null? true:false
       const nextSeisou = r.open_flag===1 && r.cleaned_by===null? true:false
       const nextOpen = r.open_flag===0?true:false
-      const nextAmenityCheck = r.sub_status==='stay_amenytyOnliy'
+      const nextAmenityCheck = r.sub_status==='stay_amenytyOnliy'?true:false
 
       // console.log(`nextCheck`,nextCheck)
       // console.log(`nextSeisou`,nextSeisou)
