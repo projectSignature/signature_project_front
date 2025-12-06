@@ -111,8 +111,10 @@ if (!token) {
     window.decodedUser = decoded;
 
     userRole = decoded.role
+    // userRole = `staffManeger`
+    // userRole = `staff`
 
-    console.log("ログインユーザー:", decoded);
+    // console.log("ログインユーザー:", decoded);
 
     // トークン期限切れチェック
     const now = Math.floor(Date.now() / 1000);
@@ -123,7 +125,7 @@ if (!token) {
     }
 
   } catch (e) {
-    console.error("トークン解析エラー:", e);
+    // console.error("トークン解析エラー:", e);
 
     // トークン破損 → 削除してログインへ
     localStorage.removeItem("authToken");
@@ -132,7 +134,7 @@ if (!token) {
 }
 
 
-console.log(decoded);
+// console.log(decoded);
 // ここに全部入ってる
 // { id, name, username, role, iat, exp }
 
@@ -180,9 +182,9 @@ const t = {
     refresh: "🔄 更新",
     cleaning: "清掃",
     amenity: "アメニティ",
-    complete: "✅ 完了",
+    complete: "完了",
     cleaningMsg: "清掃を完了したら報告してください。",
-    noTask: "✅ 現在のタスクはありません。",
+    noTask: "現在のタスクはありません。",
     confirmCleaning: "清掃を完了しますか？",
     confirmAmenity: "アメニティ対応を完了しますか？",
     alertCleaningDone: "清掃完了を登録しました。",
@@ -248,9 +250,9 @@ observDone: "観察を完了する",
     refresh: "🔄 Atualizar",
     cleaning: "Limpeza",
     amenity: "Amenity",
-    complete: "✅ Concluir",
+    complete: "Concluir",
     cleaningMsg: "Informe quando a limpeza for concluída.",
-    noTask: "✅ Nenhuma tarefa no momento.",
+    noTask: "Nenhuma tarefa no momento.",
     confirmCleaning: "Deseja marcar a limpeza como concluída?",
     confirmAmenity: "Deseja marcar a amenidade como concluída?",
     alertCleaningDone: "Limpeza concluída com sucesso.",
@@ -316,9 +318,9 @@ returnPlacesFixed: {
     refresh: "🔄 Refresh",
     cleaning: "Cleaning",
     amenity: "Amenity",
-    complete: "✅ Complete",
+    complete: "Complete",
     cleaningMsg: "Please report when cleaning is done.",
-    noTask: "✅ No tasks at the moment.",
+    noTask: "No tasks at the moment.",
     confirmCleaning: "Mark cleaning as complete?",
     confirmAmenity: "Mark amenity as complete?",
     alertCleaningDone: "Cleaning marked as complete.",
@@ -383,9 +385,9 @@ es: {
   refresh: "🔄 Actualizar",
   cleaning: "Limpieza",
   amenity: "Amenidad",
-  complete: "✅ Completar",
+  complete: "Completar",
   cleaningMsg: "Informe cuando la limpieza esté terminada.",
-  noTask: "✅ No hay tareas por el momento.",
+  noTask: "No hay tareas por el momento.",
   confirmCleaning: "¿Marcar la limpieza como completada?",
   confirmAmenity: "¿Marcar la amenidad como completada?",
   alertCleaningDone: "Limpieza registrada como completada.",
@@ -498,8 +500,8 @@ const btnCleaning = document.getElementById("btnShowCleaning");
 const btnAmenity  = document.getElementById("btnShowAmenity");
 let globalAmenitys = ""
 let beforeCleanning = []
-let operatorId = decoded.id
-// let operatorId = 22
+// let operatorId = decoded.id
+let operatorId = 11
 
 
 // ========================
@@ -567,24 +569,23 @@ async function loadTasks() {
   const API_ROOMS = `${API_URL}/api/room/daily_room_list?date=${date}&hotel_id=${globalId}`;
 
   try {
-    const [roomRes] = await Promise.all([
-      fetch(API_ROOMS)
+    const [roomRes, amenityRes] = await Promise.all([
+      fetch(API_ROOMS),
+      fetch(API_AMENITIES)
     ]);
-
     const roomData = await roomRes.json();
-
-    // const amenityJson = await amenityRes.json();
+    const amenityData = await amenityRes.json();
+    globalAmenitys = amenityData.requests
 
     // operatorId = 11
 
-    console.log(roomData)
-
-    console.log(roomData)
-
-    console.log(operatorId)
+    // console.log(roomData)
+    //
+    // console.log(operatorId)
+    // console.log(globalAmenitys)
     beforeCleanning = roomData.rows.filter(e => e.assigned_staff_id === operatorId)
 
-    console.log(`beforeCleanning`,beforeCleanning)
+    // console.log(`beforeCleanning`,beforeCleanning)
 
     // // アメニティデータの正規化
     // const amenitys = amenityJson.requests || amenityJson || [];
@@ -632,14 +633,14 @@ function renderRoomTasks(roomData) {
   const lang = currentLang || "ja";
   const L = t[lang];
 
-  console.log(roomData)
+  // console.log(roomData)
 
   // <div id="summaryContainer">
   //   <div id="cleansRooms" class="summary-box"></div>
   //   <div id="cleansRoomsInitial" class="summary-box"></div>
   // </div>
 
-  const tantouCleaningRoom = roomData.filter(e=> e.assigned_staff_id===operatorId)
+  const tantouCleaningRoom = roomData.filter(e=> e.assigned_staff_id===operatorId && e.sub_status!=='stay_amenytyOnliy')
   const abertosRooms = roomData.filter(e=> e.open_flag===1)
 
   document.getElementById('cleansRooms').innerText= `${L.cleaningToDo}:${tantouCleaningRoom.length}`
@@ -647,67 +648,22 @@ function renderRoomTasks(roomData) {
 
   roomData.forEach(r => {
 
+    // console.log(r)
+
+
+
     const card = document.createElement("div");
     card.className = "task-card";
 
-    let bgColor = "#e0e0e0";
+    let bgColor = "#7f7c7c";
     let textColor = "#333";
     let iconHTML = "";
     let showButtons = true;
-    let showStart = false;
-    let showDone = false;
-    let showUndo = false;
-    let taskType = "";
     let youseisouBeforeCheckOut = false
     let amenityOnliyRoom = false
     let textHTML = ''
-    // ============================
-    // ① cleaning_status の判定
-    // ============================
 
-    if(r.assigned_staff_id===operatorId&&r.open_flag===0&&r.checked_flag !== 1){
-      showStart = true;
-      showDone = false;
-      showUndo = false;
-    }else if (r.open_flag === 1&&r.cleaning_done_at===null) {
-      showStart = false;
-      showDone = true;
-      showUndo = true;
-      // taskType = "open";
-    }
-    else if (r.cleaning_done_at !== null&&r.checked_flag !== 1) {
-      showStart = false;
-      showDone = false;
-      showUndo = false;
-      taskType = "done";
-    }
-    else if (r.checked_flag === 1) {
-      // console.log('')
-      showStart = false;
-      showDone = false;
-      showUndo = false;
-      taskType = "checked";
-    }
-
-    if(r.amenity_only===1){
-      amenityOnliyRoom=true
-    }
-
-    if(amenityOnliyRoom){
-      console.log('amenityOnliyRoom',amenityOnliyRoom)
-    }
-
-
-    if(r.sub_status==='stay_clean' || r.sub_status==='stay_noclean'){
-      bgColor = '#ff9d33'
-    }
-
-
-    // ボタン無しフラグの確認
-    if (!showStart && !showDone && !showUndo) {
-      // console.log('ここにはいるはず')
-      showButtons = false;
-    }
+        const amenityRoom = r.sub_status === 'stay_amenytyOnliy' ? true : false //ここでステーアメニティのみかチェックしてる
 
     // =======================
     // ② アイコン
@@ -719,6 +675,11 @@ function renderRoomTasks(roomData) {
     // =======================
     // ③ 備考バッジ
     // =======================
+
+
+
+
+
     let observBadgeHTML = "";
     if (r.notes) {
       observBadgeHTML = `
@@ -728,22 +689,26 @@ function renderRoomTasks(roomData) {
       `;
     }
 
-    if(taskType === "done"){
-      textHTML = `
-        <div style="width:100%;text-align:right">
-        <span style="color:red">
-          feito
-        </span>
-        </div>
-      `;
-    }else if(taskType === 'checked'){
-      textHTML = `
-        <div style="width:100%;text-align:right">
-        <span style="color:green">
-          Verificado
-        </span>
-        </div>
-      `;
+    const getAmentys = globalAmenitys.filter(rm=> rm.room_number===r.room_number)
+    // console.log(getAmentys)
+
+    if(getAmentys.length>0){
+      getAmentys.forEach(a => {
+        // console.log(a)
+        const msg = a.action_type==='回収'?`返却先:${a.return_to}`:''
+        const finalMsg = `${a.amenity}を${a.action_type} ${msg}`
+        observBadgeHTML += `
+          <span class="task-badge" data-room="${r.room_number}">
+            ${finalMsg}
+          </span>
+        `;
+
+      })
+    }
+
+    if (amenityRoom) {
+      iconHTML = `<img src="./img/bag.png" class="icon-img">`;
+
     }
 
     // =======================
@@ -752,75 +717,142 @@ function renderRoomTasks(roomData) {
     card.style.backgroundColor = bgColor;
     card.style.color = textColor;
 
+
+
     // =======================
     // ④ ボタンHTML
     // =======================
 
-    let buttonHTML = `<div class="task-buttons">`;
+    let buttonHTML = "";
 
-    // スタート
-    if (showStart && taskType !== 'checked') {
-      const disabledClass = r.checkout_status==='before' || r.checkout_status===null  ? " disabled-btn" : "";
-      buttonHTML += `
-        <button class="btn start-btn${disabledClass}" data-id="${r.id}">
-          ${L.cleaningBtn}
-        </button>
-      `;
+    let open = false
+    let showStart = false
+    let showDone=false
+    let amenityDone = false
+    let limpostart = false
+
+    if(r.checked_flag===1||r.amenity_complete_flag===1){//完了形だから、テキストのみ
+        textHTML = `
+        <div style="width:100%;text-align:right">
+          <span style="
+            background-color:#1fa93b;
+            color:white;
+            padding:6px 10px;
+            border-radius:6px;
+            font-weight:bold;
+          ">
+            concluído
+          </span>
+        </div>
+
+        `;
+
+        card.classList.add(`concluido-card`)
+    }else{
+
+      buttonHTML = `<div class="task-buttons">`;
+      // console.log(`ここに入るよ`)
+      const nextCheck = r.checked_flag===0 && r.cleaned_by!==null? true:false
+      const nextSeisou = r.open_flag===1 && r.cleaned_by===null? true:false
+      const nextOpen = r.open_flag===0?true:false
+      const nextAmenityCheck = r.sub_status==='stay_amenytyOnliy'
+
+      // console.log(`nextCheck`,nextCheck)
+      // console.log(`nextSeisou`,nextSeisou)
+      // console.log(`nextOpen`,nextOpen)
+
+      // userRole='staff'
+
+      if (nextSeisou && !nextAmenityCheck) {//Aberto mais sem regsitro de limpo => Aberto
+        if(userRole==='staffManeger'){//Caso seja o operator2 ja mostramos o botao de concluir
+
+          showDone = true
+          buttonHTML += `
+            <button class="btn done-btn" data-id="${r.id}">
+              ${L.complete}
+            </button>
+          `;
+          card.classList.add(`limpo-card`)
+        }else{
+          limpostart = true
+          buttonHTML += `
+            <button class="btn limpo-btn" data-id="${r.id}">
+              Limpo
+            </button>
+          `;
+              card.classList.add(`antesDeLimpar-card`)
+        }
+
+
+
+      }
+      if (nextCheck && !nextAmenityCheck) {
+        showDone = true;
+
+        const isManager = userRole === 'staffManeger';
+
+        buttonHTML += `
+          <button
+            class="btn done-btn ${isManager ? "" : "disabled-btn"}"
+            data-id="${r.id}"
+            ${isManager ? "" : "disabled"}
+          >
+            ${L.complete}
+          </button>
+        `;
+
+        card.classList.add(`limpo-card`);
+      }
+
+      if (nextAmenityCheck) {
+        amenityDone = true
+        buttonHTML += `
+          <button class="btn done-btn-amenity" data-id="${r.id}">
+            ${L.complete}
+          </button>
+        `;
+
+        card.classList.add(`limpo-card`)
+      }
+
+      if (nextOpen && !nextAmenityCheck) {
+        open = true
+        const disabledClass = r.checkout_status==='before' || r.checkout_status===null  ? " disabled-btn" : "";
+        buttonHTML += `
+          <button class="btn open-btn" data-id="${r.id}">
+            ${L.cleaningBtn}
+          </button>
+        `;
+
+        card.classList.add(`open-card`)
+      }
+
+      buttonHTML += `</div>`;
+      if (!amenityRoom) card.classList.add("quarto-pendente");
+
     }
 
-    // 完了
-    if (showDone && taskType !== 'checked') {
-      buttonHTML += `
-        <button class="btn done-btn" data-id="${r.id}">
-          ${L.complete}
-        </button>
-      `;
-    }
-
-    // 取り消し
-    // if (showUndo) {
-    //   buttonHTML += `
-    //     <button class="btn undo-btn" data-id="${r.id}">
-    //       ${L.undoBtn}
-    //     </button>
-    //   `;
-    // }
-
-    buttonHTML += `</div>`;
-
-
-
-    if (!showButtons) buttonHTML = "";
-
-    // =======================
-    // ⑤ HTML 組み立て
-    // =======================
     card.innerHTML = `
       <div class="task-room-header">
         <span class="room-number">${r.room_number}</span>
         <div class="icon-area">${iconHTML}</div>
+
       </div>
-
-      ${observBadgeHTML}
-
+     ${observBadgeHTML}
       ${buttonHTML}
-
       ${textHTML}
     `;
 
-    // =======================
-    // ⑥ ボタンのイベント付与
-    // =======================
-
-    if (showStart) {
-      const btn = card.querySelector(".start-btn");
-
-      if (amenityOnliyRoom) {
-        btn.innerText = "AMENITY";
-        btn.style.color = "red";
-      }
-
+    if (open) {
+      const btn = card.querySelector(".open-btn");
       btn.addEventListener("click", () => startCleaning(r.id,r.room_number,r));
+    }
+
+    // userRole==='staffManeger')
+
+    if(limpostart){
+      card.querySelector(".limpo-btn")
+        .addEventListener("click", () => limpoEsperarVerificar(r.id,r.room_number,r));
     }
 
     if (showDone) {
@@ -828,11 +860,14 @@ function renderRoomTasks(roomData) {
         .addEventListener("click", () => finishCleaning(r.id,r.room_number,r));
     }
 
-    // if (showUndo) {
-    //   card.querySelector(".undo-btn")
-    //     .addEventListener("click", () => undoCleaning(r.id));
-    // }
+    if (amenityDone) {
+      card.querySelector(".done-btn-amenity")
+        .addEventListener("click", () => finishAmenity(r.id,r.room_number,r));
+    }
 
+    if(amenityRoom){
+      card.classList.add(`amenityOnlyRoom`);
+    }
     // 最後に追加
     container.appendChild(card);
   });
@@ -840,13 +875,13 @@ function renderRoomTasks(roomData) {
 
 
 async function startCleaning(roomId,number,r) {
-  console.log("Start cleaning:", roomId);
+  // console.log("Start cleaning:", roomId);
 
   if(!operatorId)return
 
   r.open_flag = 1
 
-  console.log(r)
+  // console.log(r)
 
   // UI即時更新
   // updateRoomLocalStatus(roomId, "in_progress");
@@ -862,36 +897,29 @@ async function startCleaning(roomId,number,r) {
 
 
 async function finishCleaning(roomId,number,r) {
-
-  const now = new Date();
-
-  // updateRoomLocalStatus(roomId, "done");
-
+  showLoading()
 
 if(userRole==='staffManeger'){
-  // updateRoomLocalStatus(roomId, "checked");
-  //   r.checked_flag = 1
-  //   r.checked_done_at = now
-  //   refreshTasks();
   await   handleStatusChange(roomId,'limpo',number)
   await  handleStatusChange(roomId,'verificado',number)
+
 }else{
-  // updateRoomLocalStatus(roomId, "done");
-  //   r.cleaning_done_at = now
-  //   refreshTasks();
   await  handleStatusChange(roomId,'limpo',number)
 
 }
-
   loadTasks()
-
-
-
+    hideLoading()
 }
 
+async function limpoEsperarVerificar (roomId,number,r){
+    showLoading()
+await handleStatusChange(roomId,'limpo',number)
+  loadTasks()
+    hideLoading()
+}
 
 function undoCleaning(roomId) {
-  console.log("Undo cleaning:", roomId);
+  // console.log("Undo cleaning:", roomId);
 
   updateRoomLocalStatus(roomId, "not_started");
   refreshTasks();
@@ -1010,7 +1038,7 @@ function applyFilters() {
   // ⭐ 必ず originalRoomsData をコピーして始める！！
   let filtered = [...beforeCleanning];
 
-  console.log(`filtered`,filtered)
+  // console.log(`filtered`,filtered)
 
   // ① フロア
   if (selectedFloor !== "all") {
@@ -1105,7 +1133,7 @@ function applyFilters() {
 // }
 
 function finishAmenity(amenityId) {
-  console.log("Amenity Complete:", amenityId);
+  // console.log("Amenity Complete:", amenityId);
 
   withLoading(() =>
     fetch(`${API_URL}/api/room/amenity/${amenityId}`, {
@@ -1190,7 +1218,7 @@ function finishAmenity(amenityId) {
 // });
 
 async function handleStatusChange(roomId, newStatus,roomNumber) {
-  console.log("📌 handleStatusChange", roomId, newStatus);
+  // console.log("📌 handleStatusChange", roomId, newStatus);
 
   // バッファなどあなたの既存ロジック
   // checkoutBuffer[roomId] = newStatus;
@@ -1203,7 +1231,7 @@ async function handleStatusChange(roomId, newStatus,roomNumber) {
     roomNumber:roomNumber,
     hotelId:globalId
   };
-  console.log(payload)
+  // console.log(payload)
   // return
   // API送信
   const res = await fetch(`${API_URL}/api/room/update_status`, {
@@ -1213,7 +1241,7 @@ async function handleStatusChange(roomId, newStatus,roomNumber) {
   });
 
   const data = await res.json();
-  console.log("🔥 update response:", data);
+  // console.log("🔥 update response:", data);
 
 }
 
@@ -1224,10 +1252,10 @@ function openUndoModal() {
 
   list.innerHTML = "";
 
-  console.log("📌 beforeCleanning:", beforeCleanning);
+  // console.log("📌 beforeCleanning:", beforeCleanning);
 
   beforeCleanning.forEach(room => {
-    console.log(room)
+    // console.log(room)
     if(room.checked_flag){
       return
     }
@@ -1272,12 +1300,12 @@ document.getElementById("undoApplyBtn").onclick = async () => {
     return;
   }
 
-  console.log("Selecionados:", selectedIds);
+  // console.log("Selecionados:", selectedIds);
 
   /* 正しい restoreList の作り方 */
   const restoreList = beforeCleanning.filter(r => selectedIds.includes(r.id));
 
-  console.log("📤 巻き戻す部屋:", restoreList);
+  // console.log("📤 巻き戻す部屋:", restoreList);
 
   const res = await fetch(`${API_URL}/api/room/undo_restore`, {
     method: "PUT",
@@ -1288,7 +1316,7 @@ document.getElementById("undoApplyBtn").onclick = async () => {
   });
 
   const data = await res.json();
-  console.log("📥 restore response:", data);
+  // console.log("📥 restore response:", data);
 
   // alert("巻き戻し完了しました！");
   document.getElementById("undoModal").classList.add("hidden");
