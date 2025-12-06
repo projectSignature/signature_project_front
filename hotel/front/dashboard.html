@@ -294,6 +294,7 @@ const hotel_id = globalId; // 既存のホテルID
     const stayAmenityOnly = roomData.filter(r => r.sub_status==='stay_amenytyOnliy');
 
     console.log(`stayAmenityOnly`,stayAmenityOnly)
+    console.log(`notes`,notes)
     //Pecar os amenitys
     const API_AMENITIES = await fetch(`${API_URL}/api/room/amenity/list`);
     // globalAmenityShoukai =
@@ -304,25 +305,36 @@ const hotel_id = globalId; // 既存のホテルID
         globalAmenityShoukai = [
           ...stayAmenityOnly
         ];
-        globalObservation = notes //observacao
+        globalObservation = [
+          ...notes,
+          ...amenityJson.requests
+        ];
+
         globalStayAmenityOnly = stayAmenityOnly
         globalOpnedRooms = inProgressRooms
         globalDoneRoos = doneRooms
         globalCheckedRooms = checked
 
-console.log(`globalAmenityShoukai`,globalAmenityShoukai)
+        console.log(globalObservation)
 
-   // const amentysCount = globalAmenitys.length + globalStayAmenityOnly.length
-   const tomorowCleanNeedRooms = roomData.filter(r => r.guest_count >0);
+// console.log(`globalAmenityShoukai`,globalAmenityShoukai)
+//
+//    // const amentysCount = globalAmenitys.length + globalStayAmenityOnly.length
+//    const tomorowCleanNeedRooms = roomData.filter(r => r.guest_count >0);
+//
+//     // === DASHBOARD 数値更新 ===
+//     document.getElementById("card_before").innerText = beforeCleanning.length;
+//     document.getElementById("card_progress").innerText = inProgressRooms.length;
+//     document.getElementById("card_done").innerText = doneRooms.length;
+//     document.getElementById("card_checked").innerText = checked.length;
+//     document.getElementById("card_tomorrow").innerText = tomorowCleanNeedRooms.length;
+//     document.getElementById("card_amenity").innerText = globalAmenityShoukai.length
+//     document.getElementById('card_observation').innerText = notes.length
 
-    // === DASHBOARD 数値更新 ===
-    document.getElementById("card_before").innerText = beforeCleanning.length;
-    document.getElementById("card_progress").innerText = inProgressRooms.length;
-    document.getElementById("card_done").innerText = doneRooms.length;
-    document.getElementById("card_checked").innerText = checked.length;
-    document.getElementById("card_tomorrow").innerText = tomorowCleanNeedRooms.length;
-    document.getElementById("card_amenity").innerText = globalAmenityShoukai.length
-    document.getElementById('card_observation').innerText = notes.length
+    const firstBtn = document.querySelector("#floorButtons button");
+    await selectFloor("ALL", firstBtn);
+
+
    hideLoading()
   } catch (err) {
      hideLoading()
@@ -486,10 +498,7 @@ function selectFloor(floor, clickedButton) {
   );
   clickedButton.classList.add("floor-active");
 
-  console.log(`floor`,floor)
-  console.log(`clickedButton`,clickedButton)
-  console.log(`globalRoomData`,globalRoomData)
-  console.log(`globalAmenitys`,globalAmenitys)
+
 
   let targetRooms = [];
   let amenytyRooms = [];
@@ -500,10 +509,10 @@ function selectFloor(floor, clickedButton) {
     targetRooms = globalRoomData;
     amenytyRooms = globalAmenitys;
     tomorrowRooms = globalRoomDailyList.filter(r => r.guest_count >0);
-    notesRooms = globalRoomDailyList.filter(r => r.notes !== '' && r.notes !== null);
+    notesRooms = globalObservation.filter(r => r.notes !== '' && r.notes !== null);
   } else {
     targetRooms = globalRoomData.filter(r => `${r.floor}F` === floor);
-    notesRooms = globalRoomDailyList.filter(r => `${r.floor}F` === floor && r.notes !== '' && r.notes !== null);
+    notesRooms = globalObservation.filter(r => `${r.floor}F` === floor && r.notes !== '' && r.notes !== null);
     tomorrowRooms = globalRoomDailyList.filter(r => `${r.floor}F` === floor && r.guest_count >0);
 
     for (let i = 0; i < globalAmenitys.length; i++) {
@@ -516,9 +525,14 @@ function selectFloor(floor, clickedButton) {
     }
   }
 
+console.log(targetRooms)
+console.log(`floor`,floor)
+console.log(`clickedButton`,clickedButton)
+console.log(`globalRoomData`,globalRoomData)
+console.log(`globalAmenitys`,globalAmenitys)
+console.log('notesRooms',notesRooms)
 
-console.log(`targetRooms`,targetRooms)
-console.log(`amenytyRooms`,amenytyRooms)
+
 
 const inProgressRooms =targetRooms.filter(r => r.open_flag === 1);
 //Quartos feitos
@@ -527,6 +541,10 @@ const doneRooms = targetRooms.filter(r => r.cleaned_by !== null);
 const checked = targetRooms.filter(r => r.checked_flag === 1);
 //Quartos amenitys
 const stayAmenityOnly = targetRooms.filter(r => r.sub_status==='stay_amenytyOnliy');
+
+console.log(`targetRooms`,targetRooms)
+console.log(`amenytyRooms`,amenytyRooms)
+console.log(`stayAmenityOnly`,stayAmenityOnly)
 
 
 
@@ -844,10 +862,16 @@ function openAmenityObervacion(listTYpe) {
     listHtml = `<div class="amenity-empty">Nenhum pedido encontrado.</div>`;
   } else {
     lists.forEach(r => {
+console.log(r)
+const henkyakusaki = r.action_type === '回収'? `返却先：${r.return_to}`: ``
+
+
+const msg = !r.notes ? `${r.amenity}を${r.action_type} ${henkyakusaki}`: r.notes
+
       listHtml += `
         <div class="amenity-room-row">
           <div class="amenity-room-number">${r.room_number}</div>
-          <div class="amenity-notes">${r.notes || "-"}</div>
+          <div class="amenity-notes">${msg}</div>
         </div>
       `;
     });
@@ -900,12 +924,14 @@ function openAmenityListModal(listType) {
     listHtml = `<div class="amenity-empty">Nenhum pedido encontrado.</div>`;
   } else {
     lists.forEach(r => {
+      console.log(r)
       const isNormalAmenity = r.action_type !== undefined;
 
       let msg = "-";
 
       if (isNormalAmenity) {
         // ✔ 通常アメニティ依頼
+        // const
         msg = `${r.amenity || ""}（${r.action_type || ""} → ${r.return_to || ""}）`;
       } else {
         // ✔ STAYアメニティ Only の部屋 → notesは絶対使わない
@@ -1883,13 +1909,12 @@ renderFloorButtons();
 
 
 
-loadDashboard().then(async () => {
-  // データ取得後に ALL で初期集計
-  const firstBtn = document.querySelector("#floorButtons button");
-  await selectFloor("ALL", firstBtn);
-
-  // hideLoading()
-});
+// loadDashboard().then(async () => {
+//   // データ取得後に ALL で初期集計
+//
+//
+//   // hideLoading()
+// });
 
 </script>
 
