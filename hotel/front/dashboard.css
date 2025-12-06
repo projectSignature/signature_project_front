@@ -1054,7 +1054,7 @@ box-shadow: 0 6px 14px rgba(0,0,0,0.22);
   color: #c62828;                    /* 濃い赤で強調 */
   padding: 6px 10px;
   margin-left: 10px;
-  max-width: 250px;
+  max-width: 90%;
   border-left: 5px solid #e53935;    /* アクセントライン */
   border-radius: 8px;
   font-size: 0.8rem;
@@ -1125,17 +1125,20 @@ box-shadow: 0 6px 14px rgba(0,0,0,0.22);
   justify-content: flex-end;
 }
 .limpo {
-  border:4px solid green !important; /* 柔らかい薄緑 */
+  border-left: 10px solid green !important; /* 柔らかい薄緑 */
 }
 
 .aberto {
-  border:4px solid blue !important; /* 淡い水色 */
+  border-left: 10px solid blue !important; /* 淡い水色 */
 }
 
 .verificado {
-  border:4px solid #ffb3b3 !important; /* 優しい薄赤（ピンク寄り） */
+  border-left: 10px solid #ffb3b3 !important; /* 優しい薄赤（ピンク寄り） */
 }
 
 .nao_aberto {
-  border:4px solid red !important;
+  border-left: 10px solid red !important;
+}
+.amenityOnlyRoom{
+  background-color: orange!important
 }
