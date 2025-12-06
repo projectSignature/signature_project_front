@@ -222,7 +222,8 @@ transform: scale(1.02);
 }
 
 .start-btn { background: #009ffd; }
-.done-btn  { background: #2ecc71; }
+
+
 .undo-btn  { background: #ff7675; }
 
 /* before 無効化デザイン：ガラス風フェード */
@@ -234,7 +235,6 @@ filter: grayscale(40%) brightness(0.9);
 
 
 .start-btn { background: #74cfff; }
-.done-btn { background: #7cff9c; }
 .undo-btn { background: #ff7979; }
 
 .icon-img {
@@ -286,31 +286,6 @@ font-size: 1rem;
   background-color: #ef6c00;
 }
 
-/* =============================
-   🟢 清掃完了（done-btn）
-============================= */
-.done-btn {
-  background-color: #4caf50;    /* グリーン */
-}
-.done-btn:hover {
-  background-color: #43a047;
-}
-.done-btn:active {
-  background-color: #2e7d32;
-}
-
-/* =============================
-   🔵 確認済み（checked-btn）
-============================= */
-.checked-btn {
-  background-color: #2196f3;    /* 青 */
-}
-.checked-btn:hover {
-  background-color: #1e88e5;
-}
-.checked-btn:active {
-  background-color: #1976d2;
-}
 
 /* =============================
    🔒 無効状態（必要なら）
@@ -534,7 +509,7 @@ font-size: 1rem;
   background: #fff;
   width: 90%;
   max-width: 420px;
-  max-height: 80vh;
+  height: 80vh;
   padding: 20px;
   border-radius: 16px;
   overflow-y: auto;
@@ -626,6 +601,49 @@ font-size: 1rem;
   transform: scale(0.97);
 }
 div#undoRoomList {
-    max-height: 450px;
+    height: 60%;
     overflow: auto;
+}
+
+.concluido-card {
+  border-left: 10px solid green !important; /* 柔らかい薄緑 */
+}
+
+.aberto {
+  border-left: 10px solid blue !important; /* 淡い水色 */
+}
+
+.limpo-card {
+  border-left: 10px solid #e74c3c !important; /* 優しい薄赤（ピンク寄り） */
+}
+
+/* .nao_aberto {
+  border-left: 10px solid red !important;
+} */
+.amenityOnlyRoom{
+  background-color: orange!important
+}
+.done-btn,.done-btn-amenity  {
+  background: #e74c3c;
+}
+.quarto-pendente{
+  background-color: #ffffff!important
+}
+.open-btn {
+  background-color: #2196f3;
+}
+.open-card{
+    border-left: 10px solid #2196f3!important;
+}
+.antesDeLimpar-card{
+  border-left: 10px solid #9c27b0 !important;
+
+}
+.limpo-btn{
+    background-color: #9c27b0
+}
+.disabled-btn {
+  opacity: 0.4;            /* 薄く */
+  pointer-events: none;    /* クリック無効 */
+  filter: grayscale(40%);  /* 色を落とす（オプション） */
 }
