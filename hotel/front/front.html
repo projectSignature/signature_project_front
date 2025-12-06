@@ -18,6 +18,7 @@
        <button id="bulkChangeBtn" class="bulk-btn" disabled>🔄 ステータス変更</button>
        <button id="importExcelBtn" class="bulk-btn">📂 清掃データ取込</button>
        <button id="exportStatusBtn" class="bulk-btn">📤 ステータス出力</button>
+       <button id="historyBtn">📚 履歴</button>
        <button id="closeDayBtn" class="bulk-btn close-day-btn">締め</button>
        <button id="fixCloseDayBtn" class="bulk-btn fix-close-day-btn">締め修正</button>
        <span id="closeStatusLabel">本日締済み</span>
@@ -220,6 +221,28 @@
   </div>
 </div>
 
+<div id="dayDetailModal" class="modal">
+  <div class="modal-content large">
+    <h3 id="dayDetailTitle">詳細</h3>
+
+    <table class="history-table" id="dayDetailTable">
+      <thead>
+        <tr>
+          <th>部屋番号</th>
+          <th>フロア</th>
+          <th>ステータス</th>
+          <th>チェック済</th>
+          <th>アメニティ依頼</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <button class="close-btn" onclick="document.getElementById('dayDetailModal').style.display='none'">✖</button>
+  </div>
+</div>
+
+
 
 <!-- ✅ モーダルHTMLをフッター直前などに追加 -->
 <div id="bulkConfirmModal" style="
@@ -283,6 +306,31 @@
   </div>
 </div>
 
+<div id="historyModal" class="modal">
+  <div class="modal-content large" style='height:100%!important'>
+    <h3>履歴参照</h3>
+
+    <label>開始日</label>
+    <input type="date" id="historyStart">
+
+    <label>終了日</label>
+    <input type="date" id="historyEnd">
+
+    <button id="historySearchBtn" class="search-btn">検索</button>
+
+    <!-- 🔥 テーブルスクロール領域 -->
+    <div class="history-table-wrapper">
+      <table id="historyTable" class="history-table">
+        <thead></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <button class="close-btn">✖</button>
+  </div>
+</div>
+
+
 
 
 
@@ -334,9 +382,9 @@ const statusLabels = {
   need_clean: "要清掃",
   unused: "未使用",
   checkOut:'チェックアウト',
-  singleGuest:'FITへ変更',
-  groupe:'団体へ変更',
-  outOf:'故障部屋へ変更'
+  singleGuest:'FIT',
+  groupe:'団体',
+  outOf:'故障部屋'
 };
 
 
@@ -2309,6 +2357,11 @@ closeDaySubmit.addEventListener("click", async () => {
 
 fixCloseDayBtn.addEventListener("click", () => {
   document.getElementById("fixCloseDayModal").style.display = "flex";
+
+  const now = new Date();
+  const jstNow = new Date(now.getTime() + 9 * 60 * 60 * 1000);
+  // 🔥 フォーマットしてセット
+  document.getElementById("fixCloseDayDate").value = formatDateJST(jstNow);
 });
 
 async function loadFixCloseDayData() {
@@ -2343,14 +2396,18 @@ function renderFixCloseDayList(rows) {
         <th>部屋</th>
         <th>ステータス</th>
         <th>ゲストタイプ</th>
+        <th>CO・外出状況</th>
         <th>他依頼</th>
 
       </tr>
   `;
 
   rows.forEach(r => {
+const checkOutKubun = r.checkout_status==='after'?true:false
+console.log(r)
+
     html += `
-      <tr data-id="${r.id}">
+      <tr data-room ='${r.room_number}' data-id="${r.id}">
 
         <td>${r.room_number}</td>
 
@@ -2371,6 +2428,13 @@ function renderFixCloseDayList(rows) {
           </select>
         </td>
 
+        <td>
+        <select class="fix-checkOut">
+          <option value="after" ${checkOutKubun ? "selected" : ""}>CO・外出中</option>
+          <option value="before"  ${!checkOutKubun  ? "selected" : ""}>CO・外出前</option>
+        </select>
+        </td>
+
         <!-- 🔥 コメント -->
         <td>
           <textarea class="fix-notes">${r.notes || ""}</textarea>
@@ -2388,12 +2452,13 @@ function renderFixCloseDayList(rows) {
 }
 
 async function submitFixCloseDay() {
-  console.log('koko2306')
   const rows = [...document.querySelectorAll(".fix-table tr[data-id]")].map(tr => ({
     id: tr.dataset.id,
     status: tr.querySelector(".fix-status").value,
     stay_type: tr.querySelector(".fix-stay-type").value,
-    notes: tr.querySelector(".fix-notes").value
+    notes: tr.querySelector(".fix-notes").value,
+    checkout_status:tr.querySelector(".fix-checkOut").value,
+    room_number:tr.dataset.room
   }));
 
   console.log(rows)
@@ -2405,6 +2470,8 @@ async function submitFixCloseDay() {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ rows, hotel_id: globalId }),
   });
+
+  await loadRooms()
 
   hideLoading();
 
@@ -2430,6 +2497,214 @@ document.addEventListener("input", function (e) {
 function closeFixCloseDayModal(){
   const fixModal = document.getElementById('fixCloseDayModal')
   fixModal.style.display='none'
+}
+
+document.getElementById("historyBtn").addEventListener("click", () => {
+  const modal = document.getElementById("historyModal");
+  modal.style.display = "block";
+
+  // 🔥 現在を JST で取得
+  const now = new Date();
+  const jstNow = new Date(now.getTime() + 9 * 60 * 60 * 1000);
+
+  // 🔥 30日前（JST）
+  const start = new Date(jstNow);
+  start.setDate(start.getDate() - 30);
+
+  // 🔥 フォーマットしてセット
+  document.getElementById("historyStart").value = formatDateJST(start);
+  document.getElementById("historyEnd").value = formatDateJST(jstNow);
+});
+
+//
+// document.getElementById("historySearchBtn").addEventListener("click", async () => {
+//   const start = document.getElementById("historyStart").value;
+//   const end = document.getElementById("historyEnd").value;
+//
+//   const res = await fetch(`${API_URL}/api/room/summary?hotel_id=${globalId}&start_date=${start}&end_date=${end}`);
+//   const json = await res.json();
+//   console.log(json)
+//
+//   if (!json.success) {
+//     alert("集計取得に失敗");
+//     return;
+//   }
+//
+//   const tbody = document.querySelector("#historyTable tbody");
+//   tbody.innerHTML = "";
+//
+//   json.summary.forEach(row => {
+//     const tr = document.createElement("tr");
+//
+//     tr.innerHTML = `
+//       <td>${row.date}</td>
+//       <td>${row.target_clean}</td>
+//       <td>${row.done_clean}</td>
+//       <td>${row.amenity_request}</td>
+//       <td>${row.amenity_done}</td>
+//       <td><button class="detail-btn" data-date="${row.date}">詳細</button></td>
+//     `;
+//
+//     tbody.appendChild(tr);
+//   });
+// });
+
+function getAllRoomTypes(summary) {
+  const set = new Set();
+  summary.forEach(day => {
+    Object.keys(day.room_types).forEach(type => set.add(type));
+  });
+  return Array.from(set); // ["SM","TC","TM","DS",…]
+}
+
+function renderHistoryHeader(roomTypes) {
+  const thead = document.querySelector("#historyTable thead");
+  thead.innerHTML = "";
+
+  const row = document.createElement("tr");
+
+  row.innerHTML = `
+    <th>日付</th>
+    ${roomTypes.map(t => `<th>${t}</th>`).join("")}
+    <th>合計</th>
+    <th>アメニティ対応</th>
+    <th>詳細</th>
+  `;
+
+  thead.appendChild(row);
+}
+
+// <span class="small">(${data.target_clean})</span>
+function renderHistoryRows(summary, roomTypes) {
+  const tbody = document.querySelector("#historyTable tbody");
+  tbody.innerHTML = "";
+
+  summary.forEach(day => {
+    const tr = document.createElement("tr");
+
+    let html = `<td>${day.date}</td>`;
+
+    let total_clean = 0;
+    let total_target = 0;
+    let total_amenity_done = 0;
+    let total_amenity_req = 0;
+
+    roomTypes.forEach(type => {
+      const data = day.room_types[type];
+
+      if (data) {
+        html += `
+          <td class="type-cell">
+            ${data.done_clean}
+
+          </td>
+        `;
+
+        total_clean += data.done_clean;
+        total_target += data.target_clean;
+        total_amenity_done += data.amenity_done;
+        total_amenity_req += data.amenity_request;
+      }
+      else {
+        html += `<td class="type-cell">0</td>`;
+      }
+    });
+
+    // 合計
+    html += `
+      <td class="type-cell">
+        ${total_clean}
+
+      </td>
+      <td class="type-cell">
+        ${total_amenity_done}
+
+      </td>
+    `;
+
+    // 🔥 参照ボタン（右端）
+    html += `
+      <td>
+        <button class="detail-btn" onclick="openDayDetail('${day.date}')">参照</button>
+      </td>
+    `;
+
+    tr.innerHTML = html;
+    tbody.appendChild(tr);
+  });
+}
+// <span class="small">(${total_target})</span>
+// <span class="small">(${total_amenity_req})</span>
+// <span class="small">(0)</span>
+
+async function searchHistory() {
+  const start = document.getElementById("historyStart").value;
+  const end = document.getElementById("historyEnd").value;
+　showLoading()
+  const res = await fetch(`${API_URL}/api/room/summary?hotel_id=${globalId}&start_date=${start}&end_date=${end}`);
+  const json = await res.json();
+hideLoading()
+  if (!json.success) {
+    alert("取得失敗");
+    return;
+  }
+
+  const summary = json.summary;
+
+  const roomTypes = getAllRoomTypes(summary);
+
+  renderHistoryHeader(roomTypes);
+  renderHistoryRows(summary, roomTypes);
+}
+
+document.getElementById("historySearchBtn").addEventListener("click", searchHistory);
+
+function renderDayDetail(data, date) {
+  document.getElementById("dayDetailTitle").textContent = `${date} の詳細`;
+
+  const tbody = document.querySelector("#dayDetailTable tbody");
+  tbody.innerHTML = "";
+
+  const amenityMap = new Map();
+  data.amenity.forEach(a => {
+    if (!amenityMap.has(a.room_id)) amenityMap.set(a.room_id, []);
+    amenityMap.get(a.room_id).push(a.amenity);
+  });
+
+  data.daily.forEach(r => {
+    const amenityList = amenityMap.get(r.id) || [];
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${r.room_number}</td>
+      <td>${r.floor}</td>
+      <td>${r.status}</td>
+      <td>${r.checked_flag === 1 ? "✔" : ""}</td>
+      <td>${amenityList.join("<br>")}</td>
+    `;
+
+    tbody.appendChild(tr);
+  });
+}
+
+function formatDateJST(date) {
+  const year = date.getFullYear();
+  const month = ("0" + (date.getMonth() + 1)).slice(-2);
+  const day = ("0" + date.getDate()).slice(-2);
+  return `${year}-${month}-${day}`;
+}
+
+async function openDayDetail(date) {
+  const res = await fetch(`${API_URL}/api/room/history/day-detail?hotel_id=${globalId}&date=${date}`);
+  const json = await res.json();
+
+  if (!json.success) {
+    alert("詳細データ取得に失敗しました");
+    return;
+  }
+
+  renderDayDetail(json.data, date);
+  document.getElementById("dayDetailModal").style.display = "block";
 }
 
 
