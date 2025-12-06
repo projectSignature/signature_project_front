@@ -298,6 +298,7 @@ const hotel_id = globalId; // 既存のホテルID
     const API_AMENITIES = await fetch(`${API_URL}/api/room/amenity/list`);
     // globalAmenityShoukai =
     const amenityJson = await API_AMENITIES.json();
+    console.log(amenityJson)
 
         globalAmenitys =amenityJson.requests //amenitys list
         globalAmenityShoukai = [
@@ -1571,6 +1572,7 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
 
   filteredRooms.forEach(r => {
     console.log(r)
+
     const card = document.createElement("div");
     card.className = "task-card";
 
@@ -1580,6 +1582,7 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
     let textColor = "#333";
     let iconHTML = "";
     let observBadgeHTML = "";
+    let amenityRoom = r.sub_status === 'stay_amenytyOnliy' ? true : false
 
     // console.log(r.room_number)
 
@@ -1615,10 +1618,26 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
       bgColor = '#a0a7aa';
     }
 
+
+
+    const amenitySiji = globalAmenitys.find(amr=>amr.room_number === r.room_number)
+
+
+    console.log(amenitySiji)
+
     if(r.notes){
       observBadgeHTML = `
         <span class="task-badge" data-room="${r.room_number}">
           ${r.notes}
+        </span>
+      `;
+    }
+
+    if(amenitySiji!==undefined){
+          const henkyakusaki = amenitySiji.action_type === '回収' ? `返却先:${amenitySiji.return_to}` : ''
+      observBadgeHTML = `
+        <span class="task-badge" data-room="${r.room_number}">
+          ${amenitySiji.amenity}を${amenitySiji.action_type} ${henkyakusaki}
         </span>
       `;
     }
@@ -1630,22 +1649,21 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
 
     let selectHTML = "";
 
-    console.log(statusValue)
+
+    if(r.sub_status === 'stay_amenytyOnliy'){
+    console.log('amnytyOnly ni haiteru')
+      selectHTML = `
+        <div class="task-select-area">
+          <select class="task-status-select" data-roomNumber="${r.room_number}" data-room="${r.id}" ${disabledAttr}>
+
+            <option value="done" ${statusAmenyty === "done" ? "selected" : ""}>Feito</option>
+            <option value="before" ${statusAmenyty=== "before" ? "selected" : ""}>Não Feito</option>
+          </select>
+        </div>
+      `
+    }
+
     if (seisouFlag) {
-                  // <option value="abrir" ${statusValue === "abrir" ? "selected" : ""}>Abrir</option>
-
-      if(r.sub_status === 'stay_amenytyOnliy'){
-        console.log(statusAmenyty)
-        selectHTML = `
-          <div class="task-select-area">
-            <select class="task-status-select" data-roomNumber="${r.room_number}" data-room="${r.id}" ${disabledAttr}>
-
-              <option value="done" ${statusAmenyty === "done" ? "selected" : ""}>Feito</option>
-              <option value="before" ${statusAmenyty=== "before" ? "selected" : ""}>Não Feito</option>
-            </select>
-          </div>
-        `
-      }else{
         selectHTML = `
           <div class="task-select-area">
             <select class="task-status-select" data-roomNumber="${r.room_number}" data-room="${r.id}" ${disabledAttr}>
@@ -1657,9 +1675,9 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
             </select>
           </div>
         `;
-      }
-
     }
+
+    const notes = r.notes
 
     card.innerHTML = `
       <div class="task-room-header">
@@ -1673,6 +1691,10 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
 
 if(seisouFlag){
     card.classList.add(statusValue);
+}
+
+if(amenityRoom){
+  card.classList.add(`amenityOnlyRoom`);
 }
 
     card.setAttribute("data-room", r.id);
