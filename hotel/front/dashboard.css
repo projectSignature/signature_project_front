@@ -1080,18 +1080,23 @@ box-shadow: 0 6px 14px rgba(0,0,0,0.22);
 }
 
 .filter-container {
-  display: flex;
-  gap: 12px;
-  padding: 10px 10px 20px 10px;
+    /* display: flex; */
+    gap: 12px;
+    padding: 10px 10px 20px 10px;
+    position: fixed;
+    z-index: 1000;
+    background-color: #fff;
+    width: 100%;
+    justify-content: space-around;
 }
 
 .filter-select {
   flex: 1;
-  padding: 10px 12px;
+  padding: 14px 18px;
   border-radius: 10px;
   border: 2px solid #ccc;
   background: #fafafa;
-  font-size: 15px;
+  font-size: 20px;
   font-weight: 600;
   appearance: none;
   background-image: url("data:image/svg+xml;utf8,<svg fill='%23666' height='20' viewBox='0 0 20 20' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M5 7l5 5 5-5z'/></svg>");
@@ -1141,4 +1146,81 @@ box-shadow: 0 6px 14px rgba(0,0,0,0.22);
 }
 .amenityOnlyRoom{
   background-color: orange!important
+}
+
+#tabela-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.3); /* 透明黒 */
+  z-index: 900;  /* UI の下地より前 */
+  display: none; /* 最初は非表示 */
+}
+
+.concluido-card {
+  border-left: 10px solid green !important; /* 柔らかい薄緑 */
+}
+.concluido-card-isnoAmenity{
+  background-color: #7f7c7c
+}
+
+.aberto {
+  border-left: 10px solid blue !important; /* 淡い水色 */
+}
+
+.limpo-card {
+  border-left: 10px solid #e74c3c !important; /* 赤：完了*/
+}
+
+/* .nao_aberto {
+  border-left: 10px solid red !important;
+} */
+.amenityOnlyRoom{
+  background-color: orange!important
+}
+.done-btn,.done-btn-amenity  {
+  background: #e74c3c;
+}
+.quarto-pendente{
+  background-color: #ffffff!important
+}
+.open-btn {
+  background-color: #2196f3;
+}
+.open-card{
+    border-left: 10px solid #2196f3!important;　/* 青→オープン前 */
+}
+.antesDeLimpar-card{
+border-left: 10px solid #9c27b0 !important;   /* 紫→掃除手前 */
+
+}
+.limpo-btn{
+    background-color: #9c27b0
+}
+.disabled-btn {
+  opacity: 0.4;
+  pointer-events: none;
+  filter: grayscale(40%);
+}
+.no-plan-card{
+  background-color: #333;
+  color:#fff
+}
+.tabela-div-mother{
+  height: 90%;
+  width: 100%
+}
+#desfazerBtn {
+  width: 40%;
+  font-size: 20px;
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 14px 18px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  cursor: pointer;
+  transition: 0.2s ease;
 }
