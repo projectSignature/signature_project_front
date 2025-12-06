@@ -23,7 +23,7 @@
 <div class="side-menu" id="sideMenu">
   <h3>Menu</h3>
   <div class="menu-item" onclick="openDashboard()">Dashboard</div>
-  <div class="menu-item" onclick="openServiceList()">Tabela de Serviços</div>
+  <div class="menu-item" onclick="openServiceList()">Lista de quartos</div>
   <div class="menu-item" onclick="openServiceRegister()">Registrar Serviços</div>
 
 <div class="menu-item" onclick="openUserAdmin()">Gerenciar Usuários</div>
@@ -174,9 +174,12 @@
     </div>
 
     <div class="modal-content">
-      <label>Selecione a data</label>
-      <input type="date" id="serviceDate" onchange="onServiceDateChange()">
+      <label style='display:none'>Selecione a data</label>
+      <input style='display:none' type="date" id="serviceDate" onchange="onServiceDateChange()">
 
+      <div id="roomSelectCounter" class="room-select-counter" style='display:none'>
+        Operador: -- / 0 quartos
+      </div>
       <!-- スタッフ選択 -->
       <label>Operador</label>
       <select id="bulkWorker" class="worker-select" onchange="onOperatorChange()">
@@ -192,9 +195,7 @@
   </div>
 </div>
 
-<div id="roomSelectCounter" class="room-select-counter" style='display:none'>
-  Operador: -- / 0 quartos
-</div>
+
 
 <button id="regisCondition" class="status-btn" onclick="openAssignStatusModal()" style='display:none'>
   Situação de Registro
@@ -216,7 +217,7 @@
   let selectedRooms = new Set();
   let selectedOperatorName = "";   // ← 選択中オペレーター名を保存
   let globalAssignedMap = {};
-  let currentAssignedCount = 0;
+  let currentAssignedCount = [];
   let roomAssignedMap = {};  // room_id → staffId
   let globalRoomDailyList = []
   let globalOpnedRooms = []
@@ -300,7 +301,6 @@ const hotel_id = globalId; // 既存のホテルID
 
         globalAmenitys =amenityJson.requests //amenitys list
         globalAmenityShoukai = [
-          ...amenityJson.requests,
           ...stayAmenityOnly
         ];
         globalObservation = notes //observacao
@@ -992,36 +992,52 @@ async function loadBulkRoomList() {
   const box = document.getElementById("bulkRoomList");
   box.innerHTML = "";
 
+console.log(globalRoomDailyList)
+console.log(globalAmenityShoukai)
+
   tgtDatas = [
     ...globalRoomDailyList,
     ...globalAmenityShoukai
   ];
+
+  console.log(tgtDatas)
 
   tgtDatas.sort((a, b) => a.room_number - b.room_number);
   globalRoomDailyList = tgtDatas;
 
   tgtDatas.forEach(r => {
 
+// console.log(r)
     // ============================
     // ★ アイコン判定
     // ============================
+    let amenytyOnlyFlag = false
     let iconHTML = "";
     if (r.stay_type === "individual") {
-      iconHTML = `<img src="./img/esponja.png" class="icon-img">`;
+      iconHTML = `<img src="./img/esponja.png" class="icon-img-lista">`;
     } else if (r.sub_status === "stay_amenytyOnliy") {
-      iconHTML = `<img src="./img/bag.png" class="icon-img">`;
+      amenytyOnlyFlag=true
+      iconHTML = `<img src="./img/bag.png" class="icon-img-lista">`;
     }
 
     const operatorName = getStaffNameById(r.assigned_staff_id);
 
-    const assignedClass = r.assigned_staff_id ? "assigned-room" : "";
-    const amenityClass = r.sub_status === "stay_amenytyOnliy" ? "stay-amenity" : "";
+    const assignedClass = r.assigned_staff_id  ? "assigned-room" : "";
+    const amenityClass = r.sub_status === "stay_amenytyOnliy" && !r.assigned_staff_id  ? "stay-amenity" : "";
+    const amenityOnlyRegisterDone = r.sub_status === "stay_amenytyOnliy" && r.assigned_staff_id  ? "stay-amenity-registDone" : "";
+
+    // if(r.room_number===1118){
+    //   console.log(r)
+    //   console.log(amenityOnlyRegisterDone)
+    //   console.log(amenityClass)
+    // }
+
 
     // ============================
     // ★ 画面描画
     // ============================
     box.innerHTML += `
-      <div class="bulk-room-item ${assignedClass} ${amenityClass}"
+      <div class="bulk-room-item ${assignedClass} ${amenityClass} ${amenityOnlyRegisterDone}"
            id="room_${r.id}"
            onclick="toggleRoomSelect(${r.id})">
 
@@ -1060,6 +1076,7 @@ function toggleRoomSelect(roomId) {
 
     item.classList.remove("selected-room", "assigned-room");
     item.querySelector(".operator-name").innerText = "";
+      currentAssignedCount =globalRoomDailyList.filter(r=> r.assigned_staff_id === selectedOperatorId - 0)
 
     updateRoomSelectCounter();
     console.log("★ 未選択だけど登録済 → 初期化完了");
@@ -1084,6 +1101,7 @@ function toggleRoomSelect(roomId) {
 
     item.classList.remove("selected-room", "assigned-room");
     item.querySelector(".operator-name").innerText = "";
+      currentAssignedCount =globalRoomDailyList.filter(r=> r.assigned_staff_id === selectedOperatorId - 0)
 
     updateRoomSelectCounter();
     console.log("★ 同じID → 取り消し完了");
@@ -1101,6 +1119,9 @@ function toggleRoomSelect(roomId) {
 
   const workerName = globalWorkerList.find(w => w.id === selectedOperatorId - 0);
   item.querySelector(".operator-name").innerText = workerName?.name ?? "";
+
+  console.log(`選択後のデータの状況`,globalRoomDailyList)
+  currentAssignedCount =globalRoomDailyList.filter(r=> r.assigned_staff_id === selectedOperatorId - 0)
 
   updateRoomSelectCounter();
 }
@@ -1173,7 +1194,7 @@ function toggleRoomSelect(roomId) {
 
 
 function closeServiceRegister() {
-  currentAssignedCount=0
+  currentAssignedCount=[]
   selectedRooms = new Set();
   const modal = document.getElementById("serviceRegisterModal");
   if (modal) modal.style.display = "none";
@@ -1306,7 +1327,7 @@ function onOperatorChange() {
 
     console.log(`assignedCount`,assignedCount)
 
-  currentAssignedCount = assignedCount.length; // ←★これ重要！
+  currentAssignedCount = assignedCount;
 
   updateRoomSelectCounter();
 }
@@ -1314,12 +1335,20 @@ function onOperatorChange() {
 
 
 function updateRoomSelectCounter() {
-  // console.log(`currentAssignedCount`,currentAssignedCount)
-  // console.log()
-  const newCount = currentAssignedCount + selectedRooms.size;
+
+console.log(currentAssignedCount)
+console.log(selectedRooms.size)
+
+const quartosAmenitys = currentAssignedCount.filter(r => r.sub_status==='stay_amenytyOnliy')
+const quartosLimpar  = currentAssignedCount.length - quartosAmenitys.length
+
+console.log(`quartosAmenitys`,quartosAmenitys)
+console.log(`quartosLimpar`,quartosLimpar)
+
+  const newCount = quartosLimpar + selectedRooms.size;
 
   const box = document.getElementById("roomSelectCounter");
-  box.innerText = `${selectedOperatorName} – ${newCount} quartos`;
+  box.innerText = `${selectedOperatorName}–Quartos(${newCount})Amenity(${quartosAmenitys.length})`;
 }
 
 
@@ -1402,7 +1431,7 @@ async function onServiceDateChange() {
   // 右上の選択カウンター reset（任意）
   selectedRooms = new Set();
   selectedOperatorName = "--";
-  currentAssignedCount = 0;
+  currentAssignedCount = [];
   updateRoomSelectCounter();
 
   // オペレーター選択も初期化（任意）
@@ -1541,12 +1570,13 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
   filteredRooms.sort((a, b) => (a.room_number - 0) - (b.room_number - 0));
 
   filteredRooms.forEach(r => {
+    console.log(r)
     const card = document.createElement("div");
     card.className = "task-card";
 
     // ========== ここから元の処理そのまま ==========
 
-    let bgColor = "#e0e0e0";
+    let bgColor = "#ffffff";
     let textColor = "#333";
     let iconHTML = "";
     let observBadgeHTML = "";
@@ -1599,6 +1629,8 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
     // console.log(r)
 
     let selectHTML = "";
+
+    console.log(statusValue)
     if (seisouFlag) {
                   // <option value="abrir" ${statusValue === "abrir" ? "selected" : ""}>Abrir</option>
 
@@ -1638,6 +1670,15 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
       ${selectHTML}
     `;
 
+
+if(seisouFlag){
+    card.classList.add(statusValue);
+}
+
+    card.setAttribute("data-room", r.id);
+
+
+
     container.appendChild(card);
   });
 
@@ -1653,11 +1694,22 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
       const newStatus = e.target.value;
       const roomNumber = e.target.dataset.roomnumber;
 
+      console.log("🔥 status changed:", roomId, newStatus, roomNumber);
 
+      // 🔥 対応カードを取得
+      const card = document.querySelector(`.task-card[data-room="${roomId}"]`);
 
-      console.log("🔥 status changed:", roomId, newStatus,roomNumber);
-      handleStatusChange(roomId, newStatus,roomNumber);
+      if (card) {
+        // 🔥 今までのステータスクラスを全部消す
+        card.classList.remove("limpo", "aberto", "verificado", "nao_aberto", "done", "before");
+
+        // 🔥 新しいステータスを追加
+        card.classList.add(newStatus);
+      }
+
+      handleStatusChange(roomId, newStatus, roomNumber);
     });
+
   });
 
 
