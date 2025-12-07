@@ -1177,9 +1177,7 @@ box-shadow: 0 6px 14px rgba(0,0,0,0.22);
 /* .nao_aberto {
   border-left: 10px solid red !important;
 } */
-.amenityOnlyRoom{
-  background-color: orange!important
-}
+
 .done-btn,.done-btn-amenity  {
   background: #e74c3c;
 }
@@ -1223,4 +1221,7 @@ border-left: 10px solid #9c27b0 !important;   /* 紫→掃除手前 */
   box-shadow: 0 4px 10px rgba(0,0,0,0.2);
   cursor: pointer;
   transition: 0.2s ease;
+}
+.amenityOnlyRoom, .amenityClassOrangenomi{
+  background-color: orange!important
 }
