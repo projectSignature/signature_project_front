@@ -501,7 +501,7 @@ const btnAmenity  = document.getElementById("btnShowAmenity");
 let globalAmenitys = ""
 let beforeCleanning = []
 let operatorId = decoded.id
-// let operatorId = 11
+// let operatorId = 27
 
 
 // ========================
@@ -666,6 +666,13 @@ function renderRoomTasks(roomData) {
     let textHTML = ''
 
     const amenityRoom = r.sub_status === 'stay_amenytyOnliy' ? true : false //ここでステーアメニティのみかチェックしてる
+
+    const amenityClass =
+  r.sub_status === 'stay_amenytyOnliy' ||
+  r.sub_status === 'stay_clean';
+
+  console.log(amenityClass)
+
 
     if (r.stay_type === 'individual') {
       iconHTML += `<img src="./img/esponja.png" class="icon-img">`;
@@ -854,8 +861,9 @@ function renderRoomTasks(roomData) {
         .addEventListener("click", () => finishAmenity(r.id,r.room_number,r));
     }
 
-    if(amenityRoom){
+    if(amenityClass){
       card.classList.add(`amenityOnlyRoom`);
+      card.classList.remove('amenityClass')
     }
     // 最後に追加
     container.appendChild(card);
