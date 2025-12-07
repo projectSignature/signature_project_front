@@ -1011,6 +1011,8 @@ console.log(globalAmenityShoukai)
     const amenityClass = r.sub_status === "stay_amenytyOnliy" && !r.assigned_staff_id  ? "stay-amenity" : "";
     const amenityOnlyRegisterDone = r.sub_status === "stay_amenytyOnliy" && r.assigned_staff_id  ? "stay-amenity-registDone" : "";
 
+
+
     // if(r.room_number===1118){
     //   console.log(r)
     //   console.log(amenityOnlyRegisterDone)
@@ -1697,7 +1699,10 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
     const nextOpen = r.open_flag===0?true:false
     const nextAmenityCheck = r.sub_status==='stay_amenytyOnliy'?true:false
 
-    console.log(nextSeisou)
+    const amenityClass =
+  r.sub_status === 'stay_amenytyOnliy' ||
+  r.sub_status === 'stay_clean';
+
 
     if(r.checked_flag===1||r.amenity_complete_flag===1){//完了形だから、テキストのみ
         textHTML = `
@@ -1778,7 +1783,7 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
 
 
 
-if(amenityRoom){
+if(amenityRoom||amenityClass){
   card.classList.add(`amenityOnlyRoom`);
 }
 
