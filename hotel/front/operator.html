@@ -648,7 +648,9 @@ function renderRoomTasks(roomData) {
 
   roomData.forEach(r => {
 
-    // console.log(r)
+    console.log(r)
+
+    const checkOut = r.checkout_status === 'after' ? `` :`disabled`
 
 
 
@@ -804,8 +806,9 @@ function renderRoomTasks(roomData) {
       if (nextOpen && !nextAmenityCheck) {
         open = true
         const disabledClass = r.checkout_status==='before' || r.checkout_status===null  ? " disabled-btn" : "";
+        console.log(checkOut)
         buttonHTML += `
-          <button class="btn open-btn" data-id="${r.id}">
+          <button class="btn open-btn" data-id="${r.id}" ${checkOut}>
             ${L.cleaningBtn}
           </button>
         `;
