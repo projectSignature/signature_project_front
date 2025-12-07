@@ -620,9 +620,7 @@ div#undoRoomList {
 /* .nao_aberto {
   border-left: 10px solid red !important;
 } */
-.amenityOnlyRoom{
-  background-color: orange!important
-}
+
 .done-btn,.done-btn-amenity  {
   background: #e74c3c;
 }
@@ -646,4 +644,8 @@ div#undoRoomList {
   opacity: 0.4;            /* 薄く */
   pointer-events: none;    /* クリック無効 */
   filter: grayscale(40%);  /* 色を落とす（オプション） */
+}
+
+.amenityOnlyRoom{
+  background-color: orange!important
 }
