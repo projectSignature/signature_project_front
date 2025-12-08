@@ -12,8 +12,8 @@
 <header>
   <div class="logo">
     <img src="./img/logo.png" alt="RoomSync ロゴ">
-    <!-- <div>RoomSync</div> -->
   </div>
+  <div class='andarSelectDiv' id='selectAndar'></div>
   <div class="menu-btn" onclick="toggleMenu()">
     <i class="fas fa-bars"></i>
   </div>
@@ -51,19 +51,19 @@
     <p>Para limpar</p>
   </div>
 
-  <div class="dash-card" style="background-color: #9c27b0" onclick="openTomorrowModal('opend')">
+  <div class="dash-card" style="background-color: #9c27b0" onclick="launchOpenRoomInspector()">
     <h1 id="card_progress">--</h1>
-    <p>Abertos</p>
+    <p>Não abertos</p>
   </div>
 
-  <div class="dash-card" style="background-color: #e74c3c" onclick="openTomorrowModal('done')">
+  <div class="dash-card" style="background-color: #e74c3c; display:none" onclick="openTomorrowModal('done')">
     <h1 id="card_done">--</h1>
     <p>Finalizados</p>
   </div>
 
   <div class="dash-card" style='background-color: green' onclick="openTomorrowModal('checked')">
     <h1 id="card_checked">--</h1>
-    <p>Verificados</p>
+    <p>Concluidos</p>
   </div>
 
   <div class="dash-card orange" onclick="openAmenityListModal('amenity')">
@@ -198,6 +198,24 @@
   </div>
 </div>
 
+<!-- 🔥 開いている部屋一覧モーダル（tomorrowModal と同じデザイン） -->
+<div id="openedRoomsModal" class="modal" style="display:none;">
+  <div class="modal-box tomorrow-box">
+
+    <!-- ヘッダー（同じスタイル） -->
+    <div class="modal-header-tomorrow">
+      Quartos não abertos
+      <span class="close-btn" onclick="closeOpenedRoomsModal()">✕</span>
+    </div>
+
+    <div class="floor-list" id="openedRoomsList">
+
+    </div>
+
+  </div>
+</div>
+
+
 
 
 <button id="regisCondition" class="status-btn" onclick="openAssignStatusModal()" style='display:none'>
@@ -291,6 +309,7 @@ const hotel_id = globalId; // 既存のホテルID
   try {
     showLoading()
     const url = `${API_URL}/api/room/daily_room_list?date=${date}&hotel_id=${hotel_id}`;
+    // const url = `${API_URL}/api/room/daily_room_list?date=2025-12-08&hotel_id=${hotel_id}`;
     const res = await fetch(url);
     if (!res.ok) throw new Error("API取得失敗");
 
@@ -315,8 +334,8 @@ const hotel_id = globalId; // 既存のホテルID
 
 
     globalRoomData = beforeCleanning
-     //Quartos abertos
-    const inProgressRooms = beforeCleanning.filter(r => r.open_flag === 1 && r.cleaned_by === null);
+     //Quartos nao abertos
+    const inProgressRooms = beforeCleanning.filter(r => r.open_flag === 0 );
     //Quartos feitos
     const doneRooms = beforeCleanning.filter(r => r.cleaned_by !== null);
     //Quartos checados
@@ -329,6 +348,8 @@ const hotel_id = globalId; // 既存のホテルID
     const API_AMENITIES = await fetch(`${API_URL}/api/room/amenity/list`);
     // globalAmenityShoukai =
     const amenityJson = await API_AMENITIES.json();
+
+    console.log(inProgressRooms)
 
         globalAmenitys =amenityJson.requests //amenitys list
         globalAmenityShoukai = [
@@ -347,7 +368,7 @@ const hotel_id = globalId; // 既存のホテルID
     const firstBtn = document.querySelector("#floorButtons button");
     await selectFloor("ALL", firstBtn);
 
-// openServiceList()
+openServiceList()
    hideLoading()
   } catch (err) {
      hideLoading()
@@ -477,6 +498,70 @@ function closeFloorModal() {
   document.getElementById("floorModal").style.display = "none";
 }
 
+// function launchOpenRoomInspector(){
+//   console.log(globalOpnedRooms)
+// }
+
+function launchOpenRoomInspector() {
+  const container = document.getElementById("openedRoomsList");
+
+  // テーブル（ヘッダーあり）ベースを作る
+  let html = `
+    <table class="opened-table">
+      <thead>
+        <tr>
+          <th>Quarto</th>
+          <th>CheckOut</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+
+  if (!globalOpnedRooms || globalOpnedRooms.length === 0) {
+    html += `
+      <tr>
+        <td colspan="2" style="text-align:center;">部屋なし</td>
+      </tr>
+    `;
+  } else {
+    html += globalOpnedRooms
+      .map(r => {
+        // checkout_status → ポルトガル語に変換
+        let chk = "—";
+        if (r.checkout_status === "before") chk = "não";
+        else if (r.checkout_status === "after") chk = "sim";
+
+        return `
+          <tr>
+            <td>${r.room_number}</td>
+            <td>${chk}</td>
+          </tr>
+        `;
+      })
+      .join("");
+  }
+
+  html += `
+      </tbody>
+    </table>
+  `;
+
+  container.innerHTML = html;
+
+  document.getElementById("openedRoomsModal").style.display = "flex";
+}
+
+
+function closeOpenedRoomsModal() {
+  document.getElementById("openedRoomsModal").style.display = "none";
+}
+
+
+function closeOpenRoomInspectorModal() {
+  document.getElementById("openRoomInspectorModal").style.display = "none";
+}
+
+
 function renderFloorButtons() {
   const box = document.getElementById("floorButtons");
   box.innerHTML = "";
@@ -528,7 +613,7 @@ function selectFloor(floor, clickedButton) {
 
 
 
-const inProgressRooms =targetRooms.filter(r => r.open_flag === 1 || r.checked_flag === 1);
+const inProgressRooms =targetRooms.filter(r => r.open_flag === 0 );
 //Quartos feitos
 const doneRooms = targetRooms.filter(r => r.cleaned_by !== null || r.checked_flag === 1);
 //Quartos checados
@@ -1025,13 +1110,13 @@ console.log(globalAmenityShoukai)
 
   tgtDatas.forEach(r => {
 
-// console.log(r)
+console.log(r)
     // ============================
     // ★ アイコン判定
     // ============================
     let amenytyOnlyFlag = false
     let iconHTML = "";
-    if (r.stay_type === "individual") {
+    if (r.stay_type === "single" &&r.sub_status !== "stay_amenytyOnliy") {
       iconHTML = `<img src="./img/esponja.png" class="icon-img-lista">`;
     } else if (r.sub_status === "stay_amenytyOnliy") {
       amenytyOnlyFlag=true
@@ -1040,8 +1125,8 @@ console.log(globalAmenityShoukai)
 
     const operatorName = getStaffNameById(r.assigned_staff_id);
 
-    const assignedClass = r.assigned_staff_id  ? "assigned-room" : "";
-    const amenityClass = r.sub_status === "stay_amenytyOnliy" && !r.assigned_staff_id  ? "stay-amenity" : "";
+    const assignedClass = r.assigned_staff_id && r.sub_status !== "stay_amenytyOnliy" ? "assigned-room" : "";
+    const amenityClass = r.sub_status === "stay_amenytyOnliy"  ? "stay-amenity" : "";
     const amenityOnlyRegisterDone = r.sub_status === "stay_amenytyOnliy" && r.assigned_staff_id  ? "stay-amenity-registDone" : "";
 
 
@@ -1536,8 +1621,9 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
   // 🔥 上部のフィルターUI（フロア・ステータス）
   // ============================
   const floors = [...new Set(globalRoomDailyList.map(r => r.floor))].sort((a,b)=>a-b);
+  const selectMother = document.getElementById('selectAndar')
 
-  container.innerHTML += `
+  selectMother.innerHTML = `
     <div class="filter-container">
 
       <!-- Floor -->
@@ -1556,7 +1642,7 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
         <option value="abrir" ${prevStatus === "abrir" ? "selected" : ""}>Abrir</option>
         <option value="aberto" ${prevStatus === "aberto" ? "selected" : ""}>Aberto</option>
         <option value="limpo" ${prevStatus === "limpo" ? "selected" : ""}>Limpo</option>
-        <option value="verificado" ${prevStatus === "verificado" ? "selected" : ""}>Verificado</option>
+        <option value="verificado" ${prevStatus === "verificado" ? "selected" : ""}>Concluído</option>
         <option value="nao_aberto" ${prevStatus === "nao_aberto" ? "selected" : ""}>Não aberto</option>
       </select>
 
@@ -1741,12 +1827,12 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
         textHTML = `
         <div style="width:100%;text-align:right">
           <span style="
-            background-color:#1fa93b;
-            color:white;
-            padding:6px 10px;
-            border-radius:6px;
-            font-weight:bold;
-          ">
+                      color:green;
+                      padding:10px 12px;
+                      border-radius:10px;
+                      font-weight:bold;
+                      font-size:20px
+                    ">
             concluído
           </span>
         </div>
@@ -1754,22 +1840,26 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
         `;
 
         card.classList.add(`concluido-card`)
+        card.classList.remove(`no-plan-card`);
         if(r.checked_flag===1){
           card.classList.add(`concluido-card-isnoAmenity`)
         }
     }else{
-      if(r.sub_status === 'stay_amenytyOnliy'){
-      console.log('amnytyOnly ni haiteru')
+      if (r.sub_status === 'stay_amenytyOnliy') {
+        console.log('amenityOnly に入ってる');
         selectHTML = `
           <div class="task-select-area">
-            <select class="task-status-select" data-roomNumber="${r.room_number}" data-room="${r.id}" >
-
-              <option value="done" >Feito</option>
-              <option value="before" selected>Não Feito</option>
-            </select>
+            <button
+              class="amenity-btn done-btn-amenity"
+              data-roomNumber="${r.room_number}"
+              data-room="${r.id}">
+              AMENITY
+            </button>
           </div>
-        `
+        `;
+card.classList.remove(`no-plan-card`);
       }
+
 
       if (seisouFlag) {
           selectHTML = `
@@ -1777,7 +1867,7 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
               <select class="task-status-select" data-roomNumber="${r.room_number}" data-room="${r.id}" >
                 <option value="aberto" ${nextSeisou ? "selected" : ""}>Aberto</option>
                 <option value="limpo" ${nextCheck ? "selected" : ""}>Limpo</option>
-                <option value="verificado" >Verificado</option>
+                <option value="verificado" >Concluído</option>
                 <option value="nao_aberto" ${nextOpen ? "selected" : ""}>Não aberto</option>
               </select>
             </div>
@@ -1797,7 +1887,10 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
           if(nextSeisou&& !nextAmenityCheck){
             card.classList.add(`antesDeLimpar-card`)
           }
+
+          card.classList.remove(`no-plan-card`);
         }
+
 
 
     }
@@ -1821,10 +1914,18 @@ if(amenityRoom||amenityClass){
 }
 
     card.setAttribute("data-room", r.id);
-
+    if (r.sub_status === 'stay_amenytyOnliy'&& r.amenity_complete_flag===0) {
+      console.log(r)
+      console.log('amenity tuika')
+      card.id = `amenity-${r.room_number}`
+      card.querySelector(".done-btn-amenity")
+        .addEventListener("click", () => finishAmenity(r.id,r.room_number,r,card));
+    }
 
 
     container.appendChild(card);
+
+
   });
 
   // ============================
@@ -1906,6 +2007,44 @@ if(amenityRoom||amenityClass){
 
 }
 
+async function finishAmenity(roomId,number,r,card) {
+
+showLoading()
+  await handleStatusChanges(roomId,'done',number)
+
+loadDashboard()
+
+    hideLoading()
+
+}
+
+async function handleStatusChanges(roomId, newStatus,roomNumber) {
+  // console.log("📌 handleStatusChange", roomId, newStatus);
+
+  // バッファなどあなたの既存ロジック
+  // checkoutBuffer[roomId] = newStatus;
+
+  // 送信データ準備
+  const payload = {
+    id: roomId,
+    status: newStatus,
+    user_id: operatorId,   // ← cleaning/checked 用（必要なら）
+    roomNumber:roomNumber,
+    hotelId:globalId
+  };
+  console.log(payload)
+  // return
+  // API送信
+  const res = await fetch(`${API_URL}/api/room/update_status`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+
+  const data = await res.json();
+  // console.log("🔥 update response:", data);
+
+}
 
 // async function createServices() {
 //   console.log(globalRoomDailyList);
