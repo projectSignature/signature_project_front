@@ -228,6 +228,39 @@
   let globalCheckedRooms = []
 
   const token = localStorage.getItem("authToken");
+  console.log(token)
+  if (!token) {
+    // トークンなし → ログインへ強制送還
+    window.location.href = "../index.html";
+  } else {
+    try {
+      const decoded = JSON.parse(atob(token.split('.')[1]));
+
+      // デコード成功 → decoded をグローバルに持たせる
+      window.decodedUser = decoded;
+
+      userRole = decoded.role
+      // userRole = `staffManeger`
+      // userRole = `staff`
+
+      // console.log("ログインユーザー:", decoded);
+
+      // トークン期限切れチェック
+      const now = Math.floor(Date.now() / 1000);
+      if (decoded.exp < now) {
+        localStorage.removeItem("authToken");
+        alert("ログインセッションが切れました。再ログインしてください。");
+        window.location.href = "../index.html";
+      }
+
+    } catch (e) {
+      // console.error("トークン解析エラー:", e);
+
+      // トークン破損 → 削除してログインへ
+      localStorage.removeItem("authToken");
+      window.location.href = "../index.html";
+    }
+  }
   const decoded = JSON.parse(atob(token.split('.')[1]));
 
   let operatorId = decoded.id
@@ -1731,8 +1764,8 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
           <div class="task-select-area">
             <select class="task-status-select" data-roomNumber="${r.room_number}" data-room="${r.id}" >
 
-              <option value="done" ${statusAmenyty === "done" ? "selected" : ""}>Feito</option>
-              <option value="before" ${statusAmenyty=== "before" ? "selected" : ""}>Não Feito</option>
+              <option value="done" >Feito</option>
+              <option value="before" selected>Não Feito</option>
             </select>
           </div>
         `
