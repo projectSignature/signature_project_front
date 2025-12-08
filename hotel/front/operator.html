@@ -102,7 +102,7 @@ const decoded = JSON.parse(atob(token.split('.')[1]));
 
 if (!token) {
   // トークンなし → ログインへ強制送還
-  window.location.href = "./../login.html";
+  window.location.href = "../index.html";
 } else {
   try {
     const decoded = JSON.parse(atob(token.split('.')[1]));
@@ -121,7 +121,7 @@ if (!token) {
     if (decoded.exp < now) {
       localStorage.removeItem("authToken");
       alert("ログインセッションが切れました。再ログインしてください。");
-      window.location.href = "./../login.html";
+      window.location.href = "../index.html";
     }
 
   } catch (e) {
@@ -129,7 +129,7 @@ if (!token) {
 
     // トークン破損 → 削除してログインへ
     localStorage.removeItem("authToken");
-    window.location.href = "./../login.html";
+    window.location.href = "../index.html";
   }
 }
 
@@ -501,7 +501,7 @@ const btnAmenity  = document.getElementById("btnShowAmenity");
 let globalAmenitys = ""
 let beforeCleanning = []
 let operatorId = decoded.id
-// let operatorId = 27
+// let operatorId = 30
 
 
 // ========================
@@ -567,6 +567,7 @@ async function loadTasks() {
   // console.log(date);
 
   const API_ROOMS = `${API_URL}/api/room/daily_room_list?date=${date}&hotel_id=${globalId}`;
+    // const API_ROOMS = `${API_URL}/api/room/daily_room_list?date=2025-12-08&hotel_id=${globalId}`;
 
   try {
     const [roomRes, amenityRes] = await Promise.all([
@@ -651,13 +652,14 @@ function renderRoomTasks(roomData) {
     console.log(r)
 
     const checkOut = r.checkout_status === 'after' ? `` :`disabled`
+    const checkOutFlg = r.checkout_status === 'after' ? true :false
 
 
 
     const card = document.createElement("div");
     card.className = "task-card";
 
-    let bgColor = "#7f7c7c";
+    let bgColor = "#FFFFFF";
     let textColor = "#333";
     let iconHTML = "";
     let showButtons = true;
@@ -726,23 +728,24 @@ function renderRoomTasks(roomData) {
     let amenityDone = false
     let limpostart = false
 
-    if(r.checked_flag===1||r.amenity_complete_flag===1){//完了形だから、テキストのみ
+console.log(userRole)
+// background-color:#1fa93b;
+    if((r.checked_flag===1||r.amenity_complete_flag===1)||(userRole === `staff`&&r.cleaned_by!==null)){//完了形だから、テキストのみ
         textHTML = `
         <div style="width:100%;text-align:right">
           <span style="
-            background-color:#1fa93b;
-            color:white;
-            padding:6px 10px;
-            border-radius:6px;
+
+            color:green;
+            padding:10px 12px;
+            border-radius:10px;
             font-weight:bold;
+            font-size:20px
           ">
             concluído
           </span>
         </div>
 
         `;
-
-        card.classList.add(`concluido-card`)
     }else{
 
       buttonHTML = `<div class="task-buttons">`;
@@ -760,7 +763,6 @@ function renderRoomTasks(roomData) {
 
       if (nextSeisou && !nextAmenityCheck) {//Aberto mais sem regsitro de limpo => Aberto
         if(userRole==='staffManeger'){//Caso seja o operator2 ja mostramos o botao de concluir
-
           showDone = true
           buttonHTML += `
             <button class="btn done-btn" data-id="${r.id}">
@@ -772,10 +774,9 @@ function renderRoomTasks(roomData) {
           limpostart = true
           buttonHTML += `
             <button class="btn limpo-btn" data-id="${r.id}">
-              Limpo
+              Concluir
             </button>
           `;
-              card.classList.add(`antesDeLimpar-card`)
         }
 
 
@@ -796,18 +797,18 @@ function renderRoomTasks(roomData) {
           </button>
         `;
 
-        card.classList.add(`limpo-card`);
+
       }
 
       if (nextAmenityCheck) {
         amenityDone = true
         buttonHTML += `
           <button class="btn done-btn-amenity" data-id="${r.id}">
-            ${L.complete}
+            AMENITY
           </button>
         `;
 
-        card.classList.add(`limpo-card`)
+
       }
 
       if (nextOpen && !nextAmenityCheck) {
@@ -820,7 +821,7 @@ function renderRoomTasks(roomData) {
           </button>
         `;
 
-        card.classList.add(`open-card`)
+
       }
 
       buttonHTML += `</div>`;
@@ -843,27 +844,26 @@ function renderRoomTasks(roomData) {
       const btn = card.querySelector(".open-btn");
       btn.addEventListener("click", () => startCleaning(r.id,r.room_number,r));
     }
-
     // userRole==='staffManeger')
-
     if(limpostart){
       card.querySelector(".limpo-btn")
         .addEventListener("click", () => limpoEsperarVerificar(r.id,r.room_number,r));
     }
-
     if (showDone) {
       card.querySelector(".done-btn")
         .addEventListener("click", () => finishCleaning(r.id,r.room_number,r));
     }
-
     if (amenityDone) {
       card.querySelector(".done-btn-amenity")
         .addEventListener("click", () => finishAmenity(r.id,r.room_number,r));
     }
-
     if(amenityClass){
       card.classList.add(`amenityOnlyRoom`);
       card.classList.remove('amenityClass')
+    }
+
+    if(!checkOutFlg){
+      card.classList.add('notCheckOut')
     }
     // 最後に追加
     container.appendChild(card);
@@ -886,7 +886,7 @@ async function startCleaning(roomId,number,r) {
 
 
   // console.log()
-
+showLoading()
   await handleStatusChange(roomId,'aberto')
     loadTasks()
 
@@ -894,6 +894,7 @@ async function startCleaning(roomId,number,r) {
 
 
 async function finishCleaning(roomId,number,r) {
+  console.log('kok')
   showLoading()
 
 if(userRole==='staffManeger'){
@@ -909,6 +910,7 @@ if(userRole==='staffManeger'){
 }
 
 async function limpoEsperarVerificar (roomId,number,r){
+  console.log(`kokoko222`)
     showLoading()
 await handleStatusChange(roomId,'limpo',number)
   loadTasks()
@@ -1129,18 +1131,16 @@ function applyFilters() {
 //   });
 // }
 
-function finishAmenity(amenityId) {
-  // console.log("Amenity Complete:", amenityId);
+async function finishAmenity(roomId,number,r) {
 
-  withLoading(() =>
-    fetch(`${API_URL}/api/room/amenity/${amenityId}`, {
-      method: "DELETE"
-    })
-  ).then(() => {
-    // UI から削除
-    globalAmenityData = globalAmenityData.filter(a => a.id !== amenityId);
-    renderAmenityTasks(globalAmenityData);
-  });
+showLoading()
+  await handleStatusChange(roomId,'done',number)
+
+
+  loadTasks()
+
+    hideLoading()
+
 }
 
 // document.addEventListener("click", async (e) => {
