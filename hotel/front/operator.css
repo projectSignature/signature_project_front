@@ -179,7 +179,7 @@ box-shadow: 0 6px 14px rgba(0,0,0,0.22);
 
 .task-room-header {
 display: flex;
-justify-content: space-between;
+/* justify-content: space-between; */
 align-items: center;
 }
 
@@ -187,6 +187,7 @@ align-items: center;
 font-size: 1.35rem;
 font-weight: 700;
 letter-spacing: 1px;
+margin-right: 15px
 }
 
 .icon-area img.icon-img {
@@ -613,7 +614,7 @@ div#undoRoomList {
   border-left: 10px solid blue !important; /* 淡い水色 */
 }
 
-.limpo-card {
+.notCheckOut {
   border-left: 10px solid #e74c3c !important; /* 優しい薄赤（ピンク寄り） */
 }
 
@@ -638,7 +639,7 @@ div#undoRoomList {
 
 }
 .limpo-btn{
-    background-color: #9c27b0
+    background: green;
 }
 .disabled-btn {
   opacity: 0.4;            /* 薄く */
@@ -648,4 +649,9 @@ div#undoRoomList {
 
 .amenityOnlyRoom{
   background-color: orange!important
+}
+.done-btn-amenity{
+  background-color: #2196f3;
+  color:red!important;
+  font-weight: bold;
 }
