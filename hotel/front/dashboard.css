@@ -1101,7 +1101,7 @@ box-shadow: 0 6px 14px rgba(0,0,0,0.22);
   appearance: none;
   background-image: url("data:image/svg+xml;utf8,<svg fill='%23666' height='20' viewBox='0 0 20 20' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M5 7l5 5 5-5z'/></svg>");
   background-repeat: no-repeat;
-  background-position: right 10px center;
+  /* background-position: right 10px center; */
 }
 
 .icon-img {
