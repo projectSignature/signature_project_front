@@ -221,26 +221,42 @@
   </div>
 </div>
 
-<div id="dayDetailModal" class="modal">
-  <div class="modal-content large">
-    <h3 id="dayDetailTitle">詳細</h3>
+<div id="dayDetailModal" class="detail-modal">
+  <div class="detail-modal-content">
 
-    <table class="history-table" id="dayDetailTable">
+    <span class="close-btns" onclick="closeDayDetail()">×</span>
+
+
+    <h2 id="detailTitle">詳細</h2>
+
+    <!-- 🔥 ここに Excel ボタン追加 -->
+    <button id="detailExcelBtn" class="excel-btn">
+      📊 Excel出力
+    </button>
+
+    <table id="dayDetailTable">
       <thead>
         <tr>
-          <th>部屋番号</th>
-          <th>フロア</th>
-          <th>ステータス</th>
-          <th>チェック済</th>
-          <th>アメニティ依頼</th>
+          <th>階</th>
+          <th>部屋種</th>
+          <th>部屋</th>
+          <th>清掃対象</th>
+          <th>アメニティ交換のみ</th>
+          <th>CO時間</th>
+          <th>清掃担当者</th>
+          <th>清掃完了時間</th>
+          <th>チェック完了時間</th>
+          <th>備考</th>
         </tr>
       </thead>
       <tbody></tbody>
     </table>
 
-    <button class="close-btn" onclick="document.getElementById('dayDetailModal').style.display='none'">✖</button>
+    <button onclick="closeDayDetail()" class="close-btn2">閉じる</button>
   </div>
 </div>
+
+
 
 
 
@@ -318,6 +334,11 @@
 
     <button id="historySearchBtn" class="search-btn">検索</button>
 
+    <button id="exportExcelBtn" class="excel-btn">
+      📊 Excel出力
+    </button>
+
+
     <!-- 🔥 テーブルスクロール領域 -->
     <div class="history-table-wrapper">
       <table id="historyTable" class="history-table">
@@ -339,6 +360,8 @@
 
 
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
 
 <script>
 const types = ["TP","TD","TM","SM","TC","DS"];
@@ -607,6 +630,7 @@ let currentRoomId = null;
 let currentHotelId = null;
 let globalShimeFlag=false
 let globalShimeData = []
+let globalUser = []
 
 async function showLoading() {
   console.log('kokoni deteru')
@@ -690,6 +714,10 @@ async function loadRooms() {
   try {
     showLoading();
     const res = await fetch(`${API_URL}/api/room/status?hotel_id=${globalId}`);
+    const resUser = await fetch(`${API_URL}/api/user/list?hotel_id=1`);
+    const jsons = await resUser.json();
+    globalUser = jsons.users
+
 
 //     const now = new Date();
 // now.setHours(now.getHours() + 9);   // JST補正
@@ -1583,7 +1611,9 @@ async function changeGroupOrSingle(status, roomEl){
 
 // モーダル開閉関数
 function openModal(modal) { modal.style.display = "flex"; }
+
 function closeModal(modal) {
+
   console.log(modal)
   modal.style.display = "none";
 }
@@ -2552,8 +2582,13 @@ document.getElementById("historyBtn").addEventListener("click", () => {
 function getAllRoomTypes(summary) {
   const set = new Set();
   summary.forEach(day => {
+
+    console.log("room_types keys →", Object.keys(day.room_types));
+    console.log(day)
     Object.keys(day.room_types).forEach(type => set.add(type));
   });
+
+  console.log(Array.from(set))
   return Array.from(set); // ["SM","TC","TM","DS",…]
 }
 
@@ -2567,7 +2602,7 @@ function renderHistoryHeader(roomTypes) {
     <th>日付</th>
     ${roomTypes.map(t => `<th>${t}</th>`).join("")}
     <th>合計</th>
-    <th>アメニティ対応</th>
+    <th>アメニティのみ対応</th>
     <th>詳細</th>
   `;
 
@@ -2576,8 +2611,21 @@ function renderHistoryHeader(roomTypes) {
 
 // <span class="small">(${data.target_clean})</span>
 function renderHistoryRows(summary, roomTypes) {
+  console.log(`summary`, summary);
   const tbody = document.querySelector("#historyTable tbody");
   tbody.innerHTML = "";
+
+  // 🔥 全列の合計を保持するオブジェクト
+  const totalsByType = {};
+  roomTypes.forEach(type => {
+    totalsByType[type] = {
+      done_clean: 0,
+      amenity_only: 0
+    };
+  });
+
+  let grand_total_clean = 0;
+  let grand_total_amenity_only = 0;
 
   summary.forEach(day => {
     const tr = document.createElement("tr");
@@ -2585,9 +2633,7 @@ function renderHistoryRows(summary, roomTypes) {
     let html = `<td>${day.date}</td>`;
 
     let total_clean = 0;
-    let total_target = 0;
-    let total_amenity_done = 0;
-    let total_amenity_req = 0;
+    let total_amenity_only = 0;
 
     roomTypes.forEach(type => {
       const data = day.room_types[type];
@@ -2596,33 +2642,30 @@ function renderHistoryRows(summary, roomTypes) {
         html += `
           <td class="type-cell">
             ${data.done_clean}
-
           </td>
         `;
 
         total_clean += data.done_clean;
-        total_target += data.target_clean;
-        total_amenity_done += data.amenity_done;
-        total_amenity_req += data.amenity_request;
-      }
-      else {
+        total_amenity_only += (data.amenity_only || 0);
+
+        // ★ 各列の合計を蓄積
+        totalsByType[type].done_clean += data.done_clean;
+        totalsByType[type].amenity_only += (data.amenity_only || 0);
+      } else {
         html += `<td class="type-cell">0</td>`;
       }
     });
 
-    // 合計
+    // 合計列
     html += `
-      <td class="type-cell">
-        ${total_clean}
-
-      </td>
-      <td class="type-cell">
-        ${total_amenity_done}
-
-      </td>
+      <td class="type-cell">${total_clean}</td>
+      <td class="type-cell">${total_amenity_only}</td>
     `;
 
-    // 🔥 参照ボタン（右端）
+    grand_total_clean += total_clean;
+    grand_total_amenity_only += total_amenity_only;
+
+    // 参照ボタン
     html += `
       <td>
         <button class="detail-btn" onclick="openDayDetail('${day.date}')">参照</button>
@@ -2632,7 +2675,30 @@ function renderHistoryRows(summary, roomTypes) {
     tr.innerHTML = html;
     tbody.appendChild(tr);
   });
+
+  // 🔥 最後に合計行を追加
+  const sumTr = document.createElement("tr");
+  let sumHtml = `<td><b>合計</b></td>`;
+
+  roomTypes.forEach(type => {
+    sumHtml += `
+      <td class="type-cell">
+        <b>${totalsByType[type].done_clean}</b>
+      </td>
+    `;
+  });
+
+  sumHtml += `
+    <td class="type-cell"><b>${grand_total_clean}</b></td>
+    <td class="type-cell"><b>${grand_total_amenity_only}</b></td>
+    <td></td>
+  `;
+
+  sumTr.innerHTML = sumHtml;
+  sumTr.style.background = "#eef";
+  tbody.appendChild(sumTr);
 }
+
 // <span class="small">(${total_target})</span>
 // <span class="small">(${total_amenity_req})</span>
 // <span class="small">(0)</span>
@@ -2659,33 +2725,73 @@ hideLoading()
 
 document.getElementById("historySearchBtn").addEventListener("click", searchHistory);
 
-function renderDayDetail(data, date) {
-  document.getElementById("dayDetailTitle").textContent = `${date} の詳細`;
+async function renderDayDetail(data, date) {
+  const daily = data; // ← あなたの構造
+
+
+
+
+
+  document.getElementById("detailTitle").innerText = `${date} の清掃詳細`;
 
   const tbody = document.querySelector("#dayDetailTable tbody");
   tbody.innerHTML = "";
 
-  const amenityMap = new Map();
-  data.amenity.forEach(a => {
-    if (!amenityMap.has(a.room_id)) amenityMap.set(a.room_id, []);
-    amenityMap.get(a.room_id).push(a.amenity);
-  });
-
-  data.daily.forEach(r => {
-    const amenityList = amenityMap.get(r.id) || [];
-
+  daily.forEach(r => {
     const tr = document.createElement("tr");
+    const user = globalUser.find(u=>u.id === r.assigned_staff_id)
+        console.log(globalRoomStatus)
+    const heyasyu = globalRoomStatus.find(rr=>rr.room_number===r.room_number)
+
+
+    // 🔵 清掃完了の部屋
+    const isCleaned = r.checked_flag === 1;
+
+    // 🟢 アメニティ交換完了
+    const isAmenityDone = r.amenity_complete_flag === 1;
+
+    if(isAmenityDone){
+      tr.classList.add('amenity-only-tr')
+    }
+
+    // <th>階</th>
+    // <th>部屋種</th>
+    // <th>部屋</th>
+    // <th>清掃対象</th>
+    // <th>アメニティ交換のみ</th>
+    // <th>CO時間</th>
+    // <th>清掃完了時間</th>
+    // <th>担当者</th>
+    // <th>備考</th>
+
     tr.innerHTML = `
+      <td>${r.floor ?? ""}</td>
+      <td>${heyasyu.room_type}</td>
       <td>${r.room_number}</td>
-      <td>${r.floor}</td>
-      <td>${r.status}</td>
-      <td>${r.checked_flag === 1 ? "✔" : ""}</td>
-      <td>${amenityList.join("<br>")}</td>
+      <td>${r.sub_status!=='stay_amenytyOnliy' ? '〇':'-'}</td>
+      <td>${r.sub_status==='stay_amenytyOnliy' ?  '〇':'-'}</td>
+      <td>${formatDateTime(r.checkout_time)}</td>
+      <td>
+        ${
+          user.name
+        }
+      </td>
+
+      <td>
+        ${isCleaned && r.cleaning_done_at ? formatDateTime(r.cleaning_done_at) : "-"}
+      </td>
+
+      <td>
+        ${isCleaned ?  formatDateTime(r.checked_done_at) : "-"}
+      </td>
+
+      <td>${r.notes || ""}</td>
     `;
 
     tbody.appendChild(tr);
   });
 }
+
 
 function formatDateJST(date) {
   const year = date.getFullYear();
@@ -2695,17 +2801,99 @@ function formatDateJST(date) {
 }
 
 async function openDayDetail(date) {
-  const res = await fetch(`${API_URL}/api/room/history/day-detail?hotel_id=${globalId}&date=${date}`);
+  showLoading()
+  const res = await fetch(`${API_URL}/api/room/day-detail?hotel_id=${globalId}&date=${date}`);
   const json = await res.json();
 
+  console.log(json)
+ hideLoading()
   if (!json.success) {
     alert("詳細データ取得に失敗しました");
     return;
   }
 
-  renderDayDetail(json.data, date);
+  const tgtData = json.data.daily.filter(r=> r.checked_flag===1 || r.amenity_complete_flag === 1)
+
+  renderDayDetail(tgtData, date);
   document.getElementById("dayDetailModal").style.display = "block";
 }
+
+function  closeDayDetail(){
+  document.getElementById("dayDetailModal").style.display = "none";
+}
+
+function formatDateTime(str) {
+  const d = new Date(str);
+  return `${d.getHours().toString().padStart(2,"0")}:${d.getMinutes().toString().padStart(2,"0")}`;
+}
+
+document.getElementById("exportExcelBtn").addEventListener("click", function () {
+  const table = document.getElementById("historyTable");
+  if (!table) {
+    alert("テーブルが見つかりません。");
+    return;
+  }
+
+  // HTMLを取得
+  const tableHTML = `
+    <html xmlns:o="urn:schemas-microsoft-com:office:office"
+          xmlns:x="urn:schemas-microsoft-com:office:excel"
+          xmlns="http://www.w3.org/TR/REC-html40">
+    <head>
+      <meta charset="UTF-8">
+      <!-- Excelが解釈できる形式 -->
+    </head>
+    <body>
+      ${table.outerHTML}
+    </body>
+    </html>
+  `;
+
+  // Blobを生成（←ここが重要！）
+  const blob = new Blob([tableHTML], {
+    type: "application/vnd.ms-excel;charset=utf-8;"
+  });
+
+  // ダウンロードリンクを生成
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `history_${Date.now()}.xls`;
+  a.click();
+
+  // 解放
+  URL.revokeObjectURL(url);
+});
+
+document.getElementById("detailExcelBtn").addEventListener("click", function () {
+  const table = document.getElementById("dayDetailTable");
+  if (!table) {
+    alert("テーブルが見つかりません");
+    return;
+  }
+
+  // === 1. テーブル → 2次元配列へ変換（壊れない方式） ===
+  const rows = [];
+  table.querySelectorAll("tr").forEach(tr => {
+    const row = [];
+    tr.querySelectorAll("th, td").forEach(td => {
+      let text = td.innerText ?? "";
+      row.push(text);
+    });
+    rows.push(row);
+  });
+
+  // === 2. XLSX ワークシート生成 ===
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+
+  // === 3. ブック作成 ===
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Detail");
+
+  // === 4. 出力（ここが本物 XLSX） ===
+  const title = document.getElementById("detailTitle").innerText || "detail";
+  XLSX.writeFile(wb, `${title}.xlsx`);
+});
 
 
 
