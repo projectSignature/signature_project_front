@@ -895,7 +895,7 @@ font-size: 16px;
 /* 📅 日付セレクター（単独行用） */
 .date-selector {
   width: 100%;
-  margin: 15px 0 25px;
+  /* margin: 15px 0 25px; */
   display: flex;
   /* flex-direction: column; */
   gap: 6px;
@@ -912,7 +912,7 @@ font-size: 16px;
 
 /* ✨ スタイリッシュ日付入力要素 */
 .date-selector input[type="date"] {
-  padding: 12px 15px;
+  padding: 5px 5px;
   font-size: 16px;
   border-radius: 10px;
   border: 1px solid #d0d0d0;
@@ -926,6 +926,7 @@ font-size: 16px;
 
   /* カレンダーアイコン表示位置調整 */
   background-position: right 12px center;
+  margin-left: 10px;
 }
 
 /* ホバー時：ホテル管理パネル風の青い輝き */
