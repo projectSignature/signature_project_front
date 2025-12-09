@@ -500,8 +500,8 @@ const btnCleaning = document.getElementById("btnShowCleaning");
 const btnAmenity  = document.getElementById("btnShowAmenity");
 let globalAmenitys = ""
 let beforeCleanning = []
-let operatorId = decoded.id
-// let operatorId = 30
+// let operatorId = decoded.id
+let operatorId = 11
 
 
 // ========================
@@ -682,9 +682,10 @@ function renderRoomTasks(roomData) {
 
     let observBadgeHTML = "";
     if (r.notes) {
+      const cleanNotes = r.notes.replace("その他依頼：", "").trim();
       observBadgeHTML = `
         <span class="task-badge" data-room="${r.room_number}">
-          ${r.notes}
+          ${cleanNotes}
         </span>
       `;
     }
@@ -831,13 +832,17 @@ console.log(userRole)
 
     card.innerHTML = `
       <div class="task-room-header">
+      <div style="display:flex">
         <span class="room-number">${r.room_number}</span>
         <div class="icon-area">${iconHTML}</div>
+              ${observBadgeHTML}
+      </div>
+
+       ${buttonHTML}
+       ${textHTML}
 
       </div>
-     ${observBadgeHTML}
-      ${buttonHTML}
-      ${textHTML}
+
     `;
 
     if (open) {
