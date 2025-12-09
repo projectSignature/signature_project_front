@@ -530,8 +530,8 @@ function launchOpenRoomInspector() {
       .map(r => {
         // checkout_status → ポルトガル語に変換
         let chk = "—";
-        if (r.checkout_status === "before") chk = "não";
-        else if (r.checkout_status === "after") chk = "sim";
+        if (r.checkout_status === "before") chk = "❌";
+        else if (r.checkout_status === "after") chk = "✅";
 
         return `
           <tr>
