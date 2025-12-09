@@ -759,19 +759,24 @@ font-size: 16px;
 /* リスト本体 */
 .amenity-list-body {
   margin-top: 15px;
-  max-height: 60vh;
+  max-height: 70vh;
   overflow-y: auto;
 }
 
 /* 各行 */
 .amenity-room-row {
-  padding: 10px;
-  border-bottom: 1px solid #eee;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    /* padding: 20px 15px; */
+    padding-left: 25px;
+    padding-right: 25px;
 }
 
 .amenity-room-number {
   font-size: 18px;
-  font-weight: bold;
+  /* font-weight: bold; */
 }
 
 .amenity-notes {
