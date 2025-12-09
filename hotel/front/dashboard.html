@@ -14,6 +14,10 @@
     <img src="./img/logo.png" alt="RoomSync ロゴ">
   </div>
   <div class='andarSelectDiv' id='selectAndar'></div>
+  <div class="date-selector" id='data-selector'>
+  <!-- <label for="dailyDate">Data selecionada:</label> -->
+  <input type="date" id="dailyDate" onchange="loadDashboard()" />
+  </div>
   <div class="menu-btn" onclick="toggleMenu()">
     <i class="fas fa-bars"></i>
   </div>
@@ -36,10 +40,7 @@
 </div>
 
 <!-- 🔥 日付選択エリア（Dashboard最上部に追加） -->
-<div class="date-selector" id='data-selector'>
-<label for="dailyDate">Data selecionada:</label>
-<input type="date" id="dailyDate" onchange="loadDashboard()" />
-</div>
+
 <div class="floor-buttons" id="floorButtons"></div>
 <div class="dashboard" id="dashboard">
 
@@ -1568,10 +1569,14 @@ function openServiceList(){
   const tabelaEl = document.getElementById('tabela-div');
   const dataEl = document.getElementById('data-selector');
   const floorEl = document.getElementById('floorButtons');
+  const selectMother = document.getElementById('selectAndar')
+  const dataSelect = document.getElementById('data-selector')
+  dataSelect.style.display='none'
   // const overlay = document.getElementById('tabela-overlay');
 
   dashEl.style.display = 'none';
   tabelaEl.style.display = 'flex';
+  selectMother.style.display = 'flex';
   dataEl.style.display = 'none';
   floorEl.style.display = 'none';
 
@@ -1588,10 +1593,14 @@ function openDashboard(){
   const tabelaEl = document.getElementById('tabela-div')
   const dataEl = document.getElementById('data-selector')
   const floorEl = document.getElementById('floorButtons')
+  const dataSelect = document.getElementById('data-selector')
+  const selectMother = document.getElementById('selectAndar')
   dashEl.style.display='grid'
   tabelaEl.style.display='none'
   dataEl.style.display='flex'
   floorEl.style.display='flex'
+  selectMother.style.display='none'
+  dataSelect.style.display='flex'
 closeMenu();
 }
 
