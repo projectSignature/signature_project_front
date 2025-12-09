@@ -221,6 +221,8 @@
 
 
 
+
+
 <button id="regisCondition" class="status-btn" onclick="openAssignStatusModal()" style='display:none'>
   Situação de Registro
 </button>
@@ -514,7 +516,7 @@ function launchOpenRoomInspector() {
       <thead>
         <tr>
           <th>Quarto</th>
-          <th>CheckOut</th>
+          <th>Check out</th>
         </tr>
       </thead>
       <tbody>
@@ -523,7 +525,7 @@ function launchOpenRoomInspector() {
   if (!globalOpnedRooms || globalOpnedRooms.length === 0) {
     html += `
       <tr>
-        <td colspan="2" style="text-align:center;">部屋なし</td>
+        <td colspan="2" style="text-align:center;">Todos abertos</td>
       </tr>
     `;
   } else {
@@ -537,7 +539,7 @@ function launchOpenRoomInspector() {
         return `
           <tr>
             <td>${r.room_number}</td>
-            <td>${chk}</td>
+            <td style='font-size:25px'>${chk}</td>
           </tr>
         `;
       })
@@ -1019,21 +1021,30 @@ function openAmenityListModal(listType) {
 
       listHtml += `
         <div class="amenity-room-row">
-          <div class="amenity-room-number">${r.room_number}</div>
-          <div class="amenity-notes">${msg}</div>
+          <div class="amenity-room-number">${r.room_number}
+           <div class="amenity-notes">${msg}</div>
+          </div>
+          <div style='font-size:25px'>${r.amenity_complete_flag===1?`✅`:`❌`}</div>
+
         </div>
       `;
     });
   }
 
   modal.innerHTML = `
-    <div class="amenity-list-modal-box">
-      <div class="amenity-list-header">
+    <div class="modal-box tomorrow-box">
+      <div class="modal-header-tomorrow">
         ${title}
-        <span class="amenity-list-close" onclick="closeAmenityListModal()">✕</span>
+        <span class="close-btn" onclick="closeAmenityListModal()">✕</span>
       </div>
 
       <div class="amenity-list-body">
+      <div class="amenity-room-row" style='background-color:#f0f0f0'>
+        <div class="amenity-room-number" style='background-color:#f0f0f0; font-weight:bold'>Quarto
+        </div>
+        <div class="amenity-room-number" style='background-color:#f0f0f0; font-weight:bold'>Status</div>
+
+      </div>
         ${listHtml}
       </div>
     </div>
