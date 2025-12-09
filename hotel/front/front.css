@@ -388,7 +388,7 @@ html, body {
   margin-bottom: 18px;
   font-size: 20px;
 }
-.close-btn {
+.close-btn,.close-btns {
   position: absolute;
   top: 10px; right: 15px;
   background: none;
@@ -399,6 +399,7 @@ html, body {
   transition: color 0.2s;
 }
 .close-btn:hover { color: #000; }
+..close-btns:hover{color: #000;}
 
 /* ボタン配置 */
 .action-buttons {
@@ -1539,4 +1540,334 @@ header .total-guests {
 
 #summary-div span {
   font-weight: 600;
+}
+
+/* ================================
+   🔷 履歴モーダル（HistoryModal）
+================================ */
+#historyModal .modal-content {
+  width: 95%;
+  max-width: 1300px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px 25px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+  animation: fadeIn 0.25s ease;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* 見出しデザイン */
+#historyModal h3 {
+  font-size: 22px;
+  margin-bottom: 20px;
+  color: #333;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 5px;
+}
+
+/* ラベル & 日付選択 */
+#historyModal label {
+  display: inline-block;
+  margin: 10px 5px 5px 0;
+  font-weight: bold;
+  color: #444;
+}
+
+#historyModal input[type="date"] {
+  padding: 6px 10px;
+  border: 1px solid #bbb;
+  border-radius: 6px;
+  margin-right: 10px;
+}
+
+/* 検索ボタン */
+#historySearchBtn {
+  padding: 8px 20px;
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+}
+#historySearchBtn:hover {
+  background: #005fcc;
+}
+
+/* 閉じるボタン */
+#historyModal .close-btn {
+  margin-top: 20px;
+  padding: 8px 20px;
+  background: #e33;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  float: right;
+}
+#historyModal .close-btn:hover {
+  background: #c00;
+}
+
+/* ================================
+   🔶 テーブル全体デザイン
+================================ */
+#historyTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  white-space: nowrap; /* 横スクロールを可能に */
+}
+
+#historyTable thead {
+  background: #f3f6fa;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+#historyTable th {
+  padding: 10px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+}
+
+#historyTable td {
+  padding: 8px;
+  border: 1px solid #eee;
+  font-size: 14px;
+  text-align: center;
+  background: #fff;
+}
+
+/* 奇数行の薄い背景 */
+#historyTable tbody tr:nth-child(odd) {
+  background: #fafafa;
+}
+
+/* タイプごとのセル（done_clean & target_clean） */
+.type-cell {
+  font-size: 15px;
+  line-height: 1.2;
+  color: #222;
+  font-weight: bold;
+}
+
+.type-cell .small {
+  font-size: 12px;
+  color: #666;
+  display: block;
+  margin-top: 3px;
+}
+
+/* 詳細ボタン */
+.detail-btn {
+  padding: 5px 12px;
+  background: #28a745;
+  color: #fff;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: bold;
+}
+.detail-btn:hover {
+  background: #1f8835;
+}
+
+/* アニメーション */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+
+/* ===========================
+   🔥 テーブルだけスクロール
+=========================== */
+.history-table-wrapper {
+  width: 100%;
+  max-height: 60vh;
+  overflow-y: auto;
+  overflow-x: auto; /* 横スクロールも許可 */
+  margin-top: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+/* テーブル */
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  white-space: nowrap; /* 横スクロール対応 */
+}
+
+/* sticky ヘッダー */
+.history-table thead th {
+  position: sticky;
+  top: 0;
+  background: #f3f6fa;
+  z-index: 20;
+  padding: 10px;
+  border-bottom: 2px solid #ccc;
+}
+
+/* テーブルセル */
+.history-table th,
+.history-table td {
+  border: 1px solid #ddd;
+  padding: 6px 10px;
+  text-align: center;
+}
+
+/* 奇数行の背景 */
+.history-table tbody tr:nth-child(odd) {
+  background: #fafafa;
+}
+/* ====== モーダル背景 ====== */
+#dayDetailModal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.45);
+  z-index: 100000;
+  backdrop-filter: blur(2px);
+}
+
+/* ====== モーダル本体 ====== */
+.detail-modal-content {
+  background: #ffffff;
+  width: 92%;
+  max-width: 900px;
+  max-height: 85vh;
+  overflow: auto;
+  margin: 40px auto;
+  padding: 20px 25px;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+  position: relative;
+  animation: fadeInModal .25s ease-out;
+}
+
+/* アニメーション */
+@keyframes fadeInModal {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ====== 閉じるボタン（右上） ====== */
+.detail-modal-content .close-btn {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  font-size: 26px;
+  color: #666;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.detail-modal-content .close-btn:hover {
+  color: #000;
+}
+
+/* ====== タイトル ====== */
+#detailTitle {
+  text-align: center;
+  font-size: 20px;
+  margin-bottom: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* ====== テーブル ====== */
+#dayDetailTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+/* 文字の折返し */
+#dayDetailTable th,
+#dayDetailTable td {
+  border: 1px solid #ddd;
+  padding: 8px 6px;
+  text-align: center;
+  word-break: break-word;
+}
+
+/* ヘッダー */
+#dayDetailTable th {
+  background: #f5f7ff;
+  font-weight: bold;
+  color: #333;
+}
+
+/* 偶数行背景 */
+#dayDetailTable tr:nth-child(even) {
+  background: #fafafa;
+}
+
+/* ===== 清掃完了 and アメニティ完了の色付け ===== */
+.clean-done-row {
+  background: #e8f8ea !important; /* うす緑 */
+}
+
+.amenity-done-row {
+  background: #fff7e6 !important; /* うすオレンジ */
+}
+
+/* ====== 閉じるボタン（下） ====== */
+.close-btn2 {
+  display: block;
+  margin: 18px auto 5px;
+  padding: 10px 25px;
+  background: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.close-btn2:hover {
+  background: #1259a8;
+}
+
+@media (max-width: 600px) {
+  #dayDetailTable th, #dayDetailTable td {
+    font-size: 12px;
+    padding: 6px 3px;
+  }
+
+  .detail-modal-content {
+    padding: 15px;
+  }
+}
+.amenity-only-tr{
+  background-color: orange !important
+}
+.excel-btn {
+  background: #1c8f32;
+  color: #fff;
+  padding: 8px 18px;
+  margin-left: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.excel-btn:hover {
+  background: #166f28;
 }
