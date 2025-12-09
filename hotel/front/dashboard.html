@@ -46,42 +46,44 @@
 
 
 
-  <div class="dash-card" style="background-color: #2196f3" onclick="openTomorrowModal('today')">
+  <div class="dash-card" style="background-color: #2196f3; color:#333" onclick="openTomorrowModal('today')">
     <h1 id="card_before">--</h1>
     <p>Para limpar</p>
   </div>
 
-  <div class="dash-card" style="background-color: #9c27b0" onclick="launchOpenRoomInspector()">
+  <div class="dash-card" style="background-color: #e74c3c;color:#333" onclick="launchOpenRoomInspector()">
     <h1 id="card_progress">--</h1>
     <p>Não abertos</p>
   </div>
 
-  <div class="dash-card" style="background-color: #e74c3c; display:none" onclick="openTomorrowModal('done')">
+  <div class="dash-card" style="background-color: #e74c3c; color:#333; display:none" onclick="openTomorrowModal('done')">
     <h1 id="card_done">--</h1>
     <p>Finalizados</p>
   </div>
 
-  <div class="dash-card" style='background-color: green' onclick="openTomorrowModal('checked')">
+  <div class="dash-card" style='background-color: green; color:#333' onclick="openTomorrowModal('checked')">
     <h1 id="card_checked">--</h1>
     <p>Concluidos</p>
   </div>
 
-  <div class="dash-card orange" onclick="openAmenityListModal('amenity')">
+  <div class="dash-card orange" style='color:#333' onclick="openAmenityListModal('amenity')">
     <h1 id="card_amenity">--</h1>
     <p>Amenity</p>
   </div>
 
+  <div class="dash-card " style='background-color:#C9CED1; color:#333'onclick="openTomorrowModal('tomorrow')">
+    <h1 id="card_tomorrow">--</h1>
+    <p>Para limpar Amanhã</p>
+  </div>
 
-  <div class="dash-card orange" onclick="openAmenityObervacion('note')">
+
+  <div class="dash-card " style='background-color:yellow; color:#333' onclick="openAmenityObervacion('note')">
   <h1 id="card_observation">0</h1>
   <p>Observação</p>
 </div>
 
 
-<div class="dash-card " style='background-color:#333'onclick="openTomorrowModal('tomorrow')">
-  <h1 id="card_tomorrow">--</h1>
-  <p>Para limpar Amanhã</p>
-</div>
+
 
 
 </div>
@@ -1126,9 +1128,9 @@ console.log(r)
     const operatorName = getStaffNameById(r.assigned_staff_id);
 
     const assignedClass = r.assigned_staff_id && r.sub_status !== "stay_amenytyOnliy" ? "assigned-room" : "";
-    const amenityClass = r.sub_status === "stay_amenytyOnliy"  ? "stay-amenity" : "";
+    const amenityClass = r.sub_status === "stay_amenytyOnliy" || r.sub_status === 'stay_clean'  ? "stay-amenity" : "";
     const amenityOnlyRegisterDone = r.sub_status === "stay_amenytyOnliy" && r.assigned_staff_id  ? "stay-amenity-registDone" : "";
-
+   const  stay_border =
 
 
     // if(r.room_number===1118){
@@ -1773,12 +1775,16 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
 
     let observBadgeHTML = "";
     if (r.notes) {
+      // “その他依頼：” を取り除く
+      const cleanNotes = r.notes.replace("その他依頼：", "").trim();
+
       observBadgeHTML = `
         <span class="task-badge" data-room="${r.room_number}">
-          ${r.notes}
+          ${cleanNotes}
         </span>
       `;
     }
+
 
     const getAmentys = globalAmenitys.filter(rm=> rm.room_number===r.room_number)
         let selectHTML = "";
@@ -1898,12 +1904,15 @@ card.classList.remove(`no-plan-card`);
 
     card.innerHTML = `
       <div class="task-room-header">
+        <div class='roomNumber-icon'>
         <span class="room-number">${r.room_number}</span>
         <div class="icon-area">${iconHTML}</div>
+        </div>
+        ${observBadgeHTML}
+        ${selectHTML}
+          ${textHTML}
       </div>
-      ${observBadgeHTML}
-      ${selectHTML}
-        ${textHTML}
+
     `;
 
 
