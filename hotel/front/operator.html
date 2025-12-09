@@ -98,14 +98,15 @@ let userRole = ``
 
 // 認証チェック
 const token = localStorage.getItem("authToken");
-const decoded = JSON.parse(atob(token.split('.')[1]));
+let decoded = JSON.parse(atob(token.split('.')[1]));
+// const decoded = JSON.parse(atob(token.split('.')[1]));
 
 if (!token) {
   // トークンなし → ログインへ強制送還
   window.location.href = "../index.html";
 } else {
   try {
-    const decoded = JSON.parse(atob(token.split('.')[1]));
+     decoded = JSON.parse(atob(token.split('.')[1]));
 
     // デコード成功 → decoded をグローバルに持たせる
     window.decodedUser = decoded;
@@ -1247,7 +1248,9 @@ async function handleStatusChange(roomId, newStatus,roomNumber) {
 }
 
 
-function openUndoModal() {
+async function openUndoModal() {
+
+  await loadTasks()
   const modal = document.getElementById("undoModal");
   const list = document.getElementById("undoRoomList");
 
