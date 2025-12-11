@@ -569,8 +569,8 @@ async function loadTasks() {
 
   // console.log(date);
 
-  // const API_ROOMS = `${API_URL}/api/room/daily_room_list?date=${date}&hotel_id=${globalId}`;
-    const API_ROOMS = `${API_URL}/api/room/daily_room_list?date=2025-12-11&hotel_id=${globalId}`;
+  const API_ROOMS = `${API_URL}/api/room/daily_room_list?date=${date}&hotel_id=${globalId}`;
+    // const API_ROOMS = `${API_URL}/api/room/daily_room_list?date=2025-12-11&hotel_id=${globalId}`;
 
   try {
     const [roomRes, amenityRes] = await Promise.all([
