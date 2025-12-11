@@ -124,7 +124,7 @@
       <button class="close-btn" onclick="closeUserAdmin()">✕</button>
     </div>
 
-    <div class="modal-content">
+    <div class="modal-content modal-gerenciar">
 
       <button class="admin-btn" onclick="showUserForm('create')">Cadastrar Usuário</button>
       <button class="admin-btn" onclick="openEditUserModal()">Alterar Usuário</button>
@@ -249,6 +249,7 @@
   let globalOpnedRooms = []
   let globalDoneRoos = []
   let globalCheckedRooms = []
+  let globalUser = []
 
   const token = localStorage.getItem("authToken");
   console.log(token)
@@ -340,7 +341,7 @@ const hotel_id = globalId; // 既存のホテルID
 
     globalRoomData = beforeCleanning
      //Quartos nao abertos
-    const inProgressRooms = beforeCleanning.filter(r => r.open_flag === 0 );
+    const inProgressRooms = beforeCleanning.filter(r => r.open_flag === 0 && r.checked_flag !== 1);
     //Quartos feitos
     const doneRooms = beforeCleanning.filter(r => r.cleaned_by !== null);
     //Quartos checados
@@ -618,7 +619,7 @@ function selectFloor(floor, clickedButton) {
 
 
 
-const inProgressRooms =targetRooms.filter(r => r.open_flag === 0 );
+const inProgressRooms =targetRooms.filter(r => r.open_flag === 0 && r.checked_flag !== 1 );
 //Quartos feitos
 const doneRooms = targetRooms.filter(r => r.cleaned_by !== null || r.checked_flag === 1);
 //Quartos checados
@@ -626,7 +627,7 @@ const checked = targetRooms.filter(r => r.checked_flag === 1);
 //Quartos amenitys
 // const stayAmenityOnly = globalRoomDailyList.filter(r => r.sub_status==='stay_amenytyOnliy');
 
-
+console.log(inProgressRooms)
 
 
   // カード更新
@@ -841,8 +842,9 @@ async function openUserList(mode) {
 
   const res = await fetch(`${API_URL}/api/user/list?hotel_id=1`);
   const json = await res.json();
+  // globalUser = json
 
-  console.log(json.users)
+  // console.log(json.users)
 
 
 
@@ -1135,6 +1137,9 @@ console.log(r)
     } else if (r.sub_status === "stay_amenytyOnliy") {
       amenytyOnlyFlag=true
       iconHTML = `<img src="./img/bag.png" class="icon-img-lista">`;
+      if(r.guest_count===2){
+        iconHTML += `<img src="./img/bag.png" class="icon-img">`;
+      }
     }
 
     const operatorName = getStaffNameById(r.assigned_staff_id);
@@ -1620,6 +1625,13 @@ closeMenu();
 async function createServices() {
   // console.log(globalRoomDailyList);
 
+  console.log(`globalUser`,globalUser)
+  if(globalUser.length===0){
+    const res = await fetch(`${API_URL}/api/user/list?hotel_id=1`);
+    const json = await res.json();
+    globalUser = json.users
+  }
+
   // 🔥前回選んだ値を保持
 const prevFloor = document.getElementById("filterFloor")?.value || "";
 const prevStatus = document.getElementById("filterStatus")?.value || "";
@@ -1825,6 +1837,9 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
 
     if (amenityRoom) {
       iconHTML = `<img src="./img/bag.png" class="icon-img">`;
+      if(r.guest_count===2){
+        iconHTML += `<img src="./img/bag.png" class="icon-img">`;
+      }
 
     }
 
@@ -1844,6 +1859,11 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
     const nextOpen = r.open_flag===0?true:false
     const nextAmenityCheck = r.sub_status==='stay_amenytyOnliy'?true:false
 
+console.log( globalUser)
+console.log(r.assigned_staff_id)
+    const ope = globalUser.filter(rr=>rr.id-0 === r.assigned_staff_id-0)
+    console.log(`ope`,ope)
+
     const amenityClass =
   r.sub_status === 'stay_amenytyOnliy' ||
   r.sub_status === 'stay_clean';
@@ -1851,17 +1871,22 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
 
     if(r.checked_flag===1||r.amenity_complete_flag===1){//完了形だから、テキストのみ
         textHTML = `
-        <div style="width:100%;text-align:right">
+        <div style="width:100%; text-align:right; display:block">
+          <span style="display:block;
+          padding:2px 2px;
+          font-size:13px">${ope[0].username}</span>
           <span style="
-                      color:green;
-                      padding:10px 12px;
-                      border-radius:10px;
-                      font-weight:bold;
-                      font-size:20px
-                    ">
+                display:block;
+                color:green;
+                padding:10px 12px;
+                border-radius:10px;
+                font-weight:bold;
+                font-size:20px;
+              ">
             concluído
           </span>
         </div>
+
 
         `;
 
@@ -1875,6 +1900,9 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
         console.log('amenityOnly に入ってる');
         selectHTML = `
           <div class="task-select-area">
+          <span style="display:block;
+          padding:2px 2px;
+          font-size:13px">${ope[0].username}</span>
             <button
               class="amenity-btn done-btn-amenity"
               data-roomNumber="${r.room_number}"
@@ -1890,6 +1918,9 @@ card.classList.remove(`no-plan-card`);
       if (seisouFlag) {
           selectHTML = `
             <div class="task-select-area">
+            <span style="display:block;
+            padding:2px 2px;
+            font-size:13px">${ope[0].username}</span>
               <select class="task-status-select" data-roomNumber="${r.room_number}" data-room="${r.id}" >
                 <option value="aberto" ${nextSeisou ? "selected" : ""}>Aberto</option>
                 <option value="limpo" ${nextCheck ? "selected" : ""}>Limpo</option>
