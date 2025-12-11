@@ -507,7 +507,7 @@ let operatorId = decoded.id
 
 // ========================
 // 🔹 言語反映
-// ========================
+// ========================Abert
 function applyLang() {
   headerTitle.textContent = t[currentLang].title;
   refreshBtn.textContent = t[currentLang].refresh;
@@ -643,7 +643,8 @@ function renderRoomTasks(roomData) {
   // </div>
 
   const tantouCleaningRoom = roomData.filter(e=> e.assigned_staff_id===operatorId && e.sub_status!=='stay_amenytyOnliy')
-  const abertosRooms = roomData.filter(e=> e.open_flag===1)
+  const abertosRooms = roomData.filter(e=> e.open_flag===1|| e.checked_flag===1)
+  console.log(roomData)
 
   document.getElementById('cleansRooms').innerText= `${L.cleaningToDo}:${tantouCleaningRoom.length}`
   document.getElementById('cleansRoomsInitial').innerText = `${L.cleaningStarted}:${abertosRooms.length}`
