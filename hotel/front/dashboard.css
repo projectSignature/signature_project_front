@@ -225,7 +225,7 @@ align-items: center;
 }
 
 /* Modal box */
-.modal-content {width: 92%;/* max-width: 420px; */background: #ffffff;border-radius: 14px;padding: 0;overflow: hidden;height: 99%;}
+.modal-content {width: 88%;/* max-width: 420px; */background: #ffffff;border-radius: 14px;padding: 0;overflow: hidden;height: 99%;}
 
 /* Header */
 .modal-header {
@@ -1133,7 +1133,7 @@ box-shadow: 0 6px 14px rgba(0,0,0,0.22);
     filter: drop-shadow(0 0 2px white);
 }
 .task-select-area{
-  display: flex;
+  display: block;
   justify-content: flex-end;
 }
 .limpo {
@@ -1310,5 +1310,14 @@ border-left: 10px solid #2196f3 !important;   /* 紫→掃除手前 */
   text-align: center;
 }
 .roomNumber-icon{
+  display: flex;
+}
+
+.modal-gerenciar{
+  overflow: auto!important;
+  width: 88% !important;
+  height: 73vh!important;
+}
+.icon-area{
   display: flex;
 }
