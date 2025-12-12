@@ -341,7 +341,7 @@ const hotel_id = globalId; // 既存のホテルID
 
     globalRoomData = beforeCleanning
      //Quartos nao abertos
-    const inProgressRooms = beforeCleanning.filter(r => r.open_flag === 0 && r.checked_flag !== 1);
+    const inProgressRooms = beforeCleanning.filter(r => r.open_flag === 0 || r.checked_flag !== 1);
     //Quartos feitos
     const doneRooms = beforeCleanning.filter(r => r.cleaned_by !== null);
     //Quartos checados
@@ -619,7 +619,7 @@ function selectFloor(floor, clickedButton) {
 
 
 
-const inProgressRooms =targetRooms.filter(r => r.open_flag === 0 && r.checked_flag !== 1 );
+const inProgressRooms =targetRooms.filter(r => r.open_flag === 0 || r.checked_flag !== 1 );
 //Quartos feitos
 const doneRooms = targetRooms.filter(r => r.cleaned_by !== null || r.checked_flag === 1);
 //Quartos checados
