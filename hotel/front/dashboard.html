@@ -1868,13 +1868,15 @@ console.log(r.assigned_staff_id)
   r.sub_status === 'stay_amenytyOnliy' ||
   r.sub_status === 'stay_clean';
 
+  const opeName = ope.length >0 ? ope[0].username : ''
+
 
     if(r.checked_flag===1||r.amenity_complete_flag===1){//完了形だから、テキストのみ
         textHTML = `
         <div style="width:100%; text-align:right; display:block">
           <span style="display:block;
           padding:2px 2px;
-          font-size:13px">${ope[0].username}</span>
+          font-size:13px">${opeName}</span>
           <span style="
                 display:block;
                 color:green;
@@ -1902,7 +1904,7 @@ console.log(r.assigned_staff_id)
           <div class="task-select-area">
           <span style="display:block;
           padding:2px 2px;
-          font-size:13px">${ope[0].username}</span>
+          font-size:13px">${opeName}</span>
             <button
               class="amenity-btn done-btn-amenity"
               data-roomNumber="${r.room_number}"
@@ -1914,13 +1916,12 @@ console.log(r.assigned_staff_id)
 card.classList.remove(`no-plan-card`);
       }
 
-
       if (seisouFlag) {
           selectHTML = `
             <div class="task-select-area">
             <span style="display:block;
             padding:2px 2px;
-            font-size:13px">${ope[0].username}</span>
+            font-size:13px">${opeName}</span>
               <select class="task-status-select" data-roomNumber="${r.room_number}" data-room="${r.id}" >
                 <option value="aberto" ${nextSeisou ? "selected" : ""}>Aberto</option>
                 <option value="limpo" ${nextCheck ? "selected" : ""}>Limpo</option>
