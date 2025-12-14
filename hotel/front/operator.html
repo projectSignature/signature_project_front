@@ -118,6 +118,8 @@ if (!token) {
     globalId = decoded.hotelId
     operatorId = decoded.id
 
+    
+
     // トークン期限切れチェック
     const now = Math.floor(Date.now() / 1000);
     if (decoded.exp < now) {
