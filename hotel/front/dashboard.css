@@ -1297,6 +1297,33 @@ border-left: 10px solid #2196f3 !important;   /* 紫→掃除手前 */
   margin-top: 12px;
 }
 
+.opened-table thead {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.opened-table .scroll-body {
+  display: block;
+  max-height: 60vh;        /* ← 好きな高さに調整 */
+  overflow-y: auto;
+  width: 100%;
+}
+
+.opened-table .scroll-body tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+/* 見た目用（任意） */
+.opened-table th,
+.opened-table td {
+  text-align: center;
+  padding: 10px;
+  font-size: 20px;
+}
+
 .opened-table th {
   background: #f0f0f0;
   padding: 6px;
