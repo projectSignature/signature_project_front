@@ -291,7 +291,8 @@ function toggleMenu() {
 
 function logout() {
   localStorage.removeItem("authToken");
-  alert("Logout efetuado.");
+  window.location.href = "../index.html";
+  // alert("Logout efetuado.");
 }
 
 function goUsers() { window.location.href = "./user_admin.html"; }
