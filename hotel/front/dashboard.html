@@ -251,6 +251,7 @@
   let globalCheckedRooms = []
   let globalUser = []
   let globalId = ''
+  let operatorId =''
 
   const token = localStorage.getItem("authToken");
 
@@ -263,10 +264,9 @@
 
       // デコード成功 → decoded をグローバルに持たせる
       window.decodedUser = decoded;
-
       userRole = decoded.role
-      globalId = decoded.hotel_id
-
+      globalId = decoded.hotelId
+      operatorId = decoded.id
 
       // トークン期限切れチェック
       const now = Math.floor(Date.now() / 1000);
@@ -275,7 +275,6 @@
         alert("ログインセッションが切れました。再ログインしてください。");
         window.location.href = "../index.html";
       }
-
     } catch (e) {
       // console.error("トークン解析エラー:", e);
 
@@ -284,10 +283,7 @@
       window.location.href = "../index.html";
     }
   }
-  const decoded = JSON.parse(atob(token.split('.')[1]));
 
-  let operatorId = decoded.id
-  // let globalWorkers = []
 
 function toggleMenu() {
   document.getElementById("sideMenu").classList.toggle("open");
@@ -846,7 +842,7 @@ async function openUserList(mode) {
   window.userEditMode = mode;
   // mode = "edit" or "delete"
 
-  const res = await fetch(`${API_URL}/api/user/list?hotel_id=1`);
+  const res = await fetch(`${API_URL}/api/user/list?hotel_id=${globalId}`);
   const json = await res.json();
   // globalUser = json
 
@@ -859,7 +855,10 @@ async function openUserList(mode) {
     return;
   }
 
-  const list = json.users;
+    const lists = json.users.filter(r => r.hotel_id === globalId)
+
+  const list = lists
+
   const box = document.getElementById("userListBox");
   box.innerHTML = "";
 
@@ -1096,10 +1095,13 @@ async function loadWorkerOptions() {
 
   if (!json.success) return;
 
-    globalWorkerList = json.users;
-    console.log(`globalWorkerList`,globalWorkerList)
+  const lists = json.users.filter(r => r.hotel_id === globalId)
 
-  const staffList = json.users.filter(u => u.role === "staff" || u.role === 'staffManeger');
+    globalWorkerList = lists;
+
+    console.log(globalWorkerList)
+
+  const staffList = lists.filter(u => u.role === "staff" || u.role === 'staffManeger');
   const sel = document.getElementById("bulkWorker");
   sel.innerHTML = `<option value="">-- Selecionar --</option>`;
 
@@ -1117,22 +1119,19 @@ async function loadBulkRoomList() {
   const box = document.getElementById("bulkRoomList");
   box.innerHTML = "";
 
-console.log(globalRoomDailyList)
-console.log(globalAmenityShoukai)
 
   tgtDatas = [
     ...globalRoomDailyList,
     ...globalAmenityShoukai
   ];
 
-  console.log(tgtDatas)
+
 
   tgtDatas.sort((a, b) => a.room_number - b.room_number);
   globalRoomDailyList = tgtDatas;
 
   tgtDatas.forEach(r => {
 
-console.log(r)
     // ============================
     // ★ アイコン判定
     // ============================
@@ -1512,7 +1511,8 @@ async function createServices() {
   if(globalUser.length===0){
     const res = await fetch(`${API_URL}/api/user/list?hotel_id=${globalId}`);
     const json = await res.json();
-    globalUser = json.users
+      const lists = json.users.filter(r => r.hotel_id === globalId)
+    globalUser = lists
   }
 
   // 🔥前回選んだ値を保持
