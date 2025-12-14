@@ -697,6 +697,9 @@ function renderRoomTasks(roomData) {
 
     if (amenityRoom) {
       iconHTML = `<img src="./img/bag.png" class="icon-img">`;
+      if(r.guest_count>1){
+        iconHTML += `<img src="./img/bag.png" class="icon-img">`;
+      }
 
     }
 
