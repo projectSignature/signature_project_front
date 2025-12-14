@@ -93,6 +93,9 @@
 
 const API_URL = `https://squid-app-ug7x6.ondigitalocean.app`
 let userRole = ``
+let globalId = ''
+let operatorId = ''
+
 // const API_URL = `http://localhost:3000`
 
 
@@ -112,10 +115,8 @@ if (!token) {
     window.decodedUser = decoded;
 
     userRole = decoded.role
-    // userRole = `staffManeger`
-    // userRole = `staff`
-
-    // console.log("ログインユーザー:", decoded);
+    globalId = decoded.hotelId
+    operatorId = decoded.id
 
     // トークン期限切れチェック
     const now = Math.floor(Date.now() / 1000);
@@ -126,23 +127,13 @@ if (!token) {
     }
 
   } catch (e) {
-    // console.error("トークン解析エラー:", e);
 
-    // トークン破損 → 削除してログインへ
     localStorage.removeItem("authToken");
     window.location.href = "../index.html";
   }
 }
 
 
-// console.log(decoded);
-// ここに全部入ってる
-// { id, name, username, role, iat, exp }
-
-const globalId = 1
-// https://squid-app-ug7x6.ondigitalocean.app
-
-// const API_ROOMS = `${API_URL}/api/room/daily_room_list?date=${date}&hotel_id=${hotel_id}`;
 const API_AMENITIES = `${API_URL}/api/room/amenity/list`;
 const API_UPDATE_STATUS = `${API_URL}/api/room/status`;
 const API_DELETE_AMENITY = `${API_URL}/api/room/amenity`;
@@ -157,9 +148,6 @@ let originalRoomsData = [];
 let globalRoomsData = []; // ← これは表示用にする
 let globalAmenityData = [];  // ← グローバル変数作成しておく
 let originalAmenityData = [];
-
-
-
 
 const loadingOverlay = document.getElementById("loadingOverlay");
 const loadingText = document.getElementById("loadingText");
@@ -501,8 +489,7 @@ const btnCleaning = document.getElementById("btnShowCleaning");
 const btnAmenity  = document.getElementById("btnShowAmenity");
 let globalAmenitys = ""
 let beforeCleanning = []
-let operatorId = decoded.id
-// let operatorId = 11
+
 
 
 // ========================
@@ -581,13 +568,13 @@ async function loadTasks() {
 
     // operatorId = 11
 
-    // console.log(roomData)
+    console.log(roomData)
     //
     // console.log(operatorId)
-    // console.log(globalAmenitys)
+    console.log(globalAmenitys)
     beforeCleanning = roomData.rows.filter(e => e.assigned_staff_id === operatorId)
 
-    // console.log(`beforeCleanning`,beforeCleanning)
+    console.log(`beforeCleanning`,beforeCleanning)
 
     // // アメニティデータの正規化
     // const amenitys = amenityJson.requests || amenityJson || [];
