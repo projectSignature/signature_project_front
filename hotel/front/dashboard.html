@@ -231,7 +231,7 @@
 
   const API_URL = "https://squid-app-ug7x6.ondigitalocean.app"
   // const API_URL = "http://localhost:3000"
-  const globalId = 1
+
   let globalRoomData = []
   let globalObservation = []
   let globalAmenitys = []
@@ -250,9 +250,10 @@
   let globalDoneRoos = []
   let globalCheckedRooms = []
   let globalUser = []
+  let globalId = ''
 
   const token = localStorage.getItem("authToken");
-  console.log(token)
+
   if (!token) {
     // トークンなし → ログインへ強制送還
     window.location.href = "../index.html";
@@ -264,10 +265,8 @@
       window.decodedUser = decoded;
 
       userRole = decoded.role
-      // userRole = `staffManeger`
-      // userRole = `staff`
+      globalId = decoded.hotel_id
 
-      // console.log("ログインユーザー:", decoded);
 
       // トークン期限切れチェック
       const now = Math.floor(Date.now() / 1000);
@@ -334,7 +333,8 @@ const hotel_id = globalId; // 既存のホテルID
         'noclean',
         'stay_noclean',
         'outOf',
-        'unused'
+        'unused',
+        'checked'
       ].includes(r.sub_status ?? '')
     );
 
@@ -354,6 +354,11 @@ const hotel_id = globalId; // 既存のホテルID
     const API_AMENITIES = await fetch(`${API_URL}/api/room/amenity/list`);
     // globalAmenityShoukai =
     const amenityJson = await API_AMENITIES.json();
+
+      inProgressRooms.sort((a, b) => a.room_number - b.room_number);
+      doneRooms.sort((a, b) => a.room_number - b.room_number);
+      checked.sort((a, b) => a.room_number - b.room_number);
+      stayAmenityOnly.sort((a, b) => a.room_number - b.room_number);
 
     console.log(inProgressRooms)
 
@@ -510,6 +515,7 @@ function closeFloorModal() {
 
 function launchOpenRoomInspector() {
   const container = document.getElementById("openedRoomsList");
+  console.log(globalOpnedRooms)
 
   // テーブル（ヘッダーあり）ベースを作る
   let html = `
@@ -520,7 +526,7 @@ function launchOpenRoomInspector() {
           <th>Check out</th>
         </tr>
       </thead>
-      <tbody>
+  <tbody class="scroll-body">
   `;
 
   if (!globalOpnedRooms || globalOpnedRooms.length === 0) {
@@ -1147,15 +1153,6 @@ console.log(r)
     const assignedClass = r.assigned_staff_id && r.sub_status !== "stay_amenytyOnliy" ? "assigned-room" : "";
     const amenityClass = r.sub_status === "stay_amenytyOnliy" || r.sub_status === 'stay_clean'  ? "stay-amenity" : "";
     const amenityOnlyRegisterDone = r.sub_status === "stay_amenytyOnliy" && r.assigned_staff_id  ? "stay-amenity-registDone" : "";
-   const  stay_border =
-
-
-    // if(r.room_number===1118){
-    //   console.log(r)
-    //   console.log(amenityOnlyRegisterDone)
-    //   console.log(amenityClass)
-    // }
-
 
     // ============================
     // ★ 画面描画
@@ -1251,72 +1248,6 @@ function toggleRoomSelect(roomId) {
 }
 
 
-// function toggleRoomSelect(roomId) {
-//
-//   const selectedOperatorId = String(document.getElementById("bulkWorker").value);
-//   console.log(roomAssignedMap)
-//   console.log(selectedOperatorId)
-//   if(!selectedOperatorId){
-// showToast("Selecione o operador", true);
-//     return
-//   }
-//
-// console.log(`globalRoomDailyList`,globalRoomDailyList)
-//   const targetRoom = globalRoomDailyList.filter((r)=> r.id===roomId)
-//   console.log(`targetRoom`,targetRoom)
-//   console.log(targetRoom[0].assigned_staff_id)
-//   console.log(selectedOperatorId)
-//
-//
-//
-//   // ★ DBで既にこのオペレーターに登録されている場合はスキップ
-//   if (targetRoom[0].assigned_staff_id === selectedOperatorId-0) {
-//     console.log("この部屋はすでに登録済み → カウント変更しない");
-//     return;
-//   }
-//
-//   targetRoom[0].assigned_staff_id = selectedOperatorId-0
-//   targetRoom[0].upateFlag = true
-//
-//   const item = document.getElementById(`room_${roomId}`);
-//   item.classList.remove(`assigned-room`)
-//   item.classList.add("selected-room");
-//
-//
-//
-//
-// console.log(`AfterglobalRoomDailyList`,globalRoomDailyList)
-//
-//   const workerName = globalWorkerList.filter(w=> w.id ===selectedOperatorId-0)
-//
-//   console.log(`workerName`,workerName)
-//
-//   const assignedCount = globalRoomDailyList.filter((r)=> r.assigned_staff_id-0===selectedOperatorId-0)
-//
-//
-//
-//     console.log(`assignedCount`,assignedCount)
-//
-//   currentAssignedCount = assignedCount.length; // ←★これ重要！
-//
-// // globalWorkerLis
-//
-//   // selectedOperatorId
-//
-//   item.querySelector(".operator-name").innerText = workerName[0].name;
-//
-// console.log(item)
-//
-//
-//   updateRoomSelectCounter();
-// }
-
-
-
-
-
-
-
 function closeServiceRegister() {
   currentAssignedCount=[]
   selectedRooms = new Set();
@@ -1335,54 +1266,6 @@ function closeServiceRegister() {
   if (list2) list2.innerHTML = "";
 }
 
-
-// async function loadServiceRooms() {
-//   const date = document.getElementById("serviceDate").value;
-//
-//   const res = await fetch(`${API_URL}/api/room/daily_room_list?date=${date}&hotel_id=${globalId}`);
-//   const json = await res.json();
-//   const rooms = json.rows;
-//
-//   // ★ グローバルを初期化
-//   globalAssignedMap = {};
-//
-//   rooms.forEach(r => {
-//     if (!r.assigned_staff_id) return;
-//
-//     const staffId = String(r.assigned_staff_id);
-//
-//     // オペレーター → 部屋
-//     if (!globalAssignedMap[staffId]) {
-//       globalAssignedMap[staffId] = [];
-//     }
-//     globalAssignedMap[staffId].push(r.room_id);
-//
-//     // 部屋 → オペレーター
-//     roomAssignedMap[r.room_id] = staffId;
-//   });
-//
-//   console.log("🟦 globalAssignedMap", globalAssignedMap);
-// }
-
-
-
-
-// async function loadWorkerList() {
-//   const res = await fetch(`${API_URL}/api/user/list?hotel_id=${globalId}`);
-//   const json = await res.json();
-//
-//   if (!json.success) return;
-//
-//   const workers = json.users.filter(u => u.role === "staff");
-//   console.log(`workers`,workers)
-//   globalWorkers = workers
-//
-//   workers.forEach(w => {
-//     document.querySelectorAll(".worker-select").forEach(sel => {
-//       sel.innerHTML += `<option value="${w.username}">${w.name}</option>`;
-//     });
-//   });
-// }
 
 async function assignBulk() {
   const worker = document.getElementById("bulkWorker").value;
@@ -1627,7 +1510,7 @@ async function createServices() {
 
   console.log(`globalUser`,globalUser)
   if(globalUser.length===0){
-    const res = await fetch(`${API_URL}/api/user/list?hotel_id=1`);
+    const res = await fetch(`${API_URL}/api/user/list?hotel_id=${globalId}`);
     const json = await res.json();
     globalUser = json.users
   }
@@ -1719,7 +1602,7 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
   filteredRooms.sort((a, b) => (a.room_number - 0) - (b.room_number - 0));
 
   filteredRooms.forEach(r => {
-    // console.log(r)
+
 
     const card = document.createElement("div");
     card.className = "task-card";
@@ -1730,68 +1613,10 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
     let textColor = "#333";
     let iconHTML = "";
     let textHTML = ""
-    // let observBadgeHTML = "";
-    // let amenityRoom = r.sub_status === 'stay_amenytyOnliy' ? true : false
 
-    // console.log(r.room_number)
-
-    //
-    // if (r.sub_status === 'stay_amenytyOnliy') {
-    //   bgColor = "#ffdfc2";
-    //   iconHTML = `<img src="./img/bag.png" class="icon-img">`;
-    // } else if (r.checkout_status === 'before' || r.checkout_status ==='null') {
-    //   bgColor = "#cfcfcf";
-    //   textColor = "#888";
-    // }
-    //
-    // if (r.stay_type === 'individual') {
-    //   iconHTML += `<img src="./img/esponja.png" class="icon-img">`;
-    // }
-    //
-    // let statusValue = "nao_aberto";
-    // if (r.checked_flag === 1) statusValue = "Concluídos";
-    // else if (r.cleaning_done_at !== null) statusValue = "limpo";
-    // else if (r.open_flag === 1) statusValue = "aberto";
-    //
-    // let statusAmenyty = 'before'
-    // if(r.amenity_complete_flag === 1){
-    //   statusAmenyty = 'done'
-    // }
-    //
-
-    //
-    // const checkOuFlag = (r.checkout_status === 'after');
-    //
-    //
-    // if (!seisouFlag) {
-    //   bgColor = '#a0a7aa';
-    // }
-    //
-    //
-    //
-    // const amenitySiji = globalAmenitys.find(amr=>amr.room_number === r.room_number)
-
-
-    // console.log(amenitySiji)
-    //
-    // if(r.notes){
-    //   observBadgeHTML = `
-    //     <span class="task-badge" data-room="${r.room_number}">
-    //       ${r.notes}
-    //     </span>
-    //   `;
-    // }
-    //
-    // if(amenitySiji!==undefined){
-    //       const henkyakusaki = amenitySiji.action_type === '回収' ? `返却先:${amenitySiji.return_to}` : ''
-    //   observBadgeHTML = `
-    //     <span class="task-badge" data-room="${r.room_number}">
-    //       ${amenitySiji.amenity}を${amenitySiji.action_type} ${henkyakusaki}
-    //     </span>
-    //   `;
-    // }
 
     const amenityRoom = r.sub_status === 'stay_amenytyOnliy' ? true : false //ここでステーアメニティのみかチェックしてる
+    const checkOutFlag = r.checkout_status === 'after' ? true : false
     // const disabledAttr = checkOuFlag || r.amenity_only ===1 ? "" : "disabled";
 
     const seisouFlag =
@@ -1837,7 +1662,7 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
 
     if (amenityRoom) {
       iconHTML = `<img src="./img/bag.png" class="icon-img">`;
-      if(r.guest_count===2){
+      if(r.guest_count>=1){
         iconHTML += `<img src="./img/bag.png" class="icon-img">`;
       }
 
@@ -1899,7 +1724,6 @@ console.log(r.assigned_staff_id)
         }
     }else{
       if (r.sub_status === 'stay_amenytyOnliy') {
-        console.log('amenityOnly に入ってる');
         selectHTML = `
           <div class="task-select-area">
           <span style="display:block;
