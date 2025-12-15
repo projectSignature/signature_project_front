@@ -2339,6 +2339,7 @@ closeDaySubmit.addEventListener("click", async () => {
     if (data.exists) {
       alert("⚠️ 既にこの日は登録されています。");
     } else if (data.success) {
+      loadRooms()
       alert("✅ 登録しました！");
       closeDayModal.style.display = "none";
     } else {
@@ -2829,3 +2830,4 @@ loadRooms();
 </script>
 </body>
 </html>
+
