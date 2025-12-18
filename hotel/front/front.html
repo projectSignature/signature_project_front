@@ -8,6 +8,7 @@
 <body>
   <header class="header">
     <img src="./img/logo.png" alt="RoomSync ロゴ">
+    <span class="app-version">v1.0.0</span>
 
     <div class="header-right">
 
@@ -660,6 +661,7 @@ if (!token) {
     window.decodedUser = decoded;
     userRole = decoded.role
     globalId = decoded.hotelId
+    // globalId = 2
     operatorId = decoded.id
 
     // トークン期限切れチェック
@@ -1174,6 +1176,7 @@ function getSummaryRooms(floor){
 
       (r.amenity_only ?? 0) === 0
     );
+    console.log(beforeCleanning)
     const stayAmenityOnly = globalShimeData.filter(r => r.sub_status==='stay_amenytyOnliy'&&
     Number(r.floor) === Number(floor));
     return  {
@@ -2339,9 +2342,10 @@ closeDaySubmit.addEventListener("click", async () => {
     if (data.exists) {
       alert("⚠️ 既にこの日は登録されています。");
     } else if (data.success) {
-      loadRooms()
       alert("✅ 登録しました！");
+      location.reload();
       closeDayModal.style.display = "none";
+
     } else {
       alert("エラーが発生しました。");
     }
@@ -2830,4 +2834,3 @@ loadRooms();
 </script>
 </body>
 </html>
-
