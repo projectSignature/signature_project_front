@@ -1871,3 +1871,23 @@ header .total-guests {
 .excel-btn:hover {
   background: #166f28;
 }
+.app-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.app-logo {
+  height: 40px;
+}
+
+.app-version {
+  font-size: 12px;
+  font-weight: 600;
+  color: #888;
+  background: #f2f4f7;
+  padding: 3px 8px;
+  border-radius: 12px;
+  letter-spacing: 0.5px;
+  user-select: none;
+}
