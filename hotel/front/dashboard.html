@@ -338,7 +338,7 @@ const hotel_id = globalId; // 既存のホテルID
 
     globalRoomData = beforeCleanning
      //Quartos nao abertos
-    const inProgressRooms = beforeCleanning.filter(r => r.open_flag === 0 || r.checked_flag !== 1);
+    const inProgressRooms = beforeCleanning.filter(r => r.open_flag === 0 && r.checked_flag === 0 );
     //Quartos feitos
     const doneRooms = beforeCleanning.filter(r => r.cleaned_by !== null);
     //Quartos checados
@@ -2115,5 +2115,6 @@ renderFloorButtons();
 
 </body>
 </html>
+
 
 
