@@ -252,6 +252,20 @@
   let globalUser = []
   let globalId = ''
   let operatorId =''
+  let pairs = {
+    902:903,
+    907:906,
+    914:915,
+    919:920,
+    1002:1003,
+    1007:1006,
+    1014:1015,
+    1019:1020,
+    1102:1103,
+    1105:1106,
+    1114:1115,
+    1119:1120
+  }
 
   const token = localStorage.getItem("authToken");
 
@@ -311,7 +325,7 @@ const hotel_id = globalId; // 既存のホテルID
   try {
     showLoading()
     const url = `${API_URL}/api/room/daily_room_list?date=${date}&hotel_id=${hotel_id}`;
-    // const url = `${API_URL}/api/room/daily_room_list?date=2025-12-08&hotel_id=${hotel_id}`;
+    // const url = `${API_URL}/api/room/daily_room_list?date=2025-12-16&hotel_id=${hotel_id}`;
     const res = await fetch(url);
     if (!res.ok) throw new Error("API取得失敗");
 
@@ -1111,6 +1125,7 @@ async function loadWorkerOptions() {
   });
 }
 
+//Lista de quartos
 async function loadBulkRoomList() {
   const date = document.getElementById("serviceDate").value;
 
@@ -1133,20 +1148,45 @@ async function loadBulkRoomList() {
 
   tgtDatas.forEach(r => {
 
+    const roomNumber = Number(r.room_number);
+    const pairRoom = pairs[roomNumber]; // 例: 903
+
+    let roomHTML = '';
+
+    if (pairRoom) {
+      const small = Math.min(roomNumber, pairRoom);
+      const large = Math.max(roomNumber, pairRoom);
+
+      roomHTML = `
+      <div class="servico-list-colomn">
+        <span class="room-number">${small}</span>
+        <div class="room-number pair-room">${large}</div>
+      </div>
+      `;
+    } else {
+      roomHTML = `<div class="servico-list-colomn">
+      <span class="room-number">${roomNumber}</span>
+      </div>`;
+    }
+
+    // console.log(roomHTML)
+
     // ============================
     // ★ アイコン判定
     // ============================
     let amenytyOnlyFlag = false
     let iconHTML = "";
     if (r.stay_type === "single" &&r.sub_status !== "stay_amenytyOnliy") {
-      iconHTML = `<img src="./img/esponja.png" class="icon-img-lista">`;
+      iconHTML = `<div><img src="./img/esponja.png" class="icon-img-lista">`;
     } else if (r.sub_status === "stay_amenytyOnliy") {
       amenytyOnlyFlag=true
-      iconHTML = `<img src="./img/bag.png" class="icon-img-lista">`;
+      iconHTML = `<div><img src="./img/bag.png" class="icon-img-lista">`;
       if(r.guest_count===2){
         iconHTML += `<img src="./img/bag.png" class="icon-img">`;
       }
     }
+
+    iconHTML += `</div>`
 
     const operatorName = getStaffNameById(r.assigned_staff_id);
 
@@ -1163,7 +1203,7 @@ async function loadBulkRoomList() {
            onclick="toggleRoomSelect(${r.id})">
 
         <div class="room-line">
-          <strong>${r.room_number}</strong>
+          ${roomHTML}
           ${iconHTML}
           <span class="operator-name">${operatorName}</span>
         </div>
@@ -1603,6 +1643,30 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
   filteredRooms.sort((a, b) => (a.room_number - 0) - (b.room_number - 0));
 
   filteredRooms.forEach(r => {
+// console.log(r)
+
+
+const roomNumber = Number(r.room_number);
+const pairRoom = pairs[roomNumber]; // 例: 903
+
+let roomHTML = '';
+
+if (pairRoom) {
+  const small = Math.min(roomNumber, pairRoom);
+  const large = Math.max(roomNumber, pairRoom);
+
+  roomHTML = `
+    <span class="room-number">${small}</span>
+    <div class="room-number pair-room">${large}</div>
+  `;
+} else {
+  roomHTML = `<span class="room-number">${roomNumber}</span>`;
+}
+
+
+
+// const pairHTML = pairRoom ? `<br><span class="pair-room">${pairRoom}</span>` : '';
+
 
 
     const card = document.createElement("div");
@@ -1672,7 +1736,7 @@ const prevStatus = document.getElementById("filterStatus")?.value || "";
     // card.style.backgroundColor = bgColor;
     // card.style.color = textColor;
 
-    console.log(r)
+
 
     let open = false
     let showStart = false
@@ -1729,7 +1793,8 @@ console.log(r.assigned_staff_id)
           <div class="task-select-area">
           <span style="display:block;
           padding:2px 2px;
-          font-size:13px">${opeName}</span>
+          font-size:13px;
+          text-align:end;">${opeName}</span>
             <button
               class="amenity-btn done-btn-amenity"
               data-roomNumber="${r.room_number}"
@@ -1746,7 +1811,8 @@ card.classList.remove(`no-plan-card`);
             <div class="task-select-area">
             <span style="display:block;
             padding:2px 2px;
-            font-size:13px">${opeName}</span>
+            font-size:13px;
+            text-align:end;">${opeName}</span>
               <select class="task-status-select" data-roomNumber="${r.room_number}" data-room="${r.id}" >
                 <option value="aberto" ${nextSeisou ? "selected" : ""}>Aberto</option>
                 <option value="limpo" ${nextCheck ? "selected" : ""}>Limpo</option>
@@ -1778,19 +1844,21 @@ card.classList.remove(`no-plan-card`);
 
     }
 
-
     card.innerHTML = `
       <div class="task-room-header">
-        <div class='roomNumber-icon'>
-        <span class="room-number">${r.room_number}</span>
-        <div class="icon-area">${iconHTML}</div>
+        <div class="roomNumber-icon">
+          ${roomHTML}
+
         </div>
+        <div class="icon-area">${iconHTML}</div>
         ${observBadgeHTML}
         ${selectHTML}
-          ${textHTML}
+        ${textHTML}
       </div>
-
     `;
+
+
+
 
 
 
@@ -2115,6 +2183,3 @@ renderFloorButtons();
 
 </body>
 </html>
-
-
-
