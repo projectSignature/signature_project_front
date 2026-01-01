@@ -634,14 +634,13 @@ font-size: 16px;
   display: flex;
   align-items: center;
   gap: 12px;
-
   background: #ffffff;
   padding: 10px 14px;
   border-radius: 10px;
   margin-bottom: 10px;
-
   border-left: 4px solid #4a90e2;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  width: 89%;
 }
 
 .bulk-room-item strong {
@@ -703,17 +702,20 @@ font-size: 16px;
 
 .room-line {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  /* justify-content: space-between; */
+  /* justify-content: space-between; */
+  /* align-items: center; */
+  width: 100%;
 }
 .room-line span{
-  margin-left: 20px
+  /* margin-left: 20px; */
 }
 
 .operator-name {
   font-size: 14px;
   color: #2c3e50;
   font-weight: 600;
+  margin-left: auto;
 }
 /* モーダル全体 */
 .amenity-list-modal {
@@ -956,11 +958,7 @@ font-size: 16px;
   flex-direction: column;
   gap: 10px;
 }
-.task-room-header {
-display: flex;
-justify-content: space-between;
-align-items: center;
-}
+.task-room-header {display: flex;/* justify-content: space-between; *//* align-items: center; */}
 .room-number {
 font-size: 1.35rem;
 font-weight: 700;
@@ -975,17 +973,7 @@ background: rgba(255,255,255,0.6);
 box-shadow: 0 2px 5px rgba(0,0,0,0.15);
 }
 
-.task-card {
-width: 95%;
-padding: 16px;
-margin-bottom: 14px;
-border-radius: 14px;
-/* background: linear-gradient(135deg, rgba(255,255,255,0.85), rgba(255,255,255,0.95)); */
-backdrop-filter: blur(4px);
-border: 1px solid rgba(0,0,0,0.06);
-box-shadow: 0 3px 8px rgba(0,0,0,0.15);
-transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
+.task-card {width: 92%;padding: 16px;margin-bottom: 14px;border-radius: 14px;/* background: linear-gradient(135deg, rgba(255,255,255,0.85), rgba(255,255,255,0.95)); */backdrop-filter: blur(4px);border: 1px solid rgba(0,0,0,0.06);box-shadow: 0 3px 8px rgba(0,0,0,0.15);transition: transform 0.15s ease, box-shadow 0.15s ease;}
 
 .task-card:not(.disabled-card):hover {
 transform: translateY(-3px);
@@ -1134,7 +1122,8 @@ box-shadow: 0 6px 14px rgba(0,0,0,0.22);
 }
 .task-select-area{
   display: block;
-  justify-content: flex-end;
+  /* justify-content: flex-end; */
+  margin-left: auto;
 }
 .limpo {
   border-left: 10px solid green !important; /* 柔らかい薄緑 */
@@ -1338,6 +1327,7 @@ border-left: 10px solid #2196f3 !important;   /* 紫→掃除手前 */
 }
 .roomNumber-icon{
   display: flex;
+  flex-direction: column;
 }
 
 .modal-gerenciar{
@@ -1347,4 +1337,18 @@ border-left: 10px solid #2196f3 !important;   /* 紫→掃除手前 */
 }
 .icon-area{
   display: flex;
+}
+.pair-room {
+    font-size: 1.35rem;
+    font-weight: 700;
+    /* color: #888; */
+    /* margin-top: 2px; */
+    /* position: fixed; */
+    /* top: 58px; */
+}
+.servico-list-colomn {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-end;
 }
