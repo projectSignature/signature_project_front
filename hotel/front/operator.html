@@ -95,6 +95,20 @@ const API_URL = `https://squid-app-ug7x6.ondigitalocean.app`
 let userRole = ``
 let globalId = ''
 let operatorId = ''
+let pairs = {
+  902:903,
+  907:906,
+  914:915,
+  919:920,
+  1002:1003,
+  1007:1006,
+  1014:1015,
+  1019:1020,
+  1102:1103,
+  1105:1106,
+  1114:1115,
+  1119:1120
+}
 
 // const API_URL = `http://localhost:3000`
 
@@ -118,7 +132,7 @@ if (!token) {
     globalId = decoded.hotelId
     operatorId = decoded.id
 
-    
+
 
     // トークン期限切れチェック
     const now = Math.floor(Date.now() / 1000);
@@ -568,15 +582,8 @@ async function loadTasks() {
     const amenityData = await amenityRes.json();
     globalAmenitys = amenityData.requests
 
-    // operatorId = 11
-
-    console.log(roomData)
-    //
-    // console.log(operatorId)
-    console.log(globalAmenitys)
     beforeCleanning = roomData.rows.filter(e => e.assigned_staff_id === operatorId)
 
-    console.log(`beforeCleanning`,beforeCleanning)
 
     // // アメニティデータの正規化
     // const amenitys = amenityJson.requests || amenityJson || [];
@@ -640,7 +647,26 @@ function renderRoomTasks(roomData) {
 
   roomData.forEach(r => {
 
-    console.log(r)
+    const roomNumber = Number(r.room_number);
+    const pairRoom = pairs[roomNumber]; // 例: 903
+
+    let roomHTML = '';
+
+    if (pairRoom) {
+      const small = Math.min(roomNumber, pairRoom);
+      const large = Math.max(roomNumber, pairRoom);
+
+      roomHTML = `
+      <div class="servico-list-colomn">
+        <span class="room-number">${small}</span>
+        <div class="room-number pair-room">${large}</div>
+      </div>
+      `;
+    } else {
+      roomHTML = `<div class="servico-list-colomn">
+      <span class="room-number">${roomNumber}</span>
+      </div>`;
+    }
 
     const checkOut = r.checkout_status === 'after' ? `` :`disabled`
     const checkOutFlg = r.checkout_status === 'after' ? true :false
@@ -827,7 +853,7 @@ console.log(userRole)
     card.innerHTML = `
       <div class="task-room-header">
       <div style="display:flex">
-        <span class="room-number">${r.room_number}</span>
+        ${roomHTML}
         <div class="icon-area">${iconHTML}</div>
       </div>
 
