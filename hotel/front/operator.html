@@ -14,7 +14,6 @@
       <option value="pt">🇧🇷 Português</option>
       <option value="en">🇺🇸 English</option>
       <option value="es">🇪🇸 Español</option>
-
     </select>
     <span id="headerTitle">オペレータータスク</span>
     <button id="refreshBtn">🔄 更新</button>
@@ -40,17 +39,10 @@
     </div>
     <div>
       <button id="desfazerBtn">desfazer</button>
-
     </div>
-
-
     <button id="btnShowCleaning" style='display:none' class="filter-btn active">🧹 清掃</button>
     <button id="btnShowAmenity" style='display:none'  class="filter-btn">🧴 アメニティ</button>
-
   </div>
-
-
-
 
   <div id="taskContainer"></div>
 
@@ -58,9 +50,7 @@
   <div id="observModal" class="hidden">
     <div class="observ-content">
       <h3 id="observModalTitle"></h3>
-
       <div id="observText"></div>
-
       <button id="observDoneBtn" class="observ-done-btn"></button>
       <button id="observCloseBtn" class="observ-close-btn"></button>
     </div>
@@ -69,20 +59,12 @@
   <!-- 🔥 Undo Modal -->
   <div id="undoModal" class="hidden">
     <div class="undo-modal-content">
-
       <h3 style="text-align:center;margin-bottom:10px;">Selecione os quartos</h3>
-
       <div id="undoRoomList"></div>
-
       <button id="undoApplyBtn" class="undo-apply-btn">Desfazer</button>
       <button id="undoCloseBtn" class="undo-close-btn">Fechar</button>
     </div>
   </div>
-
-
-
-
-
 
 <div id="loadingOverlay">
   <div class="loader"></div>
@@ -856,6 +838,7 @@ console.log(userRole)
         ${roomHTML}
         <div class="icon-area">${iconHTML}</div>
       </div>
+      ${observBadgeHTML}
 
        ${buttonHTML}
        ${textHTML}
