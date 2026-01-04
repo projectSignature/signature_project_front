@@ -95,6 +95,21 @@ const API_URL = `https://squid-app-ug7x6.ondigitalocean.app`
 let userRole = ``
 // const API_URL = `http://localhost:3000`
 
+let pairs = {
+  902:903,
+  907:906,
+  914:915,
+  919:920,
+  1002:1003,
+  1007:1006,
+  1014:1015,
+  1019:1020,
+  1102:1103,
+  1105:1106,
+  1114:1115,
+  1119:1120
+}
+
 
 // 認証チェック
 const token = localStorage.getItem("authToken");
@@ -659,7 +674,38 @@ function renderRoomTasks(roomData) {
 
   roomData.forEach(r => {
 
-    // console.log(r)
+    const roomNumber = Number(r.room_number);
+    const pairRoom = pairs[roomNumber]; // 例: 903
+
+    let roomHTML = '';
+
+    if (pairRoom) {
+      const small = Math.min(roomNumber, pairRoom);
+      const large = Math.max(roomNumber, pairRoom);
+
+      const smallHTML =
+        small === roomNumber
+          ? `${small}*`
+          : `${small}`;
+
+      const largeHTML =
+        large === roomNumber
+          ? `${large}*`
+          : `${large}`;
+
+      roomHTML = `
+        <div class="servico-list-colomn">
+          <span class="room-number">${smallHTML}</span>
+          <div class="room-number pair-room">${largeHTML}</div>
+        </div>
+      `;
+    } else {
+      roomHTML = `
+        <div class="servico-list-colomn">
+          <span class="room-number">${roomNumber}</span>
+        </div>
+      `;
+    }
 
     const ope = globalUser.users.filter(rr=>rr.id-0 === r.assigned_staff_id-0)
 
@@ -693,9 +739,9 @@ seisous ++
         // card.className = "task-card";
       }
 
-    if (r.stay_type === 'individual') {
-      iconHTML += `<img src="./img/esponja.png" class="icon-img">`;
-    }
+    // if (r.stay_type === 'individual') {
+    //   iconHTML += `<img src="./img/esponja.png" class="icon-img">`;
+    // }
 
     // let observBadgeHTML = "";
     // if (r.notes) {
@@ -885,13 +931,26 @@ card.classList.remove(`no-plan-card`);
     }
 
 
-
+    // card.innerHTML = `
+    //   <div class="task-room-header">
+    //   <div style="display:flex">
+    //     ${roomHTML}
+    //     <div class="icon-area">${iconHTML}</div>
+    //   </div>
+    //   ${observBadgeHTML}
+    //
+    //    ${buttonHTML}
+    //    ${textHTML}
+    //
+    //   </div>
+    //
+    // `;
 
 
     card.innerHTML = `
       <div class="task-room-header">
       <div style="display:flex">
-        <span class="room-number">${r.room_number}</span>
+                ${roomHTML}
         <div class="icon-area">${iconHTML}</div>
               ${observBadgeHTML}
       </div>
