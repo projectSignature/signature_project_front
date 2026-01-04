@@ -638,16 +638,28 @@ function renderRoomTasks(roomData) {
       const small = Math.min(roomNumber, pairRoom);
       const large = Math.max(roomNumber, pairRoom);
 
+      const smallHTML =
+        small === roomNumber
+          ? `${small}*`
+          : `${small}`;
+
+      const largeHTML =
+        large === roomNumber
+          ? `${large}*`
+          : `${large}`;
+
       roomHTML = `
-      <div class="servico-list-colomn">
-        <span class="room-number">${small}</span>
-        <div class="room-number pair-room">${large}</div>
-      </div>
+        <div class="servico-list-colomn">
+          <span class="room-number">${smallHTML}</span>
+          <div class="room-number pair-room">${largeHTML}</div>
+        </div>
       `;
     } else {
-      roomHTML = `<div class="servico-list-colomn">
-      <span class="room-number">${roomNumber}</span>
-      </div>`;
+      roomHTML = `
+        <div class="servico-list-colomn">
+          <span class="room-number">${roomNumber}</span>
+        </div>
+      `;
     }
 
     const checkOut = r.checkout_status === 'after' ? `` :`disabled`
