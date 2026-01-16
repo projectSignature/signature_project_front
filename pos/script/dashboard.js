@@ -4,7 +4,7 @@ let nameSpan = document.getElementById('spn-representative')
 let userInfo={}
 let currentSaleId = ""
  const year = document.getElementById('selectYear')
- year.value='2025'
+ year.value='2026'
 
 year.addEventListener('change', function () {
     fetchTotalSales()
@@ -2439,3 +2439,4 @@ const settingMap = {
 
 
 // })
+
