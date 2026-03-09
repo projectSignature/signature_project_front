@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>対面モニター</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: #000;
+      color: #fff;
+      height: 100%;
+      width: 100%;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .center-container {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    img.logo {
+      max-width: 250px;
+      margin-bottom: 30px;
+    }
+
+    .order-number {
+      font-size: 30px;
+      margin-bottom: 10px;
+    }
+
+    .item-list {
+      font-size: 26px;
+      margin-bottom: 20px;
+    }
+
+    .total {
+      font-size: 38px;
+      color: #ffff66;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+
+    .payment-info {
+      font-size: 26px;
+      margin-bottom: 10px;
+    }
+
+    .thanks {
+      font-size: 20px;
+      color: #aaa;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="orderDisplay">
+    <div class="center-container">
+      <img src="../imagen/logo.png" class="logo" alt="Logo">
+      <div class="waiting">🕒 ご注文をお待ちしています...</div>
+    </div>
+  </div>
+
+  <script>
+  const orderDisplay = document.getElementById('orderDisplay');
+  const channel = new BroadcastChannel('customer-display');
+  let resetTimer = null;
+
+  const renderWaiting = () => {
+    orderDisplay.innerHTML = `
+      <div class="center-container">
+        <img src="../imagen/logo.png" class="logo" alt="Logo">
+        <div class="waiting">🕒 ご注文をお待ちしています...</div>
+      </div>
+    `;
+  };
+
+  // 受信処理
+  channel.onmessage = (event) => {
+    const data = event.data;
+
+    console.log(data)
+
+    if (data.type === 'update') {
+      const { order_id, totalWithTax, items, paymentAmount } = data;
+      const change = paymentAmount != null ? paymentAmount - totalWithTax : null;
+
+      orderDisplay.innerHTML = `
+        <div class="center-container">
+          <div class="order-number">🧾 ご注文 No.${order_id}</div>
+          <div class="item-list">
+            ${items.map(item => `${item.menu_name} x${item.quantity}`).join('<br>')}
+          </div>
+          <div class="total">合計: ¥${totalWithTax.toLocaleString()}</div>
+          ${paymentAmount != null ? `
+            <div class="payment-info">お預かり: ¥${paymentAmount.toLocaleString()}</div>
+            <div class="payment-info">おつり: ¥${change.toLocaleString()}</div>
+          ` : ''}
+          <div class="thanks">ありがとうございます！</div>
+        </div>
+      `;
+
+      // 保険：2分後に待機へ戻す
+      if (resetTimer) clearTimeout(resetTimer);
+      resetTimer = setTimeout(renderWaiting, 2 * 60 * 1000);
+
+    } else if (data.type === 'reset') {
+      // Confirm ボタンクリックからのリセット
+      if (resetTimer) clearTimeout(resetTimer);
+      renderWaiting();
+    }
+  };
+
+  // 初期表示は待機
+  renderWaiting();
+
+
+  </script>
+</body>
+</html>
